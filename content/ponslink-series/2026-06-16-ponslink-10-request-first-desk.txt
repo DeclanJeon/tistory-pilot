@@ -1,0 +1,53 @@
+처음의 PonsLink를 한 문장으로 설명하라면, 사람을 더 직접 연결하는 실시간 통신 실험에 가까웠다. 그런데 2026년 6월의 PonsLink를 한 문장으로 설명하라면 전혀 다른 말이 나온다. 회의툴이 아니라 요청 데스크. 이 문장은 그냥 마케팅 카피가 아니었다. 실제 커밋, 실제 문서, 실제 화면이 다 그 방향으로 정렬되기 시작했다.
+
+## 왜 회의보다 요청이 앞에 오게 됐나
+
+마케팅 전략 문서는 아주 노골적이다. “PonsLink는 화상회의 툴이 아니다.” 대신 이렇게 정의한다. **request-first session desk.** DM으로 들어오는 상담 요청을 먼저 받고, 받을 만한 요청만 승인해 세션과 기록까지 연결하는 제품. 이 문장을 읽으면 그동안의 서사가 한 번에 정리된다. 통화 품질, CoWatch, 파일 전송, 오디오 룸까지 다 지나왔지만, 결국 제품이 붙잡고 있던 진짜 문제는 회의 전의 혼란이었던 셈이다.
+
+이 정의는 말로만 나온 게 아니다. 6월 초 프론트엔드 커밋만 봐도 흐름이 선명하다. `a2381d5 refactor: public-desk로 전환, /room/ 링크 제거, PublicDeskGate 단순화`, `a8fb246 Make the landing page sell request-first sessions`, `2bcc789 fix(room): 미팅 요청 폼을 공개 데스크로 일원화`, `f80cf83 Make public request flows consistent across languages`, `7240685 Fix accepted request room entry`가 줄줄이 붙는다. 회의 링크를 앞에 두는 대신, 요청이 들어오고 검토되고 승인되는 흐름을 제품의 중심으로 올리는 작업이다.
+
+![공개 데스크 개요](assets/ponslink-series/public-desk-overview.png)
+
+## UI가 달라진 건 취향 문제가 아니었다
+
+이 시기엔 문서도 같이 바뀐다. `대격변 UI 리디자인 작업지시서`는 아예 제품 정의부터 못 박는다. PonsLink는 Zoom/Meet/Calendly/Linktree 클론이 아니고, 1인 전문가가 공개 데스크를 열고 방문자가 이메일과 요청 맥락을 남기며 호스트가 검토한 뒤 세션룸 입장을 허용하는 제품이라고 쓴다. 금지 방향도 분명하다. 첫 화면을 Join meeting 중심으로 만들지 말 것, 비디오 그리드와 카메라 프리뷰를 히어로로 쓰지 말 것, 요청 없는 공개 방 입장 UX를 만들지 말 것.
+
+이 문장은 중요하다. UI 변화가 그저 예쁘게 보이기 위한 리디자인이 아니었다는 뜻이기 때문이다. 예전엔 카메라와 방이 제품의 얼굴이었다면, 이 시기부터는 desk와 request와 status가 제품의 얼굴이 된다. `50a4946 redesign: Marketing page to match Superdesign spec`, `642fd04 redesign: Login, LoungeRequests, LoungeRequestDetail to Superdesign spec`, `480e6f5 redesign: LoungeRequests to progressive disclosure pattern`, `afcb3c6 design: apply sage green palette to all lounge, desk, plan, and public pages`도 다 같은 방향이다. 무드가 달라진 게 아니라, 제품이 자신을 설명하는 문장 자체가 달라졌다.
+
+![요청 스크리닝 워크플로우](assets/ponslink-series/request-screening-workflow.png)
+
+## 왜 Google Form과 Zoom 사이를 노렸나
+
+6월의 PonsLink가 재밌는 건 경쟁 구도를 훨씬 더 좁게 본다는 점이다. 그냥 Zoom 대체재가 되겠다는 말도 버리고, Calendly 대체재만으로 설명하는 것도 버린다. 대신 “회의가 문제가 아니라, 회의 전 DM 정리가 문제”라는 말을 전면에 내세운다. 그 결과가 `compare-google-form-vs-ponslink.png`, `guide-request-screening-workflow.png`, `public-desk-overview.png` 같은 이미지 자산들이다.
+
+이건 꽤 영리한 정리다. 대부분의 1인 전문가는 사실 회의툴보다 더 먼저, 애매한 요청을 어떻게 걸러야 할지부터 고민한다. 어떤 사람은 무료 잡담을 원하고, 어떤 사람은 자료도 없이 시간을 먼저 달라 하고, 어떤 사람은 진짜 고객이 될 수 있다. 그걸 정리하는 데 지금까지는 DM, 이메일, Google Form, Calendly, Zoom, Notion이 따로 놀았다. PonsLink는 바로 그 사이를 하나의 desk로 묶으려 했다.
+
+![Google Form 비교 이미지](assets/ponslink-series/compare-google-form-vs-ponslink.png)
+
+## request-first는 타협이 아니라 수렴이었다
+
+겉보기엔 이 정의가 처음의 야심보다 좁아 보일 수 있다. 실시간 P2P 통신, 협업, 스트리밍, 오디오 룸까지 갔던 제품이 결국 요청 데스크라고 자신을 부르니 한 걸음 물러난 것처럼 보이기 때문이다. 그런데 나는 오히려 반대로 본다. 이건 포기가 아니라 수렴이었다.
+
+처음의 PonsLink는 연결을 늦추고 싶지 않다는 마음에서 시작했다. 그 마음은 계속 다른 형태로 나타났다. 장치를 바꿔도 연결이 안 깨져야 했고, 말만으로 부족하면 채팅과 화이트보드가 붙었고, 같이 보는 경험을 위해 CoWatch와 스트리밍이 붙었고, 카메라 부담을 줄이려 오디오 룸까지 갔다. 결국 남은 질문은 이것이었다. 그래서 누구를 어떤 방식으로 연결할 것인가. request-first desk는 그 질문에 가장 현실적인 답이었다.
+
+## 이 시기의 온도
+
+6월 커밋들을 읽으면 재미있는 변화가 하나 더 보인다. 제품이 조금 더 세상 말투를 배우기 시작한다는 점이다. `59f4f30 Make public site reviewable for AdSense`, `b02b4f4 Give beta prospects a direct application path`, `6381f44 Capture beta demand before widening launch`, `86d2936 Remove beta signup friction`, `09ff019 Measure launch traffic with GA4` 같은 커밋은 코드보다 시장 언어에 가깝다. 이제는 제품을 만드는 것만으로 부족하고, 누가 와서 어떻게 이해하고 어떤 요청을 남길지까지 같이 다뤄야 한다.
+
+그래서 request-first session desk라는 정의는 그냥 마지막 포지셔닝 문장이 아니다. 지금까지 만든 실시간 기술과 협업 경험을, 실제로 받아들여질 수 있는 한 문장 안에 집어넣은 결과물에 가깝다. 결국 PonsLink는 회의를 여는 제품이 아니라, 회의를 열기 전의 혼란을 정리하는 제품으로 자신을 좁혔다. 그게 이 시기의 결론이다.
+
+## 참고한 기록
+
+- 프론트엔드 저장소: `DeclanJeon/ponslink-room-frontend`
+  https://github.com/DeclanJeon/ponslink-room-frontend
+- 마케팅 전략 문서: `docs/ponslink-marketing-strategy-2026-06-02.md`
+- UI 리디자인 작업지시서: `docs/major-ui-redesign-work-order.md`
+- public-desk 전환 커밋: `a2381d5`
+- landing page request-first 판매 커밋: `a8fb246`
+- request form 일원화 커밋: `2bcc789`
+- request flow 다국어 일관성 커밋: `f80cf83`
+- accepted request room entry 수정 커밋: `7240685`
+- AdSense reviewable public site 커밋: `59f4f30`
+- beta application path 커밋: `b02b4f4`
+- beta demand capture 커밋: `6381f44`
+- major redesign 커밋: `50a4946`, `642fd04`, `480e6f5`, `afcb3c6`

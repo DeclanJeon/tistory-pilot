@@ -1,0 +1,7 @@
+node_modules/
+.env
+.browser-agent/
+artifacts/
+tmp/
+~/
+*.log

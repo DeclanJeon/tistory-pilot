@@ -1,0 +1,16 @@
+{
+  "blogUrl": "https://acstory.tistory.com/",
+  "category": "IT·테크",
+  "title": "애플·엔비디아·마이크로소프트가 동시에 움직였다: 2026년 AI 인프라 전쟁의 새 국면",
+  "description": "애플의 Private Cloud Compute 확장, 엔비디아 RTX Spark, 마이크로소프트의 엔터프라이즈 에이전트 전략을 묶어 2026년 AI 인프라 경쟁의 방향을 정리한 IT 뉴스 분석 글.",
+  "tags": [
+    "AI",
+    "IT뉴스",
+    "Apple",
+    "NVIDIA",
+    "Microsoft",
+    "Private Cloud Compute",
+    "AI 인프라"
+  ],
+  "heroImage": "assets/2026-06-16-ai-infra-shift.png"
+}

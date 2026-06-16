@@ -1,0 +1,145 @@
+{
+  "seriesTitle": "PonsLink가 만들어진 시간",
+  "category": "개발 회고",
+  "tone": "storytelling",
+  "rules": {
+    "useImNotAi": true,
+    "mustShowUiEvolution": true,
+    "mustExplainFeatureOrigins": true,
+    "commitEvidenceReferenceOnly": true
+  },
+  "posts": [
+    {
+      "order": 1,
+      "slug": "2026-06-16-ponslink-01-why-i-came-back-to-connection",
+      "title": "한 번 놓친 연결이 PonsLink의 시작이 됐다",
+      "status": "drafted",
+      "dateRange": "2025-09-14 ~ 2025-10-06",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-01-why-i-came-back-to-connection.txt",
+      "heroImage": "assets/ponslink-series/comic-hero-story.png",
+      "tags": "PonsLink,개발회고,창업실패,실시간통신,WebRTC",
+      "focus": "PonsLink는 WebRTC에서 먼저 시작된 프로젝트가 아니었다. 오래 남은 실패와, 다시는 그 타이밍을 놓치고 싶지 않다는 마음에서 시작됐다."
+    },
+    {
+      "order": 2,
+      "slug": "2026-06-16-ponslink-02-webrtc-first-hell",
+      "title": "두 달 동안 방 하나에 매달렸다: 8월부터 10월까지 만든 PonsLink의 첫 얼굴",
+      "status": "drafted",
+      "dateRange": "2025-10-02 ~ 2025-10-05",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-02-webrtc-first-hell.txt",
+      "heroImage": "assets/ponslink-series/feature-video-rooms.png",
+      "tags": "PonsLink,WebRTC,개발회고,화면공유,디바이스전환",
+      "focus": "늦여름부터 10월까지의 PonsLink는 거의 room page 하나에 매달려 있었다. 그 두 달은 기능을 붙이는 시간이자, 이 프로젝트가 어떤 얼굴을 가져야 할지 더듬는 시간이었다."
+    },
+    {
+      "order": 3,
+      "slug": "2026-06-16-ponslink-03-beyond-calls",
+      "title": "연결은 붙었는데 신뢰는 쉽게 깨졌다: room 안쪽에서 처음 배운 것",
+      "status": "drafted",
+      "dateRange": "2025-10-12 ~ 2025-10-18",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-03-beyond-calls.txt",
+      "heroImage": "assets/ponslink-series/feature-whiteboard.png",
+      "tags": "PonsLink,채팅,화이트보드,협업,개발회고",
+      "focus": "PonsLink의 첫 room이 형태를 갖추자 바로 현실이 드러났다. 연결을 붙이는 것과, 붙은 연결이 흔들리지 않게 만드는 일은 완전히 다른 문제였다."
+    },
+    {
+      "order": 4,
+      "slug": "2026-06-16-ponslink-04-feature-sprawl",
+      "title": "말만으로는 부족했다: 채팅과 화이트보드, 그리고 같이 본다는 감각",
+      "status": "drafted",
+      "dateRange": "2025-10-22 ~ 2025-11-25",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-04-feature-sprawl.txt",
+      "heroImage": "assets/ponslink-series/feature-cowatch.png",
+      "tags": "PonsLink,CoWatch,파일전송,기능확장,개발회고",
+      "focus": "PonsLink가 room 안에서 조금 버티기 시작하자, 다음 결핍이 바로 드러났다. 통화만으로는 맥락이 남지 않았고, 설명은 자꾸 공중으로 흩어졌다."
+    },
+    {
+      "order": 5,
+      "slug": "2026-06-16-ponslink-05-winter-rebuild",
+      "title": "방을 다 만들어 놓고도 멈췄다: 보여 줄 문장을 찾지 못했던 시기",
+      "status": "drafted",
+      "dateRange": "2026-02-11 ~ 2026-02-17",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-05-winter-rebuild.txt",
+      "heroImage": "assets/ponslink-series/feature-ponscast.png",
+      "tags": "PonsLink,PonsCast,안정화,최적화,개발회고",
+      "focus": "10월쯤 room 안의 기능은 거의 다 붙어 있었다. 그런데 그 다음이 오히려 더 어려웠다. 이걸 누구에게, 어떤 말로, 어떤 용도로 보여 줘야 할지 확신이 없었다."
+    },
+    {
+      "order": 6,
+      "slug": "2026-06-16-ponslink-06-audio-pivot",
+      "title": "봉인을 풀자 더 큰 욕심이 튀어나왔다: SFU와 더 많은 사람을 담는 꿈",
+      "status": "drafted",
+      "dateRange": "2026-04-13",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-06-audio-pivot.txt",
+      "heroImage": "assets/ponslink-series/feature-voice-mode.png",
+      "tags": "PonsLink,오디오룸,아바타,피벗,개발회고",
+      "focus": "잠깐 묻어 두었던 PonsLink를 다시 열었을 때, 가장 먼저 튀어나온 건 규모의 문제였다. 메쉬 구조만으로는 방에 네 명 정도밖에 안정적으로 담기지 않았다."
+    },
+    {
+      "order": 7,
+      "slug": "2026-06-16-ponslink-07-requests-payments-ops",
+      "title": "혼자 하기엔 너무 무거웠다: Access Grid와 Data Grid를 포기한 이유",
+      "status": "drafted",
+      "dateRange": "2026-05-15 ~ 2026-05-23",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-07-requests-payments-ops.txt",
+      "heroImage": "assets/ponslink-series/request-status-overview.png",
+      "tags": "PonsLink,요청관리,결제,운영,개발회고",
+      "focus": "SFU를 고민하던 시기엔 더 과감한 상상도 있었다. 모든 PC가 노드가 되는 구조라면 서버 비용을 줄이면서 더 큰 방을 만들 수 있지 않을까 하는 생각이었다."
+    },
+    {
+      "order": 8,
+      "slug": "2026-06-16-ponslink-08-the-big-pivot",
+      "title": "결국 다시 P2P로 돌아왔다: Simple Peer를 걷어내고 Pion을 붙이기까지",
+      "status": "drafted",
+      "dateRange": "2026-05-21 ~ 2026-05-30",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-08-the-big-pivot.txt",
+      "heroImage": "assets/ponslink-series/ponslink-api-infra-diagram.png",
+      "tags": "PonsLink,Pion,Mesh,Polar,가격정책,개발회고",
+      "focus": "SFU와 그리드 구조를 접고 나서 남은 질문은 단순했다. 정말 이 프로젝트가 가야 하는 방향은 어디인가. 답은 의외로 처음 의도에 더 가까운 곳에 있었다."
+    },
+    {
+      "order": 9,
+      "slug": "2026-06-16-ponslink-09-no-go",
+      "title": "파일 전송에 오래 붙잡힌 이유: P2P는 간단하지 않았다",
+      "status": "drafted",
+      "dateRange": "2026-05-30",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-09-no-go.txt",
+      "heroImage": "assets/ponslink-series/comic-problems-strip.png",
+      "tags": "PonsLink,NO-GO,출시보류,검증,개발회고",
+      "focus": "P2P로 방향을 다시 좁히고 나자, 이번에는 파일 전송이 정면으로 남았다. 말은 쉬워도 실제 구현은 전혀 가볍지 않았다."
+    },
+    {
+      "order": 10,
+      "slug": "2026-06-16-ponslink-10-request-first-desk",
+      "title": "화이트보드와 PonsCast, 그리고 얼굴보다 덜 부담스러운 연결",
+      "status": "drafted",
+      "dateRange": "2026-06-02 ~ 2026-06-16",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-10-request-first-desk.txt",
+      "heroImage": "assets/ponslink-series/public-desk-overview.png",
+      "tags": "PonsLink,request-first,public-desk,제품전략,개발회고",
+      "focus": "파일과 통화 문제를 오래 겪고 나자, PonsLink 안의 다른 욕구들도 더 또렷해졌다. 무엇을 보여 주고, 무엇을 같이 보고, 사람에게 어느 정도의 부담으로 입장을 시킬 것인가가 중요해졌다."
+    },
+    {
+      "order": 11,
+      "slug": "2026-06-16-ponslink-11-ponswarp-split",
+      "title": "기술보다 운영이 먼저 문제였다: 요청, 예약, 결제라는 현실",
+      "status": "drafted",
+      "dateRange": "번외",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-11-ponswarp-split.txt",
+      "heroImage": "assets/ponslink-series/comic-workflow-strip.png",
+      "tags": "PonsLink,PonsWarp,브랜딩,제품분화,개발회고",
+      "focus": "room 안의 기능들이 어느 정도 자리를 잡자, 그 다음엔 전혀 다른 문제가 남았다. 회의가 열리기 전에 이미 너무 많은 혼란이 벌어지고 있다는 사실이었다."
+    },
+    {
+      "order": 12,
+      "slug": "2026-06-16-ponslink-12-reading-the-commit-log",
+      "title": "PonsLink는 왜 아직도 진행형인가: NO-GO 이후에 남은 문장",
+      "status": "drafted",
+      "dateRange": "번외",
+      "bodyFile": "content/ponslink-series/2026-06-16-ponslink-12-reading-the-commit-log.txt",
+      "heroImage": "assets/ponslink-series/comic-features-strip.png",
+      "tags": "PonsLink,커밋로그,개발심리,회고,개발회고",
+      "focus": "기술도 있었고 방도 있었고 요청과 결제 흐름도 생겼다. 그런데도 바로 출시할 수는 없었다. 마지막에 남은 건 기능 부족보다, 무엇을 증명해야 하는가에 대한 질문이었다."
+    }
+  ]
+}

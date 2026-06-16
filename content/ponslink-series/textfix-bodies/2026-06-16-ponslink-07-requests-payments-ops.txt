@@ -1,0 +1,59 @@
+> 한 줄 요약
+> 실시간 기능을 오래 만들다 보면 언젠가 아주 현실적인 질문이 남는다. 그래서 이걸 누가 돈 내고 쓰는가. 방은 열 수 있고, 연결도 붙고, 기록도 남길 수 있는데 정작 세상에서는 회의가 열리기 전에 더 많은 일이 벌어진다. 누가 어떤 요청을 보냈는지,
+
+## 회의방보다 먼저 들어온 건 요청이었다
+
+이 시기 로그를 보면 제품의 무게 중심이 확실히 달라진다. `7477e01 feat: require guest email for public requests`, `3c1ff01 Route request email review links`, `0fd71be feat: harden public request email calendar lifecycle`, `a925c00 feat: clarify request email confirmation UX` 같은 커밋이 줄지어 나온다. 이건 화상회의 툴을 다듬는 흐름이 아니다. 회의가 열리기 전에 어떤 정보를 받아야 하는지, 요청이 어느 상태에 있는지, 이메일을 어떻게 다시 열어 보게 할지 같은 문제를 다루는 흐름이다.
+
+왜 이렇게 됐을까. 답은 단순하다. 실제로 돈이 오가는 세션은 회의 링크 하나로 성립하지 않기 때문이다. 누군가는 막연한 DM을 보내고, 누군가는 시간만 물어보고, 누군가는 자료도 없이 일단 통화부터 원한다. 이걸 그대로 받으면 결국 호스트가 매번 같은 설명을 반복하게 된다. 그래서 PonsLink는 방을 여는 도구보다 먼저, 요청을 받는 방식부터 다시 만들기 시작했다.
+
+이 변화는 UI에도 그대로 남는다. 예전엔 방에 들어가기 전 카메라와 마이크가 먼저 보였지만, 이 시점부터는 요청 상태와 검토 단계가 먼저 보인다. “접수됨”, “검토 중”, “추가 조치 필요”, “승인됨” 같은 상태가 결국 신뢰를 만든다. 사용자는 침묵보다 상태를 원한다. 호스트 역시 막연한 대화보다 구조화된 요청을 원한다.
+
+## 예약과 라운지는 왜 따로 커졌나
+
+요청을 받기 시작하면 그다음엔 예약이 붙는다. 그리고 예약이 붙는 순간 제품은 더 이상 단순한 room app으로 남지 않는다. `b812b82 Make the lounge reservation board actionable`, `77b6d8d Integrate reservation board implementation into main2`, `9b5878d Route reservation details by canonical reservation id`, `13e6036 Support reliable reservation detail hydration`, `27b28b3 Keep lounge reservation actions consistent` 같은 커밋은 이 흐름을 잘 보여준다.
+
+라운지는 단순 inbox가 아니었다. 호스트가 오늘 처리할 요청을 보고, 예약 상태를 확인하고, 승인된 세션을 다시 열어보는 운영 데스크에 가까워졌다. 말하자면 PonsLink는 이 무렵부터 방 안의 경험보다 방 바깥의 정리 능력으로 자신을 설명하게 된다.
+
+처음엔 이 변화가 조금 낯설어 보일 수 있다. 실시간 연결 기술을 그렇게 오래 파던 제품이 갑자기 왜 예약 보드와 요청 상태에 집착하는가 싶기 때문이다. 하지만 이건 꽤 자연스러운 결과였다. 영상통화는 끝점이고, 제품으로서의 진짜 문제는 그 전에 벌어지는 혼란이었다. 일정이 없는 요청, 시간이 빠진 예약, 상태가 불분명한 응답, 다시 찾기 어려운 기록이 사람을 더 지치게 만든다. 그래서 라운지는 기능 추가가 아니라 현실 적응에 가까웠다.
+
+## 결제는 왜 이 시기부터 진지해졌나
+
+돈이 연결되지 않으면 모든 흐름은 결국 무료 도구 흉내로 남는다. 2026년 5월 21일부터 23일 사이엔 `2934a3c Clarify PonsLink's paid-session pricing ladder`, `3a35984 Make Polar the browser payment return path`, `06dfc70 Make Polar the default paid-consultation provider`, `36e3aa2 Protect the first paid expert launch path with a browser smoke gate` 같은 커밋이 나온다. 이건 “가격표를 붙였다” 수준이 아니다. 제품이 처음으로 진짜 유료 세션 경로를 의식하기 시작한 순간이다.
+
+가격은 기능 수로 설명되지 않았다. 이미 이 시점의 PonsLink는 회의 기능만으로 경쟁하려 하지 않았다. 오히려 “받을 만한 요청만 승인하고, 세션과 기록까지 연결하는 흐름”을 하나의 가치로 묶으려 했다. 그래서 가격 정책도 room minute가 아니라 paid session desk의 문법으로 이동한다.
+
+여기서 중요한 건 화려한 결제 화면이 아니라, 결제 이후 entitlement와 상태가 실제 흐름에 붙는가였다. 결제만 되고 세션으로 안 이어지면 아무 소용이 없다. 요청을 받고, 검토하고, 예약하고, 필요한 경우 결제를 거쳐, 세션과 기록으로 이어지는 길이 한 줄로 이어져야 했다. PonsLink는 이 시기에 처음으로 그 길을 진지하게 닦기 시작했다.
+
+## 왜 meeting records가 같이 커졌나
+
+세션이 끝나면 보통 사람들은 그 대화를 과대평가한다. 사실 남는 건 기억보다 후속 조치다. 누가 무엇을 하기로 했는지, 자료는 어디 남았는지, 다시 만날 이유가 무엇인지가 중요하다. 그래서 `6e37f06 feat: add lounge AI and meeting records flows`, `01c6a58 feat: add AI meeting records backend support`, `4b55e02 Preserve cloud meeting records from room minutes`, `321e112 Preserve meeting records when room users leave`, `9617805 Protect meeting records from unauthorized Lounge access` 같은 커밋이 한 묶음처럼 보인다.
+
+이건 AI 기능 자랑이 아니다. 오히려 회의가 끝나면 기억이 흩어진다는 아주 지루한 현실을 다루는 일에 가깝다. meeting records가 붙는 순간 PonsLink는 실시간 경험을 한 번 더 뒤로 끌고 온다. 방 안에서 끝나는 게 아니라, 방 밖으로 남기는 것이다. 그래서 라운지의 의미도 다시 바뀐다. 요청을 검토하는 자리일 뿐 아니라, 끝난 세션의 흔적을 다시 찾는 자리까지 된다.
+
+## 이 시기부터 제품 설명이 달라진다
+
+나는 2026년 5월 중순을 PonsLink의 진짜 제품화 초입으로 본다. 그 전까지는 강한 기능이 많았다. 하지만 이 시기부터는 “무엇을 할 수 있는가”보다 “한 요청이 어떻게 처리되는가”가 더 중요해진다. 그래서 공개 요청, 이메일 검토 링크, 예약 보드, 상태 페이지, 결제 반환 경로, meeting record가 모두 하나의 이야기 안에 묶인다.
+
+이쯤 오면 PonsLink를 화상회의 툴이라고만 부르는 건 거의 틀린 말이 된다. 그렇다고 Calendly나 Google Form의 대체재라고만 부르기도 부족하다. 이미 제품은 그 둘 사이, 혹은 그 바깥 어딘가로 움직이고 있었다. 회의 링크를 보내기 전에 요청을 선별하고, 필요한 정보와 결제와 후속 기록까지 한 흐름으로 붙들려는 쪽으로 말이다.
+
+다음 글에서 다룰 시기는 그 흐름이 더 노골적으로 정리되는 때다. 기술도 바꾸고, 가격 사고도 바꾸고, 제품이 자신을 설명하는 언어까지 다시 갈아엎는다. PonsLink의 가장 큰 피벗은 바로 그 다음에 온다.
+
+## 참고한 기록
+
+- 프론트엔드 저장소: `DeclanJeon/ponslink-room-frontend`
+  https://github.com/DeclanJeon/ponslink-room-frontend
+- 백엔드 저장소: `DeclanJeon/ponslink-api-infra`
+  https://github.com/DeclanJeon/ponslink-api-infra
+- 공개 요청 이메일 링크 라우팅 커밋: `3c1ff01`
+- 게스트 이메일 필수화 커밋: `7477e01`
+- public request calendar lifecycle 강화 커밋: `0fd71be`
+- 라운지 예약 보드 액션화 커밋: `b812b82`
+- 예약 보드 메인 통합 커밋: `77b6d8d`
+- reservation detail hydration 커밋: `13e6036`
+- paid-session pricing ladder 커밋: `2934a3c`
+- Polar 브라우저 반환 경로 커밋: `3a35984`
+- Polar 기본 결제 제공자 커밋: `06dfc70`
+- lounge AI / meeting records 커밋: `6e37f06`, `01c6a58`
+- meeting records 보존/보호 커밋: `4b55e02`, `321e112`, `9617805`
+- 참고 문서: `docs/major-ui-redesign-work-order.md`, `docs/ponslink-marketing-strategy-2026-06-02.md`

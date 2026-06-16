@@ -1,0 +1,49 @@
+> 한 줄 요약
+> 제품이 커지면 언젠가 그런 순간이 온다. 아, 이제는 조금씩 고쳐서는 안 되겠다는 순간. PonsLink에서 그 장면은 2026년 5월 하순에 왔다. 이때 바뀐 건 기능 하나가 아니었다. 미디어 구조도 바뀌고, 결제 경로도 바뀌고, 가격을 설명하는 언
+
+## 왜 구조를 다시 갈아엎어야 했나
+
+이미 PonsLink는 방도 있고, 요청도 있고, 예약도 있고, 기록도 있었다. 겉으로 보면 충분히 많은 걸 갖췄다. 그런데 실제로는 방 안의 미디어 구조와 제품 바깥의 판매 구조가 서로 다른 언어를 쓰고 있었다. 실시간 연결은 여전히 조심스럽고, 유료 상담 경로는 아직 얇았고, 운영 가능한 기준선이 뭔지도 애매했다.
+
+그래서 2026년 5월 21일 전후로 프론트엔드에 `ecba04f Make mesh WebRTC the frontend room baseline`, `6734b27 Stabilize native mesh offer negotiation`, `c9d7677 Ship mesh room as a safe standalone release baseline`이 이어진다. 백엔드 쪽에선 `2883c83 Make Pion mesh media the API baseline`이 찍힌다. 여기서 중요한 건 단순히 “mesh를 썼다”는 사실이 아니다. 앞으로 PonsLink가 어떤 종류의 실시간 방을 기본값으로 둘지, 그 기준선을 다시 정했다는 점이다.
+
+한마디로 말하면 이렇다. PonsLink는 더는 모든 실시간 가능성을 다 품으려 하기보다, 지금 팔고 운영할 수 있는 방 구조를 먼저 고정하려 했다. 기술적 야심을 조금 덜고, 제품으로서 살아남을 수 있는 선을 더 분명히 그었다.
+
+![PonsLink API/인프라 구조](assets/ponslink-series/ponslink-api-infra-diagram.png)
+
+## 결제도 같이 바뀌었다
+
+구조 피벗은 항상 사업 피벗을 끌고 온다. 방 구조를 다시 정하는데 돈 받는 방식이 그대로 남아 있으면 결국 또 어색해진다. 그래서 같은 시기에 `06dfc70 Make Polar the default paid-consultation provider`, `3a35984 Make Polar the browser payment return path`, `2934a3c Clarify PonsLink's paid-session pricing ladder`가 같이 나온다.
+
+이건 단순한 결제 공급자 교체로 보면 안 된다. PonsLink는 이 무렵부터 가격을 한국형 감각으로 대충 붙이기보다, 유료 세션 제품으로 설명 가능한 계단을 만들기 시작한다. 월 얼마냐보다 중요한 건, 어떤 요청이 어떤 세션으로 이어지고 그 흐름이 왜 돈을 낼 만한지 설명할 수 있어야 한다는 점이었다.
+
+그래서 이 피벗은 기술과 사업이 한 번에 꺾인 사건이다. 방을 어떻게 붙일지, 세션을 어떻게 팔지, 결제 후 어떤 entitlement가 열려야 하는지까지 하나의 문법으로 다시 맞추기 시작한 것이다. 전에는 기능을 더 많이 넣는 쪽으로 전진했다면, 여기서는 돈 받고 운영할 수 있는 구조를 먼저 세우는 쪽으로 움직인다.
+
+## 왜 가격 언어까지 바뀌었나
+
+이 시기를 읽을 때 가장 자주 놓치는 건 가격 언어다. 제품은 기능만으로 시장에 들어가지 않는다. 스스로를 어떤 종류의 도구로 설명하는지, 그리고 그 설명이 가격과 어울리는지가 훨씬 중요하다. 6월 2일 마케팅 전략 문서가 말하는 것도 정확히 거기다. PonsLink는 대규모 런칭 단계가 아니라 판매 검증 단계였고, 핵심 질문은 아주 좁았다. DM으로 상담 요청을 받는 1인 전문가가 월 8.50달러를 낼 것인가.
+
+이 질문이 의미하는 바는 크다. PonsLink는 더 이상 “멋진 화상회의 서비스”로 팔리려 하지 않았다. 이제는 요청을 선별하고, 받을 만한 요청만 세션으로 이어 주는 개인용 세션 데스크로 팔리기를 원했다. 그러니 가격도 room minute가 아니라 paid session desk의 결과 언어로 정리되어야 했다.
+
+## 이 피벗이 남긴 냉정함
+
+나는 이 시기의 PonsLink가 오히려 더 솔직하다고 본다. 그 전까지는 기능의 가능성 쪽으로 계속 넓혀 갔다. 그런데 5월 하순부터는 하나씩 질문이 바뀐다. 이 방 구조가 운영 가능한가. 결제가 실제 흐름으로 이어지는가. 이 가격이 말이 되는가. 지금 이 제품을 누구에게 팔겠다고 말할 수 있는가.
+
+좋은 피벗은 늘 화려하지 않다. 어떤 것은 버리고, 어떤 것은 기준선으로 고정하고, 어떤 것은 나중으로 미룬다. 그래서 큰 피벗 시기의 커밋은 대개 덜 낭만적이다. 대신 현실적이다. PonsLink는 이 시점에 처음으로 “지금 당장 팔 수 없는 멋짐”보다 “작게라도 팔 수 있는 구조”를 앞에 놓기 시작했다.
+
+이 냉정함은 바로 다음 장면으로 이어진다. 구조도 바꾸고 결제도 바꿨지만, 그렇다고 바로 출시할 수 있었던 건 아니다. 오히려 그렇게 많이 고쳐 놓고도, 마지막엔 스스로 NO-GO를 선언해야 했다. 다음 글은 그 얘기다.
+
+## 참고한 기록
+
+- 프론트엔드 저장소: `DeclanJeon/ponslink-room-frontend`
+  https://github.com/DeclanJeon/ponslink-room-frontend
+- 백엔드 저장소: `DeclanJeon/ponslink-api-infra`
+  https://github.com/DeclanJeon/ponslink-api-infra
+- 프론트 mesh 기준선 커밋: `ecba04f`
+- mesh offer negotiation 안정화 커밋: `6734b27`
+- safe standalone release baseline 커밋: `c9d7677`
+- API Pion mesh 기준선 커밋: `2883c83`
+- Polar 기본 결제 제공자 커밋: `06dfc70`
+- Polar 브라우저 payment return path 커밋: `3a35984`
+- paid-session pricing ladder 커밋: `2934a3c`
+- 참고 문서: `docs/ponslink-marketing-strategy-2026-06-02.md`

@@ -1,0 +1,8 @@
+{
+  "title": "P2P의 한계를 넘고 싶어서 만든 실패작, 미디어 릴레이",
+  "description": "P2P를 쉽게 포기하고 싶지 않아 한 방의 미디어를 다른 방으로도 흘려보내려 했던 미디어 릴레이 실험과, 왜 그 시도가 결국 품질 문제 앞에서 실패로 끝났는지 돌아본다.",
+  "category": "회고",
+  "tags": "PonsLink,미디어릴레이,P2P,WebRTC,개발회고",
+  "heroImage": "assets/ponslink-series/web/feature-video-rooms.webp",
+  "bodyFile": "content/ponslink-series/final-bodies/2026-06-16-ponslink-13-media-relay-failure.txt"
+}

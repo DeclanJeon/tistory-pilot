@@ -1,0 +1,128 @@
+{
+  "seriesTitle": "PonsLink가 만들어진 시간",
+  "category": "개발 회고",
+  "blogUrl": "https://acstory.tistory.com",
+  "generatedAt": "2026-06-16T18:33:02.599Z",
+  "posts": [
+    {
+      "order": 1,
+      "slug": "2026-06-16-ponslink-01-why-i-came-back-to-connection",
+      "title": "한 번 놓친 연결은 오래 남는다: 내가 PonsLink로 다시 돌아온 이유",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-01-why-i-came-back-to-connection.txt",
+      "heroImage": null,
+      "tags": "PonsLink,개발회고,창업실패,실시간통신,WebRTC",
+      "category": "개발 회고",
+      "description": "PonsLink를 처음부터 제품 소개처럼 설명하면 중요한 걸 놓치게 된다. 이 프로젝트는 WebRTC에서 시작된 게 아니다. 더 정확히 말하면, 한 번 놓쳐버린 연결에 대한 미련에서 시작됐다."
+    },
+    {
+      "order": 2,
+      "slug": "2026-06-16-ponslink-02-webrtc-first-hell",
+      "title": "데모는 쉬웠고 제품은 잔인했다: PonsLink의 첫 WebRTC 지옥",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-02-webrtc-first-hell.txt",
+      "heroImage": null,
+      "tags": "PonsLink,WebRTC,개발회고,화면공유,디바이스전환",
+      "category": "개발 회고",
+      "description": "실시간 연결 서비스를 처음 만들 때는 착각하기 쉽다. 방에 들어간다. 카메라가 켜진다. 상대 얼굴이 보인다. 여기까지만 되면 거의 다 온 것처럼 느껴진다. 문제는 그다음이다. 사용자는 늘 뭔가를 바꾼다. 마이크를 갈아 끼우고, 카메라를 바꾸고, 화면을"
+    },
+    {
+      "order": 3,
+      "slug": "2026-06-16-ponslink-03-beyond-calls",
+      "title": "통화만으로는 부족했다: 채팅과 화이트보드가 PonsLink에 붙은 이유",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-03-beyond-calls.txt",
+      "heroImage": null,
+      "tags": "PonsLink,채팅,화이트보드,협업,개발회고",
+      "category": "개발 회고",
+      "description": "실시간 통화가 겨우 버티기 시작하면 그다음엔 이상한 허기가 찾아온다. 얼굴이 보이고 목소리가 들리는데도, 뭔가 빠져 있다는 느낌이다. 회의는 열렸지만 같이 있는 것 같지는 않다. PonsLink가 채팅과 화이트보드를 붙이기 시작한 이유는 바로 거기에 "
+    },
+    {
+      "order": 4,
+      "slug": "2026-06-16-ponslink-04-feature-sprawl",
+      "title": "다 되게 만들겠다는 마음이 시작될 때: CoWatch와 파일전송이 붙던 시기",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-04-feature-sprawl.txt",
+      "heroImage": null,
+      "tags": "PonsLink,CoWatch,파일전송,기능확장,개발회고",
+      "category": "개발 회고",
+      "description": "통화가 버티고 채팅이 붙기 시작하면, 그다음엔 늘 같은 유혹이 온다. 이것도 되면 좋겠고, 저것도 되면 좋겠다는 마음이다. PonsLink가 2025년 10월 말부터 11월 말까지 지나간 시기가 딱 그랬다. 같이 영상을 보게 만들고 싶었고, 파일도 한"
+    },
+    {
+      "order": 5,
+      "slug": "2026-06-16-ponslink-05-winter-rebuild",
+      "title": "기능보다 더 어려운 건 버티게 만드는 일이다: 다시 구조를 세운 겨울",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-05-winter-rebuild.txt",
+      "heroImage": null,
+      "tags": "PonsLink,PonsCast,안정화,최적화,개발회고",
+      "category": "개발 회고",
+      "description": "기능을 한참 붙이고 나면 어느 순간 분위기가 바뀐다. 새로운 걸 더 만드는 속도가 자랑처럼 느껴지지 않는다. 오히려 지금 있는 것들이 얼마나 자주 삐걱거리는지가 더 크게 보인다. 2026년 2월의 PonsLink가 정확히 그랬다. 이 시기의 키워드는 "
+    },
+    {
+      "order": 6,
+      "slug": "2026-06-16-ponslink-06-audio-pivot",
+      "title": "왜 우리는 갑자기 오디오 룸으로 틀었나",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-06-audio-pivot.txt",
+      "heroImage": null,
+      "tags": "PonsLink,오디오룸,아바타,피벗,개발회고",
+      "category": "개발 회고",
+      "description": "실시간 제품을 오래 만지다 보면 아주 늦게야 보이는 질문이 있다. 사람은 정말 언제나 카메라를 켜고 싶어 할까. 연결의 밀도는 화면에서만 생길까. PonsLink가 2026년 4월 13일 갑자기 오디오 룸으로 틀어버린 건, 새 장르를 흉내 내고 싶어서"
+    },
+    {
+      "order": 7,
+      "slug": "2026-06-16-ponslink-07-requests-payments-ops",
+      "title": "회의방만으로는 제품이 되지 않았다: 요청과 결제와 운영이 들어온 순간",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-07-requests-payments-ops.txt",
+      "heroImage": null,
+      "tags": "PonsLink,요청관리,결제,운영,개발회고",
+      "category": "개발 회고",
+      "description": "실시간 기능을 오래 만들다 보면 언젠가 아주 현실적인 질문이 남는다. 그래서 이걸 누가 돈 내고 쓰는가. 방은 열 수 있고, 연결도 붙고, 기록도 남길 수 있는데 정작 세상에서는 회의가 열리기 전에 더 많은 일이 벌어진다. 누가 어떤 요청을 보냈는지,"
+    },
+    {
+      "order": 8,
+      "slug": "2026-06-16-ponslink-08-the-big-pivot",
+      "title": "기술도 가격도 다 바꿨다: PonsLink의 가장 큰 피벗",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-08-the-big-pivot.txt",
+      "heroImage": null,
+      "tags": "PonsLink,Pion,Mesh,Polar,가격정책,개발회고",
+      "category": "개발 회고",
+      "description": "제품이 커지면 언젠가 그런 순간이 온다. 아, 이제는 조금씩 고쳐서는 안 되겠다는 순간. PonsLink에서 그 장면은 2026년 5월 하순에 왔다. 이때 바뀐 건 기능 하나가 아니었다. 미디어 구조도 바뀌고, 결제 경로도 바뀌고, 가격을 설명하는 언"
+    },
+    {
+      "order": 9,
+      "slug": "2026-06-16-ponslink-09-no-go",
+      "title": "우리는 왜 스스로 NO-GO를 선언했나",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-09-no-go.txt",
+      "heroImage": null,
+      "tags": "PonsLink,NO-GO,출시보류,검증,개발회고",
+      "category": "개발 회고",
+      "description": "제품을 오래 만들다 보면 언젠가 아주 불편한 문장을 써야 할 때가 온다. 아직 안 된다고. PonsLink에서 그 문장은 2026년 5월 30일 `PonsLink Market Readiness Audit` 문서에 아주 또렷하게 박혔다. 결론은 짧았다."
+    },
+    {
+      "order": 10,
+      "slug": "2026-06-16-ponslink-10-request-first-desk",
+      "title": "결국 PonsLink는 회의툴이 아니라 요청 데스크가 됐다",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-10-request-first-desk.txt",
+      "heroImage": null,
+      "tags": "PonsLink,request-first,public-desk,제품전략,개발회고",
+      "category": "개발 회고",
+      "description": "처음의 PonsLink를 한 문장으로 설명하라면, 사람을 더 직접 연결하는 실시간 통신 실험에 가까웠다. 그런데 2026년 6월의 PonsLink를 한 문장으로 설명하라면 전혀 다른 말이 나온다. 회의툴이 아니라 요청 데스크. 이 문장은 그냥 마케팅 "
+    },
+    {
+      "order": 11,
+      "slug": "2026-06-16-ponslink-11-ponswarp-split",
+      "title": "PonsLink와 PonsWarp는 어떻게 갈라졌나",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-11-ponswarp-split.txt",
+      "heroImage": null,
+      "tags": "PonsLink,PonsWarp,브랜딩,제품분화,개발회고",
+      "category": "개발 회고",
+      "description": "PonsLink 이야기를 오래 따라오다 보면 한 번쯤 이런 질문이 생긴다. 왜 어떤 기능은 제품 안에 남고, 어떤 기능은 아예 다른 제품으로 갈라져 나갔을까. 이 질문은 꽤 중요하다. 하나의 제품이 모든 걸 품으려 들면 결국 설명이 망가지기 쉽기 때문"
+    },
+    {
+      "order": 12,
+      "slug": "2026-06-16-ponslink-12-reading-the-commit-log",
+      "title": "커밋 로그로 보면 제품이 아니라 사람이 보인다",
+      "bodyFile": "content/ponslink-series/publish-bodies/2026-06-16-ponslink-12-reading-the-commit-log.txt",
+      "heroImage": null,
+      "tags": "PonsLink,커밋로그,개발심리,회고,개발회고",
+      "category": "개발 회고",
+      "description": "제품 회고를 읽을 때 사람들은 대개 결과를 본다. 어떤 기능이 나왔는지, 어떤 피벗이 있었는지, 출시를 했는지 말았는지를 본다. 그런데 커밋 로그를 오래 들여다보면 다른 것도 보인다. 제품보다 먼저 사람의 리듬이 보인다. 언제 자신만만했는지, 언제 다"
+    }
+  ]
+}

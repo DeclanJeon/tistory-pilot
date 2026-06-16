@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cli:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Syntax checks
+        run: |
+          node --check scripts/tistory-automation.mjs
+          node --check scripts/tistory-post.mjs
+          node --check scripts/lib/agbrowse-cli.mjs
+          node --check scripts/lib/source-import.mjs
+
+      - name: CLI help
+        run: npm run tistory -- --help
+
+      - name: Single-source import smoke test
+        run: npm run tistory -- source https://example.com --source-output-dir tmp/ci-source-single
+
+      - name: Multi-source merge smoke test
+        run: npm run tistory -- source https://example.com https://www.iana.org/help/example-domains --source-output-dir tmp/ci-source-merge

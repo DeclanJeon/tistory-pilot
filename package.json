@@ -1,0 +1,48 @@
+{
+  "name": "tistory-agbrowse",
+  "version": "0.1.0",
+  "description": "Tistory automation CLI with headless Kakao QR login, source import, and multi-source merge.",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "tistory",
+    "kakao",
+    "automation",
+    "cli",
+    "blog",
+    "agbrowse"
+  ],
+  "files": [
+    "scripts",
+    "README.md",
+    "LICENSE",
+    ".env.example"
+  ],
+  "scripts": {
+    "tistory": "node scripts/tistory-automation.mjs",
+    "tistory:automation": "node scripts/tistory-automation.mjs prompt",
+    "browser:start": "node scripts/tistory-automation.mjs browser start --headed",
+    "browser:status": "node scripts/tistory-automation.mjs browser status",
+    "browser:stop": "node scripts/tistory-automation.mjs browser stop",
+    "category:ensure": "node scripts/tistory-category.mjs --blog-url https://acstory.tistory.com --category 시사 --headless",
+    "smoke": "node scripts/agbrowse-smoke.mjs",
+    "post:draft": "node scripts/tistory-post.mjs",
+    "post:publish": "node scripts/tistory-post.mjs --publish",
+    "post:acstory:dry": "node scripts/tistory-post.mjs --dry-run --blog-url https://acstory.tistory.com --title \"애플·엔비디아·마이크로소프트가 동시에 움직였다: 2026년 AI 인프라 전쟁의 새 국면\" --description \"애플의 Private Cloud Compute 확장, 엔비디아 RTX Spark, 마이크로소프트의 엔터프라이즈 에이전트 전략을 묶어 2026년 AI 인프라 경쟁의 방향을 정리한 IT 뉴스 분석 글.\" --category \"IT·테크\" --hero-image assets/2026-06-16-ai-infra-shift.png --body-file content/2026-06-16-ai-infra-shift-body.txt --tags \"AI,IT뉴스,Apple,NVIDIA,Microsoft,Private Cloud Compute,AI 인프라\"",
+    "post:acstory:fill": "node scripts/tistory-post.mjs --blog-url https://acstory.tistory.com --title \"애플·엔비디아·마이크로소프트가 동시에 움직였다: 2026년 AI 인프라 전쟁의 새 국면\" --description \"애플의 Private Cloud Compute 확장, 엔비디아 RTX Spark, 마이크로소프트의 엔터프라이즈 에이전트 전략을 묶어 2026년 AI 인프라 경쟁의 방향을 정리한 IT 뉴스 분석 글.\" --category \"IT·테크\" --hero-image assets/2026-06-16-ai-infra-shift.png --body-file content/2026-06-16-ai-infra-shift-body.txt --tags \"AI,IT뉴스,Apple,NVIDIA,Microsoft,Private Cloud Compute,AI 인프라\"",
+    "post:acstory:publish": "node scripts/tistory-post.mjs --publish --blog-url https://acstory.tistory.com --title \"애플·엔비디아·마이크로소프트가 동시에 움직였다: 2026년 AI 인프라 전쟁의 새 국면\" --description \"애플의 Private Cloud Compute 확장, 엔비디아 RTX Spark, 마이크로소프트의 엔터프라이즈 에이전트 전략을 묶어 2026년 AI 인프라 경쟁의 방향을 정리한 IT 뉴스 분석 글.\" --category \"IT·테크\" --hero-image assets/2026-06-16-ai-infra-shift.png --body-file content/2026-06-16-ai-infra-shift-body.txt --tags \"AI,IT뉴스,Apple,NVIDIA,Microsoft,Private Cloud Compute,AI 인프라\"",
+    "post:social:publish": "node scripts/publish-social-batch.mjs --manifest content/social-batch/manifest.json --blog-url https://acstory.tistory.com --category 시사 --headless",
+    "post:ponslink:publish": "node scripts/publish-ponslink-series.mjs --manifest content/ponslink-series/publish-manifest.json --blog-url https://acstory.tistory.com --category \"개발 회고\" --headless"
+  },
+  "bin": {
+    "tistory-automation": "scripts/tistory-automation.mjs"
+  },
+  "dependencies": {
+    "agbrowse": "^0.1.14",
+    "linkedom": "^0.18.12",
+    "nodemailer": "^6.10.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
