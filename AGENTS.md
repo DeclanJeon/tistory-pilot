@@ -1,4 +1,4 @@
-# Tistory Agbrowse Project
+# Tistory Pilot Project
 
 이 프로젝트는 Tistory 블로그 자동 발행 및 관리를 위한 도구 모음이다.
 

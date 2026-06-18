@@ -1,5 +1,5 @@
 {
-  "name": "tistory-agbrowse",
+  "name": "tistory-pilot",
   "version": "0.1.0",
   "description": "Tistory automation CLI with headless Kakao QR login, source import, and multi-source merge.",
   "type": "module",
