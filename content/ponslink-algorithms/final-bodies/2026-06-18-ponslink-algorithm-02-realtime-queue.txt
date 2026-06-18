@@ -1,0 +1,24 @@
+DataChannel을 하나 열었다고 실시간 제품이 끝나지는 않는다. 채팅과 파일 chunk와 whiteboard cursor가 같은 줄에 서면 곧 문제가 생긴다. 어떤 메시지는 반드시 살아야 하고, 어떤 메시지는 최신 것 하나만 있으면 된다.
+
+[그림] Envelope를 만들고 channel policy에 따라 latestQueue 또는 reliableQueue로 보낸다.
+Envelope가 먼저 만들어진다
+RealtimeTransportRouter.enqueue는 메시지를 바로 보내지 않고 RealtimeEnvelope로 감싼다. envelope에는 id, channel, kind, priority, reliability, dedupeKey, ttlMs, createdAt이 들어간다. 이 값들이 뒤의 줄 세우기 기준이 된다.
+latestQueue와 reliableQueue
+queue자료구조알고리즘
+latestQueueMap<dedupeKey, envelope>같은 key가 다시 들어오면 이전 값을 덮는다
+reliableQueueRealtimeEnvelope[]priority와 createdAt 순으로 정렬해 순서대로 보낸다
+whiteboard나 media처럼 latestWins 정책이 있는 channel은 Map에 들어간다. 같은 cursor update가 여러 번 들어와도 마지막 값만 남는다. 반대로 control/text/file처럼 reliable한 메시지는 배열에 쌓고 priority 순으로 flush한다.
+congestion 처리
+각 channel은 high/hard limit을 갖는다. bufferedAmount가 high 이상이고 dropWhenCongested가 true면 바로 drop한다. hard 이상이면 reliable message는 deferred가 되고, drop 가능한 message는 버려진다. TTL이 지난 envelope도 보내기 전에 expired로 버린다.
+여기서 “버린다”는 말은 부정적인 표현이 아니다. 오래된 cursor나 diagnostics를 보존하는 것이 오히려 사용자 경험을 망칠 수 있다.
+WebRTCManager 쪽 backpressure
+WebRTCManager도 channel별 pending queue를 갖는다. bufferedAmount + pendingBytes + payloadBytes가 hard limit을 넘으면 failed/drop이 되고, high를 넘으면 queue에 넣는다. bufferedamountlow 이벤트가 오면 pending queue를 다시 flush한다.
+주의할 점도 있다. RealtimeTransportRouter는 구현과 테스트가 있는 application-level router지만, production WebRTCManager.sendToPeer는 router 객체를 직접 호출하지 않고 같은 policy table을 가져와 DataChannel 생성과 backpressure 판단에 사용한다. 따라서 이 글에서는 router를 “개념적으로 같은 정책을 구현한 계층”으로 보고, 실제 전송 경로는 webrtc.ts의 channel/pending queue 알고리즘으로 구분한다.
+priority가 필요한 이유
+latest-wins만 있으면 오래된 메시지는 줄일 수 있지만, 중요한 메시지 사이의 순서는 설명하지 못한다. 그래서 envelope에는 priority와 createdAt이 같이 들어간다. flush할 때 latest queue도 priority와 생성 시각 기준으로 정렬하고, reliable queue도 같은 기준으로 정렬한다. “마지막 값만 남긴다”와 “중요한 것부터 보낸다”는 서로 다른 문제다.
+이 구분은 whiteboard와 diagnostics에서 특히 중요하다. cursor update는 같은 dedupeKey로 덮어써도 되지만, control 메시지는 같은 방식으로 덮어쓰면 상태가 사라진다. 정책 테이블은 channel별로 이 차이를 코드에 고정한다.
+읽은 코드ponslink-room-frontend/src/services/realtimeTransport/router.ts:43-77 — Envelope creation and queue selection
+ponslink-room-frontend/src/services/realtimeTransport/router.ts:79-105 — latest/reliable queue flush ordering
+ponslink-room-frontend/src/services/realtimeTransport/policies.ts:5-58 — channel limits, latestWins, dropWhenCongested
+ponslink-room-frontend/src/services/webrtc.ts:1052-1126 — bufferedAmount low threshold and pending queue flush
+ponslink-room-frontend/src/services/webrtc.ts:1201-1228 — hard/high limit send/queue/drop decision

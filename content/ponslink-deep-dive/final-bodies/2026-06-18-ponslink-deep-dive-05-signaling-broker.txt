@@ -1,0 +1,25 @@
+WebRTC 문제가 생기면 대부분 offer/answer부터 본다. PonsLink의 signaling broker를 읽고 나면 그보다 앞단을 먼저 봐야 한다는 생각이 든다. 이 socket이 정말 이 방에서 이 participant로 말할 수 있는가.
+
+[그림] signaling broker는 WebRTC 협상 전에 누가 어떤 방에서 말할 수 있는지를 먼저 검증한다.
+join-room은 인사말이 아니라 검문이다
+broker는 roomId와 token을 비교하고, revoked token과 closed room, capacity를 본다. 이 과정을 지나야 socket은 room에 join되고 participant store에 올라간다.
+signal은 그대로 relay되지 않는다
+payloadbroker가 보는 것
+offer/answertype과 SDP 문자열, byte cap
+ice-candidatecandidate, sdpMid, sdpMLineIndex, end-of-candidates
+renegotiate허용된 reason 값
+data/relay/media-stateobject payload와 room/from 경계
+replay는 “다시 들어왔을 때 어디까지 봤나”의 기록이다
+resume-room과 ack-room-seq는 reconnect 이후 놓친 room event를 따라잡기 위한 장치다. 실시간 시스템에서 기억은 UX 기능이 아니라 장애 복구의 일부다.
+좋은 signaling 글은 WebRTC 설명만 반복하지 않는다. signaling 이전에 필요한 신뢰 경계와 실패 루프 차단을 설명해야 한다.
+왜 여기서 엄격해야 하나
+signaling은 대체로 “offer와 answer를 주고받는 곳”으로 설명된다. 하지만 제품 코드에서는 그 설명이 너무 약하다. signaling 단계에서 roomId를 속이거나 participantId를 바꿔 말할 수 있으면, 그 뒤의 WebRTC 연결은 이미 잘못된 전제 위에 선다. 그래서 broker는 메시지를 받자마자 session claim과 socket state를 대조한다.
+또 하나의 현실적인 문제는 폭주다. ICE candidate나 renegotiate가 실패 루프에 빠지면 클라이언트는 같은 종류의 signal을 빠르게 밀어 넣을 수 있다. per-socket, per-room bucket을 둔 이유는 정상 사용자를 제한하려는 것이 아니라 실패한 협상이 방 전체를 흔들지 못하게 하는 데 있다.
+replay가 UX가 되는 순간
+replay는 내부 구현처럼 보이지만 사용자는 바로 체감한다. 노트북이 잠깐 잠들었다가 깨어났을 때, 방에 다시 들어왔는데 누가 들어오고 나갔는지 놓치면 화면 상태가 맞지 않는다. resume-room과 ack-room-seq는 그런 작은 어긋남을 줄이는 장치다.
+실제로 디버깅할 때도 이 순서가 중요하다. peer connection 로그만 보고 있으면 offer가 왜 거절됐는지 놓칠 수 있다. 먼저 broker가 join을 허용했는지, signal size/rate limit에 걸리지 않았는지, target participant가 active socket으로 남아 있는지 확인해야 한다. WebRTC 문제처럼 보이는 것 중 일부는 signaling 경계에서 이미 답이 나온다.
+읽은 코드ponslink-api-infra/src/signaling/broker.ts — join-room and signal validation
+ponslink-api-infra/src/signaling/replayStore.ts — memory/Redis replay log
+ponslink-api-infra/src/signaling/redisAdapter.ts — Socket.IO scale-out adapter
+ponslink-api-infra/src/turn/turnCredentials.ts — HMAC TURN credential
+ponslink-room-frontend/src/stores/useSignalingStore.ts — resume-room and ack-room-seq

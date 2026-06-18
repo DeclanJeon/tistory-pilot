@@ -1,0 +1,151 @@
+{
+  "seriesTitle": "PonsLink 적용 알고리즘 해부",
+  "category": "개발지식",
+  "blogUrl": "https://acstory.tistory.com",
+  "generatedAt": "2026-06-18T00:00:00.000Z",
+  "sourceProject": "/home/declan/Documents/Develop/Project/pons_p2p",
+  "posts": [
+    {
+      "order": 1,
+      "slug": "2026-06-18-ponslink-algorithm-01-negotiation",
+      "title": "[PonsLink 알고리즘 01] WebRTC offer 충돌을 피하는 작은 상태 머신",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-01-negotiation.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-01-negotiation.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-algorithms/ponslink-algorithm-01-negotiation.svg"
+      ],
+      "tags": "PonsLink,WebRTC,Negotiation,ICE,상태머신",
+      "category": "개발지식",
+      "description": "WebRTC mesh에서 offer collision, polite peer, revision, ICE buffering을 어떻게 조합했는지 해부한다.",
+      "postId": "856"
+    },
+    {
+      "order": 2,
+      "slug": "2026-06-18-ponslink-algorithm-02-realtime-queue",
+      "title": "[PonsLink 알고리즘 02] 실시간 메시지에 줄 세우기: latest-wins와 reliable queue",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-02-realtime-queue.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-02-realtime-queue.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-algorithms/ponslink-algorithm-02-queue.svg"
+      ],
+      "tags": "PonsLink,DataChannel,Queue,Backpressure,Realtime",
+      "category": "개발지식",
+      "description": "DataChannel 위에서 메시지별 생존 등급을 나누고 TTL, priority, congestion을 처리하는 queue 알고리즘을 정리한다.",
+      "postId": "857"
+    },
+    {
+      "order": 3,
+      "slug": "2026-06-18-ponslink-algorithm-03-file-transfer",
+      "title": "[PonsLink 알고리즘 03] P2P 파일 전송에 작은 TCP 만들기",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-03-file-transfer.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-03-file-transfer.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-algorithms/ponslink-algorithm-03-file.svg"
+      ],
+      "tags": "PonsLink,파일전송,AIMD,OPFS,DataChannel",
+      "category": "개발지식",
+      "description": "파일 chunk 전송에서 AIMD, RTT 기반 timeout, ACK, retry, OPFS sequencer가 어떻게 맞물리는지 분석한다.",
+      "postId": "858"
+    },
+    {
+      "order": 4,
+      "slug": "2026-06-18-ponslink-algorithm-04-replay-idempotency",
+      "title": "[PonsLink 알고리즘 04] 놓친 이벤트와 중복 요청을 다루는 법",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-04-replay-idempotency.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-04-replay-idempotency.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-algorithms/ponslink-algorithm-04-replay-idempotency.svg"
+      ],
+      "tags": "PonsLink,Replay,Idempotency,Redis,결제",
+      "category": "개발지식",
+      "description": "Replay sequence/ack와 idempotency key/body hash가 실시간 이벤트와 결제 mutation을 어떻게 안전하게 만드는지 설명한다.",
+      "postId": "859"
+    },
+    {
+      "order": 5,
+      "slug": "2026-06-18-ponslink-algorithm-05-request-state",
+      "title": "[PonsLink 알고리즘 05] 여러 상태를 하나의 사용자 문장으로 접기",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-05-request-state.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-05-request-state.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-algorithms/ponslink-algorithm-05-request-state.svg"
+      ],
+      "tags": "PonsLink,상태머신,RequestState,UX,Reservation",
+      "category": "개발지식",
+      "description": "request, reservation, payment, email, session access를 UX status로 접는 priority-based state folding 알고리즘을 분석한다.",
+      "postId": "860"
+    },
+    {
+      "order": 6,
+      "slug": "2026-06-18-ponslink-algorithm-06-ponscast-protocol",
+      "title": "[PonsLink 알고리즘 06] DataChannel 위에 만든 바이너리 스트리밍: PonsCast 프로토콜",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-06-ponscast-protocol.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-06-ponscast-protocol.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-algorithms/ponslink-algorithm-06-ponscast.png"
+      ],
+      "tags": "PonsLink,PonsCast,DataChannel,BinaryStreaming,MSE,MediaSource",
+      "category": "개발지식",
+      "description": "WebRTC 미디어 트랙 대신 DataChannel에 커스텀 바이너리 프레임을 만들어 실시간 미디어를 스트리밍하는 PonsCast 프로토콜을 해부한다.",
+      "postId": "861"
+    },
+    {
+      "order": 7,
+      "slug": "2026-06-18-ponslink-algorithm-07-ponscast-backpressure",
+      "title": "[PonsLink 알고리즘 07] 백프레셔와 jitter buffer: DataChannel에서 부드러운 재생하기",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-07-ponscast-backpressure.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-07-ponscast-backpressure.html",
+      "heroImage": "",
+      "bodyImages": ["assets/ponslink-algorithms/ponslink-algorithm-07-backpressure.png"],
+      "tags": "PonsCast,Backpressure,JitterBuffer,TokenBucket,MSE",
+      "category": "개발지식",
+      "description": "토큰 버킷 레이트 리밋과 하이/로우 워터마크 백프레셔, 수신자 쪽 jitter buffer와 시퀀스 기반 순서 맞추기를 분석한다.",
+      "postId": "862"
+    },
+    {
+      "order": 8,
+      "slug": "2026-06-18-ponslink-algorithm-08-ponscast-cache",
+      "title": "[PonsLink 알고리즘 08] 파일 감지, 캐시, 에러 복구: PonsCast의 저장 전략",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-08-ponscast-cache.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-08-ponscast-cache.html",
+      "heroImage": "",
+      "bodyImages": ["assets/ponslink-algorithms/ponslink-algorithm-08-cache.png"],
+      "tags": "PonsCast,FileTypeDetection,IndexedDB,CachePolicy,QuotaExceeded",
+      "category": "개발지식",
+      "description": "MIME 타입 감지, IndexedDB 플레이리스트 캐시, QuotaExceededError 처리, 메타데이터 내보내기 전략을 분석한다.",
+      "postId": "863"
+    },
+    {
+      "order": 9,
+      "slug": "2026-06-18-ponslink-algorithm-09-ponscast-audio",
+      "title": "[PonsLink 알고리즘 09] 마이크와 PonsCast의 공존: 오디오 라우팅",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-09-ponscast-audio.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-09-ponscast-audio.html",
+      "heroImage": "",
+      "bodyImages": ["assets/ponslink-algorithms/ponslink-algorithm-09-audio.png"],
+      "tags": "PonsCast,Audio,AudioContext,Microphone,MediaStream",
+      "category": "개발지식",
+      "description": "PonsCast 오디오와 마이크 오디오의 동시 처리, AudioContext 활용, 미디어 트랙 상태 저장/복원을 분석한다.",
+      "postId": "864"
+    },
+    {
+      "order": 10,
+      "slug": "2026-06-18-ponslink-algorithm-10-ponscast-tradeoff",
+      "title": "[PonsLink 알고리즘 10] 왜 DataChannel을 택했나: PonsCast 트레이드오프",
+      "bodyFile": "content/ponslink-algorithms/final-bodies/2026-06-18-ponslink-algorithm-10-ponscast-tradeoff.txt",
+      "bodyHtmlFile": "content/ponslink-algorithms/html/2026-06-18-ponslink-algorithm-10-ponscast-tradeoff.html",
+      "heroImage": "",
+      "bodyImages": ["assets/ponslink-algorithms/ponslink-algorithm-10-tradeoff.png"],
+      "tags": "PonsCast,Tradeoff,ScreenShare,SFU,DataChannel,P2P",
+      "category": "개발지식",
+      "description": "화면 공유, addTrack, SFU 대비 PonsCast의 선택 이유와 장단점 트레이드오프를 분석한다.",
+      "postId": "865"
+    }
+  ]
+}

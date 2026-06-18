@@ -1,0 +1,26 @@
+처음 pons_p2p를 열었을 때 제일 먼저 눈에 들어온 건 WebRTC 코드가 아니었다. 루트에 애플리케이션 하나가 깔끔하게 있는 저장소가 아니라, 브라우저 제품·API control plane·출시 문서·디자인 산출물이 한꺼번에 놓인 형태였다.
+그래서 이 시리즈의 첫 글은 코드 내부가 아니라 저장소의 모양에서 시작한다. 어떤 디렉터리가 실제 런타임이고, 어떤 디렉터리가 제품 결정을 설명하는지 먼저 나누지 않으면 뒤의 WebRTC나 결제 흐름도 쉽게 흐려진다.
+
+[그림] 루트 디렉터리를 코드·운영·디자인 증거로 나눠 보면 제품 경계가 먼저 보인다.
+루트에서 보이는 첫 번째 단서
+PonsLink의 실제 런타임은 크게 둘이다. ponslink-room-frontend/는 React/Vite 기반 브라우저 제품이고, ponslink-api-infra/는 Express와 Socket.IO를 묶은 backend control plane이다. 반면 docs/, design/, artifacts/, scripts/는 제품이 왜 그런 방향으로 움직였는지 설명하는 기록에 가깝다.
+영역먼저 읽을 곳읽히는 의도
+브라우저 제품ponslink-room-frontend/src/App.tsx방, 라운지, public desk, request status가 하나의 SPA에 묶인다
+제어면ponslink-api-infra/src/index.tsHTTP API와 Socket.IO broker가 같은 server lifecycle에 붙는다
+제품 판단docs/okf/mesh runtime, paid launch, readiness 같은 결정이 문서로 남는다
+시각 증거design/, artifacts/페이지 계열과 사용자 여정을 그림으로 남긴다
+프론트엔드는 방 화면만 담당하지 않는다
+App.tsx의 route를 보면 PonsLink가 단순 회의방 앱이 아니라는 점이 바로 드러난다. /public-desk/:identifier, /request-status/:token, /request-actions/:token/review, /session-access/:reservationId, /lounge/requests, /room/:roomTitle이 같은 앱 안에 있다.
+이 구조에서 방은 시작점이 아니라 마지막 지점이 될 수 있다. 방문자는 먼저 요청을 남기고, host는 라운지에서 판단하고, 예약과 입장 가능 시간이 만들어진 뒤에야 WebRTC 방으로 들어간다.
+백엔드는 미디어 서버보다 control plane에 가깝다
+ponslink-api-infra는 미디어를 직접 운반하는 서버라기보다 권한을 발급하고, 방과 세션을 기록하고, signaling을 검증하고, 결제와 메일 side effect를 처리하는 제어면이다. 브라우저가 API key나 provider secret을 알 필요가 없도록 short-lived token과 TURN credential을 서버에서 만든다.
+문서와 산출물을 같이 읽어야 하는 이유
+코드만 읽으면 “어떻게 동작하는가”는 보인다. 하지만 “왜 room-first가 아니라 request-first가 됐는가”, “왜 legacy SFU 이름이 남아 있는데 mesh가 canonical인가”, “왜 paid launch에서 memory store를 거부하는가”는 문서와 산출물까지 같이 읽어야 보인다.
+이번 글의 기준선
+이 저장소는 코드 저장소이면서 동시에 제품 판단의 기록이다. 2편부터는 이 지도를 기준으로 frontend runtime, backend control plane, signaling, data channel, request/payment flow를 하나씩 내려간다.
+읽은 코드ponslink-room-frontend/src/App.tsx — route family가 제품 표면을 보여준다
+ponslink-room-frontend/src/infra/ponslinkInfra.ts — 브라우저가 BFF에서 room/session token을 받는 경로
+ponslink-api-infra/src/index.ts — Express와 Socket.IO broker bootstrap
+ponslink-api-infra/src/http/routes.ts — rooms, public desk, billing, session access route surface
+docs/okf/systems/ponslink-platform.md — repo-level platform statement
+docs/okf/runtime/mesh-media-runtime.md — mesh media runtime 기준선

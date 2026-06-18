@@ -1,0 +1,27 @@
+초기 실시간 제품은 보통 방 링크에서 시작한다. PonsLink도 그렇게 출발했지만, 후반부 코드는 다른 방향을 가리킨다. 먼저 요청을 받고, host가 검토하고, 예약과 입장 가능 시간이 만들어진 뒤 방이 열린다.
+
+[그림] 후반의 PonsLink는 방보다 요청을 먼저 만든다. 방은 제품 흐름의 마지막 실행 지점이다.
+Public Desk는 방 앞의 문진표다
+DeskRequestForm은 이름, 이메일, 메시지, 희망 시간, request type을 받는다. 사용자를 바로 room으로 보내지 않고 host가 판단할 맥락을 먼저 만든다.
+메일 링크는 바로 상태를 바꾸지 않는다
+host action link는 scanner-safe review page를 거친다. 단순히 메일 클라이언트나 보안 스캐너가 링크를 열었다고 accept/decline이 실행되면 안 되기 때문이다.
+사용자에게는 하나의 상태만 보여준다
+내부 상태사용자에게 접히는 말
+request pending요청 접수/검토 대기
+reservation scheduled예약 생성
+email delivered안내 전달
+session access waiting입장 시간 전
+allowed방 입장 가능
+여기서 방은 사라지지 않는다. 다만 제품 흐름의 마지막 실행 지점으로 이동한다. 이 한 문장이 PonsLink 후반 구조를 설명한다.
+이 흐름이 생긴 제품적 이유
+방 링크를 먼저 주는 제품은 빠르다. 하지만 독립 전문가나 상담형 세션에서는 빠른 입장이 항상 좋은 경험이 아니다. 누가 어떤 목적으로 들어오는지, host가 응답할 수 있는 요청인지, 시간이 맞는지 먼저 판단해야 한다. PonsLink의 public desk는 이 문제를 코드로 옮긴 형태다.
+여기서 request는 단순 contact form이 아니다. status token, action token, reservation, email delivery, session access로 이어지는 상태 있는 리소스다. 요청을 만든 순간부터 사용자는 waiting room을 갖고, host는 scanner-safe action page를 갖는다.
+상태를 그대로 보여주지 않는 이유
+backend에는 pending, accepted, counter_proposed, expired 같은 status가 있고 reservation과 email에도 별도 상태가 있다. 이것을 그대로 UI에 뿌리면 사용자는 지금 뭘 해야 하는지 모른다. requestStateModel이 필요한 이유는 내부 상태를 숨기기 위해서가 아니라 사용자 행동으로 번역하기 위해서다.
+이 구조는 운영자의 시간을 보호하기도 한다. 누구나 바로 방에 들어오게 하면 host는 매번 실시간으로 대응해야 한다. request-first는 비동기적으로 맥락을 받고, 검토하고, 가능한 시간과 조건을 맞춘 뒤 동기 세션으로 넘기는 완충 장치다.
+읽은 코드ponslink-room-frontend/src/pages/PublicDeskGate.tsx — visitor request gate
+ponslink-room-frontend/src/components/desk/DeskRequestForm.tsx — request intake form
+ponslink-room-frontend/src/pages/RequestStatus.tsx — visitor waiting room
+ponslink-room-frontend/src/pages/RequestAction.tsx — scanner-safe host action
+ponslink-room-frontend/src/features/personal-link/requestStateModel.ts — UX state folding
+ponslink-api-infra/src/http/routes.ts — public request/reservation/session access

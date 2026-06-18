@@ -769,6 +769,46 @@ function fillTistoryPost(payload) {
   };
 }
 
+function applyTistoryCategory(payload) {
+  const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const visible = element => {
+    if (!(element instanceof HTMLElement)) return false;
+    const style = getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  };
+  const fieldDescriptor = element => ({
+    tag: element.tagName.toLowerCase(),
+    id: element.id || null,
+    className: normalize(element.className || '').slice(0, 120) || null,
+    text: normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '').slice(0, 120) || null
+  });
+  const requested = normalize(payload?.category || '');
+  if (!requested) return { requested, applied: false, mode: 'skipped' };
+
+  const textOf = element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '');
+  const candidates = Array.from(document.querySelectorAll('button, a, [role="button"], [role="option"], [role="menuitem"], [role="combobox"], li, label, span, div'))
+    .filter(element => element instanceof HTMLElement && visible(element));
+  const option = candidates.find(element => textOf(element) === requested)
+    || candidates.find(element => {
+      const text = textOf(element);
+      return text && text !== '카테고리 선택' && text.includes(requested);
+    });
+  if (option) {
+    option.click();
+    return { requested, applied: true, mode: 'option', target: fieldDescriptor(option) };
+  }
+
+  const trigger = candidates.find(element => /카테고리 선택|카테고리 더보기/.test(textOf(element)))
+    || candidates.find(element => /카테고리/.test(textOf(element)));
+  if (trigger) {
+    trigger.click();
+    return { requested, applied: false, mode: 'opened', trigger: fieldDescriptor(trigger) };
+  }
+
+  return { requested, applied: false, mode: 'not-found' };
+}
+
 function clickPublishButtons() {
   const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
   const visible = element => {
@@ -777,17 +817,19 @@ function clickPublishButtons() {
     const rect = element.getBoundingClientRect();
     return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
   };
+  const textOf = element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '');
   const buttons = Array.from(document.querySelectorAll('button, a, [role="button"]'))
     .filter(element => element instanceof HTMLElement && visible(element));
-  const targets = ['완료', '발행', '공개', '저장'];
+  const targets = ['공개 발행', '발행', '공개', '완료'];
   const clicked = [];
 
   for (const word of targets) {
-    const button = buttons.find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '') === word)
-      || buttons.find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '').includes(word));
+    const button = buttons.find(element => textOf(element) === word)
+      || buttons.find(element => textOf(element).includes(word));
     if (button) {
       button.click();
-      clicked.push(word);
+      clicked.push({ target: word, text: textOf(button) });
+      break;
     }
   }
 
@@ -1034,11 +1076,20 @@ async function main() {
   }
 
   let publishResult = null;
+  if (fillResult?.ok && options.category && !fillResult.categoryResult?.applied) {
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      wait(800);
+      const categoryResult = evaluate(applyTistoryCategory, { category: options.category });
+      fillResult.categoryResult = categoryResult;
+      if (categoryResult?.applied) break;
+    }
+  }
   if (options.publish) {
-    wait(800);
-    publishResult = evaluate(clickPublishButtons);
-    wait(1200);
-    publishResult = evaluate(clickPublishButtons);
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      wait(900);
+      publishResult = evaluate(clickPublishButtons);
+      if (!publishResult?.clicked?.length) break;
+    }
   }
 
   console.log(JSON.stringify({

@@ -1,0 +1,29 @@
+PonsLink 파일 전송 코드는 가장 알고리즘다운 부분이 많다. DataChannel 위에 그냥 파일을 밀어 넣는 대신, sender worker가 chunk window를 조절하고 receiver worker가 순서를 맞춰 조립한다. 작은 TCP를 브라우저 안에 다시 만든 셈이다.
+
+[그림] sender는 congestion window를 조절하고 receiver는 memory/OPFS 모드로 조립한다.
+sender: AIMD와 RTT
+sender worker는 congestionWindow를 갖고 시작한다. 성공 라운드가 쌓이면 slow start에서는 window를 두 배로 늘리고, 이후에는 1씩 늘린다. timeout이 연속되거나 buffer high watermark를 넘으면 window를 절반으로 줄인다. 전형적인 AIMD 흐름이다.
+신호처리
+ACK 도착RTT 샘플을 갱신하고 pending에서 제거한다
+성공 라운드slow start면 2배, congestion avoidance면 +1
+3회 timeoutwindow를 절반으로 줄이고 slow start를 끝낸다
+buffer high즉시 congestion으로 보고 window를 줄인다
+chunk 요청 방식
+requestNextChunks는 0부터 totalChunks까지 훑으며 acked, failed, pending 상태를 건너뛴다. pending 개수가 현재 congestionWindow에 닿으면 멈춘다. 즉 “다음 N개를 무조건 보낸다”가 아니라 현재 window와 상태 set을 기준으로 빈 자리를 채운다.
+receiver: 100MB 기준 memory/OPFS 분기
+receiver worker는 totalSize가 100MB 이상이면 OPFS sync access handle을 준비한다. 작은 파일은 Map에 chunk를 저장한 뒤 마지막에 정렬해 Blob으로 만든다. 큰 파일은 memory에 다 올리지 않고 디스크에 순서대로 쓴다.
+out-of-order chunk가 오면 pendingChunks에 잠시 보관한다. nextExpectedIndex가 도착하면 바로 쓰고, 이어지는 pending chunk가 있으면 while loop로 연속 flush한다.
+마지막 assemble을 세 번 보내는 이유
+sender는 모든 chunk ACK를 받으면 assemble request를 3번 보낸다. 완벽한 프로토콜이라기보다 마지막 제어 메시지가 한 번 유실돼도 receiver 조립이 진행되게 하는 현실적인 보강이다.
+항상 P2P로 보내지는 않는다
+분석하면서 놓치면 안 되는 부분이 하나 더 있었다. sendFile 흐름에는 직접 DataChannel 전송 외에 object storage 업로드 경로가 있다. 수신자가 여러 명이거나 파일이 일정 threshold보다 크면, 모든 peer에게 같은 파일을 직접 밀어 넣는 대신 object storage URL metadata를 보내는 쪽으로 빠질 수 있다.
+이건 알고리즘의 예외라기보다 현실적인 분기다. P2P chunk/ACK/AIMD는 한 peer에게 직접 보내는 데 강하지만, 큰 파일을 여러 peer에게 동시에 복제하면 sender 브라우저가 병목이 된다. 그래서 “직접 전송 알고리즘”과 “업로드 후 링크 공유”를 상황에 따라 나눈다.
+읽은 코드ponslink-room-frontend/src/workers/file-sender.worker.enhanced.ts:45-75 — RTT, congestion window, high/low watermark fields
+ponslink-room-frontend/src/workers/file-sender.worker.enhanced.ts:112-181 — congestion control loop, AIMD, RTT adjustment
+ponslink-room-frontend/src/workers/file-sender.worker.enhanced.ts:384-416 — requestNextChunks window algorithm
+ponslink-room-frontend/src/workers/file-sender.worker.enhanced.ts:505-557 — ACK handling and RTT update
+ponslink-room-frontend/src/workers/file-receiver.worker.ts:96-141 — 100MB OPFS threshold and transfer initialization
+ponslink-room-frontend/src/workers/file-receiver.worker.ts:165-188 — sequencer and out-of-order pendingChunks
+ponslink-room-frontend/src/lib/fileTransfer/objectStorageUpload.ts — multi-recipient/large-file object storage escape hatch
+ponslink-room-frontend/src/lib/fileTransfer/fileChunkReader.ts — bounded concurrent chunk reads
+ponslink-room-frontend/src/stores/usePeerConnectionStore.ts — chunk size clamp against SCTP maxMessageSize and worker integration

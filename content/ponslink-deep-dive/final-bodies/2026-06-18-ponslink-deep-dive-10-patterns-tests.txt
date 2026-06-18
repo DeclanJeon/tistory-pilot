@@ -1,0 +1,26 @@
+시리즈를 시작할 때는 WebRTC 이야기가 가장 클 줄 알았다. 10편을 쓰고 나니 더 오래 남는 것은 WebRTC보다 경계였다. 외부 API를 감싸는 facade, 데이터를 바꿔 끼우는 repository, 조건문을 모은 policy, 오래 걸리는 일을 빼낸 worker, 상태 전이를 잠그는 test.
+
+[그림] 반복된 패턴은 하나의 거대한 설계도가 아니라 필요한 곳마다 둔 작은 경계들이다.
+패턴은 이름보다 위치가 중요했다
+패턴PonsLink에서 보인 위치효과
+FacadeSignalingStore, PeerConnectionStore, MeshMediaFacadeClientReact가 Socket/WebRTC 세부 구현에 붙지 않게 한다
+RepositoryPersonalLinkRepository, StoreAdapterHTTP DTO와 persistence 구현을 숨긴다
+PolicymediaPolicy, requestStateModel, channel policies조건문을 테스트 가능한 함수로 모은다
+Worker/Schedulerfile workers, webhook delivery, retention jobs긴 작업과 side effect를 요청/렌더링에서 분리한다
+테스트는 멋진 곳보다 위험한 곳에 있었다
+reconnect, replay seq, TURN 요청 시점, subscription transition, webhook retry, request UX status처럼 깨지면 실제 제품 흐름이 흔들리는 곳에 테스트가 모여 있다.
+그래도 리스크는 남는다
+routes.ts와 remoteRepository.ts는 크다. singleton store도 암묵적 결합을 만든다. 다음 개선은 패턴을 더 추가하는 것이 아니라 이미 생긴 경계를 더 작고 선명하게 만드는 일에 가깝다.
+마지막으로 남긴 문장: 좋은 구조는 큰 그림 하나가 아니라, 바뀌는 요구를 견디기 위해 반복해서 둔 작은 경계들의 합이다.
+패턴 이름보다 반복 위치를 봤다
+Facade, Repository, Policy 같은 이름은 어디서나 쓸 수 있다. 그래서 이름만 나열하면 금방 AI 요약처럼 보인다. PonsLink에서 의미 있었던 것은 그 패턴이 실제로 어떤 불안정한 경계를 감쌌는지였다. Socket.IO, WebRTC, provider API, persistence, webhook처럼 외부 세계와 만나는 지점에 반복해서 경계가 생겼다.
+예를 들어 frontend repository는 React Query가 backend DTO에 직접 붙지 않게 하고, backend StoreAdapter는 route가 memory/Postgres 구현을 직접 알지 않게 한다. mediaPolicy와 requestStateModel은 조건문을 UI나 route 내부에 흩뿌리지 않고 테스트 가능한 함수로 묶는다.
+다음에 고친다면
+새 패턴을 더 추가하기보다 큰 파일의 경계를 더 작게 나누는 쪽을 먼저 보겠다. routes.ts와 remoteRepository.ts는 제품 흐름을 한눈에 보여준다는 장점이 있지만, 오래 유지하려면 route group과 DTO mapper의 경계가 더 선명해야 한다. singleton store 사이의 직접 호출도 message dispatcher 규칙을 더 명확히 하면 좋다.
+읽은 코드ponslink-room-frontend/src/stores/useSignalingStore.ts — facade/state machine
+ponslink-room-frontend/src/features/personal-link/repository.ts — frontend repository contract
+ponslink-api-infra/src/store/storeAdapter.ts — backend repository port
+ponslink-api-infra/src/providers/mediaPolicy.ts — pure policy module
+ponslink-api-infra/src/billing/subscriptionService.ts — transition table
+ponslink-api-infra/src/webhooks/delivery.ts — worker-style side effects
+ponslink-api-infra/tests/* — behavior-oriented tests

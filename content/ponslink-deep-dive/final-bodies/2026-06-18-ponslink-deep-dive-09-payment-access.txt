@@ -1,0 +1,25 @@
+결제 코드를 읽을 때 checkout URL만 보면 절반만 본 것이다. PonsLink에서 결제는 session access와 연결된다. 사용자가 지금 들어갈 수 있는가, 결제가 필요한가, 예약이 만료됐는가를 같이 판단한다.
+
+[그림] checkout은 결제 버튼이 아니라 session access와 상태 전이를 바꾸는 경계다.
+결제 흐름을 둘로 나눠야 혼란이 줄어든다
+흐름현재 의미
+plan/subscription checkoutPolar-first platform billing
+user-to-user paid consultationlegacy/compatibility boundary에 가까움
+idempotency는 친절한 옵션이 아니다
+결제와 예약 mutation은 재시도에 취약하다. Idempotency-Key가 없으면 같은 버튼 클릭이나 네트워크 재시도로 checkout과 side effect가 중복될 수 있다.
+session access는 HTTP status도 제품 상태로 쓴다
+402는 payment_required, 409는 waiting, 410은 expired로 UI에 접힌다. 프론트엔드가 이를 예외로만 처리하면 사용자는 이유를 모른다. 여기서는 에러가 아니라 상태다.
+webhook은 외부에서 오는 진실이다
+provider webhook은 여러 번 오거나 순서가 바뀔 수 있다. signature, inbound idempotency, dead-letter record가 필요한 이유다.
+결제와 예약은 같이 실패한다
+checkout만 성공하고 reservation access가 꼬이면 사용자는 돈을 냈는데 들어가지 못한다. 반대로 reservation은 열렸는데 payment_required 상태를 놓치면 유료 흐름이 무너진다. 그래서 결제 코드는 billing 화면에만 머물지 않고 session access와 연결된다.
+코드를 읽을 때 legacy user-to-user payment와 현재 Polar-first plan checkout을 나눠 보는 것이 중요했다. 둘을 한 덩어리로 읽으면 “왜 결제 provider가 이렇게 많지?”라는 질문만 남는다. 현재 제품 맥락에서는 platform subscription billing과 과거/호환 경로를 분리해서 보는 편이 정확하다.
+HTTP status를 UX 상태로 다루기
+일반 API라면 402, 409, 410을 에러로 던지고 끝낼 수 있다. 하지만 session access에서는 이 값들이 사용자 메시지다. 아직 시간이 아니면 기다려야 하고, 결제가 필요하면 결제 안내를 받아야 하고, 만료됐으면 새 요청을 해야 한다. 실패가 아니라 다음 행동을 결정하는 상태다.
+여기서 중요한 것은 결제를 성공/실패로만 보지 않는 태도다. 사용자가 결제 중인지, 이미 결제했지만 webhook 반영을 기다리는지, 예약 시간이 아직 열리지 않았는지에 따라 안내가 달라져야 한다. 결제 시스템은 provider API보다 상태 문장에 더 가까운 문제다.
+읽은 코드ponslink-room-frontend/src/features/payments/usePlanCheckout.ts — plan checkout client
+ponslink-room-frontend/src/pages/SessionAccess.tsx — access-state UI
+ponslink-api-infra/src/http/routes.ts — idempotency/session access/webhook routes
+ponslink-api-infra/src/providers/externalProviders.ts — payment provider selection
+ponslink-api-infra/src/billing/subscriptionService.ts — subscription transition
+ponslink-api-infra/src/webhooks/delivery.ts — webhook delivery worker

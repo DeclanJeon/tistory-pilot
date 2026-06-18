@@ -1,0 +1,26 @@
+PonsLink의 src/stores를 처음 보면 store가 너무 많아 보인다. session, signaling, peer connection, media device, chat, whiteboard, subtitles, transcription, relay까지 이어진다. 예전 같으면 “전역 상태가 비대하다”고 먼저 의심했을 것이다.
+그런데 방 런타임을 따라가며 생각이 바뀌었다. 이 store들은 화면 상태를 편하게 쓰기 위한 전역 변수라기보다, 브라우저 API와 realtime API를 React 바깥에서 붙잡아 두는 버스에 가깝다.
+
+[그림] Zustand store는 단순 전역 상태가 아니라 브라우저 API와 realtime API를 감싸는 런타임 버스에 가깝다.
+store 이름보다 생명주기가 중요했다
+store붙잡는 외부 세계왜 분리해야 했나
+useSignalingStoreSocket.IO연결, 재연결, replay, TURN 요청은 UI lifecycle과 다르다
+usePeerConnectionStoreWebRTCManagerpeer map과 data routing은 여러 패널이 공유한다
+useMediaDeviceStoreMediaStream카메라·마이크 track은 컴포넌트보다 오래 산다
+useChatStoreDataChannel + worker메시지와 파일 수신 상태를 독립적으로 복구해야 한다
+SignalingStore는 socket wrapper가 아니다
+room-joined 이후 TURN credential을 요청하고, reconnect 때 join-room과 resume-room을 다시 보내고, lastSeenSeq를 저장한다. 이 정도면 단순 wrapper가 아니라 작은 state machine이다.
+순수 정책은 store 바깥에 둔다
+requestStateModel.ts처럼 입력을 받아 UX state를 돌려주는 코드는 store가 아니다. 이런 판단 로직은 pure module에 남겨야 테스트가 쉽고 UI 변경에 덜 흔들린다.
+AI 냄새를 줄이려면 “Zustand를 썼다”에서 멈추면 안 된다. 왜 store가 나뉘었는지, 어떤 외부 세계의 생명주기를 가두는지까지 말해야 한다.
+처음 헷갈렸던 부분: store가 많다는 사실
+처음에는 store 수가 많다는 사실 자체가 문제처럼 보였다. 하지만 방 runtime에서는 같은 “상태”라도 성격이 다르다. socket 연결 상태는 네트워크 이벤트에 의해 바뀌고, media track은 브라우저 권한과 장치 변화에 의해 바뀌고, whiteboard operation은 사용자 입력과 remote update가 동시에 바꾼다. 이걸 하나로 합치면 코드가 짧아지는 대신 장애 지점이 섞인다.
+그래서 이 글에서는 store 개수를 줄였는지가 아니라 store가 어떤 외부 세계를 가두는지를 기준으로 읽었다. useSignalingStore는 Socket.IO를, usePeerConnectionStore는 WebRTCManager를, useMediaDeviceStore는 MediaStream을 붙잡는다. 이름은 Zustand store지만 실제 역할은 adapter이자 runtime boundary다.
+테스트가 말해주는 설계 의도
+흥미로운 점은 테스트가 UI snapshot보다 reconnect, replay sequence, TURN 요청 시점 같은 곳에 몰려 있다는 점이다. 겉으로는 작은 구현 디테일처럼 보이지만, 이 부분이 깨지면 사용자는 방에 들어왔는데 상대가 안 보이거나 재접속 뒤 메시지를 놓친다. 테스트 위치를 보면 팀이 어떤 실패를 실제 위험으로 봤는지 알 수 있다.
+읽은 코드ponslink-room-frontend/src/stores/useSignalingStore.ts — Socket.IO lifecycle facade
+ponslink-room-frontend/src/stores/usePeerConnectionStore.ts — WebRTCManager facade and routing
+ponslink-room-frontend/src/stores/useChatStore.ts — chat/file receive state
+ponslink-room-frontend/src/stores/useWhiteboardStore.ts — operation/cursor state
+ponslink-room-frontend/src/features/personal-link/requestStateModel.ts — pure UX state projection
+ponslink-room-frontend/src/stores/useSignalingStore.test.ts — reconnect/replay tests

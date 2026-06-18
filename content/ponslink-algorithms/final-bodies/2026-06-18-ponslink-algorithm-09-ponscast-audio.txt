@@ -1,0 +1,62 @@
+PonsCast가 비디오만 보내는 것은 아니다. 소리도 함께 전송된다. 하지만 여기서 문제가 생긴다. PonsLink 방에는 이미 마이크 오디오가 흐르고 있다. 두 개의 오디오 소스를 어떻게 처리하는가?
+
+문제의 정체
+
+표준 WebRTC 화면 공유에서는 화면의 소리와 마이크의 소리가 같은 MediaStream에 섞인다. 사용자가 "시스템 소리 포함"을 선택하면 브라우저가 알아서 합친다.
+
+PonsCast는 다르다. 비디오 프레임은 DataChannel로 보내지만, 오디오는 별도의 경로를 탄다. 그리고 이 오디오는 마이크 오디오와 충돌할 수 있다.
+
+발신자 쪽: 오디오 라우팅
+
+PonsCast 발신자는 두 가지 오디오 상황을 처리한다.
+
+첫째, PonsCast 스트리밍에 자체 오디오 트랙이 있는 경우. 비디오 파일에 소리가 들어있는 상황이다. 이 경우 마이크 오디오와 PonsCast 오디오가 동시에 존재한다. PonsCast는 AudioContext를 사용해서 두 오디오 소스를 합치지 않고, 각각 별도로 보낸다.
+
+둘째, PonsCast 스트리밍에 오디오 트랙이 없는 경우. PDF나 이미지를 스트리밍하는 상황이다. 이 경우 마이크 오디오만 사용된다. PonsCast가 시작될 때 마이크 트랙은 정지되지 않고, 그대로 유지된다.
+
+이것이 중요한 이유는, PonsCast 시작 시 로컬 미디어 트랙의 상태를 저장하고 복원하기 때문이다. startStreaming()이 호출되면 originalTracksRef에 현재 비디오/오디오 트랙의 활성화 상태를 저장한다. 스트리밍이 끝나면 이 상태를 복원한다.
+
+왜 이렇게 하는가? PonsCast가 시작될 때 사용자의 카메라 화면이 사라지기 때문이다. 발신자는 PonsCast 영상을 보여주고, 로컬 카메라 화면은 숨긴다. 수신자에게는 PonsCast 영상이 보이고, 발신자 자신에게는 로컬 카메라가 보이는 상황이다.
+
+AudioContext 활용
+
+PonsCast 오디오는 AudioContext를 사용해서 처리된다. 이 API는 브라우저의 오디오 처리 그래프를 프로그래밍적으로 구성할 수 있게 해준다.
+
+발신자는 PonsCast 스트리밍이 시작될 때 AudioContext를 만들고, 비디오에서 오디오 트랙을 추출해서 AudioContext에 연결한다. 이렇게 하면 오디오 데이터를 제어할 수 있다. 볼륨 조절, 음소거, 라우팅 변경 등이 가능하다.
+
+AudioContext는 _ponsCastAudioContext라는 프로퍼티에 저장된다. 나중에 정리할 때 이 참조를 사용해서 close()를 호출한다.
+
+수신자 쪽: 소리 동기화
+
+수신자는 PonsCast 영상이 재생될 때 오디오도 함께 재생된다. 이것은 MediaSource API가 비디오와 오디오를 동시에 처리하기 때문이다.
+
+하지만 여기서 동기화 문제가 발생할 수 있다. 비디오 프레임과 오디오 프레임이 약간 다른 시각에 도착하면, 입이 말하는 것과 소리가 맞지 않는 현상이 발생한다.
+
+PonsCast는 jitter buffer(1.5초)로 이 문제를 완화한다. 충분한 프레임이 쌓이면 비디오와 오디오가 대략 같은 시점에서 재생된다. 완벽한 동기화는 아니지만, 1.5초 버퍼는 대부분의 사용자가 인식할 수 없을 정도로 작은 차이를 만든다.
+
+마이크와 PonsCast의 공존
+
+가장 중요한 설계 결정은 "PonsCast가 마이크를 끄지 않는 것"이다. 회의 중에 자료를 보여주면서 말하는 상황을 지원하기 때문이다.
+
+발신자는 PonsCast를 시작할 때 로컬 비디오 트랙을 숨기지만, 오디오 트랙은 그대로 둔다. 이렇게 하면 사용자는 PonsCast 영상을 보여주면서 마이크로 설명할 수 있다.
+
+수신자에게는 두 가지 오디오가 들린다. PonsCast 영상의 원본 소리와, 발신자의 마이크 소리. 이 두 소리는 동시에 재생된다. 실제 회의에서 "이 영상을 보세요"라고 말하면서 영상을 트는 것과 같은 경험이다.
+
+오디오 라우팅의 복잡성
+
+이 모든 것이 완벽하게 동작하지는 않는다. 몇 가지 알려진 문제들이 있다.
+
+첫째, iOS Safari에서는 AudioContext가 사용자 상호작용 후에만 생성된다. 자동 재생이 제한되기 때문이다. PonsCast가 시작될 때 오디오가 안 나올 수 있다.
+
+둘째, 일부 브라우저에서는 같은 스트림의 여러 오디오 트랙을 동시에 재생할 때 노이즈가 발생한다.
+
+셋째, PonsCast 오디오와 마이크 오디오의 볼륨 밸런스가 자동으로 조절되지 않는다. 사용자가 수동으로 조절해야 한다.
+
+이 문제들은 PonsCast의 다음 버전에서 개선될 수 있는 영역이다.
+
+읽은 코드
+ponslink-room-frontend/src/hooks/useFileStreaming.ts:760-810 — 오디오 라우팅, AudioContext 생성 및 정리
+ponslink-room-frontend/src/hooks/useFileStreaming.ts:85-89 — OriginalTrackState 로컬 미디어 상태 저장
+ponslink-room-frontend/src/hooks/useFileStreaming.ts:496-530 — startStreaming에서 미디어 상태 캡처 및 복원 준비
+ponslink-room-frontend/src/hooks/useFileStreaming.audio.test.tsx — 오디오 라우팅 단위 테스트
+ponslink-room-frontend/src/services/adaptiveStreamManager.ts — 캡처 전략에서 오디오 트랙 처리

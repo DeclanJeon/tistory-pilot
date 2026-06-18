@@ -1,0 +1,28 @@
+{
+  "seriesTitle": "PonsLink 기술 회고",
+  "category": "개발지식",
+  "blogUrl": "https://acstory.tistory.com",
+  "generatedAt": "2026-06-18T00:00:00.000Z",
+  "posts": [
+    {
+      "order": 1,
+      "slug": "2026-06-18-ponslink-tech-retrospective",
+      "title": "[PonsLink 기술 회고] WebRTC 제품을 상태 중심으로 다시 설계하기",
+      "bodyFile": "content/ponslink-series/final-bodies/2026-06-18-ponslink-tech-retrospective.txt",
+      "bodyHtmlFile": "content/ponslink-series/html/2026-06-18-ponslink-tech-retrospective.html",
+      "heroImage": "",
+      "bodyImages": [
+        "assets/ponslink-series/web/hero-live-call.webp",
+        "assets/ponslink-series/tech-retrospective-stack.svg",
+        "assets/ponslink-series/web/ponslink-api-infra-diagram.webp",
+        "assets/ponslink-series/web/feature-file-transfer.webp",
+        "assets/ponslink-series/web/request-screening-workflow.webp",
+        "assets/ponslink-series/web/request-status-overview.webp"
+      ],
+      "tags": "PonsLink,WebRTC,P2P,상태머신,제품아키텍처,개발회고",
+      "category": "개발지식",
+      "description": "PonsLink의 WebRTC, Socket.IO, React, Node.js/Express, PostgreSQL/Redis 구조를 농심 클라우드 기술 블로그식 섹션·표·다이어그램 구성으로 재정리한다.",
+      "postId": "845"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+PonsLink backend를 처음 보면 Express route가 너무 크다. 하지만 관점을 바꾸면 이 큰 파일은 “미디어 서버”가 아니라 “권한을 발급하는 제어면”에 가깝다.
+브라우저는 방에 들어가고 media를 보내지만, API key와 provider secret은 몰라야 한다. 서버는 그 사이에서 짧게 사는 권한과 검증된 side effect만 만들어준다.
+
+[그림] BFF는 미디어를 대신 나르지 않고, 브라우저가 안전하게 연결할 권한을 발급한다.
+BFF가 맡은 일과 맡지 않은 일
+맡은 일맡지 않은 일
+room/session token 발급영상 frame을 서버가 계속 중계하기
+API key, origin, scope, rate limit 검증브라우저에 provider secret 노출
+Postgres/Redis/S3/메일/provider 연결UI 상태 직접 관리
+Socket.IO broker 부착WebRTC track을 제품 UI로 렌더링
+StoreAdapter는 운영 기준선이다
+StoreAdapter는 memory와 Postgres 사이를 가른다. 특히 paid launch production에서 Postgres 없이 memory state만 쓰는 것을 거부하는 정책은 중요한 신호다. 돈을 받는 흐름에서는 상태가 프로세스 메모리에만 있으면 안 된다.
+큰 routes.ts를 어떻게 읽을 것인가
+이 파일은 작지 않다. 그래서 module purity보다 “제품 흐름을 한곳에서 추적할 수 있다”는 장점과 “변경 충돌이 커질 수 있다”는 단점을 같이 봐야 한다.
+backend 글에서는 “Express를 썼다”보다 “비밀을 서버에 남기고 브라우저에는 짧은 권한만 준다”가 핵심 문장이다.
+브라우저에 주지 않은 것들
+이 구조에서 더 중요한 것은 브라우저에 준 것이 아니라 주지 않은 것이다. API key, TURN secret, payment provider secret, webhook 검증 책임은 브라우저로 내려오지 않는다. 브라우저는 짧게 사는 room/session token을 받고, 그 token으로 signaling에 들어간다. 이 경계가 흐려지면 frontend 구현은 편해질 수 있지만 제품의 보안 모델은 약해진다.
+routes.ts가 큰 이유도 어느 정도는 여기서 온다. room token, public desk request, session access, plan checkout, webhook 같은 흐름이 모두 권한과 상태 변경을 포함한다. 이 흐름을 잘게 나누는 것도 가능하지만, 현재 코드는 “제품 제어면”을 한 router에 모아 추적할 수 있게 만든 쪽에 가깝다.
+읽을 때 조심한 점
+파일 이름에 sfu가 남아 있다고 해서 현재 runtime을 SFU로 단정하면 틀린다. 관련 문서와 provider policy는 mesh/pion-p2p를 canonical path로 둔다. 이런 legacy 이름은 migration 흔적으로 읽어야지, 현재 미디어 경로의 증거로 과장하면 안 된다.
+읽은 코드ponslink-api-infra/src/index.ts — server bootstrap
+ponslink-api-infra/src/http/routes.ts — BFF route surface
+ponslink-api-infra/src/store/storeAdapter.ts — repository port
+ponslink-api-infra/src/store/createStore.ts — production persistence policy
+ponslink-api-infra/src/providers/externalProviders.ts — provider facade
+ponslink-api-infra/src/providers/mediaPolicy.ts — mesh media policy

@@ -1,0 +1,27 @@
+PonsLink의 request-first 흐름에서 어려운 점은 상태가 많다는 것이다. request status, booking status, reservation status, email delivery, session access가 따로 움직인다. 그대로 보여주면 사용자는 지금 뭘 해야 하는지 모른다.
+
+[그림] 여러 내부 상태를 priority 순서로 접어 하나의 UX status를 만든다.
+frontend: priority-based folding
+getMeetingRequestUxStatus는 여러 입력을 받아 하나의 MeetingRequestUxStatus를 반환한다. 알고리즘은 switch가 아니라 priority chain이다. terminal 상태를 먼저 보고, expired/completed/error/connect/join-window/email/reservation/accepted/proposed 순서로 내려간다.
+우선순위조건결과
+1declined/blockeddeclined
+2request expired 또는 reservation expiredexpired
+3booking/reservation completedcompleted
+4sessionAccess allowed 또는 reservation in_progressconnecting
+5waiting/ready_to_join + join windowjoin_window_open 또는 pending
+6email sent/read/opened + reservation/joinUrlemail_delivered
+backend: access state는 HTTP status로도 표현된다
+backend의 evaluateReservationAccess도 priority chain이다. declined request면 declined, reservation이 없으면 pending, payment_pending인데 paid가 아니면 payment_required, join window 전이면 waiting, 지난 뒤면 expired, 나머지는 allowed다.
+이 결과는 session-access route에서 402 payment_required, 410 expired, waiting JSON, 409 pending류, allowed로 변환된다. 여기서 HTTP status는 단순 에러가 아니라 사용자의 다음 행동을 결정하는 신호다.
+join window 알고리즘
+reservationJoinWindowState는 startsAt/endsAt을 parse하고, now가 start 전이면 waiting, end 후면 expired, 그 외에는 open을 반환한다. 단순하지만 제품적으로 중요하다. 방 링크가 있어도 시간이 아니면 방으로 보내지 않는다.
+이 글의 핵심은 상태 머신을 멋있게 부르는 것이 아니다. 여러 내부 리소스의 상태를 사용자가 이해할 한 문장으로 접는 우선순위를 코드에 박아둔 것이다.
+방문자 대기실 쪽에서는 이 folding 결과를 그대로 화면 진행 단계와 버튼 활성화 조건에 쓴다. RequestStatus.tsx는 polling과 SSE를 함께 쓰고, session-access 응답을 다시 로컬 상태로 매핑한다. 즉 이 알고리즘은 단순 표시용 helper가 아니라 “언제 입장 버튼을 열 것인가”를 결정하는 마지막 UX gate다.
+우선순위가 바뀌면 UX도 바뀐다
+이 folding 알고리즘에서 순서는 문장보다 중요하다. 예를 들어 request가 declined라면 reservation이나 email 상태를 더 볼 필요가 없다. 만료된 reservation도 마찬가지다. 반대로 email이 발송됐다는 사실은 reservation이나 joinUrl이 있을 때만 사용자에게 의미가 있다.
+즉 이 코드는 상태 이름을 예쁘게 바꾸는 helper가 아니다. 충돌하는 내부 신호 중 어떤 것을 먼저 믿을지 결정한다. declined, expired, completed, error 같은 terminal 또는 강한 상태를 먼저 처리하고, 그 뒤에 connecting, join window, email, reservation, accepted/proposed로 내려가는 이유가 여기에 있다.
+읽은 코드ponslink-room-frontend/src/features/personal-link/requestStateModel.ts:3-19 — UX status vocabulary
+ponslink-room-frontend/src/features/personal-link/requestStateModel.ts:41-66 — frontend priority-based folding algorithm
+ponslink-api-infra/src/http/routes.ts:5871-5880 — join window waiting/open/expired algorithm
+ponslink-api-infra/src/http/routes.ts:5884-5924 — evaluateReservationAccess priority chain
+ponslink-api-infra/src/http/routes.ts:7055-7083 — session-access HTTP status mapping

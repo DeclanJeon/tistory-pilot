@@ -1,0 +1,26 @@
+DataChannel을 쓰면 무엇이든 보낼 수 있다. 그래서 위험하다. 채팅, whiteboard cursor, 파일 chunk, subtitle chunk, diagnostics를 모두 같은 정책으로 보내면 제품은 곧 느려지거나 깨진다.
+
+[그림] DataChannel도 도로를 나눠야 한다. 채팅, whiteboard, file, media는 같은 생존 등급이 아니다.
+메시지마다 생존 등급이 다르다
+메시지살아야 하는 정도PonsLink의 선택
+chat/control높음ordered reliable
+whiteboard cursor/viewport낮음latest-wins와 throttle
+file chunk매우 높음chunk, ACK, retry, assemble
+media/diagnostics상황에 따라 낮음congestion에서 drop 가능
+whiteboard는 CRDT가 아니라 실용적인 최신값이다
+cursor와 viewport는 모든 중간 상태가 필요 없다. 드래그 중간값도 늦게 오면 오히려 방해된다. PonsLink는 throttle과 pending Map으로 최신 상태 위주로 보낸다.
+파일 전송은 작은 TCP를 만든다
+sender worker는 ackedChunks, pendingChunks, failedChunks를 들고 adaptive timeout과 AIMD window를 쓴다. receiver worker는 큰 파일을 OPFS에 순서대로 쓰고 out-of-order chunk를 잠시 보관한다.
+이 글에서 강조할 부분은 “DataChannel을 썼다”가 아니라 “같은 DataChannel 위에 서로 다른 도로를 만들었다”다.
+whiteboard와 파일은 같은 협업 기능이 아니다
+둘 다 DataChannel을 쓰지만 요구사항은 정반대다. whiteboard cursor는 늦게 도착한 중간값이 오히려 방해된다. 반면 파일 chunk는 하나라도 빠지면 전체 결과가 깨진다. 이 둘을 같은 reliable channel에 넣으면 cursor는 밀리고, 같은 latest-wins channel에 넣으면 파일은 망가진다.
+그래서 PonsLink의 흥미로운 지점은 DataChannel 사용 여부가 아니라 메시지를 분류한 방식이다. pons:control, pons:text, pons:whiteboard, pons:file, pons:media, pons:diagnostics라는 이름 자체가 제품이 메시지의 성격을 어떻게 봤는지 드러낸다.
+worker를 둔 이유
+파일 전송 worker는 성능 장식이 아니다. 큰 파일을 chunk로 쪼개고, ACK를 기다리고, retry를 계산하고, OPFS에 쓰는 일을 main thread에서 처리하면 방 UI가 같이 흔들릴 수 있다. PonsLink는 전송 알고리즘을 worker로 밀어내고 UI는 진행률과 상태를 받는 구조를 택했다.
+이 분리는 UX에도 영향을 준다. whiteboard가 잠깐 튀는 것은 사용자가 견딜 수 있지만 파일이 깨지는 것은 견딜 수 없다. 반대로 파일 전송 때문에 cursor가 2초씩 늦어지면 협업감이 사라진다. 그래서 channel policy는 네트워크 최적화가 아니라 기능별 사용자 기대치를 코드에 적은 것에 가깝다.
+읽은 코드ponslink-room-frontend/src/services/realtimeTransport/policies.ts — logical channel policies
+ponslink-room-frontend/src/services/webrtc.ts — named data channels and backpressure
+ponslink-room-frontend/src/workers/file-sender.worker.enhanced.ts — ACK/AIMD sender
+ponslink-room-frontend/src/workers/file-receiver.worker.ts — OPFS receiver
+ponslink-room-frontend/src/hooks/whiteboard/useWhiteboardCollaboration.ts — throttled latest-wins collaboration
+ponslink-room-frontend/src/lib/fileTransfer/fileTransferUtils.ts — chunk size utilities

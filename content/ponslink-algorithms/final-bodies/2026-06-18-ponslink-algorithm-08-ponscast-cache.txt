@@ -1,0 +1,69 @@
+PonsCast는 "이 파일을 스트리밍할 수 있는가"를 세 단계에서 검사한다. 파일을 선택할 때, 캐시에 저장할 때, 재생할 때. 각 단계마다 다른 정책이 동작한다.
+
+파일 타입 감지: MIME 매핑의 현실
+
+detectPonsCastFileType()은 파일의 MIME 타입과 확장자를 기준으로 세 가지를 판단한다. 이 파일이 비디오, PDF, 이미지, 기타 중 어디에 속하는지. 브라우저에서 재생이 지원되는지. 어떤 MIME 타입으로 스트리밍해야 하는지.
+
+이 함수가 복잡한 이유는 브라우저가 파일 타입을 제대로 알려주지 않기 때문이다. .mp4 파일의 MIME 타입이 video/mp4인 경우도 있지만, application/octet-stream인 경우도 있다. 그래서 확장자 기반 폴백이 필요하다.
+
+비디오 확장자 매핑이 이것이다. mp4/m4v는 video/mp4, mov는 video/quicktime, webm은 video/webm, mkv는 video/x-matroska, avi는 video/x-msvideo, ogv는 video/ogg.
+
+이 매핑이 중요한 이유는 수신자 쪽에서 코덱 협상에 쓰이기 때문이다. 발신자가 webm으로 캡처했는데 수신자가 webm을 지원하지 않으면, MIME 타입을 바꿔서 재시도해야 한다.
+
+지원되는 파일 타입의 범위
+
+비디오: mp4, m4v, mov, webm, mkv, avi, ogv
+PDF: application/pdf
+이미지: jpg, jpeg, png, gif, webp, avif, heic, heif, svg
+텍스트: text/* (지원됨)
+
+지원되지 않는 것: zip, exe, 바이너리 파일 전반.这些东西都是 unsupported로 분류되고, UI에서 "이 파일 유형은 직접 스트리밍할 수 없습니다"라는 경고가 뜬다.
+
+PDF와 이미지는 어떻게 스트리밍되는가
+
+PDF와 이미지는 비디오와 다르게 동작한다. MediaRecorder가 아니라 Canvas에서 3fps로 프레임을 만들어서 스트리밍한다. PDF는每一页을 Canvas에 그리\Image는 그대로 Canvas에 표시한다.
+
+이것은 adaptiveStreamManager의 createStaticStream()이 처리한다. 비디오 스트림과 동일한 프레임 프로토콜을 사용하지만, 캡처 소스가 다르다. Canvas에서 정적 콘텐츠를 "비디오처럼" 만드는 우회로다.
+
+캐시 정책: 브라우저 저장소의 한계
+
+PonsCast 플레이리스트는 IndexedDB에 캐시된다. 한 번 저장하면 다음에 같은 방에 들어올 때 파일을 다시 선택하지 않아도 된다.
+
+하지만 브라우저 저장소에는 한계가 있다. PonsCast는 두 가지 제한을 둔다. 단일 파일 최대 500MB. 전체 플레이리스트 최대 1GB.
+
+为什么 500MB인가? IndexedDB는 브라우저마다 다르지만, 보통 수 GB까지는 가능하다. 하지만 P2P 환경에서는 여러 사용자가 동시에 데이터를 쓰기 때문에, 한 사용자가 저장소를 독점하면 안 된다. 500MB는 "충분히 크되 독점적이지 않은" 값이다.
+
+evaluatePonsCastCache() 함수가 이 검사를 한다. 파일을 순회하면서 단일 파일이 500MB를 넘는지, 전체 합이 1GB를 넘는지 확인한다. 넘으면 저장하지 않고 메타데이터 내보내기를 권장한다.
+
+메타데이터 내보내기: IndexedDB 대안
+
+캐시가 불가능할 때 PonsCast는 메타데이터 내보내기를 제안한다. 플레이리스트의 구조(JSON)를 파일로 저장하고, 나중에 그 파일을 불러와서 로컬 파일을 다시 매칭하는 방식이다.
+
+이것은 "파일 자체는 브라우저에 저장하지 않고, 파일의 정보만 저장한다"는 전략이다. 파일 이름, 크기, MIME 타입 같은 메타데이터는 몇 KB에 불과하다. 실제 파일 내용은 사용자의 로컬 디스크에 있다.
+
+QuotaExceededError 처리
+
+IndexedDB 저장이 실패하는 가장 흔한 이유는 QuotaExceededError다. 브라우저가 할당한 저장소가 꽉 찼을 때 발생한다.
+
+PonsCast는 이 에러를 세 가지로 분류한다. QuotaExceededError면 "브라우저 저장소가 가득 찼습니다. 메타데이터를 내보내세요." IndexedDB가 사용 불가(프라이빗 모드)면 "이 브라우저에서는 로컬 저장이 불가능합니다." 그 외에는 "캐시 저장/로드에 실패했습니다."
+
+이 분류의 중요성은 사용자에게 정확한 해결책을 제시하기 때문이다. "에러가 발생했습니다"가 아니라 "이렇게 하세요"를 알려준다.
+
+스트리밍 시작: 전체 흐름
+
+사용자가 파일을 선택하면 다음이 일어난다. detectPonsCastFileType()으로 파일 타입을 감지하고 → evaluatePonsCastCache()으로 캐시 가능 여부를 검사하고 → 가능하면 savePonsCastPlaylistCache()로 IndexedDB에 저장하고 → startStreaming()으로 스트리밍을 시작한다.
+
+스트리밍이 시작되면 메타데이터가 모든 수신자에게 전송된다. 스트림 ID, MIME 타입, 파일 타입, 파일 이름, 파일 크기, 시작 시각. 수신자는 이 정보로 UI를 구성하고, 적절한 MIME 타입으로 MediaSource를 초기화한다.
+
+재생 종료
+
+발신자가 스트리밍을 멈추면 ponscast-stream-end 이벤트가 모든 수신자에게 전송된다. 수신자는 markEnded()를 호출해서 상태를 'ended'로 바꾸고, MediaSource를 정리한다.
+
+읽은 코드
+ponslink-room-frontend/src/lib/fileStreaming/fileType.ts — 파일 타입 감지, MIME 매핑, 확장자 기반 폴백
+ponslink-room-frontend/src/lib/ponscast/cachePolicy.ts — 캐시 정책 (500MB/1GB), QuotaExceededError 분류
+ponslink-room-frontend/src/lib/ponscast/playlistPersistence.ts — IndexedDB 기반 플레이리스트 저장/로드
+ponslink-room-frontend/src/services/adaptiveStreamManager.ts:823줄 — PDF/이미지 Canvas 캡처 (createStaticStream)
+ponslink-room-frontend/src/hooks/useFileStreaming.ts:496-570 — startStreaming 파일 선택~전송 시작 흐름
+ponslink-room-frontend/src/hooks/useFileStreaming.ts:820 — ponscast-stream-end 이벤트 전송
+ponslink-room-frontend/src/hooks/useRoomOrchestrator.ts:747-763 — 메타데이터 수신 및 이벤트 디스패치

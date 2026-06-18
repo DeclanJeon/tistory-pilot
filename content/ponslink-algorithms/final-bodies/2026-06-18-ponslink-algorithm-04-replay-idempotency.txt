@@ -1,0 +1,25 @@
+실시간 제품에는 두 종류의 반복이 있다. 하나는 사용자가 잠깐 끊겼다가 돌아와서 놓친 이벤트를 다시 받아야 하는 반복이고, 다른 하나는 같은 결제/예약 요청이 재시도되어도 side effect가 중복되면 안 되는 반복이다. PonsLink는 이 둘을 replay와 idempotency로 나눠 다룬다.
+
+[그림] room event는 seq로 다시 읽고, mutation은 key+body hash로 중복을 막는다.
+room replay: append, replay, ack
+memory replay store는 roomId별 배열을 들고, append 때 마지막 seq + 1을 붙인다. maxEventsPerRoom만 남기고 앞쪽은 잘라낸다. replay는 afterSeq보다 큰 이벤트를 limit만큼 돌려준다. ack는 participant별로 가장 큰 seq만 저장한다.
+Redis replay store는 room별 seq key를 INCR하고, 이벤트를 sorted set에 score=seq로 넣는다. replay는 zRangeByScore(afterSeq+1, +inf)로 읽는다. memory와 Redis 모두 같은 interface를 따르기 때문에 broker는 구현 차이를 크게 알 필요가 없다.
+idempotency: 같은 key라도 body가 다르면 충돌
+handleIdempotent는 method:path:key를 hash해서 record id를 만들고, request body도 hash한다. 같은 key가 이미 있으면 body hash를 비교한다. 다르면 409 conflict, 같으면 저장된 response를 돌려준다.
+중요한 디테일은 token이나 secret을 그대로 response snapshot에 저장하지 않는 것이다. 저장 전 sanitize하고, 필요한 경우 token은 claims로 다시 발급한다.
+checkout은 15분 재사용 창을 둔다
+plan checkout 경로는 checkout:userId:planId:date 형태의 key를 만들고, 최근 15분 안에 같은 checkout이 있으면 checkoutUrl/providerCheckoutId를 재사용한다. 사용자의 새로고침이나 네트워크 재시도 때문에 checkout이 여러 개 생기는 상황을 줄인다.
+폭주와 임시 권한도 같은 부류의 문제다
+broker 쪽 fixed-window bucket은 signal이나 relay가 짧은 시간에 몰리는 것을 막는다. REST API 쪽 rate limiter도 window key에 INCR/EXPIRE를 걸고 remaining/reset/retry-after를 계산한다. 모두 “정상 요청을 빠르게 처리하되 실패 루프가 전체 방을 흔들지 못하게 한다”는 문제를 다룬다.
+TURN credential도 비슷하다. 서버는 TURN_SECRET을 브라우저에 주지 않고, time-based HMAC username/password를 만들어 짧게 살게 한다. TURN 설정이 없으면 STUN fallback을 내려주지만, secret 자체는 client boundary 밖에 남긴다.
+두 알고리즘의 공통점
+replay와 idempotency는 서로 다른 계층의 코드지만 모양이 닮았다. replay는 “내가 어디까지 봤는가”를 seq로 기억하고, idempotency는 “내가 이미 같은 mutation을 실행했는가”를 key와 body hash로 기억한다. 하나는 누락을 줄이고, 하나는 중복을 줄인다.
+실시간 제품에서는 둘 다 필요하다. reconnect 후 이벤트가 빠지면 화면 상태가 틀어지고, 결제/예약 mutation이 두 번 실행되면 돈과 권한 상태가 틀어진다. 그래서 event stream에는 monotonic sequence가, mutation에는 request hash cache가 붙는다.
+읽은 코드ponslink-api-infra/src/signaling/replayStore.ts:29-72 — memory append/replay/ack algorithm
+ponslink-api-infra/src/signaling/replayStore.ts:99-145 — Redis INCR + sorted set replay algorithm
+ponslink-api-infra/src/http/routes.ts:568-699 — idempotency record id, body hash, response replay
+ponslink-api-infra/src/http/routes.ts:7416-7470 — lounge plan checkout 15-minute reuse
+ponslink-api-infra/src/http/routes.ts:7936-7980 — subscription checkout idempotency record
+ponslink-api-infra/src/signaling/broker.ts — fixed-window signal/relay rate buckets and TURN request handler
+ponslink-api-infra/src/turn/turnCredentials.ts — time-based HMAC TURN credential generation and STUN fallback
+ponslink-api-infra/src/http/rateLimit.ts — Redis fixed-window API rate limiter
