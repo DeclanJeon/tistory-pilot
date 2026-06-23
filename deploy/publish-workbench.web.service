@@ -1,0 +1,17 @@
+[Unit]
+Description=Publish Workbench Web
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/publish-workbench/app
+EnvironmentFile=/srv/publish-workbench/config/publish-workbench.env
+Environment=HOME=/home/declan
+ExecStart=/usr/bin/npm run workbench:web
+Restart=always
+RestartSec=5
+User=declan
+Group=declan
+
+[Install]
+WantedBy=multi-user.target

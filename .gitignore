@@ -1,5 +1,6 @@
 node_modules/
 .env
+.env.local
 .browser-agent/
 artifacts/
 tmp/

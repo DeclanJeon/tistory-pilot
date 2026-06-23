@@ -1,0 +1,25 @@
+[Unit]
+Description=Publish Workbench Worker
+After=network.target publish-workbench-xvfb.service
+Requires=publish-workbench-xvfb.service
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/publish-workbench/app
+EnvironmentFile=/srv/publish-workbench/config/publish-workbench.env
+Environment=HOME=/home/declan
+Environment=DISPLAY=:99
+Environment=BROWSER_AGENT_HOME=/home/declan/browser-agent-workbench-clean
+Environment=CDP_PORT=9230
+Environment=PUBLISH_WORKBENCH_BROWSER_HEADLESS=0
+Environment=AGBROWSE_HEAVY_SITE_COMPAT=1
+Environment=AGBROWSE_KEEP_BG_NETWORKING=1
+Environment="AGBROWSE_CHROME_FLAGS=--disable-gpu --disable-dev-shm-usage"
+ExecStart=/usr/bin/npm run workbench:worker
+Restart=always
+RestartSec=5
+User=declan
+Group=declan
+
+[Install]
+WantedBy=multi-user.target

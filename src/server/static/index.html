@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Publish Workbench</title>
+    <link rel="stylesheet" href="/styles.css?v=202606231245" />
+  </head>
+  <body>
+    <div id="login-view" class="hero-shell hidden">
+      <video class="bg-video" autoplay loop muted playsinline>
+        <source src="https://cdn.sceneai.art/Hero Section Video/1bc60917-cb77-4441-bc15-bb839a9dd6c2.mp4" type="video/mp4" />
+      </video>
+      <div id="glow-layer" class="glow-layer" aria-hidden="true"></div>
+      <div class="video-scrim" aria-hidden="true"></div>
+
+      <header class="hero-header">
+        <div class="brand">Publish</div>
+        <nav class="desktop-nav" aria-label="primary navigation">
+          <button class="nav-link active" type="button">Login</button>
+          <button class="nav-link" type="button">acstory</button>
+          <button class="nav-link" type="button">Tistory</button>
+        </nav>
+        <button class="header-cta" type="button">Contact Us <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+        <button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open menu"><span></span><span></span></button>
+      </header>
+
+      <div id="mobile-menu" class="mobile-menu hidden">
+        <button type="button" class="mobile-menu-link">Login</button>
+        <button type="button" class="mobile-menu-link">acstory</button>
+        <button type="button" class="mobile-menu-link">Tistory</button>
+        <button type="button" class="mobile-menu-cta">Contact Us</button>
+      </div>
+
+      <main class="hero-main">
+        <section class="hero-copy">
+          <div class="hero-title">
+            <div class="hero-line solid">Publish</div>
+            <div class="hero-line outline">Workbench</div>
+          </div>
+        </section>
+
+        <section class="hero-auth" aria-label="Email login">
+          <p class="hero-description">이메일 인증 후 블로그, 소재, 발행 버튼만으로 Tistory 포스팅을 자동화한다.</p>
+          <form id="email-form" class="glass-form" autocomplete="on">
+            <label for="email-input">Email</label>
+            <div class="glass-input-row"><input id="email-input" type="email" placeholder="ponslink@gmail.com" autocomplete="email" required /><button id="email-code-button" type="submit">Send Code</button></div>
+          </form>
+          <form id="code-form" class="glass-form" autocomplete="on">
+            <label for="code-input">Verification Code</label>
+            <div class="glass-input-row"><input id="code-input" class="code-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" disabled /><button id="email-login-button" type="submit" disabled>Login</button></div>
+          </form>
+          <p id="code-hint" class="code-hint">이메일 코드를 먼저 받아라.</p>
+          <div id="login-error" class="login-error hidden"></div>
+          <details class="secret-login"><summary>Session key login</summary><form id="secret-form" class="secret-form"><input id="password-input" type="password" placeholder="Session key" /><button id="login-button" type="submit">Open</button></form></details>
+        </section>
+      </main>
+    </div>
+
+    <div id="app-view" class="app-shell">
+      <video class="bg-video" autoplay loop muted playsinline>
+        <source src="https://cdn.sceneai.art/Hero Section Video/1bc60917-cb77-4441-bc15-bb839a9dd6c2.mp4" type="video/mp4" />
+      </video>
+      <div class="video-scrim app-scrim" aria-hidden="true"></div>
+
+      <header class="hero-header app-header">
+        <div class="brand">Publish</div>
+        <button id="new-task-button" class="header-cta" type="button">New Post <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+      </header>
+
+      <main class="app-main simplified-main">
+        <section class="app-intro simplified-intro">
+          <div>
+            <div class="hero-line solid app-word">Tistory</div>
+            <div class="hero-line outline app-word">Autopilot</div>
+          </div>
+          <p>블로그를 고르고 소재나 원고를 넣은 뒤 발행만 누른다. 제목, 설명, 카테고리, 태그, QR 로그인은 자동으로 이어진다.</p>
+        </section>
+
+        <section class="work-panel autopilot-panel">
+          <div class="panel-head"><h2>새 포스팅</h2><p>사용자가 입력할 것은 블로그와 글감뿐이다.</p></div>
+
+          <div class="field">
+            <label>포스팅할 블로그</label>
+            <div class="blog-row">
+              <select id="blog-select"><option value="">저장된 블로그 선택</option></select>
+              <input id="blog-url" placeholder="https://acstory.tistory.com" value="https://acstory.tistory.com" />
+              <button id="save-blog-button" class="panel-button ghost" type="button">저장</button>
+            </div>
+          </div>
+          <input id="blog-account-name" type="hidden" value="default" />
+          <input id="blog-title" type="hidden" value="acstory" />
+
+          <div class="field">
+            <label>글의 소재 또는 완성 원고</label>
+            <textarea id="source-input" rows="12" placeholder="링크를 여러 줄로 넣거나, Markdown/HTML 원고를 그대로 붙여넣어라. HTML과 assets 폴더를 함께 드래그하거나 원고 폴더째 선택하면 상대경로 이미지까지 같이 실어 보낸다.&#10;&#10;예:&#10;https://example.com/article-a&#10;https://example.com/article-b&#10;&#10;또는&#10;# 제목&#10;&#10;본문...&#10;&#10;또는 HTML 원문"></textarea>
+          </div>
+
+          <div class="panel-actions autopilot-actions">
+            <label class="panel-button ghost file-button">원고/이미지 파일 선택<input id="source-file" type="file" multiple accept=".md,.markdown,.html,.htm,.png,.jpg,.jpeg,.webp,.gif,.svg,text/markdown,text/html,image/*" hidden /></label>
+            <label class="panel-button ghost file-button">원고 폴더 선택<input id="source-folder" type="file" webkitdirectory multiple hidden /></label>
+            <button id="publish-button" class="view-project-button" type="button"><span>AI 발행 시작</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+          </div>
+
+          <div id="status-box" class="status-box hidden"></div>
+          <pre id="analysis-output" class="output-box hidden"></pre>
+        </section>
+
+        <section class="work-panel logs-panel">
+          <div class="panel-head"><h2>작업 상태</h2><p>AI가 처리 중인 분석, 발행, QR 이벤트가 여기에 표시된다.</p></div>
+          <div class="jobs-layout">
+            <div id="job-list" class="job-list"></div>
+            <div class="log-card"><div id="activity-log" class="activity-log"></div><div id="qr-panel" class="qr-panel hidden"><h3>Kakao QR</h3><img id="qr-image" alt="Kakao QR" /></div></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/app.js?v=202606231245"></script>
+  </body>
+</html>
