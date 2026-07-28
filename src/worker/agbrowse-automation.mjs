@@ -346,10 +346,35 @@ function sanitizeHtmlDocumentBody(input) {
     .trim();
 }
 
+function isReadyTistoryHtml(value) {
+  const html = String(value || '');
+  if (!looksLikeHtml(html)) return false;
+  const plain = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const pCount = (html.match(/<p\b/gi) || []).length;
+  const hCount = (html.match(/<h[1-3]\b/gi) || []).length;
+  // Already-authored HTML posts should not be aggressively sanitized.
+  return plain.length >= 800 && (pCount >= 4 || hCount >= 3 || /font-size\s*:\s*16px/i.test(html));
+}
+
 export function buildTistoryBodyHtml(input) {
-  if (looksLikeHtml(input.body)) {
+  const rawBody = String(input.body || '');
+  // Full HTML posts from generate-post should pass through with light cleanup only.
+  if (isReadyTistoryHtml(rawBody)) {
+    return rawBody
+      .replace(/<!doctype html>/ig, '')
+      .replace(/<\/?html[^>]*>/ig, '')
+      .replace(/<\/?head[^>]*>[\s\S]*?<\/head>/ig, '')
+      .replace(/<\/?body[^>]*>/ig, '')
+      .trim();
+  }
+  if (looksLikeHtml(rawBody)) {
     const sanitized = sanitizeHtmlDocumentBody(input);
-    if (sanitized) return sanitized;
+    const plain = String(sanitized || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    // Never collapse a long HTML source into description-only fallback.
+    if (sanitized && plain.length >= 400) return sanitized;
+    if (rawBody.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length >= 400) {
+      return rawBody.trim();
+    }
     const fallback = [];
     if (input.heroImageDataUrl) fallback.push(`<p><img src="${input.heroImageDataUrl}" alt="${escapeHtml(input.heroImageAlt || input.title || 'hero image')}" style="max-width:100%;height:auto;" /></p>`);
     if (input.description) fallback.push(`<p>${escapeHtml(input.description)}</p>`);
@@ -406,30 +431,47 @@ await titleField.evaluate((element, value) => {
     if (!titleFieldInner || !editor || typeof editor.setContent !== 'function') {
       return { ok: false, reason: 'editor-not-ready' };
     }
+    const contentHtml = bodyHtml || '<p><br></p>';
     editor.focus();
     editor.undoManager?.clear?.();
-    editor.setContent(bodyHtml || '<p><br></p>', { format: 'raw' });
+    // Prefer html format; some Tistory skins drop nested styled blocks with raw.
+    try {
+      editor.setContent(contentHtml, { format: 'html' });
+    } catch {
+      editor.setContent(contentHtml);
+    }
+    // Ensure underlying textarea keeps full HTML for submit payloads.
+    try {
+      const textarea = editor.getElement?.();
+      if (textarea instanceof HTMLTextAreaElement) {
+        textarea.value = contentHtml;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        textarea.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    } catch {}
     editor.setDirty?.(true);
     editor.nodeChanged?.();
-    editor.fire('BeforeSetContent', { content: bodyHtml || '<p><br></p>' });
-    editor.fire('SetContent');
     editor.fire('input');
     editor.fire('change');
     editor.fire('keyup');
-editor.save?.();
-window.tinymce?.triggerSave?.();
-const form = document.querySelector('form');
-if (form instanceof HTMLFormElement) {
-  form.dispatchEvent(new Event('change', { bubbles: true }));
-  form.dispatchEvent(new Event('input', { bubbles: true }));
-}
-for (const selector of ['textarea[name="content"]', 'textarea[name="editor"]', 'input[name="title"]']) {
-  const field = document.querySelector(selector);
-  if (field instanceof HTMLTextAreaElement || field instanceof HTMLInputElement) {
-    field.dispatchEvent(new Event('input', { bubbles: true }));
-    field.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-}
+    editor.save?.();
+    window.tinymce?.triggerSave?.();
+    const form = document.querySelector('form');
+    if (form instanceof HTMLFormElement) {
+      form.dispatchEvent(new Event('change', { bubbles: true }));
+      form.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    for (const selector of ['textarea[name="content"]', 'textarea[name="editor"]', 'textarea#editor-tistory', 'input[name="title"]']) {
+      const field = document.querySelector(selector);
+      if (field instanceof HTMLTextAreaElement) {
+        if (selector !== 'input[name="title"]' && contentHtml) field.value = contentHtml;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        field.dispatchEvent(new Event('change', { bubbles: true }));
+      } else if (field instanceof HTMLInputElement) {
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        field.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
     return {
       ok: true,
       titleLength: String(title || '').length,
@@ -984,17 +1026,21 @@ const bodyHtml = buildTistoryBodyHtml({
   heroImageAlt: options.title,
   bodyImageDataUrls
 });
+const minimumFillChars = Math.max(400, Math.min(1500, Math.floor(String(bodyHtml || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length * 0.5)));
 let fillResult = null;
 for (let attempt = 0; attempt < 6; attempt += 1) {
   fillResult = await fillTistoryPostOnPage(page, {
     title: options.title,
     bodyHtml
   });
-  if (fillResult?.ok && fillResult.bodyTextLength > 0) break;
+  if (fillResult?.ok && Number(fillResult.bodyTextLength || 0) >= minimumFillChars) break;
   await page.waitForTimeout(1500);
   state = await openEditorAndDetectOnPage(page, editorUrl);
 }
 if (!fillResult?.ok) throw new Error(`본문 채우기에 실패했다: ${JSON.stringify(fillResult)}`);
+if (Number(fillResult.bodyTextLength || 0) < minimumFillChars) {
+  throw new Error(`본문이 너무 짧게 입력되었다: ${JSON.stringify({ minimumFillChars, fillResult, bodyHtmlLength: String(bodyHtml || '').length })}`);
+}
 const categoryResult = await selectCategoryOnPage(page, options.category);
 if (!categoryResult?.ok) throw new Error(`카테고리를 선택하지 못했다: ${JSON.stringify(categoryResult)}`);
 const tagResult = await setTagsOnPage(page, options.tags);
