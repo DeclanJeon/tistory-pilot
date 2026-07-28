@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { spawn } from 'node:child_process';
+import { DEFAULT_TISTORY_QR_IMAGE_PATH } from './lib/qr-path.mjs';
 import { loadProjectEnv } from './lib/load-env.mjs';
 
 loadProjectEnv();
@@ -14,7 +15,7 @@ function parseArgs(argv) {
     category: process.env.TISTORY_BATCH_CATEGORY || '시사',
     headless: process.env.TISTORY_HEADED === '1' ? false : true,
     waitForLoginMs: Number(process.env.TISTORY_WAIT_FOR_LOGIN_MS || 900000),
-    qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || 'tmp/kakao-tistory-qr.png',
+    qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || DEFAULT_TISTORY_QR_IMAGE_PATH,
     startAt: 0,
     dryRun: false
   };

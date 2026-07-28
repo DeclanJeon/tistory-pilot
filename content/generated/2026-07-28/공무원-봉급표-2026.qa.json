@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.612Z",
+  "ok": true,
+  "score": 96,
+  "metrics": {
+    "plainChars": 4378,
+    "paragraphs": 18,
+    "h1": 1,
+    "h2": 7,
+    "tables": 4,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [
+    {
+      "code": "keyword-missing",
+      "message": "본문에 키워드가 직접 보이지 않는다: 공무원 봉급표 2026"
+    }
+  ],
+  "title": "2026 공무원 봉급표 완벽 정리 | 호봉별 월급과 수당까지 한눈에",
+  "keyword": "공무원 봉급표 2026"
+}

@@ -1,0 +1,221 @@
+<div style="font-size:16px;line-height:1.82;color:#1f2937;max-width:800px;margin:0 auto;">
+
+<h1 style="font-size:24px;font-weight:700;color:#111827;line-height:1.4;margin:0 0 1.5rem;">Docker 입문 가이드: 컨테이너 개념부터 실전 사용법까지 완벽 정리</h1>
+
+<p style="margin:0.8rem 0;">소프트웨어를 개발하다 보면 "내 컴퓨터에서는 되는데 왜 서버에서는 안 되지?"라는 상황을 자주 마주합니다. 운영체제 버전, 라이브러리 의존성, 환경 변수 설정 등이 조금이라도 다르면 프로그램은 예상치 못한 에러를 뱉어냅니다.</p>
+
+<p style="margin:0.8rem 0;">Docker는 이 문제를 컨테이너(container)라는 개념으로 해결합니다. 애플리케이션이 필요한 모든 것을 하나의 패키지로 묶어서 어떤 환경에서든 동일하게 실행되도록 하는 것이 Docker의 핵심 철학이죠. 이번 글에서는 Docker의 기본 개념부터 설치, 실습, 꿀팁까지 한 번에 정리합니다.</p>
+
+<p style="margin:0.8rem 0;">이 글을 읽고 나면 Docker를 직접 설치하고, 첫 컨테이너를 띄우며, Dockerfile을 작성하는 과정까지 자연스럽게 따라할 수 있을 것입니다.</p>
+
+<figure style="margin:2rem 0;">
+<img style="width:100%;height:auto;border-radius:14px;border:1px solid #e5e7eb;" src="https://images.unsplash.com/photo-1605745341112-85968b19335b?w=1200&q=80" alt="Docker 컨테이너 개념 일러스트" />
+<figcaption style="text-align:center;font-size:13px;color:#6b7280;margin-top:8px;">Docker 컨테이너는 앱과Its 의존성을 하나로 묶어 어디서든 실행 가능하게 한다 (출처: Unsplash)</figcaption>
+</figure>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+🐳 Docker란 무엇인가
+</h2>
+
+<p style="margin:0.8rem 0;">Docker는 2013년 dotCloud에서 오픈소스로 공개한 컨테이너 기반 플랫폼입니다. 가상 머신(VM)과 비슷해 보이지만, 본질적인 차이가 존재합니다.</p>
+
+<div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:15px;">
+💡 <strong>가상 머신은 하드웨어 자체를 에뮬레이션하여 각각 독립적인 OS 커널을 띄웁니다. 반면 Docker 컨테이너는 호스트 운영체제의 커널을 공유하므로 훨씬 가볍고 빠르게 시작됩니다.</strong>
+</div>
+
+<p style="margin:0.8rem 0;">쉽게 비유하자면, VM은 아파트 한 채를 통째로 빌리는 것이라면 컨테이너는 하나의 층에 방을 나눠 쓰는 것과 같습니다. 공간 효율이 높고 입주와 퇴거도 몇 초 만에 가능하지요.</p>
+
+<p style="margin:0.8rem 0;">Docker를 사용하면 개발 환경을 코드로 정의할 수 있습니다. 이로 인해 "내 로컬 환경과 동일한 조건"에서 테스트하고 배포하는 과정이 단순해지며, 팀원 간 환경 불일치 문제도 근본적으로 사라집니다.</p>
+
+<div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:0.8rem 1.2rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:15px;">
+Docker는 리눅스 커널의 네임스페이스(namespace)와 cgroup 기술을 활용하여 프로세스级别的 격리를 제공합니다. Windows와 macOS에서는 경량 VM(Lima/Hyper-V) 위에서 동작합니다.
+</div>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+💻 Docker Desktop 설치하기
+</h2>
+
+<p style="margin:0.8rem 0;">Docker Desktop은 Windows, macOS, Linux에서 모두 설치 가능합니다. 각 운영체제별로 간단히 살펴보겠습니다.</p>
+
+<h3 style="font-size:17px;color:#374151;margin:1.5rem 0 0.6rem;">macOS / Windows</h3>
+
+<p style="margin:0.8rem 0;">공식 사이트(<code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker.com/products/docker-desktop</code>)에서 Docker Desktop 설치 파일을 다운로드합니다. 설치 마법사의 안내에 따라 진행하면 몇 분 안에 완료됩니다. 설치 후 터미널에서 다음 명령어로 정상 동작을 확인합니다.</p>
+
+<div style="background:#0f172a;color:#e2e8f0;padding:1rem 1.2rem;border-radius:10px;margin:1rem 0;font-size:14px;line-height:1.8;">
+<span style="color:#94a3b8;">$</span> docker --version<br>
+<span style="color:#94a3b8;">$</span> docker run hello-world
+</div>
+
+<h3 style="font-size:17px;color:#374151;margin:1.5rem 0 0.6rem;">Linux (Ubuntu 기준)</h3>
+
+<p style="margin:0.8rem 0;">리눅스에서는 패키지 매니저를 통해 Docker Engine을 직접 설치하는 방식이 일반적입니다. 다음 명령어 순서대로 진행하면 됩니다.</p>
+
+<div style="background:#0f172a;color:#e2e8f0;padding:1rem 1.2rem;border-radius:10px;margin:1rem 0;font-size:14px;line-height:1.8;">
+<span style="color:#94a3b8;">$</span> sudo apt-get update<br>
+<span style="color:#94a3b8;">$</span> sudo apt-get install docker-ce docker-ce-cli containerd.io<br>
+<span style="color:#94a3b8;">$</span> sudo usermod -aG docker $USER<br>
+<span style="color:#94a3b8;">$</span> docker run hello-world
+</div>
+
+<div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:0.8rem 1.2rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:15px;">
+<strong>usermod -aG docker $USER</strong> 명령은 현재 사용자를 docker 그룹에 추가합니다. 이를 실행한 후에는 반드시 로그아웃 후 다시 로그인해야 그룹 변경이 적용됩니다.
+</div>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+📦 이미지와 컨테이너의 차이
+</h2>
+
+<p style="margin:0.8rem 0;">Docker를 처음 접하면 이미지(image)와 컨테이너(container)를 혼동하는 경우가 많습니다. 두 개념의 차이를 명확히 이해하는 것이 Docker 학습의 첫 번째 관문입니다.</p>
+
+<p style="margin:0.8rem 0;">이미지는 클래스(class)에 해당하고, 컨테이너는 그 클래스로 만들어진 인스턴스(object)에 비유할 수 있습니다. 이미지는 읽기 전용의 계층 구조로 구성되며, 여기에 실행 시 writable 계층이 추가되면 비로소 컨테이너가 됩니다.</p>
+
+<div style="overflow-x:auto;margin:1.5rem 0;">
+<table style="width:100%;border-collapse:collapse;font-size:15px;">
+<thead>
+<tr style="background:#1f2937;color:#fff;">
+<th style="padding:10px 16px;text-align:left;border-radius:8px 0 0 0;">구분</th>
+<th style="padding:10px 16px;text-align:left;">이미지 (Image)</th>
+<th style="padding:10px 16px;text-align:left;border-radius:0 8px 0 0;">컨테이너 (Container)</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;font-weight:600;">상태</td><td style="padding:10px 16px;">정적 (read-only)</td><td style="padding:10px 16px;">동적 (read-write 가능)</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;font-weight:600;">생성</td><td style="padding:10px 16px;">Dockerfile에서 빌드</td><td style="padding:10px 16px;">docker run 명령어로 생성</td></tr>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;font-weight:600;">재사용</td><td style="padding:10px 16px;">여러 컨테이너 생성 가능</td><td style="padding:10px 16px;">1:1로 하나의 인스턴스</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;font-weight:600;">저장소</td><td style="padding:10px 16px;">Docker Hub / 로컬 레지스트리</td><td style="padding:10px 16px;">호스트 파일 시스템</td></tr>
+</tbody>
+</table>
+</div>
+
+<p style="margin:0.8rem 0;">핵심은 이겁니다. 이미지는 만드는 데 시간이 걸리지만, 한 번 만들어지면 컨테이너를 수십 개 띄우는 데는 수 초밖에 걸리지 않습니다. 이것이 Docker의 강력한 부분이죠.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+🚀 핵심 명령어 실습
+</h2>
+
+<p style="margin:0.8rem 0;">이제 실제 명령어를 하나씩 실행해보며 Docker의 동작 원리를 체감해봅시다. 모든 명령어는 터미널에서 직접 입력할 수 있습니다.</p>
+
+<p style="margin:0.8rem 0;">먼저 Nginx 웹 서버를 컨테이너로 실행해봅시다. <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">-d</code> 플래그는 백그라운드 실행, <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">-p</code> 플래그는 포트를 바인딩합니다.</p>
+
+<div style="background:#0f172a;color:#e2e8f0;padding:1rem 1.2rem;border-radius:10px;margin:1rem 0;font-size:14px;line-height:1.8;">
+<span style="color:#94a3b8;">$</span> docker run -d -p 8080:80 nginx<br>
+<br>
+<span style="color:#94a3b8;"># 실행 중인 컨테이너 확인</span><br>
+<span style="color:#94a3b8;">$</span> docker ps<br>
+<br>
+<span style="color:#94a3b8;"># 브라우저에서 확인</span><br>
+<span style="color:#94a3b8;">$</span> open http://localhost:8080
+</div>
+
+<p style="margin:0.8rem 0;">브라우저에서 localhost:8080에 접속하면 Nginx의 기본 화면이 나타납니다. 이 한 줄의 명령어로 웹 서버가 구동되었다는 사실이 놀랍지 않을 수 없습니다.</p>
+
+<blockquote style="border-left:3px solid #d1d5db;padding:0.8rem 1.2rem;margin:1.5rem 0;color:#4b5563;font-style:italic;background:#f9fafb;border-radius:0 8px 8px 0;">
+"docker run은 사실 docker create와 docker start가 합쳐진 것입니다. 컨테이너가 없으면 이미지를 가져와 생성하고, 곧바로 실행까지 수행하죠."
+</blockquote>
+
+<p style="margin:0.8rem 0;">자주 쓰는 다른 명령어들도 알아둡시다. 컨테이너를 중지하려면 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker stop [컨테이너ID]</code>, 삭제하려면 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker rm [컨테이너ID]</code>를 사용합니다. 이미지 목록은 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker images</code>로 확인할 수 있습니다.</p>
+
+<div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:0.8rem 1.2rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:15px;">
+컨테이너 안에서 쉘을 열고 싶다면 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker exec -it [컨테이너ID] /bin/bash</code> 명령어를 사용합니다. <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">-it</code>는 interactive terminal의 약자로, 대화형 터미널을 연결합니다.
+</div>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+📝 Dockerfile로 나만의 이미지 만들기
+</h2>
+
+<p style="margin:0.8rem 0;">공식 이미지를 쓰는 것도 편리하지만, 실제 프로젝트에서는 자신만의 이미지를 만들어야 합니다. 이때 사용하는 것이 Dockerfile입니다.</p>
+
+<p style="margin:0.8rem 0;">다음은 파이썬 웹 애플리케이션의 Dockerfile 예시입니다. 각 명령어가 이미지의 하나의 계층(layer)이 된다는 점을 기억하면 Dockerfile 작성의 논리가 명확해집니다.</p>
+
+<div style="background:#0f172a;color:#e2e8f0;padding:1rem 1.2rem;border-radius:10px;margin:1rem 0;font-size:14px;line-height:1.8;">
+<span style="color:#c084fc;">FROM</span> python:3.11-slim<br>
+<span style="color:#c084fc;">WORKDIR</span> /app<br>
+<span style="color:#c084fc;">COPY</span> requirements.txt .<br>
+<span style="color:#c084fc;">RUN</span> pip install -r requirements.txt<br>
+<span style="color:#c084fc;">COPY</span> . .<br>
+<span style="color:#c084fc;">EXPOSE</span> 5000<br>
+<span style="color:#c084fc;">CMD</span> ["python", "app.py"]
+</div>
+
+<p style="margin:0.8rem 0;">이 Dockerfile을 빌드하고 실행하는 명령어는 다음과 같습니다.</p>
+
+<div style="background:#0f172a;color:#e2e8f0;padding:1rem 1.2rem;border-radius:10px;margin:1rem 0;font-size:14px;line-height:1.8;">
+<span style="color:#94a3b8;">$</span> docker build -t my-python-app .<br>
+<span style="color:#94a3b8;">$</span> docker run -p 5000:5000 my-python-app
+</div>
+
+<p style="margin:0.8rem 0;"><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">-t my-python-app</code>은 이미지에 이름을 붙이는 태깅(tagging)입니다. 빌드 과정에서 각 레이어가 캐시(cached)되기 때문에, 소스 코드만 변경되었다면 재빌드가 매우 빨라집니다.</p>
+
+<div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:15px;">
+💡 <strong>Dockerfile 작성 시 자주 변경되는 작업을 뒤에 배치하면 캐시 효율이 높아집니다. 예를 들어 COPY . . 같은 전체 복사는 맨 마지막에 두는 것이 좋습니다.</strong>
+</div>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+🎯 입문자를 위한 꿀팁
+</h2>
+
+<p style="margin:0.8rem 0;">Docker를 쓰다 보면 사소한 설정 때문에 시간을 쏟는 경우가 많습니다. 초반에 알아두면 도움이 되는 실전 팁 몇 가지를 정리합니다.</p>
+
+<p style="margin:0.8rem 0;"><strong>첫 번째, dangling image를 주기적으로 정리합시다.</strong> 빌드를 반복하다 보면 사용하지 않는 이미지가 수십 개 쌓입니다. <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker system prune -a</code> 명령어로 한 번에 정리할 수 있습니다.</p>
+
+<p style="margin:0.8rem 0;"><strong>두 번째, .dockerignore 파일을 활용합시다.</strong> git의 .gitignore처럼 빌드에서 제외할 파일을 지정합니다. node_modules나 .env 같은 불필요하거나 민감한 파일이 이미지에 포함되는 것을 막아줍니다.</p>
+
+<p style="margin:0.8rem 0;"><strong>세 번째, 포트 충돌에 대비합시다.</strong> 이미 실행 중인 컨테이너가 같은 포트를 사용하고 있으면 에러가 발생합니다. <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker ps</code>로 현재 사용 중인 포트를 먼저 확인하는 습관을 들이는 것이 좋습니다.</p>
+
+<p style="margin:0.8rem 0;"><strong>네 번째, 컨테이너의 로그를 자주 확인합시다.</strong> 백그라운드에서 실행 중인 컨테이너의 상태를 확인하려면 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker logs [컨테이너ID]</code> 명령어를 사용합니다. 디버깅의 첫 단추입니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+📌 Docker Compose로 복잡한 환경 구성하기
+</h2>
+
+<p style="margin:0.8rem 0;">실제 서비스를 구축하면 웹 서버, 데이터베이스, 캐시 서버 등 여러 컨테이너가 동시에 필요합니다. 이때 Docker Compose를 사용하면 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker-compose.yml</code> 파일 하나로 전체 환경을 선언적으로 정의할 수 있습니다.</p>
+
+<p style="margin:0.8rem 0;">다음은 웹 앱과 PostgreSQL 데이터베이스를 동시에 띄우는 간단한 예시입니다.</p>
+
+<div style="background:#0f172a;color:#e2e8f0;padding:1rem 1.2rem;border-radius:10px;margin:1rem 0;font-size:14px;line-height:1.8;">
+<span style="color:#94a3b8;"># docker-compose.yml</span><br>
+<span style="color:#c084fc;">services:</span><br>
+&nbsp;&nbsp;<span style="color:#c084fc;">web:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">build:</span> .<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">ports:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "5000:5000"<br>
+&nbsp;&nbsp;<span style="color:#c084fc;">db:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">image:</span> postgres:16<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">environment:</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">POSTGRES_PASSWORD:</span> secret
+</div>
+
+<p style="margin:0.8rem 0;">이 파일이 준비되면 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker compose up -d</code> 한 줄이면 웹 앱과 데이터베이스가 동시에 기동됩니다. 서비스 추가나 제거도 YAML 파일만 수정하면 되므로, 인프라 관리가 코드와 함께 버전 관리됩니다.</p>
+
+<p style="margin:0.8rem 0;">Docker Compose는 로컬 개발 환경에서 특히 강력합니다. 여러 서비스 간의 의존성과 네트워크를 자동으로 설정해주므로, 수동으로 하나씩 컨테이너를 띄우는 번거로움이 사라집니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
+📌 핵심 정리
+</h2>
+
+<p style="margin:0.8rem 0;">이 글에서 다룬 내용을 한눈에 되짚어봅시다. Docker는 컨테이너 기반의 경량 가상화 기술로, 개발 환경의 일관성과 배포 효율성을 동시에 높여줍니다.</p>
+
+<div style="overflow-x:auto;margin:1.5rem 0;">
+<table style="width:100%;border-collapse:collapse;font-size:15px;">
+<thead>
+<tr style="background:#1f2937;color:#fff;">
+<th style="padding:10px 16px;text-align:left;border-radius:8px 0 0 0;">주제</th>
+<th style="padding:10px 16px;text-align:left;border-radius:0 8px 0 0;">핵심 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;">Docker 개념</td><td style="padding:10px 16px;">컨테이너 = 호스트 커널 공유 기반 경량 격리 환경</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;">설치</td><td style="padding:10px 16px;">Desktop(Linux/Mac/Win) 또는 Engine(Linux)</td></tr>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;">이미지 vs 컨테이너</td><td style="padding:10px 16px;">이미지는 템플릿, 컨테이너는 실행 인스턴스</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;">핵심 명령어</td><td style="padding:10px 16px;">run, ps, stop, exec, build</td></tr>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;">Dockerfile</td><td style="padding:10px 16px;">레시피 기반 이미지 빌드, 레이어 캐시 활용</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;">Docker Compose</td><td style="padding:10px 16px;">다중 컨테이너를 YAML로 선언적 관리</td></tr>
+</tbody>
+</table>
+</div>
+
+<p style="margin:0.8rem 0;">Docker의 세계는 이보다 훨씬 넓습니다. 볼륨(volume)을 통한 데이터 영속화, 사용자 정의 네트워크 구성, Kubernetes와의 연동 등 고급 주제가 기다리고 있습니다. 하지만 오늘 다룬 개념과 명령어가 바탕이 된다면, 어떤 심화 주제를 만나도 헤매지 않을 것입니다.</p>
+
+<p style="margin:0.8rem 0;">지금 바로 터미널을 열고 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:14px;">docker run hello-world</code>를 실행해보세요. 컨테이너의 세계로 들어가는 첫 번째 문이 열리는 순간을 경험하게 될 것입니다.</p>
+
+</div>

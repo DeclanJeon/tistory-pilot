@@ -18,6 +18,12 @@ export function buildCategoryUrl(blogUrl) {
   return baseUrl ? `${baseUrl}/manage/category` : '';
 }
 
+export function buildManagePostUrl(blogUrl, postId) {
+  const baseUrl = normalizeBlogUrl(blogUrl);
+  const resolvedPostId = String(postId || '').trim();
+  return baseUrl && resolvedPostId ? `${baseUrl}/manage/post/${resolvedPostId}` : '';
+}
+
 export function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   switch (ext) {

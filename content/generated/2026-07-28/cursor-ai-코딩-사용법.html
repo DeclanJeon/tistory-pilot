@@ -1,0 +1,114 @@
+<div style="font-size:16px;line-height:1.82;color:#1f2937;max-width:800px;margin:0 auto;">
+
+<h1 style="font-size:24px;color:#111827;line-height:1.4;margin:0 0 1.5rem;">Cursor AI 코딩 사용법 완벽 가이드 – 설치부터 꿀팁까지</h1>
+
+<p style="margin:0 0 1rem;">AI 코딩 도구가 개발자의 일상에 깊숙이 들어온 지금, Cursor는 그중에서도 가장 주목받는 IDE입니다. 기존의 코드 편집 경험 위에 AI를 자연스럽게 녹여낸 덕분에, 적응 비용 없이 바로 생산성을 높일 수 있다는 것이最大的 장점이죠.</p>
+
+<p style="margin:0 0 1rem;">이 글에서는 Cursor IDE의 설치 방법부터 실전 사용법, 그리고 초보자가 놓치기 쉬운 꿀팁까지 하나씩 정리합니다. VSCode에 익숙한 개발자라면 특히 더 빠르게 몸에 익힐 수 있을 겁니다.</p>
+
+<figure style="margin:2rem 0;">
+<img style="width:100%;height:auto;border-radius:14px;border:1px solid #e5e7eb;" src="https://cursor.sh/og.png" alt="Cursor AI IDE 인터페이스" />
+<figcaption style="text-align:center;font-size:13px;color:#6b7280;margin-top:8px;">Cursor – AI 기반 코드 편집기 (출처: cursor.sh)</figcaption>
+</figure>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">🔧 Cursor란 무엇인가</h2>
+
+<p style="margin:0.8rem 0;">Cursor는 VSCode를 기반으로 만들어진 AI 중심 코드 편집기입니다. 완전히 새로운 도구를 배우는 게 아니라, 이미 익숙한 인터페이스 위에서 AI 기능을 추가로 활용하는 방식이라 진입장벽이 낮습니다.</p>
+
+<p style="margin:0.8rem 0;">내장된 AI 모델은 GPT-4, Claude 등 여러 옵션을 지원하며, 코드 생성은 물론 리팩토링, 버그 분석, 문서화까지 폭넓게 처리할 수 있습니다. 자연어로 "이 함수를 비동기로 바꿔줘"라고 요청하면 해당 로직에 맞춰 코드를 수정해 주는 식이죠.</p>
+
+<div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:0.8rem 1.2rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:15px;">
+Cursor는 오픈소스 프로젝트를 무료로 사용할 수 있으며, Pro 요금제를 선택하면 월 500회 이상의 고급 모델 요청이 가능합니다. 처음에는 무료 플랜으로 충분히 체험해 볼 수 있습니다.
+</div>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">⚡ 설치와 초기 설정</h2>
+
+<p style="margin:0.8rem 0;">설치는 생각보다 간단합니다. 공식 사이트 cursor.sh에 접속하면 운영체제에 맞는 설치 파일을 바로 내려받을 수 있습니다.</p>
+
+<p style="margin:0.8rem 0;">macOS의 경우 dmg 파일을 실행하고 Applications 폴더로 드래그하면 끝. Windows는 설치 마법사의 안내에 따라 진행하면 됩니다. 리눅스는 AppImage 파일을 다운로드한 뒤 실행 권한을 부여하면 바로 사용 가능합니다.</p>
+
+<div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:15px;">
+💡 <strong>처음 실행하면 VSCode 확장 프로그램을 가져오라는 안내가 나옵니다. 기존 확장을 그대로 옮기면 별도 설치 없이 바로 작업 환경을 이어갈 수 있습니다.</strong>
+</div>
+
+<p style="margin:0.8rem 0;">설치 직후 설정해야 할 항목은 두 가지입니다. 첫째, AI 모델 선택입니다. 기본값은 Cursor가 제공하는 모델이지만, 설정에서 Claude나 GPT 계열로 변경할 수 있습니다. 둘째, 키 바인딩입니다. VSCode 키 설정을 그대로 가져올지 Cursor 전용으로 바꿀지 정하면 됩니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">🧩 핵심 AI 기능 세 가지</h2>
+
+<p style="margin:0.8rem 0;">Cursor의 AI 기능은 크게 세 가지로 나�니다. 각각의 용도가 다르기 때문에 어떤 상황에 어떤 기능을 쓸지 이해하는 것이 효율적인 사용의 첫걸음입니다.</p>
+
+<p style="margin:0.8rem 0;"><strong style="color:#111827;">Chat</strong>은 대화형 AI 어시스턴트입니다. 프로젝트 전체 코드를 컨텍스트로 파악하고, "이 에러가 왜 나는지 설명해 줘" 같은 자연어 질문에 답변합니다. 코드베이스를 이해한 상태에서 답하기 때문에 일반적인 챗봇보다 훨씬 정확한 피드백을 받을 수 있습니다.</p>
+
+<p style="margin:0.8rem 0;"><strong style="color:#111827;">Composer</strong>는 여러 파일을 동시에 수정하는 기능입니다. "인증 미들웨어를 새로 만들고, 라우터에 연결해줘"라고 하면 필요한 파일을 순서대로 생성하고 수정합니다. 대규모 리팩토링이나 신규 기능 추가 시 강력합니다.</p>
+
+<div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:0.8rem 1.2rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:15px;">
+Cmd+K (macOS) 또는 Ctrl+K (Windows)를 누르면 편집기 내에서 바로 AI 편집을 실행할 수 있습니다. 선택한 코드를 기반으로 수정 제안을 해주기 때문에, 한 줄씩 타이핑할 필요가 크게 줄어듭니다.
+</div>
+
+<p style="margin:0.8rem 0;">마지막으로 <strong style="color:#111827;">Tab Completion</strong>이 있습니다. 타이핑하는 동안 자동으로 다음 코드를 예측하고 제안합니다. Accept는 Tab 키, Reject는 Esc 키로 처리할 수 있는데, 익숙해지면 마치 AI가 코드를 같이 쓰는 느낌을 받게 됩니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">📝 실전 사용법: 상황별 활용</h2>
+
+<p style="margin:0.8rem 0;">이론은 이쯤 하고, 실제 개발 상황에서 어떻게 활용하는지 구체적으로 살펴봅니다.</p>
+
+<p style="margin:0.8rem 0;">버그 수정이 필요한 경우, 에러 메시지를 복사해서 Chat에 붙여넣으면 됩니다. Cursor는 해당 코드의 흐름을 분석한 뒤 원인을 설명하고 수정된 코드를 제안합니다. "이 에러가 왜 발생하는지 설명하고, 수정 방안을 제시해줘"라고 명시하면 더 좋은 결과를 얻을 수 있습니다.</p>
+
+<blockquote style="border-left:3px solid #d1d5db;padding:0.8rem 1.2rem;margin:1.5rem 0;color:#4b5563;font-style:italic;background:#f9fafb;border-radius:0 8px 8px 0;">
+"좋은 프롬프트는 구체적인 맥락을 포함합니다. 단순히 '에러 고쳐줘'보다는 '이 함수가 Promise를 반환하는데 await 없이 호출되고 있어서 TypeError가 납니다. async/await 패턴으로 수정해 주세요'라고 쓰면 훨씬 정확한 결과를 받을 수 있습니다."
+</blockquote>
+
+<p style="margin:0.8rem 0;">새로운 기능을 개발할 때는 Composer를 활용합니다. API 엔드포인트를 추가한다고 가정하면, "REST API로 사용자 목록을 조회하는 엔드포인트를 만들어줘. 페이지네이션을 지원하고, 에러 핸들링도 포함해줘"라고 요청하면 관련 파일들이 자동으로 생성됩니다.</p>
+
+<p style="margin:0.8rem 0;">기존 코드를 리팩토링할 때는 해당 파일을 연 뒤 Cmd+K로 영역을 선택하고 지시사항을 입력합니다. "이 함수를 좀 더 읽기 쉽게 리팩토링해줘"라고 하면 변수명 개선, 함수 분리, 주석 추가까지 한 번에 진행됩니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">⚖️ Cursor vs 기존 개발 도구 비교</h2>
+
+<p style="margin:0.8rem 0;">Cursor가 정말 필요한지 고민하는 분들을 위해, 대표적인 대안들과 비교해 보았습니다.</p>
+
+<div style="overflow-x:auto;margin:1.5rem 0;">
+<table style="width:100%;border-collapse:collapse;font-size:15px;">
+<thead>
+<tr style="background:#1f2937;color:#fff;">
+<th style="padding:10px 16px;text-align:left;border-radius:8px 0 0 0;">항목</th>
+<th style="padding:10px 16px;text-align:left;">Cursor</th>
+<th style="padding:10px 16px;text-align:left;">VSCode + GitHub Copilot</th>
+<th style="padding:10px 16px;text-align:left;border-radius:0 8px 0 0;">ChatGPT 별도 활용</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;">통합도</td><td style="padding:10px 16px;">极高 (내장 AI)</td><td style="padding:10px 16px;">중간 (확장 연결)</td><td style="padding:10px 16px;">낮음 (창 전환 필요)</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;">코드베이스 인식</td><td style="padding:10px 16px;">전체 프로젝트 분석</td><td style="padding:10px 16px;">파일 단위</td><td style="padding:10px 16px;">수동 복붙 필요</td></tr>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;">비용 (월)</td><td style="padding:10px 16px;">무료~20달러</td><td style="padding:10px 16px;">무료~19달러</td><td style="padding:10px 16px;">무료~20달러</td></tr>
+<tr style="background:#fff;"><td style="padding:10px 16px;">VSCode 확장 호환</td><td style="padding:10px 16px;">완전 호환</td><td style="padding:10px 16px;">-</td><td style="padding:10px 16px;">-</td></tr>
+<tr style="background:#f8fafc;"><td style="padding:10px 16px;">멀티파일 편집</td><td style="padding:10px 16px;">Composer 지원</td><td style="padding:10px 16px;">제한적</td><td style="padding:10px 16px;">불가</td></tr>
+</tbody>
+</table>
+</div>
+
+<p style="margin:0.8rem 0;">특히 주목할 점은 코드베이스 전체를 컨텍스트로 활용한다는 것입니다. 파일을 일일이 복사해서 AI에 전달할 필요가 없으니, 복잡한 프로젝트일수록 Cursor의 편의성은 더욱 커집니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">💡 효과적인 활용 꿀팁</h2>
+
+<p style="margin:0.8rem 0;">몇 주 사용하다 보면 자연스럽게 터득하는 것들이 있지만, 미리 알면 훨씬 빠르게 효율을 끌어올릴 수 있습니다.</p>
+
+<p style="margin:0.8rem 0;"><strong style="color:#111827;"> 커서 위치가 곧 컨텍스트입니다.</strong> AI에게 질문하기 전에 관련 코드 근처에 커서를 두면 Cursor가 해당 위치의 코드를 우선적으로 참고합니다. 멀리 떨어진 곳에서 질문하면 의도와 다른 결과가 나올 수 있으니 주의하세요.</p>
+
+<p style="margin:0.8rem 0;"><strong style="color:#111827;">.cursorignore 파일을 활용하세요.</strong> Git의 .gitignore와 비슷한 개념으로, AI가 참조하지 않기를 원하는 파일을 지정할 수 있습니다. 민감한 설정 파일이나 대용량 데이터 파일은 제외하는 것이 좋습니다.</p>
+
+<div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:15px;">
+💡 <strong>_RULES 파일을 프로젝트 루트에 만들어두면 AI가 프로젝트의 코딩 컨벤션을 따르도록 유도할 수 있습니다. "이 프로젝트는 TypeScript를 사용하고, 함수명은 camelCase를 사용하며, 에러 핸들링은 custom error class를 사용한다" 같은 규칙을 적어두면 일관성 있는 코드 생성이 가능합니다.</strong>
+</div>
+
+<p style="margin:0.8rem 0;">또 하나의 꿀팁은 <strong style="color:#111827;">선별적 수용</strong>입니다. AI가 제안하는 코드를 무조건 수용하기보다, 로직을 확인한 뒤 부분적으로 적용하는 습관을 들이는 것이 중요합니다. AI도 틀릴 수 있으므로, 최종 검증은 반드시 직접 하는 것이 바람직합니다.</p>
+
+<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">🎯 마무리 – Cursor 사용법 핵심 정리</h2>
+
+<p style="margin:0.8rem 0;">Cursor는 AI와 코드 편집기의 경계를 허문 도구입니다. 설치부터 실전 활용까지, 핵심만 정리하면 다음과 같습니다.</p>
+
+<p style="margin:0.8rem 0;">먼저 cursor.sh에서 OS에 맞는 버전을 설치하고, VSCode 확장을 가져옵니다. AI 모델과 키 바인딩을 초기 설정한 뒤, Chat, Composer, Tab Completion 세 가지 핵심 기능의 차이를 이해합니다. 상황에 따라 적절히 기능을 선택하면 개발 속도가 눈에 띄게 향상됩니다.</p>
+
+<p style="margin:0.8rem 0;">Cursor는 만능이 아닙니다. AI의 제안을 맹신하지 않고, 개발자로서의 판단力を 유지하는 것이 가장 좋은 활용법입니다. 도구는 도구일 뿐, 결국 좋은 코드를 만드는 것은 개발자의 역량이니까요.</p>
+
+<p style="margin:0.8rem 0;">이제 직접 설치해서 하루 정도 사용해 보세요. 익숙해지면 이전으로 돌아가기 어려울 정도로 개발 경험이 달라지는 것을 느낄 수 있을 겁니다.</p>
+
+</div>

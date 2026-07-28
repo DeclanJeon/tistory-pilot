@@ -1,0 +1,39 @@
+{
+  "id": "tech-01",
+  "keyword": "ChatGPT 활용법 모음",
+  "category": "IT·테크",
+  "tags": [
+    "ChatGPT",
+    "AI",
+    "활용법",
+    "팁",
+    "생성형AI"
+  ],
+  "contentType": "list",
+  "cpcTier": "B",
+  "title": "ChatGPT 활용법 모음 – 업무와 일상에서 바로 써먹는 실전 팁 12가지",
+  "description": "ChatGPT 활용법을 검색하면 수많은 글이 쏟아지지만, 정작 내 업무에 바로 적용할 수 있는 실전 정보를 정리한 글은 드뭅니다. 이 글은 생성형 AI를 처음 접하는 분부터 이미 써보고 있는 분까지, 범용적으로 활용",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/chatgpt-활용법-모음.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:12:57.052Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3737,
+      "paragraphs": 18,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/chatgpt-활용법-모음.qa.json"
+  }
+}

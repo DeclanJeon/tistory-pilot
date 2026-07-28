@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.616Z",
+  "ok": true,
+  "score": 100,
+  "metrics": {
+    "plainChars": 4070,
+    "paragraphs": 26,
+    "h1": 1,
+    "h2": 7,
+    "tables": 2,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [],
+  "title": "부동산 DSR 계산 완전 가이드 — 대출 가능 금액 산정 공식과 실전 예시",
+  "keyword": "부동산 DSR 계산"
+}

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.600Z",
+  "ok": true,
+  "score": 100,
+  "metrics": {
+    "plainChars": 3737,
+    "paragraphs": 18,
+    "h1": 1,
+    "h2": 7,
+    "tables": 1,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [],
+  "title": "ChatGPT 활용법 모음 – 업무와 일상에서 바로 써먹는 실전 팁 12가지",
+  "keyword": "ChatGPT 활용법 모음"
+}

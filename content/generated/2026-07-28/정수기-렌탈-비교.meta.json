@@ -1,0 +1,39 @@
+{
+  "id": "life-04",
+  "keyword": "정수기 렌탈 비교",
+  "category": "생활·정보",
+  "tags": [
+    "정수기",
+    "렌탈",
+    "비교",
+    "케이옥스",
+    "교원"
+  ],
+  "contentType": "comparison",
+  "cpcTier": "S",
+  "title": "정수기 렌탈 비교 총정리 | 케이옥스·교원·코웨이·SK매직 가격과 혜택 분석",
+  "description": "가정용 정수기를 렌탈하려고 하면 가장 먼저 마주하는 고민이 있습니다. 업체가 너무 많고, 각자의 약속이 비슷해 보이는데 정작 어떤 차이가 있는지 파악하기 어렵다는 점이죠. 케이옥스부터 교원, 코웨이, SK매직까지—비",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/정수기-렌탈-비교.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:33:30.853Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3353,
+      "paragraphs": 22,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/정수기-렌탈-비교.qa.json"
+  }
+}

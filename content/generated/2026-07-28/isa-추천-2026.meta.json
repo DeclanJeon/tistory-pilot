@@ -1,0 +1,46 @@
+{
+  "id": "invest-01",
+  "keyword": "ISA 추천 2026",
+  "category": "투자·재테크",
+  "tags": [
+    "ISA",
+    "비과세",
+    "투자",
+    "절세",
+    "2026",
+    "추천",
+    "상품비교"
+  ],
+  "contentType": "comparison",
+  "cpcTier": "S",
+  "title": "2026년 ISA 추천 상품 비교, 비과세 혜택과 세액공제 완벽 정리",
+  "description": "2026년도 세테크 전략의 핵심 키워드는 ISA입니다. 비과세종합저축 ISA는 개인투자자에게 세금 혜택을 집중적으로 제공하는 상품으로, 잘 활용하면 투자 수익에 대한 세금을 크게 줄일 수 있습니다. 특히 올해는 세액",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/isa-추천-2026.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:39:44.759Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 96,
+    "failures": [],
+    "warnings": [
+      {
+        "code": "keyword-missing",
+        "message": "본문에 키워드가 직접 보이지 않는다: ISA 추천 2026"
+      }
+    ],
+    "metrics": {
+      "plainChars": 4478,
+      "paragraphs": 22,
+      "h1": 1,
+      "h2": 7,
+      "tables": 2,
+      "figures": 1,
+      "blockquotes": 2,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/isa-추천-2026.qa.json"
+  }
+}

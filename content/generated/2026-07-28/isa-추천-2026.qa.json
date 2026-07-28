@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.609Z",
+  "ok": true,
+  "score": 96,
+  "metrics": {
+    "plainChars": 4478,
+    "paragraphs": 22,
+    "h1": 1,
+    "h2": 7,
+    "tables": 2,
+    "figures": 1,
+    "blockquotes": 2,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [
+    {
+      "code": "keyword-missing",
+      "message": "본문에 키워드가 직접 보이지 않는다: ISA 추천 2026"
+    }
+  ],
+  "title": "2026년 ISA 추천 상품 비교, 비과세 혜택과 세액공제 완벽 정리",
+  "keyword": "ISA 추천 2026"
+}

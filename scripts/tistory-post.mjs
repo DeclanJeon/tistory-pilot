@@ -12,6 +12,7 @@ import {
   hasQrEmailDelivery,
   sendQrEmailIfConfigured
 } from './lib/qr-notify.mjs';
+import { DEFAULT_TISTORY_QR_IMAGE_PATH } from './lib/qr-path.mjs';
 import { loadProjectEnv } from './lib/load-env.mjs';
 
 loadProjectEnv();
@@ -25,11 +26,12 @@ function parseArgs(argv) {
     title: process.env.TISTORY_POST_TITLE || '',
     body: process.env.TISTORY_POST_BODY || '',
     bodyFile: process.env.TISTORY_POST_BODY_FILE || '',
+    bodyFormat: process.env.TISTORY_POST_BODY_FORMAT || '',
     description: process.env.TISTORY_POST_DESCRIPTION || '',
     tags: process.env.TISTORY_POST_TAGS || '',
     category: process.env.TISTORY_POST_CATEGORY || '',
     heroImage: process.env.TISTORY_POST_HERO_IMAGE || '',
-    qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || 'tmp/kakao-tistory-qr.png',
+    qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || DEFAULT_TISTORY_QR_IMAGE_PATH,
     waitForLoginMs: Number(process.env.TISTORY_WAIT_FOR_LOGIN_MS || 300000),
     qrEmailTo: process.env.TISTORY_QR_EMAIL_TO || '',
     qrEmailOnRefresh: ['1', 'true', 'yes', 'on'].includes(String(process.env.TISTORY_QR_EMAIL_ON_REFRESH || '').toLowerCase()),
@@ -55,6 +57,9 @@ function parseArgs(argv) {
       i += 1;
     } else if (arg === '--body-file' && next) {
       options.bodyFile = next;
+      i += 1;
+    } else if (arg === '--body-format' && next) {
+      options.bodyFormat = next;
       i += 1;
     } else if (arg === '--description' && next) {
       options.description = next;
@@ -89,6 +94,12 @@ function parseArgs(argv) {
 
   if (options.bodyFile) {
     options.body = fs.readFileSync(options.bodyFile, 'utf8');
+  }
+  if (!options.bodyFormat && options.bodyFile) {
+    options.bodyFormat = inferBodyFormatFromPath(options.bodyFile);
+  }
+  if (!options.bodyFormat) {
+    options.bodyFormat = /^\s*</.test(options.body) ? 'html' : 'markdown';
   }
 
   return options;
@@ -133,12 +144,20 @@ function toDataUrl(filePath) {
   const data = fs.readFileSync(resolved).toString('base64');
   return `data:${getMimeType(resolved)};base64,${data}`;
 }
-function collectBodyImageDataUrls(body) {
+function inferBodyFormatFromPath(filePath) {
+  const ext = path.extname(String(filePath || '')).toLowerCase();
+  if (ext === '.html' || ext === '.htm') return 'html';
+  return 'markdown';
+}
+function collectBodyImageDataUrls(body, bodyFormat = 'markdown') {
   const imageDataUrls = {};
-  const pattern = /^!\[(.*?)\]\(([^\s)]+)\)$/gim;
+  const source = String(body || '');
+  const pattern = bodyFormat === 'html'
+    ? /<img[^>]+src=["']([^"']+)["']/gim
+    : /^!\[(.*?)\]\(([^\s)]+)\)$/gim;
   let match;
-  while ((match = pattern.exec(String(body || ''))) !== null) {
-    const src = String(match[2] || '').trim();
+  while ((match = pattern.exec(source)) !== null) {
+    const src = String(bodyFormat === 'html' ? match[1] : match[2] || '').trim();
     if (!src || /^https?:/i.test(src) || /^data:/i.test(src)) continue;
     imageDataUrls[src] = toDataUrl(src);
   }
@@ -403,6 +422,16 @@ function openKakaoQrLogin() {
     const rect = element.getBoundingClientRect();
     return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
   };
+  const buildNavigateUrl = input => {
+    const nextUrl = new URL(String(input || location.href), location.href);
+    nextUrl.pathname = '/qr_login/';
+    nextUrl.searchParams.set('append_stay_signed_in', 'false');
+    nextUrl.searchParams.set('lang', 'en');
+    nextUrl.searchParams.set('showHeader', 'false');
+    nextUrl.searchParams.set('stay_signed_in', 'false');
+    nextUrl.hash = 'main';
+    return nextUrl.toString();
+  };
   if (location.pathname.includes('/qr_login')) {
     return { clicked: false, alreadyOnQrPage: true, url: location.href };
   }
@@ -413,11 +442,14 @@ function openKakaoQrLogin() {
     return /(log in with qr code|qr코드 로그인|qr 코드 로그인|qr login)/i.test(label)
       && !/(새로고침|refresh|사용방법|help)/i.test(label);
   });
+  const navigateUrl = target instanceof HTMLAnchorElement && target.href
+    ? target.href
+    : buildNavigateUrl(location.href);
   if (!target) {
-    return { clicked: false, reason: 'qr-login-button-not-found', url: location.href };
+    return { clicked: false, reason: 'qr-login-button-not-found', url: location.href, navigateUrl };
   }
   target.click();
-  return { clicked: true, label: normalize(target.innerText || target.textContent || target.getAttribute('aria-label') || ''), url: location.href };
+  return { clicked: true, label: normalize(target.innerText || target.textContent || target.getAttribute('aria-label') || ''), url: location.href, navigateUrl };
 }
 
 function ensureKakaoStaySignedIn() {
@@ -577,6 +609,10 @@ function fillTistoryPost(payload) {
     if (input.description) {
       blocks.push(`<p><strong>${escapeHtml(input.description)}</strong></p>`);
     }
+    if (input.bodyFormat === 'html') {
+      const htmlBody = String(input.body || '').trim();
+      return `${blocks.join('')}${htmlBody || '<p><br></p>'}`;
+    }
 
     for (const part of String(input.body || '').split(/\n\n+/)) {
       const trimmed = part.trim();
@@ -623,7 +659,11 @@ function fillTistoryPost(payload) {
     }
     return blocks.join('') || '<p><br></p>';
   };
-  const setContentEditable = (element, plainText, html) => {
+  const stripHtmlToText = html => {
+    const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
+    return String(doc.body?.innerText || doc.body?.textContent || '').trim();
+  };
+  const setContentEditable = (element, plainText, html, preferHtml = false) => {
     const ownerDocument = element.ownerDocument || document;
     const ownerWindow = ownerDocument.defaultView || window;
     element.focus();
@@ -636,13 +676,15 @@ function fillTistoryPost(payload) {
     }
 
     let inserted = false;
-    try {
-      inserted = ownerDocument.execCommand('insertText', false, plainText);
-    } catch {
-      inserted = false;
+    if (!preferHtml) {
+      try {
+        inserted = ownerDocument.execCommand('insertText', false, plainText);
+      } catch {
+        inserted = false;
+      }
     }
 
-    if (!inserted || normalize(element.innerText || '') !== normalize(plainText)) {
+    if (preferHtml || !inserted || normalize(element.innerText || '') !== normalize(plainText)) {
       element.innerHTML = html;
       const InputCtor = ownerWindow.InputEvent || InputEvent;
       const EventCtor = ownerWindow.Event || Event;
@@ -739,11 +781,15 @@ function fillTistoryPost(payload) {
   }
 
   if (bodyField instanceof HTMLInputElement || bodyField instanceof HTMLTextAreaElement) {
-    const textBody = [payload.description, payload.body].filter(Boolean).join('\n\n');
+    const textBody = payload.bodyFormat === 'html'
+      ? stripHtmlToText(bodyHtml)
+      : [payload.description, payload.body].filter(Boolean).join('\n\n');
     setNativeValue(bodyField, textBody);
   } else {
-    const plainBody = [payload.description, payload.body].filter(Boolean).join('\n\n');
-    setContentEditable(bodyField, plainBody, bodyHtml);
+    const plainBody = payload.bodyFormat === 'html'
+      ? stripHtmlToText(bodyHtml)
+      : [payload.description, payload.body].filter(Boolean).join('\n\n');
+    setContentEditable(bodyField, plainBody, bodyHtml, payload.bodyFormat === 'html');
   }
 
   if (payload.tags && tagField) {
@@ -809,7 +855,7 @@ function applyTistoryCategory(payload) {
   return { requested, applied: false, mode: 'not-found' };
 }
 
-function clickPublishButtons() {
+function openPublishLayer() {
   const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
   const visible = element => {
     if (!(element instanceof HTMLElement)) return false;
@@ -818,23 +864,41 @@ function clickPublishButtons() {
     return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
   };
   const textOf = element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '');
-  const buttons = Array.from(document.querySelectorAll('button, a, [role="button"]'))
-    .filter(element => element instanceof HTMLElement && visible(element));
-  const targets = ['공개 발행', '발행', '공개', '완료'];
-  const clicked = [];
-
-  for (const word of targets) {
-    const button = buttons.find(element => textOf(element) === word)
-      || buttons.find(element => textOf(element).includes(word));
-    if (button) {
-      button.click();
-      clicked.push({ target: word, text: textOf(button) });
-      break;
-    }
+  const button = document.getElementById('publish-layer-btn')
+    || Array.from(document.querySelectorAll('button, a, [role="button"]'))
+      .filter(element => element instanceof HTMLElement && visible(element))
+      .find(element => {
+        const text = textOf(element);
+        return text === '완료' || text.includes('완료');
+      });
+  if (!(button instanceof HTMLElement)) {
+    return { ok: false, reason: 'publish-layer-button-not-found' };
   }
-
+  button.click();
   return {
-    clicked,
+    ok: true,
+    clicked: textOf(button) || '완료',
+    modalOpen: Boolean(document.getElementById('publish-btn')),
+    publishText: normalize(document.getElementById('publish-btn')?.innerText || '') || null,
+    cancelText: normalize(document.getElementById('unpublish-btn')?.innerText || '') || null,
+    layerText: normalize(document.querySelector('.ReactModal__Content')?.innerText || '').slice(0, 400) || null,
+    url: location.href,
+    title: document.title
+  };
+}
+
+function confirmPublishLayer() {
+  const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const button = document.getElementById('publish-btn');
+  if (!(button instanceof HTMLElement)) {
+    return { ok: false, reason: 'publish-confirm-button-not-found' };
+  }
+  const text = normalize(button.innerText || button.textContent || button.getAttribute('aria-label') || '');
+  button.click();
+  return {
+    ok: true,
+    clicked: [{ target: 'publish-btn', text }],
+    modalOpenAfterClick: Boolean(document.getElementById('publish-btn')),
     url: location.href,
     title: document.title
   };
@@ -873,7 +937,10 @@ function ensureKakaoQrReady(options) {
     if (lastKakaoState?.onKakaoHost) {
       evaluate(ensureKakaoStaySignedIn);
       const openedQr = evaluate(openKakaoQrLogin);
-      if (openedQr?.clicked || openedQr?.alreadyOnQrPage) {
+      if (openedQr?.navigateUrl && !openedQr?.alreadyOnQrPage) {
+        navigate(openedQr.navigateUrl);
+      }
+      if (openedQr?.clicked || openedQr?.alreadyOnQrPage || openedQr?.navigateUrl) {
         wait(1500);
         lastTistoryState = evaluate(detectTistoryState);
         lastKakaoState = evaluate(detectKakaoLoginState);
@@ -940,7 +1007,7 @@ async function main() {
   }
 
   const heroImageDataUrl = options.heroImage ? toDataUrl(options.heroImage) : '';
-  const bodyImageDataUrls = collectBodyImageDataUrls(options.body);
+  const bodyImageDataUrls = collectBodyImageDataUrls(options.body, options.bodyFormat);
   ensureBrowserStarted({ headed: options.headed });
   navigate(editorUrl);
 
@@ -954,6 +1021,7 @@ async function main() {
       initialState,
       snapshot: initialSnapshot,
       category: options.category,
+      bodyFormat: options.bodyFormat,
       heroImage: options.heroImage || null,
       heroImageIncluded: Boolean(heroImageDataUrl),
       bodyImageCount: Object.keys(bodyImageDataUrls).length,
@@ -1052,6 +1120,7 @@ async function main() {
     fillResult = evaluate(fillTistoryPost, {
       title: options.title,
       body: options.body,
+      bodyFormat: options.bodyFormat,
       description: options.description,
       tags: options.tags,
       category: options.category,
@@ -1085,10 +1154,22 @@ async function main() {
     }
   }
   if (options.publish) {
-    for (let attempt = 0; attempt < 6; attempt += 1) {
-      wait(900);
-      publishResult = evaluate(clickPublishButtons);
-      if (!publishResult?.clicked?.length) break;
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      wait(800);
+      const publishLayerResult = evaluate(openPublishLayer);
+      if (!publishLayerResult?.ok) {
+        publishResult = publishLayerResult;
+        continue;
+      }
+      if (!publishLayerResult?.modalOpen) {
+        wait(700);
+      }
+      const confirmResult = evaluate(confirmPublishLayer);
+      publishResult = { ...publishLayerResult, ...confirmResult };
+      if (publishResult?.ok) {
+        wait(1500);
+        break;
+      }
     }
   }
 

@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-28T08:07:21.517Z",
+  "keywords": {
+    "ISA 추천 2026": {
+      "updatedAt": "2026-07-28T08:07:21.515Z",
+      "intent": "commercial",
+      "cpcTier": "A",
+      "topHooks": [
+        "benefit",
+        "year",
+        "compare"
+      ],
+      "commonTokens": [
+        "etf",
+        "은퇴",
+        "isa",
+        "경제",
+        "주제",
+        "네이버",
+        "메이트",
+        "배당",
+        "투자자",
+        "모임",
+        "미국주식",
+        "장기투자"
+      ],
+      "avgTitleLength": 18,
+      "sampleCount": 10
+    }
+  },
+  "patterns": {
+    "titleHooks": {
+      "year": 2,
+      "guide": 1,
+      "benefit": 2,
+      "compare": 2
+    },
+    "intents": {
+      "transactional": 1,
+      "commercial": 1
+    }
+  }
+}

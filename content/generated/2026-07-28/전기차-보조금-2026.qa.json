@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.623Z",
+  "ok": true,
+  "score": 96,
+  "metrics": {
+    "plainChars": 3493,
+    "paragraphs": 25,
+    "h1": 1,
+    "h2": 7,
+    "tables": 1,
+    "figures": 1,
+    "blockquotes": 2,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [
+    {
+      "code": "keyword-missing",
+      "message": "본문에 키워드가 직접 보이지 않는다: 전기차 보조금 2026"
+    }
+  ],
+  "title": "2026년 전기차 보조금 완벽 정리 — 신청 방법과 꿀팁까지",
+  "keyword": "전기차 보조금 2026"
+}

@@ -36,6 +36,16 @@
     "workbench:web": "node src/server/cli.mjs",
     "workbench:worker": "node src/worker/cli.mjs",
     "workbench:worker:once": "node src/worker/cli.mjs --once",
+    "schedule:queue-add": "node scripts/schedule/queue-add.mjs",
+    "schedule:submit": "node scripts/schedule/submit-queue.mjs",
+    "schedule:upload": "bash scripts/schedule/queue-upload.sh",
+    "schedule:deploy": "bash scripts/schedule/deploy-scheduler.sh",
+    "content:generate": "node scripts/content/generate-post.mjs",
+    "content:list": "node scripts/content/generate-post.mjs --list",
+    "content:batch": "node scripts/content/generate-post.mjs --batch --skip-image",
+    "content:qa": "node scripts/content/qa-post.mjs",
+    "content:market": "node scripts/content/market-research.mjs",
+    "notify:discord-test": "node scripts/lib/discord-notify.mjs",
     "test": "node --test tests/**/*.test.mjs"
   },
   "bin": {

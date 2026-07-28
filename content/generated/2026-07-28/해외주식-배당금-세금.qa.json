@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.628Z",
+  "ok": true,
+  "score": 92,
+  "metrics": {
+    "plainChars": 1987,
+    "paragraphs": 12,
+    "h1": 1,
+    "h2": 4,
+    "tables": 2,
+    "figures": 0,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [
+    {
+      "code": "missing-figure",
+      "message": "figure 이미지가 없다."
+    },
+    {
+      "code": "uniform-paragraphs",
+      "message": "문단 길이가 지나치게 균일하다 (stdev=17.4)."
+    }
+  ],
+  "title": "해외주식 배당금 세금 완벽 가이드: 원천징수에서 신고까지 정리했습니다",
+  "keyword": "해외주식 배당금 세금"
+}

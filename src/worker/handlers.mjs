@@ -2,6 +2,8 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import { importAndAnalyzeSources } from '../core/source/import-service.mjs';
 import { resolveStagedPublishPayload, stagePublishPayload } from '../core/tistory/staged-payload-service.mjs';
+import { notifyPublishResult } from '../../scripts/lib/discord-notify.mjs';
+import { recordPublishFeedback } from '../../scripts/content/market-research.mjs';
 
 function randomId(prefix) {
   return `${prefix}-${crypto.randomUUID()}`;
@@ -117,6 +119,32 @@ export function createWorkerHandlers({ artifactStore, config, automation, now = 
         value: result,
         metadata: { kind: 'publish-result', jobId: job.jobId }
       });
+
+      try {
+        const postUrl = result?.url || result?.postUrl || result?.permalink || '';
+        await notifyPublishResult({
+          status: 'succeeded',
+          title: resolved?.title || job.title || '',
+          blogUrl: job.blogUrl || '',
+          category: resolved?.category || '',
+          jobId: job.jobId,
+          postUrl,
+          plainChars: resolved?.body ? String(resolved.body).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length : null,
+          message: 'publish_post succeeded'
+        });
+        await recordPublishFeedback({
+          keyword: resolved?.tags || '',
+          title: resolved?.title || '',
+          status: 'succeeded',
+          category: resolved?.category || ''
+        });
+      } catch (notifyError) {
+        await emitEvent?.({
+          type: 'notify.discord-error',
+          detail: { message: notifyError instanceof Error ? notifyError.message : String(notifyError) }
+        });
+      }
+
       return { artifactRefs: [resultRecord.artifactId], result };
     },
 

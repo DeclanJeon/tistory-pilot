@@ -1,0 +1,39 @@
+{
+  "id": "tech-04",
+  "keyword": "무료 AI 도구 모음 2026",
+  "category": "IT·테크",
+  "tags": [
+    "AI도구",
+    "무료",
+    "모음",
+    "생성형AI",
+    "추천"
+  ],
+  "contentType": "list",
+  "cpcTier": "B",
+  "title": "무료 AI 도구 모음 2026, 비용 없이 쓸 수 있는 핵심 도구 총정리",
+  "description": "2026년 초, AI 도구 시장은 사실상 무료 경쟁의 시대에 접어들었다. OpenAI, 구글, Anthropic 등 주요 기업들이 플래그십 모델의 무료 티어를 제공하면서, 일반 사용자도 고성능 AI를 별도 비용 없이",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/무료-ai-도구-모음-2026.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:26:40.938Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3655,
+      "paragraphs": 20,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/무료-ai-도구-모음-2026.qa.json"
+  }
+}

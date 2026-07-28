@@ -1,0 +1,39 @@
+{
+  "id": "invest-04",
+  "keyword": "신용점수 올리기 방법",
+  "category": "투자·재테크",
+  "tags": [
+    "신용점수",
+    "신용등급",
+    "올리기",
+    "KCB",
+    "NICE"
+  ],
+  "contentType": "guide",
+  "cpcTier": "S",
+  "title": "신용점수 올리기 방법 2025년 실전 가이드 10가지 꿀팁",
+  "description": "신용점수는 금융생활의 출발점입니다. 대출을 받든, 신용카드를 발급받든, 심지어 휴대폰 할부 조건까지 결정짓는 핵심 지표가 되었죠. 그런데 막상 신용점수를 올리고 싶으면 어디서부터 손을 대야 할지 막막한 경우가 많습니",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/신용점수-올리기-방법.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:45:12.291Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3909,
+      "paragraphs": 23,
+      "h1": 1,
+      "h2": 6,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/신용점수-올리기-방법.qa.json"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "invest-08",
+  "keyword": "주식 세금 계산",
+  "category": "투자·재테크",
+  "tags": [
+    "주식",
+    "세금",
+    "양도소득세",
+    "배당금",
+    "금융세"
+  ],
+  "contentType": "calculator",
+  "cpcTier": "A",
+  "title": "주식 세금 계산 완벽 가이드: 양도소득세·배당세 공식과 실제 예시",
+  "description": "주식 투자를 시작하면 수익률만큼 신경 써야 할 것이 바로 세금입니다. 많이 벌어도 세금을 제대로 계산하지 않으면 실제 수익은 기대보다 훨씬 적어질 수 있고, 반대로 세금 규정을 잘 이해하면 합법적으로 절세하는 방법을",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/주식-세금-계산.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:34:32.514Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3400,
+      "paragraphs": 22,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 2,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/주식-세금-계산.qa.json"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "tech-05",
+  "keyword": "Docker 입문 가이드",
+  "category": "IT·테크",
+  "tags": [
+    "Docker",
+    "컨테이너",
+    "입문",
+    "설치",
+    "사용법"
+  ],
+  "contentType": "tutorial",
+  "cpcTier": "B",
+  "title": "Docker 입문 가이드: 컨테이너 개념부터 실전 사용법까지 완벽 정리",
+  "description": "소프트웨어를 개발하다 보면 \"내 컴퓨터에서는 되는데 왜 서버에서는 안 되지?\"라는 상황을 자주 마주합니다. 운영체제 버전, 라이브러리 의존성, 환경 변수 설정 등이 조금이라도 다르면 프로그램은 예상치 못한 에러를 뱉",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/docker-입문-가이드.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:29:54.676Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 5213,
+      "paragraphs": 32,
+      "h1": 1,
+      "h2": 8,
+      "tables": 2,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/docker-입문-가이드.qa.json"
+  }
+}

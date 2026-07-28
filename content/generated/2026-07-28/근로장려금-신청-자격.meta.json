@@ -1,0 +1,39 @@
+{
+  "id": "invest-06",
+  "keyword": "근로장려금 신청 자격",
+  "category": "투자·재테크",
+  "tags": [
+    "근로장려금",
+    "신청",
+    "자격",
+    "세금",
+    "국세청"
+  ],
+  "contentType": "guide",
+  "cpcTier": "S",
+  "title": "근로장려금 신청 자격 완벽 가이드 - 2024년 조건과 금액 한눈에 보기",
+  "description": "근로장려금은 소득이 적은 근로자와 사업자 가구에 국가가 장려금을 지급하는 대표적인 복지 제도입니다. 매년 수백만 명이 신청하지만, 자격 요건을 정확히 이해하지 못해 혜택을 놓치는 경우도 적지 않습니다. 올해도 어김없",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/근로장려금-신청-자격.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:32:09.835Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3837,
+      "paragraphs": 24,
+      "h1": 1,
+      "h2": 7,
+      "tables": 2,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/근로장려금-신청-자격.qa.json"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.607Z",
+  "ok": true,
+  "score": 100,
+  "metrics": {
+    "plainChars": 5213,
+    "paragraphs": 32,
+    "h1": 1,
+    "h2": 8,
+    "tables": 2,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [],
+  "title": "Docker 입문 가이드: 컨테이너 개념부터 실전 사용법까지 완벽 정리",
+  "keyword": "Docker 입문 가이드"
+}

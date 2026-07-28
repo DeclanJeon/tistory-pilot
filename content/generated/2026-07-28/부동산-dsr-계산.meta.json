@@ -1,0 +1,39 @@
+{
+  "id": "invest-07",
+  "keyword": "부동산 DSR 계산",
+  "category": "투자·재테크",
+  "tags": [
+    "부동산",
+    "DSR",
+    "대출",
+    "계산",
+    "주택담보"
+  ],
+  "contentType": "calculator",
+  "cpcTier": "A",
+  "title": "부동산 DSR 계산 완전 가이드 — 대출 가능 금액 산정 공식과 실전 예시",
+  "description": "부동산 대출을 준비하면서 가장 먼저 마주하는 것이 DSR입니다. 금융기관이 대출 승인 여부를 결정하는 핵심 지표이자, 내가 실제로 빌릴 수 있는 돈의 상한선을 가르는 기준선이기 때문입니다. DSR을 이해하지 못한 채",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/부동산-dsr-계산.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:33:28.683Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 4070,
+      "paragraphs": 26,
+      "h1": 1,
+      "h2": 7,
+      "tables": 2,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/부동산-dsr-계산.qa.json"
+  }
+}

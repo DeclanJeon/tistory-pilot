@@ -1,0 +1,20 @@
+{
+  "id": "life-01",
+  "keyword": "에어컨 전기료 계산",
+  "category": "생활·정보",
+  "tags": [
+    "에어컨",
+    "전기료",
+    "전기요금",
+    "여름",
+    "절약"
+  ],
+  "contentType": "calculator",
+  "cpcTier": "A",
+  "title": "이란?",
+  "description": "실제 활용 방법과 주의사항을 정리한다.",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-27/에어컨-전기료-계산.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-27T14:59:20.038Z",
+  "status": "generated"
+}

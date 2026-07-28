@@ -11,6 +11,7 @@ import { sendQrEmail } from '../core/qr/email-service.mjs';
 import {
   buildCategoryUrl,
   buildEditorUrl,
+  buildManagePostUrl,
   collectBodyImageDataUrls,
   resolveOutputPath,
   toDataUrl,
@@ -155,13 +156,26 @@ function openKakaoQrLogin() {
     const rect = element.getBoundingClientRect();
     return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
   };
-  if (location.pathname.includes('/qr_login')) return { clicked: false, alreadyOnQrPage: true };
+  const buildNavigateUrl = input => {
+    const nextUrl = new URL(String(input || location.href), location.href);
+    nextUrl.pathname = '/qr_login/';
+    nextUrl.searchParams.set('append_stay_signed_in', 'false');
+    nextUrl.searchParams.set('lang', 'en');
+    nextUrl.searchParams.set('showHeader', 'false');
+    nextUrl.searchParams.set('stay_signed_in', 'false');
+    nextUrl.hash = 'main';
+    return nextUrl.toString();
+  };
+  if (location.pathname.includes('/qr_login')) return { clicked: false, alreadyOnQrPage: true, url: location.href };
   const target = Array.from(document.querySelectorAll('button, a, [role="button"]'))
     .filter(element => element instanceof HTMLElement && visible(element))
     .find(element => /(log in with qr code|qr코드 로그인|qr 코드 로그인|qr login)/i.test(normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '')));
-  if (!target) return { clicked: false };
+  const navigateUrl = target instanceof HTMLAnchorElement && target.href
+    ? target.href
+    : buildNavigateUrl(location.href);
+  if (!target) return { clicked: false, reason: 'qr-login-button-not-found', navigateUrl, url: location.href };
   target.click();
-  return { clicked: true };
+  return { clicked: true, navigateUrl, url: location.href };
 }
 
 function ensureKakaoStaySignedIn() {
@@ -369,8 +383,22 @@ export function buildTistoryBodyHtml(input) {
 async function fillTistoryPostOnPage(page, payload) {
   const titleField = page.locator('#post-title-inp');
   if (!await titleField.count()) return { ok: false, reason: 'title-field-not-found' };
-  await titleField.click();
-  await titleField.fill(String(payload.title || ''));
+  const normalizedTitle = String(payload.title || '');
+await titleField.click({ clickCount: 3 });
+await page.keyboard.press('Backspace').catch(() => {});
+await page.keyboard.type(normalizedTitle, { delay: 10 });
+await titleField.evaluate((element, value) => {
+  if (!(element instanceof HTMLTextAreaElement || element instanceof HTMLInputElement)) return;
+  const proto = element instanceof HTMLTextAreaElement
+    ? HTMLTextAreaElement.prototype
+    : HTMLInputElement.prototype;
+  const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+  setter?.call(element, value);
+  element.dispatchEvent(new InputEvent('input', { bubbles: true, data: value, inputType: 'insertText' }));
+  element.dispatchEvent(new Event('change', { bubbles: true }));
+  element.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Process' }));
+  element.dispatchEvent(new Event('blur', { bubbles: true }));
+}, normalizedTitle);
   await titleField.blur().catch(() => {});
   const result = await page.evaluate(({ title, bodyHtml }) => {
     const editor = window.tinymce?.activeEditor;
@@ -379,15 +407,36 @@ async function fillTistoryPostOnPage(page, payload) {
       return { ok: false, reason: 'editor-not-ready' };
     }
     editor.focus();
-    editor.setContent(bodyHtml || '<p><br></p>');
+    editor.undoManager?.clear?.();
+    editor.setContent(bodyHtml || '<p><br></p>', { format: 'raw' });
+    editor.setDirty?.(true);
+    editor.nodeChanged?.();
+    editor.fire('BeforeSetContent', { content: bodyHtml || '<p><br></p>' });
+    editor.fire('SetContent');
     editor.fire('input');
     editor.fire('change');
-    editor.save?.();
+    editor.fire('keyup');
+editor.save?.();
+window.tinymce?.triggerSave?.();
+const form = document.querySelector('form');
+if (form instanceof HTMLFormElement) {
+  form.dispatchEvent(new Event('change', { bubbles: true }));
+  form.dispatchEvent(new Event('input', { bubbles: true }));
+}
+for (const selector of ['textarea[name="content"]', 'textarea[name="editor"]', 'input[name="title"]']) {
+  const field = document.querySelector(selector);
+  if (field instanceof HTMLTextAreaElement || field instanceof HTMLInputElement) {
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+    field.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
     return {
       ok: true,
       titleLength: String(title || '').length,
       bodyLength: (bodyHtml || '').length,
       titleClassName: titleFieldInner.className || '',
+      titleValue: titleFieldInner.value || null,
+      isDirty: typeof editor.isDirty === 'function' ? editor.isDirty() : null,
       bodyTextLength: String(editor.getContent?.({ format: 'text' }) || '').trim().length,
       bodyHtmlLength: String(editor.getContent?.() || '').length
     };
@@ -395,6 +444,7 @@ async function fillTistoryPostOnPage(page, payload) {
     title: payload.title,
     bodyHtml: payload.bodyHtml
   });
+  await page.keyboard.press('Control+S').catch(() => {});
   return result;
 }
 
@@ -458,9 +508,27 @@ async function setTagsOnPage(page, tags) {
 }
 
 async function openPublishLayerOnPage(page) {
-  const button = page.locator('#publish-layer-btn');
-  if (!await button.count()) return { ok: false, reason: 'publish-layer-button-not-found' };
-  await button.click();
+  const directButton = page.locator('#publish-layer-btn');
+  if (await directButton.count()) {
+    await directButton.click();
+  } else {
+    const clicked = await page.evaluate(() => {
+      const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+      const visible = element => {
+        if (!(element instanceof HTMLElement)) return false;
+        const style = getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+      };
+      const target = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+        .filter(visible)
+        .find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '') === '완료');
+      if (!target) return false;
+      target.click();
+      return true;
+    });
+    if (!clicked) return { ok: false, reason: 'publish-layer-button-not-found' };
+  }
   await page.waitForTimeout(500);
   const result = await page.evaluate(() => ({
     ok: Boolean(document.getElementById('publish-btn')),
@@ -472,11 +540,19 @@ async function openPublishLayerOnPage(page) {
   return result;
 }
 
-async function confirmPublishOnPage(page) {
+async function confirmPublishOnPage(page, expectedText = null) {
   const button = page.locator('#publish-btn');
   if (!await button.count()) return { ok: false, reason: 'publish-confirm-button-not-found' };
+  const targetText = String(expectedText || '').trim();
+  if (targetText) {
+    await page.waitForFunction(
+      expected => String(document.getElementById('publish-btn')?.innerText || '').replace(/\s+/g, ' ').trim() === expected,
+      targetText,
+      { timeout: 8000 }
+    ).catch(() => {});
+  }
   const text = (await button.innerText().catch(() => '')).trim();
-  await button.click();
+  await page.evaluate(() => document.getElementById('publish-btn')?.click());
   let modalClosed = false;
   try {
     await page.waitForFunction(() => !document.getElementById('publish-btn'), null, { timeout: 15000 });
@@ -495,8 +571,170 @@ async function confirmPublishOnPage(page) {
   return {
     ok: modalClosed || !state.modalOpenAfter,
     clicked: [{ target: 'publish-btn', text }],
+    expectedText: targetText || null,
     modalClosed,
     ...state
+  };
+}
+
+async function selectHomeTopicOnPage(page, requestedTopic) {
+  const requested = String(requestedTopic || '').replace(/\s+/g, ' ').trim();
+  if (!requested) return { ok: true, skipped: true, requested: '' };
+  const opener = page.locator('#home_subject button.select_btn').first();
+  if (!await opener.count()) return { ok: false, requested, reason: 'home-topic-opener-not-found' };
+  await opener.click();
+  await page.waitForTimeout(600);
+  const selected = await page.evaluate((topic) => {
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const visible = element => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    };
+    const candidates = Array.from(document.querySelectorAll('#home_subject .mce-menu-item, .mce-menu-item, .mce-text'))
+      .filter(element => element instanceof HTMLElement && visible(element))
+      .map(element => ({ element, text: normalize(element.innerText || element.textContent || '') }))
+      .filter(entry => entry.text && entry.text.length <= 40);
+    const match = candidates.find(entry => entry.text === topic)
+      || candidates.find(entry => entry.text.endsWith(topic))
+      || candidates.find(entry => entry.text.includes(topic));
+    if (!match) return null;
+    const clickable = match.element.closest('.mce-menu-item') || match.element;
+    clickable.click();
+    return match.text;
+  }, requested);
+  await page.waitForTimeout(500);
+  return selected ? { ok: true, requested, selectedText: selected } : { ok: false, requested, reason: 'home-topic-not-found' };
+}
+
+async function selectVisibilityOnPage(page, requestedVisibility) {
+  const requested = String(requestedVisibility || 'public').trim();
+  if (requested === 'public') return { ok: true, requested, skipped: true };
+  const selected = await page.evaluate((visibility) => {
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const visible = element => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    };
+    const label = visibility === 'private' ? '비공개' : visibility;
+    const candidates = Array.from(document.querySelectorAll('button, a, label, span, div'))
+      .filter(element => element instanceof HTMLElement && visible(element))
+      .map(element => ({ element, text: normalize(element.innerText || element.textContent || '') }))
+      .filter(entry => entry.text === label);
+    const match = candidates[candidates.length - 1];
+    if (!match) return null;
+    (match.element.closest('label') || match.element).click();
+    return match.text;
+  }, requested);
+  await page.waitForTimeout(500);
+  if (!selected) return { ok: false, requested, reason: 'visibility-option-not-found' };
+  if (requested === 'private') {
+    const publishButton = page.locator('#publish-btn');
+    let publishText = (await publishButton.innerText().catch(() => '')).trim();
+    if (publishText !== '비공개 저장') {
+      await page.waitForFunction(
+        () => String(document.getElementById('publish-btn')?.innerText || '').replace(/\s+/g, ' ').trim() === '비공개 저장',
+        null,
+        { timeout: 5000 }
+      ).catch(() => {});
+      publishText = (await publishButton.innerText().catch(() => '')).trim();
+    }
+    return publishText === '비공개 저장'
+      ? { ok: true, requested, selectedText: selected, publishButtonText: publishText }
+      : { ok: false, requested, selectedText: selected, publishButtonText: publishText, reason: 'private-publish-button-not-ready' };
+  }
+  return { ok: true, requested, selectedText: selected };
+}
+async function setRepresentativeImageOnPage(page, imagePath) {
+  if (!imagePath) return { ok: true, skipped: true, imagePath: null };
+  const input = page.locator('input[type="file"]').first();
+  if (!await input.count()) return { ok: false, reason: 'representative-image-input-not-found', imagePath };
+await input.setInputFiles(imagePath);
+  await page.waitForTimeout(1500);
+  try {
+    await page.waitForFunction(
+      () => !String(document.body?.innerText || '').includes('업로드 중입니다.'),
+      null,
+      { timeout: 120000 }
+    );
+  } catch {}
+  const state = await page.evaluate(() => {
+    const modalText = String(document.querySelector('.ReactModal__Content')?.innerText || '').replace(/\s+/g, ' ').trim();
+    return {
+      hasDeleteAction: modalText.includes('삭제'),
+      modalText: modalText.slice(0, 400)
+    };
+  });
+  return {
+    ok: state.hasDeleteAction,
+    imagePath,
+    ...state
+  };
+}
+
+async function setPublishScheduleOnPage(page, schedule) {
+  if (!schedule?.date) return { ok: true, skipped: true };
+  const requestedDate = String(schedule.date).trim();
+  const requestedHour = schedule.hour == null ? null : String(schedule.hour).padStart(2, '0');
+  const requestedMinute = schedule.minute == null ? null : String(schedule.minute).padStart(2, '0');
+  const reserveButton = page.getByRole('button', { name: '예약' });
+  if (!await reserveButton.count()) return { ok: false, reason: 'reserve-button-not-found', requestedDate };
+  await reserveButton.click();
+  await page.waitForTimeout(500);
+  const dateButton = page.locator('.btn_reserve').first();
+  if (!await dateButton.count()) return { ok: false, reason: 'schedule-date-button-not-found', requestedDate };
+  const currentDateText = (await dateButton.innerText().catch(() => '')).trim();
+  if (currentDateText !== requestedDate) {
+    await dateButton.click();
+    await page.waitForTimeout(500);
+    const targetDay = String(Number(requestedDate.split('-').pop()));
+    const selected = await page.evaluate((dayText) => {
+      const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+      const visible = element => {
+        if (!(element instanceof HTMLElement)) return false;
+        const style = getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+      };
+      const candidates = Array.from(document.querySelectorAll('button, a, td, span, div'))
+        .filter(element => element instanceof HTMLElement && visible(element))
+        .map(element => ({ element, text: normalize(element.innerText || element.textContent || '') }))
+        .filter(entry => entry.text === dayText);
+      const match = candidates[candidates.length - 1];
+      if (!match) return null;
+      match.element.click();
+      return match.text;
+    }, targetDay);
+    if (!selected) return { ok: false, reason: 'schedule-date-not-found', requestedDate, currentDateText };
+    await page.waitForTimeout(500);
+  }
+if (requestedHour !== null) {
+  const hourInput = page.locator('#dateHour');
+  if (!await hourInput.count()) return { ok: false, reason: 'schedule-hour-input-not-found', requestedDate };
+  await hourInput.click({ clickCount: 3 });
+  await hourInput.fill(requestedHour);
+  await hourInput.press('Tab').catch(() => {});
+}
+if (requestedMinute !== null) {
+  const minuteInput = page.locator('#dateMinute');
+  if (!await minuteInput.count()) return { ok: false, reason: 'schedule-minute-input-not-found', requestedDate };
+  await minuteInput.click({ clickCount: 3 });
+  await minuteInput.fill(requestedMinute);
+  await minuteInput.press('Tab').catch(() => {});
+}
+  await page.waitForTimeout(500);
+  const finalDateText = (await dateButton.innerText().catch(() => '')).trim();
+  const finalHour = await page.locator('#dateHour').inputValue().catch(() => '');
+  const finalMinute = await page.locator('#dateMinute').inputValue().catch(() => '');
+  return {
+    ok: finalDateText === requestedDate && (requestedHour == null || finalHour === requestedHour) && (requestedMinute == null || finalMinute === requestedMinute),
+    requestedDate,
+    selectedDate: finalDateText,
+    hour: finalHour,
+    minute: finalMinute
   };
 }
 
@@ -538,16 +776,31 @@ function ensureCategoryExists(payload) {
 }
 
 async function maybeSendQrEmail(config, options, qrLogin) {
-  if (!options.qrEmailRecipient) return null;
-  return sendQrEmail({
-    config,
-    blogUrl: options.blogUrl,
-    recipient: options.qrEmailRecipient,
-    filePath: qrLogin.qrImagePath,
-    phase: qrLogin.phase || 'initial',
-    qrState: qrLogin.qrState,
-    context: options.context || 'tistory'
-  });
+  const recipient = options.qrEmailRecipient || (config.allowedRecipients || [])[0] || '';
+  if (!recipient) {
+    console.error('[qr-email] no recipient configured, skipping');
+    return null;
+  }
+  try {
+    const result = await sendQrEmail({
+      config,
+      blogUrl: options.blogUrl,
+      recipient,
+      filePath: qrLogin.qrImagePath,
+      phase: qrLogin.phase || 'initial',
+      qrState: qrLogin.qrState,
+      context: options.context || 'tistory'
+    });
+    if (result?.sent) {
+      console.log(`[qr-email] sent to ${recipient} messageId=${result.messageId}`);
+    } else {
+      console.error(`[qr-email] not sent: ${result?.reason || 'unknown'}`);
+    }
+    return result;
+  } catch (error) {
+    console.error(`[qr-email] error: ${error instanceof Error ? error.message : String(error)}`);
+    return null;
+  }
 }
 
 function summarizeQrLogin(qrLogin) {
@@ -570,14 +823,25 @@ async function connectManagedPage() {
   const browser = await chromium.connectOverCDP(getCdpUrl(), { timeout: 30000 });
   let context = browser.contexts()[0] || null;
   if (!context) context = await browser.newContext();
-  let page = context.pages().find(candidate => candidate.url() && candidate.url() !== 'about:blank') || context.pages()[0] || null;
-  if (!page) page = await context.newPage();
+  const page = await context.newPage();
   return { browser, page };
 }
 
-async function evalOnPage(page, pageFunction, payload) {
-  if (typeof payload === 'undefined') return page.evaluate(pageFunction);
-  return page.evaluate(pageFunction, payload);
+async function evalOnPage(page, pageFunction, payload, { retries = 2, retryDelayMs = 800 } = {}) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      if (typeof payload === 'undefined') return await page.evaluate(pageFunction);
+      return await page.evaluate(pageFunction, payload);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isNavigationError = /execution context was destroyed|navigation.*interrupted|target closed|frame.*detached/i.test(message);
+      if (isNavigationError && attempt < retries) {
+        await page.waitForTimeout(retryDelayMs).catch(() => {});
+        continue;
+      }
+      throw error;
+    }
+  }
 }
 
 async function ensureKakaoQrReadyOnPage(page, options) {
@@ -597,7 +861,14 @@ async function ensureKakaoQrReadyOnPage(page, options) {
     if (lastKakaoState?.onKakaoHost) {
       await evalOnPage(page, ensureKakaoStaySignedIn);
       const openedQr = await evalOnPage(page, openKakaoQrLogin);
-      if (openedQr?.clicked || openedQr?.alreadyOnQrPage) {
+      if (openedQr?.navigateUrl && !openedQr?.alreadyOnQrPage) {
+        await page.goto(openedQr.navigateUrl, { waitUntil: 'domcontentloaded', timeout: 10000 }).catch(error => {
+          const msg = error instanceof Error ? error.message : String(error);
+          if (/ERR_ABORTED|ERR_NAME_NOT_RESOLVED|net::/i.test(msg)) return;
+          throw error;
+        });
+      }
+      if (openedQr?.clicked || openedQr?.alreadyOnQrPage || openedQr?.navigateUrl) {
         await page.waitForTimeout(1500);
         lastTistoryState = await evalOnPage(page, detectTistoryState);
         lastKakaoState = await evalOnPage(page, detectKakaoLoginState);
@@ -728,7 +999,15 @@ const categoryResult = await selectCategoryOnPage(page, options.category);
 if (!categoryResult?.ok) throw new Error(`카테고리를 선택하지 못했다: ${JSON.stringify(categoryResult)}`);
 const tagResult = await setTagsOnPage(page, options.tags);
 if (!tagResult?.ok) throw new Error(`태그를 입력하지 못했다: ${JSON.stringify(tagResult)}`);
+await page.waitForFunction(
+  () => !String(document.body?.innerText || '').includes('업로드 중입니다.'),
+  null,
+  { timeout: 120000 }
+).catch(() => {});
 let publishResult = null;
+let scheduleResult = { ok: true, skipped: true };
+let homeTopicResult = { ok: true, skipped: true };
+let representativeImageResult = { ok: true, skipped: true };
 if (options.publish !== false) {
   let publishLayerResult = null;
   for (let attempt = 0; attempt < 4; attempt += 1) {
@@ -743,12 +1022,51 @@ if (options.publish !== false) {
   if (!publishLayerResult?.modalOpen) {
     throw new Error(`발행 레이어를 열지 못했다: ${JSON.stringify(publishLayerResult)}`);
   }
+const requestedVisibility = String(options.visibility || 'public').trim();
+  const visibilityResult = await selectVisibilityOnPage(page, requestedVisibility);
+  if (!visibilityResult?.ok) {
+    throw new Error(`공개범위 선택에 실패했다: ${JSON.stringify(visibilityResult)}`);
+  }
+  if (requestedVisibility === 'public') {
+    scheduleResult = await setPublishScheduleOnPage(page, options.schedule || null);
+    if (!scheduleResult?.ok) {
+      throw new Error(`예약 발행 설정에 실패했다: ${JSON.stringify(scheduleResult)}`);
+    }
+    homeTopicResult = await selectHomeTopicOnPage(page, options.homeTopic || '');
+    if (!homeTopicResult?.ok) {
+      throw new Error(`홈주제 선택에 실패했다: ${JSON.stringify(homeTopicResult)}`);
+    }
+    representativeImageResult = await setRepresentativeImageOnPage(page, options.representativeImagePath || '');
+    if (!representativeImageResult?.ok) {
+      throw new Error(`대표이미지 설정에 실패했다: ${JSON.stringify(representativeImageResult)}`);
+    }
+    await page.waitForFunction(
+      () => !String(document.body?.innerText || '').includes('업로드 중입니다.'),
+      null,
+      { timeout: 120000 }
+    ).catch(() => {});
+  } else {
+    scheduleResult = { ok: true, skipped: true, reason: 'private-visibility' };
+    homeTopicResult = { ok: true, skipped: true, reason: 'private-visibility' };
+    representativeImageResult = { ok: true, skipped: true, reason: 'private-visibility' };
+  }
   publishResult = {
     ...publishLayerResult,
-    ...(await confirmPublishOnPage(page))
+    visibilityResult,
+    scheduleResult,
+    homeTopicResult,
+    representativeImageResult,
+    ...(await confirmPublishOnPage(page, requestedVisibility === 'private' ? '비공개 저장' : '공개 발행'))
   };
   if (!publishResult?.ok) {
-    throw new Error(`발행 확인에 실패했다: ${JSON.stringify(publishResult)}`);
+    await page.waitForTimeout(1500);
+    publishResult = {
+      ...publishResult,
+      retry: await confirmPublishOnPage(page, requestedVisibility === 'private' ? '비공개 저장' : '공개 발행')
+    };
+    if (!publishResult?.retry?.ok) {
+      throw new Error(`발행 확인에 실패했다: ${JSON.stringify(publishResult)}`);
+    }
   }
 }
 return {
@@ -759,14 +1077,460 @@ return {
   categoryResult,
   tagResult,
   publishResult,
+  scheduleResult,
+  homeTopicResult,
+  representativeImageResult,
   qrLogin: summarizeQrLogin(qrLogin),
   qrImagePath: resolveOutputPath(options.qrImagePath)
 };
       } finally {
+        await page.close({ runBeforeUnload: false }).catch(() => {});
         await browser.close().catch(() => {});
       }
     },
 
+    async updatePost(options) {
+      const qrHook = options.onQr || onQr;
+      const qrResolvedHook = options.onQrResolved || null;
+      const postId = String(options.postId || '').trim();
+      const editorUrl = buildManagePostUrl(options.blogUrl, postId);
+      if (!editorUrl) throw new Error('blogUrl and postId are required.');
+      const bodySource = String(options.body || '');
+      const bodyImageDataUrls = collectBodyImageDataUrls(bodySource);
+      ensureBrowserStarted({ headed: options.headed });
+      const { browser, page } = await connectManagedPage();
+      let postRequestCapture = null;
+      let postResponseCapture = null;
+      let attachUploadPending = 0;
+      let lastAttachUploadAt = 0;
+      const requestLog = [];
+      const captureRequest = request => {
+        if (request.method() !== 'POST') return;
+        const requestEntry = {
+          url: request.url(),
+          method: request.method()
+        };
+        if (request.url().includes('/manage/')) {
+          requestLog.push(requestEntry);
+          if (requestLog.length > 10) requestLog.shift();
+        }
+        if (request.url().includes('/manage/post/attach.json')) {
+          attachUploadPending += 1;
+          lastAttachUploadAt = Date.now();
+          return;
+        }
+        if (!request.url().includes('/manage/post.json')) return;
+        const raw = request.postData() || '';
+        let parsed = null;
+        try {
+          parsed = raw ? JSON.parse(raw) : null;
+        } catch {
+          parsed = null;
+        }
+        const content = typeof parsed?.content === 'string' ? parsed.content : '';
+        postRequestCapture = {
+          ...requestEntry,
+          title: typeof parsed?.title === 'string' ? parsed.title : null,
+          contentLength: content.length,
+          excerpt: content.slice(0, 160),
+          visibility: parsed?.visibility ?? null,
+          status: parsed?.postType ?? parsed?.status ?? null,
+          tag: typeof parsed?.tag === 'string' ? parsed.tag : null
+        };
+      };
+      const captureResponse = async response => {
+        if (response.url().includes('/manage/post/attach.json')) {
+          attachUploadPending = Math.max(0, attachUploadPending - 1);
+          lastAttachUploadAt = Date.now();
+          return;
+        }
+        if (!response.url().includes('/manage/post.json')) return;
+        let text = '';
+        try {
+          text = await response.text();
+        } catch {
+          text = '';
+        }
+        postResponseCapture = {
+          url: response.url(),
+          status: response.status(),
+          ok: response.ok(),
+          bodyPreview: String(text || '').slice(0, 240)
+        };
+      };
+      page.on('request', captureRequest);
+      page.on('response', captureResponse);
+      try {
+        let state = await openEditorAndDetectOnPage(page, editorUrl);
+        const deadline = Date.now() + options.waitForLoginMs;
+        let qrLogin = null;
+        let lastQrRefreshAt = 0;
+        let qrResolvedAt = null;
+
+        if (state.loginRequired) {
+          qrLogin = await ensureKakaoQrReadyOnPage(page, options);
+          if (qrLogin?.started) {
+            qrLogin.phase = 'initial';
+            if (qrHook) await qrHook(qrLogin);
+            if (qrEmailConfig) await maybeSendQrEmail(qrEmailConfig, options, qrLogin);
+            lastQrRefreshAt = Date.now();
+          }
+        }
+
+        while (!state.ready && Date.now() < deadline) {
+          await page.waitForTimeout(2000);
+          state = await reopenEditorIfBlankOnPage(page, editorUrl, await evalOnPage(page, detectTistoryState));
+          if (state.loginRequired) {
+            const kakaoState = await evalOnPage(page, detectKakaoLoginState);
+            if (kakaoState?.onQrPage && Number.isFinite(kakaoState.timeLeftSeconds) && kakaoState.timeLeftSeconds <= 15 && (Date.now() - lastQrRefreshAt) > 10000) {
+              const refreshedQr = await refreshKakaoQrImageOnPage(page, options);
+              if (refreshedQr?.qrImagePath) {
+                qrLogin = { started: true, method: 'kakao-qr', phase: 'refresh', ...refreshedQr };
+                lastQrRefreshAt = Date.now();
+                if (qrHook) await qrHook(qrLogin);
+                if (qrEmailConfig) await maybeSendQrEmail(qrEmailConfig, options, qrLogin);
+              }
+            }
+            continue;
+          }
+          if (!qrResolvedAt && qrLogin?.started) {
+            qrResolvedAt = new Date().toISOString();
+            qrLogin.confirmedAt = qrResolvedAt;
+            if (qrResolvedHook) {
+              await qrResolvedHook({ confirmedAt: qrResolvedAt, method: qrLogin.method || 'kakao-qr' });
+            }
+          }
+          if (state.ready) break;
+          state = await openEditorAndDetectOnPage(page, editorUrl);
+        }
+        if (!state.ready) throw new Error(`수정 에디터를 찾지 못했다: ${JSON.stringify({ state, qrLogin: summarizeQrLogin(qrLogin) })}`);
+
+const bodyHtml = looksLikeHtml(bodySource)
+  ? bodySource
+  : buildTistoryBodyHtml({
+      title: options.title,
+      body: bodySource,
+      description: options.description,
+      heroImageDataUrl: '',
+      heroImageAlt: options.title,
+      bodyImageDataUrls
+    });
+
+if (options.skipMetadata) {
+  const minimumContentLength = Math.max(500, Math.floor(bodyHtml.length * 0.6));
+  await page.click('#post-title-inp', { clickCount: 3 });
+  await page.keyboard.press('Backspace').catch(() => {});
+  await page.keyboard.type(options.title, { delay: 1 });
+  await page.evaluate(contentHtml => {
+    window.tinymce?.activeEditor?.setContent(contentHtml);
+    window.tinymce?.activeEditor?.fire('change');
+    window.tinymce?.triggerSave?.();
+  }, bodyHtml);
+  await page.waitForTimeout(1000);
+  const quickPublishOpened = await page.evaluate(() => {
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const visible = element => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    };
+    const completeButton = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+      .filter(visible)
+      .find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '') === '완료');
+    completeButton?.click();
+    return Boolean(completeButton);
+  });
+  if (!quickPublishOpened) {
+    throw new Error('수정 발행 레이어를 열지 못했다: quick-complete-button-not-found');
+  }
+  await page.waitForFunction(() => document.body.innerText.includes('공개 발행'), { timeout: 15000 });
+  const publishResult = await page.evaluate(() => {
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const visible = element => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    };
+    const publishButton = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+      .filter(visible)
+      .find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '') === '공개 발행');
+    publishButton?.click();
+    return {
+      ok: Boolean(publishButton),
+      clicked: publishButton ? [{ target: 'publish-btn', text: normalize(publishButton.innerText || publishButton.textContent || '') }] : []
+    };
+  });
+  if (!publishResult?.ok) {
+    throw new Error(`수정 발행 확인에 실패했다: ${JSON.stringify(publishResult)}`);
+  }
+  await page.waitForTimeout(2500);
+  await page.goto(editorUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => !!window.tinymce?.activeEditor, { timeout: 30000 });
+  const verification = await page.evaluate(() => ({
+    titleValue: document.querySelector('#post-title-inp')?.value || null,
+    bodyTextLength: (window.tinymce?.activeEditor?.getContent({ format: 'text' }) || '').trim().length,
+    bodyHtmlLength: (window.tinymce?.activeEditor?.getContent() || '').length
+  }));
+  if (verification.titleValue !== options.title) {
+    throw new Error(`수정 후 제목 검증에 실패했다: ${JSON.stringify({ expected: options.title, verification, requestLog, postRequestCapture, postResponseCapture })}`);
+  }
+  if (verification.bodyHtmlLength < minimumContentLength) {
+    throw new Error(`수정 후 본문 검증에 실패했다: ${JSON.stringify({ minimumContentLength, verification, requestLog, postRequestCapture, postResponseCapture })}`);
+  }
+  return {
+    mode: 'update',
+    postId,
+    editorUrl,
+    finalState: await evalOnPage(page, detectTistoryState),
+    verification,
+    fillResult: { ok: true, note: 'quick-repair-path' },
+    categoryResult: { ok: true, skipped: true },
+    tagResult: { ok: true, skipped: true },
+    homeTopicResult: { ok: true, skipped: true },
+    representativeImageResult: { ok: true, skipped: true, note: 'repair-skip-metadata' },
+    publishResult,
+    postRequestCapture,
+    postResponseCapture,
+    qrLogin: summarizeQrLogin(qrLogin),
+    qrImagePath: resolveOutputPath(options.qrImagePath)
+  };
+}
+let fillResult = null;
+let editorFillCheck = null;
+for (let attempt = 0; attempt < 6; attempt += 1) {
+  fillResult = await fillTistoryPostOnPage(page, {
+    title: options.title,
+    bodyHtml
+  });
+  if (fillResult?.ok) {
+    await page.waitForTimeout(1000);
+    editorFillCheck = await page.evaluate(() => ({
+      titleValue: document.querySelector('#post-title-inp')?.value || null,
+      bodyTextLength: (window.tinymce?.activeEditor?.getContent({ format: 'text' }) || '').trim().length,
+      bodyHtmlLength: (window.tinymce?.activeEditor?.getContent() || '').length
+    }));
+    if (editorFillCheck.bodyHtmlLength > 500) break;
+  }
+  await page.waitForTimeout(1500);
+  state = await openEditorAndDetectOnPage(page, editorUrl);
+}
+if (!fillResult?.ok) throw new Error(`수정 본문 채우기에 실패했다: ${JSON.stringify(fillResult)}`);
+
+const minimumContentLength = Math.max(500, Math.floor(bodyHtml.length * 0.6));
+if (options.skipMetadata) {
+  await page.click('#post-title-inp', { clickCount: 3 });
+  await page.keyboard.press('Backspace').catch(() => {});
+  await page.keyboard.type(options.title, { delay: 1 });
+  await page.evaluate(contentHtml => {
+    window.tinymce?.activeEditor?.setContent(contentHtml);
+    window.tinymce?.activeEditor?.fire('change');
+    window.tinymce?.triggerSave?.();
+  }, bodyHtml);
+  await page.waitForTimeout(1000);
+  const quickPublishOpened = await page.evaluate(() => {
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const visible = element => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    };
+    const completeButton = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+      .filter(visible)
+      .find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '') === '완료');
+    completeButton?.click();
+    return Boolean(completeButton);
+  });
+  if (!quickPublishOpened) {
+    throw new Error('수정 발행 레이어를 열지 못했다: quick-complete-button-not-found');
+  }
+  await page.waitForFunction(() => document.body.innerText.includes('공개 발행'), { timeout: 15000 });
+  const publishResult = await page.evaluate(() => {
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const visible = element => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    };
+    const publishButton = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+      .filter(visible)
+      .find(element => normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '') === '공개 발행');
+    publishButton?.click();
+    return {
+      ok: Boolean(publishButton),
+      clicked: publishButton ? [{ target: 'publish-btn', text: normalize(publishButton.innerText || publishButton.textContent || '') }] : []
+    };
+  });
+  if (!publishResult?.ok) {
+    throw new Error(`수정 발행 확인에 실패했다: ${JSON.stringify(publishResult)}`);
+  }
+  await page.waitForTimeout(2500);
+  await page.goto(editorUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => !!window.tinymce?.activeEditor, { timeout: 30000 });
+  const verification = await page.evaluate(() => ({
+    titleValue: document.querySelector('#post-title-inp')?.value || null,
+    bodyTextLength: (window.tinymce?.activeEditor?.getContent({ format: 'text' }) || '').trim().length,
+    bodyHtmlLength: (window.tinymce?.activeEditor?.getContent() || '').length
+  }));
+  if (verification.titleValue !== options.title) {
+    throw new Error(`수정 후 제목 검증에 실패했다: ${JSON.stringify({ expected: options.title, verification, requestLog, postRequestCapture, postResponseCapture })}`);
+  }
+  if (verification.bodyHtmlLength < minimumContentLength) {
+    throw new Error(`수정 후 본문 검증에 실패했다: ${JSON.stringify({ minimumContentLength, verification, requestLog, postRequestCapture, postResponseCapture })}`);
+  }
+  return {
+    mode: 'update',
+    postId,
+    editorUrl,
+    finalState: await evalOnPage(page, detectTistoryState),
+    verification,
+    fillResult,
+    categoryResult: { ok: true, skipped: true },
+    tagResult: { ok: true, skipped: true },
+    homeTopicResult: { ok: true, skipped: true },
+    representativeImageResult: { ok: true, skipped: true, note: 'repair-skip-metadata' },
+    publishResult,
+    postRequestCapture,
+    postResponseCapture,
+    qrLogin: summarizeQrLogin(qrLogin),
+    qrImagePath: resolveOutputPath(options.qrImagePath)
+  };
+}
+
+const categoryResult = await selectCategoryOnPage(page, options.category);
+if (!categoryResult?.ok) throw new Error(`수정 카테고리를 선택하지 못했다: ${JSON.stringify(categoryResult)}`);
+const tagResult = await setTagsOnPage(page, options.tags);
+if (!tagResult?.ok) throw new Error(`수정 태그를 입력하지 못했다: ${JSON.stringify(tagResult)}`);
+await page.waitForTimeout(8000);
+if (bodyHtml.includes('data:image')) {
+  const uploadsDeadline = Date.now() + 90000;
+  while (Date.now() < uploadsDeadline) {
+    if (attachUploadPending <= 0 && (lastAttachUploadAt === 0 || (Date.now() - lastAttachUploadAt) > 3000)) break;
+    await page.waitForTimeout(1000);
+  }
+}
+
+let publishLayerResult = null;
+for (let attempt = 0; attempt < 4; attempt += 1) {
+  publishLayerResult = await openPublishLayerOnPage(page);
+  if (publishLayerResult?.modalOpen) break;
+  await page.waitForTimeout(800);
+  fillResult = await fillTistoryPostOnPage(page, {
+    title: options.title,
+    bodyHtml
+  });
+}
+if (!publishLayerResult?.modalOpen) {
+  throw new Error(`수정 발행 레이어를 열지 못했다: ${JSON.stringify(publishLayerResult)}`);
+}
+
+const homeTopicResult = await selectHomeTopicOnPage(page, options.homeTopic || '');
+if (!homeTopicResult?.ok) {
+  throw new Error(`수정 홈주제 선택에 실패했다: ${JSON.stringify(homeTopicResult)}`);
+}
+let representativeImageResult = await setRepresentativeImageOnPage(page, options.representativeImagePath || '');
+if (!representativeImageResult?.ok && representativeImageResult?.reason === 'representative-image-input-not-found') {
+  representativeImageResult = {
+    ...representativeImageResult,
+    ok: true,
+    skipped: true,
+    note: 'repair-update-no-representative-image-input'
+  };
+}
+if (!representativeImageResult?.ok) {
+  throw new Error(`수정 대표이미지 설정에 실패했다: ${JSON.stringify(representativeImageResult)}`);
+}
+
+let publishResult = {
+  ...publishLayerResult,
+  homeTopicResult,
+  representativeImageResult,
+  ...(await confirmPublishOnPage(page, '공개 발행'))
+};
+if (!publishResult?.ok) {
+  await page.waitForTimeout(1500);
+  publishResult = {
+    ...publishResult,
+    retry: await confirmPublishOnPage(page, '공개 발행')
+  };
+  if (!publishResult?.retry?.ok) {
+    throw new Error(`수정 발행 확인에 실패했다: ${JSON.stringify(publishResult)}`);
+  }
+}
+
+await page.waitForTimeout(2000);
+await page.goto(editorUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+await page.waitForTimeout(3000);
+const verification = await page.evaluate(() => ({
+  titleValue: document.querySelector('#post-title-inp')?.value || null,
+  bodyTextLength: (window.tinymce?.activeEditor?.getContent({ format: 'text' }) || '').trim().length,
+  bodyHtmlLength: (window.tinymce?.activeEditor?.getContent() || '').length
+}));
+if (verification.titleValue !== options.title) {
+  throw new Error(`수정 후 제목 검증에 실패했다: ${JSON.stringify({ expected: options.title, verification, requestLog, postRequestCapture, postResponseCapture })}`);
+}
+if (verification.bodyHtmlLength < minimumContentLength) {
+  throw new Error(`수정 후 본문 검증에 실패했다: ${JSON.stringify({ minimumContentLength, verification, requestLog, postRequestCapture, postResponseCapture })}`);
+}
+
+        return {
+          mode: 'update',
+          postId,
+          editorUrl,
+          finalState: await evalOnPage(page, detectTistoryState),
+          verification,
+          fillResult,
+          categoryResult,
+          tagResult,
+          homeTopicResult,
+          representativeImageResult,
+          publishResult,
+          postRequestCapture,
+          postResponseCapture,
+          qrLogin: summarizeQrLogin(qrLogin),
+          qrImagePath: resolveOutputPath(options.qrImagePath)
+        };
+      } finally {
+        page.off('request', captureRequest);
+        page.off('response', captureResponse);
+        await page.close({ runBeforeUnload: false }).catch(() => {});
+        await browser.close().catch(() => {});
+      }
+    },
+    async probeEditor(options) {
+      const editorUrl = buildEditorUrl(options.blogUrl);
+      if (!editorUrl) throw new Error('blogUrl is required.');
+      ensureBrowserStarted({ headed: options.headed });
+      const { browser, page } = await connectManagedPage();
+      try {
+        await page.goto(editorUrl, { waitUntil: 'commit', timeout: 15000 });
+        await page.waitForTimeout(1200);
+        const currentUrl = page.url();
+        const title = await page.title().catch(() => '');
+        const state = currentUrl.startsWith('chrome-error://') || currentUrl === 'about:blank'
+          ? null
+          : await evalOnPage(page, detectTistoryState).catch(() => null);
+        return {
+          ok: currentUrl !== 'about:blank' && !currentUrl.startsWith('chrome-error://'),
+          editorUrl,
+          currentUrl,
+          title,
+          state
+        };
+      } catch (error) {
+        return {
+          ok: false,
+          editorUrl,
+          error: String(error?.message || error || '')
+        };
+      } finally {
+        await page.close({ runBeforeUnload: false }).catch(() => {});
+        await browser.close().catch(() => {});
+      }
+    },
     async ensureCategory(options) {
       const qrHook = options.onQr || onQr;
       const qrResolvedHook = options.onQrResolved || null;

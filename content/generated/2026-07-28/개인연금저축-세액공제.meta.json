@@ -1,0 +1,39 @@
+{
+  "id": "invest-02",
+  "keyword": "개인연금저축 세액공제",
+  "category": "투자·재테크",
+  "tags": [
+    "연금저축",
+    "세액공제",
+    "절세",
+    "IRP",
+    "퇴직연금"
+  ],
+  "contentType": "guide",
+  "cpcTier": "S",
+  "title": "개인연금저축 세액공제 완벽 가이드 – 세율별 절세 금액과 추천 상품 총정리",
+  "description": "하지만 세액공제 한도, 만기 시 세금, 중도해지 불이익 등 고려할 요소가 적지 않습니다. 제대로 알지 못하고 가입하면 오히려 손해를 볼 수 있죠. 이 글에서는 개인연금저축의 세액공제 제도를 처음부터 끝까지 정리합니다",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/개인연금저축-세액공제.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:42:56.477Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 4352,
+      "paragraphs": 26,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/개인연금저축-세액공제.qa.json"
+  }
+}

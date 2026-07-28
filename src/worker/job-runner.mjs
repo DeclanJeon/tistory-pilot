@@ -1,6 +1,7 @@
 import { FileBrowserLockStore } from '../core/runtime/file-browser-lock-store.mjs';
 import { FileJobStore } from '../core/jobs/file-job-store.mjs';
 import { FileArtifactStore } from '../core/artifacts/file-artifact-store.mjs';
+import { notifyPublishResult } from '../../scripts/lib/discord-notify.mjs';
 
 const BROWSER_JOB_TYPES = new Set(['publish_post', 'category_ensure', 'draft_prepare']);
 const RECOVERABLE_STATES = new Set(['running', 'waiting_for_qr', 'waiting_for_editor']);
@@ -30,6 +31,20 @@ export class WorkerJobRunner {
   }
 
   async recoverInterruptedJobs() {
+    const nowMs = Date.now();
+    const lockKey = this.config.lock?.key || 'tistory-browser-lane';
+    try {
+      const currentLock = await this.lockStore.get(lockKey);
+      if (currentLock) {
+        const heartbeatMs = new Date(currentLock.heartbeatAt).getTime();
+        const staleMs = currentLock.staleThresholdMs || 150_000;
+        const leaseMs = currentLock.leaseMs || 90_000;
+        if ((heartbeatMs + staleMs <= nowMs) || (heartbeatMs + leaseMs <= nowMs)) {
+          await this.lockStore.release({ ownerId: currentLock.ownerId, expectedToken: currentLock.token, key: lockKey }).catch(() => {});
+        }
+      }
+    } catch { /* ignore lock cleanup errors */ }
+
     const jobs = await this.jobStore.list();
     const recoverable = jobs.filter(job => RECOVERABLE_STATES.has(job.state));
     for (const job of recoverable) {
@@ -168,6 +183,20 @@ export class WorkerJobRunner {
           stack: error instanceof Error ? error.stack : null
         }
       });
+      try {
+        if (job.type === 'publish_post') {
+          await notifyPublishResult({
+            status: 'failed',
+            title: job.title || job.jobId,
+            blogUrl: job.blogUrl || '',
+            category: job.category || '',
+            jobId: job.jobId,
+            message: error instanceof Error ? error.message : String(error)
+          });
+        }
+      } catch {
+        // ignore notify failure
+      }
       return { jobId: job.jobId, state: 'failed', error: error instanceof Error ? error.message : String(error) };
     } finally {
       if (heartbeatTimer) {

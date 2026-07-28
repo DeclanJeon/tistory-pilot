@@ -13,6 +13,7 @@ import {
   mergeSourceIntoConfig,
   prepareSourceBundle
 } from './lib/source-import.mjs';
+import { DEFAULT_TISTORY_QR_IMAGE_PATH } from './lib/qr-path.mjs';
 import { loadProjectEnv } from './lib/load-env.mjs';
 
 loadProjectEnv();
@@ -36,7 +37,7 @@ const DEFAULTS = {
   tags: process.env.TISTORY_POST_TAGS || '',
   category: process.env.TISTORY_POST_CATEGORY || '',
   heroImage: process.env.TISTORY_POST_HERO_IMAGE || '',
-  qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || 'tmp/kakao-tistory-qr.png',
+  qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || DEFAULT_TISTORY_QR_IMAGE_PATH,
   waitForLoginMs: Number(process.env.TISTORY_WAIT_FOR_LOGIN_MS || 300000),
   qrEmailTo: process.env.TISTORY_QR_EMAIL_TO || '',
   qrEmailOnRefresh: ['1', 'true', 'yes', 'on'].includes(String(process.env.TISTORY_QR_EMAIL_ON_REFRESH || '').toLowerCase()),

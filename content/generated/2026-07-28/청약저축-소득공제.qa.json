@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.627Z",
+  "ok": true,
+  "score": 100,
+  "metrics": {
+    "plainChars": 4119,
+    "paragraphs": 27,
+    "h1": 1,
+    "h2": 7,
+    "tables": 1,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [],
+  "title": "청약저축 소득공제 완벽 정리: 한도, 조건, 신청 방법 총정리",
+  "keyword": "청약저축 소득공제"
+}

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.624Z",
+  "ok": true,
+  "score": 100,
+  "metrics": {
+    "plainChars": 3353,
+    "paragraphs": 22,
+    "h1": 1,
+    "h2": 7,
+    "tables": 1,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [],
+  "title": "정수기 렌탈 비교 총정리 | 케이옥스·교원·코웨이·SK매직 가격과 혜택 분석",
+  "keyword": "정수기 렌탈 비교"
+}

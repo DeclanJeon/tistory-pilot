@@ -1,0 +1,39 @@
+{
+  "id": "life-01",
+  "keyword": "에어컨 전기료 계산",
+  "category": "생활·정보",
+  "tags": [
+    "에어컨",
+    "전기료",
+    "전기요금",
+    "여름",
+    "절약"
+  ],
+  "contentType": "calculator",
+  "cpcTier": "A",
+  "title": "에어컨 전기료 계산 방법과 여름 전기세 절약 꿀팁 총정리",
+  "description": "매년 여름이면 찾아오는 전기료 고지서. 작년 여름 에어컨 틀고 나온 전기료 보고 깜짝 놀랐던 기억이 있으시죠?",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/에어컨-전기료-계산.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:46:22.414Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3533,
+      "paragraphs": 25,
+      "h1": 1,
+      "h2": 7,
+      "tables": 2,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/에어컨-전기료-계산.qa.json"
+  }
+}

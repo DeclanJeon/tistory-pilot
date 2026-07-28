@@ -7,3 +7,7 @@ tmp/
 ~/
 *.log
 assets/
+.gjc/
+content/generated/**/_broken/
+content/learning/cache/
+scheduled/queue/*.empty.json

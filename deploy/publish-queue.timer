@@ -1,0 +1,9 @@
+[Unit]
+Description=Tistory Publish Queue Timer (매일 08:55 실행)
+
+[Timer]
+OnCalendar=*-*-* 08:55:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

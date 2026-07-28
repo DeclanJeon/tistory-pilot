@@ -1,0 +1,44 @@
+{
+  "id": "tech-02",
+  "keyword": "Claude AI 비교 ChatGPT",
+  "category": "IT·테크",
+  "tags": [
+    "Claude",
+    "ChatGPT",
+    "AI비교",
+    "Anthropic",
+    "OpenAI"
+  ],
+  "contentType": "comparison",
+  "cpcTier": "B",
+  "title": "Claude AI vs ChatGPT 완전 비교 분석 2025 – 어떤 AI를 선택해야 할까",
+  "description": "2025년 현재, 대화형 인공지능 시장은 두 거물이 사실상 양분하고 있습니다. OpenAI의 ChatGPT와 Anthropic의 Claude가 그 주인공입니다. 두 플랫폼 모두 빠르게 진화하고 있으며, 업데이트가 쏟",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/claude-ai-비교-chatgpt.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:27:24.022Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 96,
+    "failures": [],
+    "warnings": [
+      {
+        "code": "keyword-missing",
+        "message": "본문에 키워드가 직접 보이지 않는다: Claude AI 비교 ChatGPT"
+      }
+    ],
+    "metrics": {
+      "plainChars": 5522,
+      "paragraphs": 32,
+      "h1": 1,
+      "h2": 8,
+      "tables": 2,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/claude-ai-비교-chatgpt.qa.json"
+  }
+}

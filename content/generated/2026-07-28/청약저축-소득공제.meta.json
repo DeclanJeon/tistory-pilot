@@ -1,0 +1,38 @@
+{
+  "id": "invest-05",
+  "keyword": "청약저축 소득공제",
+  "category": "투자·재테크",
+  "tags": [
+    "청약저축",
+    "소득공제",
+    "주택청약",
+    "절세"
+  ],
+  "contentType": "guide",
+  "cpcTier": "S",
+  "title": "청약저축 소득공제 완벽 정리: 한도, 조건, 신청 방법 총정리",
+  "description": "적절하게 활용하면 연간 최대 240만 원까지 소득공제가 가능합니다. 세율에 따라 다르지만 종합소득세율 24%를 적용받는 근로자라면 연간 약 57만 6천 원의 절세 효과를 기대할 수 있습니다. 이번 글에서는 청약저축 ",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/청약저축-소득공제.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:30:34.200Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 4119,
+      "paragraphs": 27,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/청약저축-소득공제.qa.json"
+  }
+}

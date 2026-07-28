@@ -1,0 +1,39 @@
+{
+  "id": "life-03",
+  "keyword": "알뜰폰 요금제 비교",
+  "category": "생활·정보",
+  "tags": [
+    "알뜰폰",
+    "요금제",
+    "통신사",
+    "비교",
+    "저렴"
+  ],
+  "contentType": "comparison",
+  "cpcTier": "A",
+  "title": "알뜰폰 요금제 비교 분석 2025, 통신비 50% 아끼는 완벽 가이드",
+  "description": "매달 통신비로 나가는 돈, 적게는 3만 원부터 많게는 10만 원이 넘습니다. 같은 LTE·5G 데이터를 쓰는데도 알뜰폰과 대형 통신사 요금제는 가격 차이가 두 배 이상 나는 경우가 흔합니다. 어떤 요금제를 선택하느냐",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/알뜰폰-요금제-비교.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:32:24.085Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 4778,
+      "paragraphs": 29,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/알뜰폰-요금제-비교.qa.json"
+  }
+}

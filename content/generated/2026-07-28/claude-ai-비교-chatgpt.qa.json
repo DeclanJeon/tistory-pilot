@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-07-28T07:46:23.603Z",
+  "ok": true,
+  "score": 96,
+  "metrics": {
+    "plainChars": 5522,
+    "paragraphs": 32,
+    "h1": 1,
+    "h2": 8,
+    "tables": 2,
+    "figures": 1,
+    "blockquotes": 1,
+    "hasInsight": true,
+    "hasInfo": true,
+    "emojiHeader": true
+  },
+  "failures": [],
+  "warnings": [
+    {
+      "code": "keyword-missing",
+      "message": "본문에 키워드가 직접 보이지 않는다: Claude AI 비교 ChatGPT"
+    }
+  ],
+  "title": "Claude AI vs ChatGPT 완전 비교 분석 2025 – 어떤 AI를 선택해야 할까",
+  "keyword": "Claude AI 비교 ChatGPT"
+}

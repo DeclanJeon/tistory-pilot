@@ -1,0 +1,39 @@
+{
+  "id": "tech-03",
+  "keyword": "Cursor AI 코딩 사용법",
+  "category": "IT·테크",
+  "tags": [
+    "Cursor",
+    "AI코딩",
+    "IDE",
+    "개발도구",
+    "VSCode"
+  ],
+  "contentType": "tutorial",
+  "cpcTier": "B",
+  "title": "Cursor AI 코딩 사용법 완벽 가이드 – 설치부터 꿀팁까지",
+  "description": "AI 코딩 도구가 개발자의 일상에 깊숙이 들어온 지금, Cursor는 그중에서도 가장 주목받는 IDE입니다. 기존의 코드 편집 경험 위에 AI를 자연스럽게 녹여낸 덕분에, 적응 비용 없이 바로 생산성을 높일 수 있다",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/cursor-ai-코딩-사용법.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T07:25:32.648Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 100,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "plainChars": 3892,
+      "paragraphs": 25,
+      "h1": 1,
+      "h2": 7,
+      "tables": 1,
+      "figures": 1,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/cursor-ai-코딩-사용법.qa.json"
+  }
+}

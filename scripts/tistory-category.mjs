@@ -12,6 +12,7 @@ import {
   hasQrEmailDelivery,
   sendQrEmailIfConfigured
 } from './lib/qr-notify.mjs';
+import { DEFAULT_TISTORY_QR_IMAGE_PATH } from './lib/qr-path.mjs';
 import { loadProjectEnv } from './lib/load-env.mjs';
 
 loadProjectEnv();
@@ -21,7 +22,7 @@ function parseArgs(argv) {
     blogUrl: process.env.TISTORY_BLOG_URL || 'https://acstory.tistory.com',
     category: process.env.TISTORY_POST_CATEGORY || process.env.TISTORY_BATCH_CATEGORY || '시사',
     headed: process.env.TISTORY_HEADED === '1',
-    qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || 'tmp/kakao-tistory-qr.png',
+    qrImagePath: process.env.TISTORY_QR_IMAGE_PATH || DEFAULT_TISTORY_QR_IMAGE_PATH,
     waitForLoginMs: Number(process.env.TISTORY_WAIT_FOR_LOGIN_MS || 300000),
     qrEmailTo: process.env.TISTORY_QR_EMAIL_TO || '',
     qrEmailOnRefresh: ['1', 'true', 'yes', 'on'].includes(String(process.env.TISTORY_QR_EMAIL_ON_REFRESH || '').toLowerCase()),
@@ -79,7 +80,7 @@ function buildCategoryUrl(blogUrl) {
 }
 
 function resolveOutputPath(filePath) {
-  return path.resolve(String(filePath || 'tmp/kakao-tistory-qr.png'));
+  return path.resolve(String(filePath || DEFAULT_TISTORY_QR_IMAGE_PATH));
 }
 
 function writeDataUrlFile(filePath, dataUrl) {
@@ -209,6 +210,16 @@ function openKakaoQrLogin() {
     const rect = element.getBoundingClientRect();
     return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
   };
+  const buildNavigateUrl = input => {
+    const nextUrl = new URL(String(input || location.href), location.href);
+    nextUrl.pathname = '/qr_login/';
+    nextUrl.searchParams.set('append_stay_signed_in', 'false');
+    nextUrl.searchParams.set('lang', 'en');
+    nextUrl.searchParams.set('showHeader', 'false');
+    nextUrl.searchParams.set('stay_signed_in', 'false');
+    nextUrl.hash = 'main';
+    return nextUrl.toString();
+  };
   if (location.pathname.includes('/qr_login')) {
     return { clicked: false, alreadyOnQrPage: true, url: location.href };
   }
@@ -219,11 +230,14 @@ function openKakaoQrLogin() {
     return /(log in with qr code|qr코드 로그인|qr 코드 로그인|qr login)/i.test(label)
       && !/(새로고침|refresh|사용방법|help)/i.test(label);
   });
+  const navigateUrl = target instanceof HTMLAnchorElement && target.href
+    ? target.href
+    : buildNavigateUrl(location.href);
   if (!target) {
-    return { clicked: false, reason: 'qr-login-button-not-found', url: location.href };
+    return { clicked: false, reason: 'qr-login-button-not-found', url: location.href, navigateUrl };
   }
   target.click();
-  return { clicked: true, label: normalize(target.innerText || target.textContent || target.getAttribute('aria-label') || ''), url: location.href };
+  return { clicked: true, label: normalize(target.innerText || target.textContent || target.getAttribute('aria-label') || ''), url: location.href, navigateUrl };
 }
 
 function ensureKakaoStaySignedIn() {
@@ -485,7 +499,10 @@ function ensureKakaoQrReady(options) {
     if (lastKakaoState?.onKakaoHost) {
       evaluate(ensureKakaoStaySignedIn);
       const openedQr = evaluate(openKakaoQrLogin);
-      if (openedQr?.clicked || openedQr?.alreadyOnQrPage) {
+      if (openedQr?.navigateUrl && !openedQr?.alreadyOnQrPage) {
+        navigate(openedQr.navigateUrl);
+      }
+      if (openedQr?.clicked || openedQr?.alreadyOnQrPage || openedQr?.navigateUrl) {
         wait(1500);
         lastAdminState = evaluate(detectAdminState);
         lastKakaoState = evaluate(detectKakaoLoginState);

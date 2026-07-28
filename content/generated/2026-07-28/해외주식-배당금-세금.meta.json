@@ -1,0 +1,48 @@
+{
+  "id": "invest-10",
+  "keyword": "해외주식 배당금 세금",
+  "category": "투자·재테크",
+  "tags": [
+    "해외주식",
+    "배당금",
+    "세금",
+    "양도소득",
+    "미국주식"
+  ],
+  "contentType": "guide",
+  "cpcTier": "A",
+  "title": "해외주식 배당금 세금 완벽 가이드: 원천징수에서 신고까지 정리했습니다",
+  "description": "미국 주식 배당금은 원천징수부터 국내 소득세 신고까지 여러 단계를 거칩니다. 이 과정에서 세율이 어떻게 적용되는지, 추가로 내야 할 세금은 얼마인지, 어떤 전략으로 절세할 수 있는지까지 한 번에 정리해 보겠습니다.",
+  "bodyFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/해외주식-배당금-세금.html",
+  "thumbnail": "",
+  "generatedAt": "2026-07-28T04:37:51.769Z",
+  "status": "qa_passed",
+  "qa": {
+    "ok": true,
+    "score": 92,
+    "failures": [],
+    "warnings": [
+      {
+        "code": "missing-figure",
+        "message": "figure 이미지가 없다."
+      },
+      {
+        "code": "uniform-paragraphs",
+        "message": "문단 길이가 지나치게 균일하다 (stdev=17.4)."
+      }
+    ],
+    "metrics": {
+      "plainChars": 1987,
+      "paragraphs": 12,
+      "h1": 1,
+      "h2": 4,
+      "tables": 2,
+      "figures": 0,
+      "blockquotes": 1,
+      "hasInsight": true,
+      "hasInfo": true,
+      "emojiHeader": true
+    },
+    "reportFile": "/home/declan/Documents/Develop/Project/tistory-pilot/content/generated/2026-07-28/해외주식-배당금-세금.qa.json"
+  }
+}
