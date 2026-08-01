@@ -16,6 +16,7 @@
  *   node scripts/content/auto-queue.mjs --max-posts 3
  */
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { qaMetaPost } from './qa-post.mjs';
 import { scoreKeyword, computeSelectionScore, freshnessFactor, normalizeGapScore } from './keyword-score.mjs';
@@ -23,7 +24,11 @@ import { recentGeneratedPosts, mixBucket } from './select-keywords.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const GENERATED_DIR = path.join(PROJECT_ROOT, 'content', 'generated');
-const QUEUE_DIR = path.join(PROJECT_ROOT, 'scheduled', 'queue');
+// 서버는 /srv/publish-workbench/scheduled/queue, 로컬은 프로젝트 scheduled/queue
+const QUEUE_DIR = process.env.SCHEDULED_QUEUE_DIR
+  || (existsSync('/srv/publish-workbench/scheduled/queue')
+    ? '/srv/publish-workbench/scheduled/queue'
+    : path.join(PROJECT_ROOT, 'scheduled', 'queue'));
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
 
 const TIME_SLOTS = ['0700', '0900', '1200', '1400', '1700', '2000', '2200'];

@@ -318,7 +318,7 @@ async function generateWithHermes(systemPrompt, userPrompt, context, args) {
     const providerFlag = /mimo/i.test(model) ? '--provider xiaomi' : '';
     const modelFlag = `-m ${model}`;
     const result = execSync(`hermes ${providerFlag} ${modelFlag} -z "$(cat '${promptFile}')"`, {
-      timeout: 120000,
+      timeout: 300000,
       stdio: 'pipe',
       encoding: 'utf8',
       shell: '/bin/bash'
