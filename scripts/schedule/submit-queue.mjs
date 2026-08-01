@@ -137,12 +137,14 @@ async function submitJob(post, { dryRun, verbose }) {
   // bodyFile 이 있으면 읽어서 bodyHtml 로 채운다
   if (!post.bodyHtml && !post.body && post.bodyFile) {
     try {
-      post.bodyHtml = await fs.readFile(post.bodyFile, 'utf8');
+      const bodyPath = path.isAbsolute(post.bodyFile)
+        ? post.bodyFile
+        : path.join(PROJECT_ROOT, post.bodyFile);
+      post.bodyHtml = await fs.readFile(bodyPath, 'utf8');
     } catch (error) {
       return { ok: false, error: `bodyFile 읽기 실패: ${post.bodyFile}` };
     }
   }
-
   const qa = await qaQueuePost(post);
   if (!qa.ok) {
     return { ok: false, error: `QA 실패: ${qa.failures.join(', ')}`, qa };

@@ -54,6 +54,17 @@ function parseArgs(argv) {
   return args;
 }
 
+function normalizeBodyFile(bodyFile = '') {
+  const raw = String(bodyFile || '');
+  if (!raw) return '';
+  // 절대 경로면 프로젝트 루트 이후를 상대 경로로 변환 (서버 배포 호환)
+  if (path.isAbsolute(raw)) {
+    const rel = path.relative(PROJECT_ROOT, raw);
+    if (rel && !rel.startsWith('..') && !path.isAbsolute(rel)) return rel.replace(/\\/g, '/');
+  }
+  return raw.replace(/\\/g, '/');
+}
+
 async function findGeneratedPosts(date) {
   const dayDir = path.join(GENERATED_DIR, date);
   try {
@@ -334,7 +345,7 @@ async function main() {
         blogUrl: 'https://acstory.tistory.com',
         title: post.title || post.keyword,
         bodyHtml: '',
-        bodyFile: post.bodyFile,
+        bodyFile: normalizeBodyFile(post.bodyFile),
         description: post.description || '',
         category: post.category,
         tags: Array.isArray(post.tags) ? post.tags.join(',') : (post.tags || ''),
