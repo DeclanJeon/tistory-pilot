@@ -34,19 +34,19 @@ const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.j
 const TIME_SLOTS = ['0700', '0900', '1200', '1400', '1700', '2000', '2200'];
 const SLOT_MAX = { '0700': 2, '0900': 3, '1200': 2, '1400': 2, '1700': 3, '2000': 2, '2200': 1 };
 
-// 설계 §8: 애드센스 승인 전 일 3~5건 캡 (기존 SLOT_MAX 합 15 → 5)
-const BOOTSTRAP_MAX_POSTS = 5;
+// 애드센스 승인 후 운영 정책: 일일 생성·발행 상한 15건
+const DAILY_MAX_POSTS = 15;
 // 설계 §3: 최근 10건 기준 믹스 50/30/20 ±10%p
 const MIX_TARGET = { '비용': 50, '절차': 30, '문제해결': 20 };
 const MIX_TOLERANCE_PP = 10;
 const LEGACY_CAP_RATIO = 0.2; // 레거시 시리즈(정보·기타)는 전체의 20% 상한
 
 function parseArgs(argv) {
-  const args = { date: '', dryRun: false, maxPosts: BOOTSTRAP_MAX_POSTS };
+  const args = { date: '', dryRun: false, maxPosts: DAILY_MAX_POSTS };
   for (let i = 2; i < argv.length; i++) {
     if (argv[i] === '--date' && argv[i + 1]) { args.date = argv[++i]; }
     else if (argv[i] === '--dry-run') { args.dryRun = true; }
-    else if (argv[i] === '--max-posts' && argv[i + 1]) { args.maxPosts = Number(argv[++i]) || BOOTSTRAP_MAX_POSTS; }
+    else if (argv[i] === '--max-posts' && argv[i + 1]) { args.maxPosts = Number(argv[++i]) || DAILY_MAX_POSTS; }
     else if (argv[i] === '--help') {
       console.log(`사용법: node auto-queue.mjs [--date YYYY-MM-DD] [--dry-run] [--max-posts N]`);
       process.exit(0);
@@ -134,7 +134,7 @@ export function enforceMix(candidates, recentPosts, kwById, cap) {
   const pushDeferred = (c, reason) => deferred.push({ ...c, reason });
 
   for (const c of candidates) {
-    if (selected.length >= cap) { pushDeferred(c, '부트스트랩 일 캡 초과'); continue; }
+    if (selected.length >= cap) { pushDeferred(c, '일일 발행 캡 초과'); continue; }
     const b = mixBucket(c.kw.contentType);
     const projected = (recentCount[b] || 0) + (selectedCount[b] || 0) + 1;
     const denom = denomBase + selected.length + 1;
@@ -155,7 +155,7 @@ export function enforceMix(candidates, recentPosts, kwById, cap) {
   const filled = selected.length;
   for (const d of deferred) {
     if (selected.length >= cap) break;
-    if (d.reason.startsWith('부트스트랩')) break; // 캡 초과분은 절대 채우지 않는다
+    if (d.reason.startsWith('일일 발행 캡')) break; // 캡 초과분은 절대 채우지 않는다
     selected.push(d);
   }
   if (selected.length > filled) {
@@ -164,7 +164,7 @@ export function enforceMix(candidates, recentPosts, kwById, cap) {
   return { selected, rejectedMix: deferred };
 }
 
-async function selectPosts(qaResults, keywordsData, { maxPosts = BOOTSTRAP_MAX_POSTS } = {}) {
+async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS } = {}) {
   const kwById = new Map(keywordsData.keywords.map(k => [k.id, k]));
   const focus = keywordsData.focusCategories;
   const allowLegacy = keywordsData.allowLegacySeries;
@@ -258,7 +258,7 @@ function distributeToSlots(posts) {
 
 async function main() {
   const args = parseArgs(process.argv);
-  console.log(`날짜: ${args.date} | 부트스트랩 일 캡: ${args.maxPosts}건`);
+  console.log(`날짜: ${args.date} | 일일 발행 캡: ${args.maxPosts}건`);
 
   const posts = await findGeneratedPosts(args.date);
   console.log(`생성된 글: ${posts.length}개`);

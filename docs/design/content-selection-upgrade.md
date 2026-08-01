@@ -173,7 +173,7 @@ content/keywords/keywords.json   ← 수동 큐레이션 (20개)
    (신선도: 생성일 기준 14일 초과 시 감점, "2025" 구제목 감점)
 3. 믹스 제약: 최근 10건 비율 대비 잔여 할당 순서 결정
 4. 슬롯 캡 (기존 SLOT_MAX 유지) — 점수 내림차순 배치
-5. 부트스트랩 모드 (CONFIG.boostrap=true): 일 3~5건 캡
+5. 승인 후 운영 모드: 일일 생성·발행 상한 15건
 ```
 
 - `selectionScore`는 queue 포스트에 저장(디버그용), `qaScore`와 별도 필드 유지.
@@ -226,7 +226,7 @@ content/keywords/keywords.json   ← 수동 큐레이션 (20개)
 ## 8. 발행 정책 (가이드 §9·§13 반영)
 
 - **부트스트랩기 (애드센스 승인 전)**: 일 3~5건, 품질 우선. "하루 10개 자동 발행"은 가이드 §13의 명시적 금지 사항.
-- **스케일업기 (승인 후)**: 일 10건 이하 유지, 시리즈·파생 콘텐츠로 확장.
+- **승인 후 운영기 (현재)**: 일일 생성·발행 최대 15건. 모든 글은 동일한 QA·YMYL·울타리·믹스 게이트를 통과해야 한다.
 - **금지 인코딩** (가이드 §13 목록 → QA/프롬프트 규칙):
   - 클릭 유도 문구 금지 (`광고 클릭 부탁` 등) — 프롬프트에 명시 + QA 키워드
   - 확인 안 된 가격 단정 금지 — `estimateCpcTier`식 추정을 본문 가격으로 쓰지 못하게 프롬프트 강제
@@ -284,7 +284,7 @@ content/keywords/keywords.json   ← 수동 큐레이션 (20개)
 | 스키마 v2 | `content/keywords/keywords.json` | ✅ | 32개 키워드 (move 12 + life 5 + tech 5 + invest 10 disabled), `enabled` 22개, 점수 필드 자동 산출 |
 | SERP 갭 | `scripts/content/market-research.mjs` | ✅ | 스니펫 수집 + 갭 신호 7종 + 실패율 학습(30% 폴백), 단위 테스트 통과 |
 | 선정 CLI | `scripts/content/select-keywords.mjs` (신규) | ✅ | `--import-csv`/`--import-search-console`/`--refresh`/`--mix-report`, 목킹 CSV 테스트 통과 |
-| 큐 선택기 | `scripts/content/auto-queue.mjs` | ✅ | selectionScore 정렬 + YMYL/주제 게이트 + 믹스 ±10%p + 부트스트랩 캡 5건, 07-28 실데이터 드라이런 통과 |
+| 큐 선택기 | `scripts/content/auto-queue.mjs` | ✅ | selectionScore 정렬 + YMYL/주제 게이트 + 믹스 ±10%p + 승인 후 일일 캡 15건, 07-28 실데이터 드라이런 통과 |
 | QA 확장 | `scripts/content/qa-post.mjs` | ✅ | 연도/출처/YMYL/표/오프너 5종, 기존 글 재검증 (stale-year 7건 의도적 차단) |
 | 프롬프트 | `scripts/content/generate-post.mjs` | ✅ | YMYL·출처·연도·비용표·오프너 지침 + cost/problem/checklist 유형 템플릿 |
 | 발행 게이트 | `scripts/schedule/submit-queue.mjs` | ✅ | 발행 직전 재검증(I1) + 키워드 enabled/YMYL 중복 방어 + 피드백 기록, 07-30 큐 드라이런에서 "신용점수 2025년" 차단 확인 |

@@ -114,7 +114,7 @@ test('믹스 게이트: 목표 ±10%p 초과 유형은 defer, 부족 유형은 �
   assert.ok(picked.includes('c1'));
 });
 
-test('부트스트랩 캡 초과분은 믹스 완화로도 채우지 않는다', () => {
+test('일일 발행 캡 초과분은 믹스 완화로도 채우지 않는다', () => {
   // 최근 10건이 목표 비중 내라 믹스 defer 없이 5건이 차는 시나리오
   const recent = [
     ...Array.from({ length: 5 }, (_, i) => ({ id: `r${i}`, contentType: 'cost' })),
@@ -131,7 +131,7 @@ test('부트스트랩 캡 초과분은 믹스 완화로도 채우지 않는다',
   const { selected, rejectedMix } = enforceMix(candidates, recent, kwById, 5);
 
   assert.equal(selected.length, 5); // 캡 5
-  const capReasons = rejectedMix.filter(r => r.reason.startsWith('부트스트랩 일 캡 초과'));
+  const capReasons = rejectedMix.filter(r => r.reason.startsWith('일일 발행 캡 초과'));
   assert.ok(capReasons.length >= 1, `캡 초과 defer 없음: ${rejectedMix.map(r => r.reason)}`);
   // 캡 초과 reason은 fill에서 절대 재충전되지 않는다 — selected가 이미 5건이라 fill 미실행
   assert.equal(selected.length, 5);
