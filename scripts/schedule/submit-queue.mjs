@@ -14,31 +14,65 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import http from 'node:http';
+import { qaHtmlPost } from '../content/qa-post.mjs';
+import { recordPublishFeedback } from '../content/market-research.mjs';
+
+const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
+const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
 
 const WORKBENCH_HOST = process.env.WORKBENCH_HOST || '127.0.0.1';
 const WORKBENCH_PORT = Number(process.env.WORKBENCH_PORT || 4310);
 const WORKBENCH_BASE = process.env.WORKBENCH_BASE_URL || `http://${WORKBENCH_HOST}:${WORKBENCH_PORT}`;
 
-function stripHtml(html) {
-  return String(html || '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
-function qaQueuePost(post) {
-  const html = post.bodyHtml || post.body || '';
-  const plain = stripHtml(html);
+// 발행 직전 QA — qa-post 로직 공유 (설계 §9 Phase 2) + 키워드 게이트 중복 방어 (I1).
+// marketResearch는 서버에서 라이브 크롤을 피하려고 끈다.
+async function qaQueuePost(post) {
+  let contentType = post.contentType || '';
+  let ymylRisk = post.ymylRisk || '';
   const failures = [];
-  if (!html.trim()) failures.push('empty-html');
-  if (plain.length < 1200) failures.push(`too-short:${plain.length}`);
-  if ((html.match(/<p\b/gi) || []).length < 5) failures.push('too-few-paragraphs');
-  if ((html.match(/<h2\b/gi) || []).length < 3) failures.push('too-few-sections');
-  if (/```/.test(html)) failures.push('markdown-fence');
-  if (/한 줄 요약|먼저 핵심만 보자|바로 본론으로/.test(html)) failures.push('ai-pattern');
-  const title = String(post.title || '').trim();
-  if (title.length < 8) failures.push('weak-title');
-  return { ok: failures.length === 0, failures, plainChars: plain.length };
+  const warnings = [];
+
+  if (post.id || post.keyword) {
+    try {
+      const raw = await fs.readFile(KEYWORDS_PATH, 'utf8');
+      const data = JSON.parse(raw);
+      const list = data.keywords || [];
+      // 큐 id는 `life-02` 또는 `life-02-2026-07-30` 형태일 수 있다.
+      const kw = list.find(k => k.id === post.id)
+        || list.find(k => post.id && post.id.startsWith(`${k.id}-`))
+        || list.find(k => post.keyword && k.keyword === post.keyword);
+      if (!kw && post.id) {
+        failures.push(`keyword-missing:${post.id}`);
+      } else if (kw) {
+        contentType = contentType || kw.contentType || '';
+        ymylRisk = ymylRisk || kw.ymylRisk || '';
+        if (kw.enabled === false) failures.push(`keyword-disabled:${kw.id}`);
+        if (kw.ymylRisk === 'high') failures.push(`keyword-ymyl:${kw.id}`);
+      }
+    } catch {
+      warnings.push('keywords-unreadable');
+    }
+  }
+
+  const html = post.bodyHtml || post.body || '';
+  const report = qaHtmlPost(html, {
+    title: post.title || '',
+    keyword: post.keyword || post.id || '',
+    category: post.category || '',
+    contentType,
+    ymylRisk
+  });
+  for (const f of report.failures || []) failures.push(f.code || String(f));
+  for (const w of report.warnings || []) warnings.push(w.code || String(w));
+
+  return {
+    ok: failures.length === 0,
+    failures,
+    warnings,
+    plainChars: report.metrics?.plainChars || 0,
+    score: report.score
+  };
 }
 
 
@@ -109,7 +143,7 @@ async function submitJob(post, { dryRun, verbose }) {
     }
   }
 
-  const qa = qaQueuePost(post);
+  const qa = await qaQueuePost(post);
   if (!qa.ok) {
     return { ok: false, error: `QA 실패: ${qa.failures.join(', ')}`, qa };
   }
@@ -233,6 +267,17 @@ async function main() {
         if (!args.dryRun) {
           await moveToFailed(args.queueDir, failedDir, post._sourceFile, post.id);
         }
+      }
+      // 피드백 루프 (설계 §9 Phase 3): 발행 시도 결과를 학습 메모리에 기록
+      if (!args.dryRun) {
+        await recordPublishFeedback({
+          keyword: post.keyword || post.id || '',
+          title: post.title || '',
+          status: result.ok ? 'succeeded' : 'failed',
+          category: post.category || ''
+        }).catch(error => {
+          console.error(`  ⚠ 피드백 기록 실패: ${error instanceof Error ? error.message : String(error)}`);
+        });
       }
     } catch (error) {
       console.error(`  ✗ 에러: ${error.message}`);

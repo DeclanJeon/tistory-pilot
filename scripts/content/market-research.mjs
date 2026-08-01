@@ -251,6 +251,80 @@ function tokenizeKorean(text) {
     .filter(t => t.length >= 2 && !['있는', '없는', '하는', '위해', '그리고', '대한', '통해', '부터', '까지', 'https', 'com', 'www'].includes(t));
 }
 
+// ─── SERP 스니펫 수집 + 갭 분석 (설계 문서 §4) ────────────────────────
+// 상위 글이 "얼마나 나쁜가"를 신호로 점수화: 갭이 클수록 새 글이 들어갈 자리가 크다.
+
+function extractSnippets(html) {
+  const snippets = [];
+  const patterns = [
+    /<div class="[^"]*(?:total_dsc|api_txt_lines|text)[^"]*"[^>]*>([\s\S]*?)<\/div>/gi,
+    /<div class="VwiC3b[^"]*"[^>]*>([\s\S]*?)<\/div>/gi,
+    /<span class="[^"]*(?:dsc|desc|summary)[^"]*"[^>]*>([\s\S]*?)<\/span>/gi
+  ];
+  for (const re of patterns) {
+    let m;
+    while ((m = re.exec(html)) && snippets.length < 40) {
+      const t = stripTags(m[1]).trim();
+      if (t.length >= 20) snippets.push(t);
+    }
+  }
+  return uniqueBy(snippets, s => s);
+}
+
+const COST_KEYWORD_RE = /비용|가격|요금|견적|렌탈|이사|청소|설치|교체|위약금|봉급|급여|보조금|지원금|할인/;
+const PRICE_RE = /[\d,]+(\s*만원|\s*원)/;
+const ASOF_RE = /20\d{2}\s*(년|년도)?\s*(기준|기준으로|개정|시행|발표)|기준일/;
+const EXTRA_FEE_RE = /추가요금|별도|옵션|할증/;
+const PROMO_RE = /무료 견적|상담 신청|최저가|지금 (바로|신청)|무료 상담/;
+const FAQ_RE = /왜 |어떻게 |가능한지|되는지|인지|안 되|늦어짐/;
+
+const GAP_POINTS = {
+  priceTableMissing: 6,
+  noAsOfDate: 4,
+  scopeUnclear: 4,
+  extraFeesUncovered: 4,
+  adHeavy: 3,
+  outdated: 3,
+  faqUnanswered: 2
+};
+
+export function analyzeSerpGap({ keyword = '', snippets = [], titles = [], deepSamples = [] } = {}) {
+  const signals = {};
+  const allText = [...snippets, ...titles].join(' ');
+  const bodyTexts = deepSamples.map(d => d.plainText || '');
+  const isCost = COST_KEYWORD_RE.test(keyword);
+
+  if (isCost) {
+    const hasPrice = PRICE_RE.test(allText) || bodyTexts.some(t => PRICE_RE.test(t));
+    signals.priceTableMissing = !hasPrice;
+  }
+  signals.noAsOfDate = !ASOF_RE.test(allText) && !bodyTexts.some(t => ASOF_RE.test(t));
+
+  if (/\d+\s*평/.test(keyword)) {
+    signals.scopeUnclear = !/평|㎡|항목|포함|별도/.test(allText);
+  }
+  if (/이사|렌탈|청소|설치|교체|가입/.test(keyword)) {
+    signals.extraFeesUncovered = !EXTRA_FEE_RE.test(allText) && !bodyTexts.some(t => EXTRA_FEE_RE.test(t));
+  }
+  if (snippets.length >= 3) {
+    const promo = snippets.filter(s => PROMO_RE.test(s)).length;
+    signals.adHeavy = promo / snippets.length >= 0.5;
+  }
+  const nowYear = new Date().getFullYear();
+  const years = [...allText.matchAll(/20\d{2}/g)].map(m => Number(m[0])).filter(y => y >= 2018 && y <= nowYear + 1);
+  if (years.length >= 3) {
+    const avgYear = years.reduce((a, b) => a + b, 0) / years.length;
+    signals.outdated = avgYear < nowYear - 1;
+  }
+  signals.faqUnanswered = FAQ_RE.test(allText) && !bodyTexts.some(t => FAQ_RE.test(t));
+
+  let total = 0;
+  for (const [k, v] of Object.entries(signals)) {
+    if (v) total += GAP_POINTS[k];
+  }
+  return { total, signals };
+}
+
 async function loadMemory() {
   try {
     return JSON.parse(await fs.readFile(MEMORY_PATH, 'utf8'));
@@ -310,12 +384,22 @@ export async function researchKeywordMarket(keyword, options = {}) {
 
   const competitors = [];
   const errors = [];
+  const snippets = [];
+
+  // 스니펫 수집 실패율 학습 (설계 §11-4): 30% 이상 실패면 수집 비활성화 폴백
+  const mem0 = await loadMemory();
+  const sStats = mem0.snippetStats || { attempts: 0, failed: 0 };
+  const enableSnippets = sStats.attempts < 5 || sStats.failed / sStats.attempts < 0.3;
+  let naverHtml = null;
+  let googleHtml = null;
 
   // Naver search
   try {
     const naverUrl = `https://search.naver.com/search.naver?where=view&sm=tab_jum&query=${encodeURIComponent(key)}`;
     const html = await fetchSearchHtml(naverUrl);
+    naverHtml = html;
     competitors.push(...extractNaverResults(html));
+    if (enableSnippets) snippets.push(...extractSnippets(html));
   } catch (error) {
     errors.push(`naver:${error instanceof Error ? error.message : String(error)}`);
   }
@@ -324,7 +408,9 @@ export async function researchKeywordMarket(keyword, options = {}) {
   try {
     const googleUrl = `https://www.google.com/search?hl=ko&gl=kr&q=${encodeURIComponent(key)}&num=10`;
     const html = await fetchSearchHtml(googleUrl);
+    googleHtml = html;
     competitors.push(...extractGoogleResults(html));
+    if (enableSnippets) snippets.push(...extractSnippets(html));
   } catch (error) {
     errors.push(`google:${error instanceof Error ? error.message : String(error)}`);
   }
@@ -336,10 +422,13 @@ export async function researchKeywordMarket(keyword, options = {}) {
     try {
       const html = await fetchSearchHtml(item.url);
       const text = stripTags(html);
+      const desc = (html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i) || [])[1] || '';
       deepSamples.push({
         url: item.url,
         title: item.title,
         plainChars: text.length,
+        plainText: text.slice(0, 1500),
+        snippet: stripTags(desc).slice(0, 300),
         hasTable: /<table/i.test(html || ''),
         tokens: tokenizeKorean(text).slice(0, 30)
       });
@@ -378,6 +467,13 @@ export async function researchKeywordMarket(keyword, options = {}) {
     ? Math.round(uniq.reduce((sum, u) => sum + [...u.title].length, 0) / uniq.length)
     : 0;
 
+  const serpGap = analyzeSerpGap({
+    keyword: key,
+    snippets,
+    titles: uniq.map(u => u.title),
+    deepSamples
+  });
+
   const recommendations = [];
   if (topHookLabels.length) recommendations.push(`상위 노출 제목 훅: ${topHookLabels.join(', ')}`);
   if (commonTokens.length) recommendations.push(`반복 노출 토큰: ${commonTokens.slice(0, 8).join(', ')}`);
@@ -398,6 +494,7 @@ export async function researchKeywordMarket(keyword, options = {}) {
     commonTokens,
     competitors: uniq,
     deepSamples,
+    serpGap,
     recommendations,
     errors
   };
@@ -406,6 +503,11 @@ export async function researchKeywordMarket(keyword, options = {}) {
 
   // update durable memory
   const memory = await loadMemory();
+  if (enableSnippets) {
+    sStats.attempts++;
+    if ((naverHtml || googleHtml) && snippets.length === 0) sStats.failed++;
+    memory.snippetStats = sStats;
+  }
   memory.keywords[key] = {
     updatedAt: market.researchedAt,
     intent: market.intent,
@@ -413,7 +515,8 @@ export async function researchKeywordMarket(keyword, options = {}) {
     topHooks: market.topHooks,
     commonTokens: market.commonTokens,
     avgTitleLength: market.avgTitleLength,
-    sampleCount: market.sampleCount
+    sampleCount: market.sampleCount,
+    serpGap: market.serpGap.total
   };
   for (const h of market.topHooks) {
     memory.patterns.titleHooks[h] = (memory.patterns.titleHooks[h] || 0) + 1;
@@ -500,6 +603,23 @@ export function buildMarketPromptBlock(market) {
   }
   lines.push('작성 지시:');
   for (const r of (market.recommendations || []).slice(0, 6)) lines.push(`- ${r}`);
+  const gapLabels = {
+    priceTableMissing: '상위 글에 실제 가격/요금표가 없다 → 가격표와 비용 항목별 표를 넣어라',
+    noAsOfDate: '상위 글에 기준일이 없다 → (YYYY년 기준) 명시하라',
+    scopeUnclear: '상위 글에 평수/규모별 범위가 없다 → 평수·규모별로 구분하라',
+    extraFeesUncovered: '상위 글에 추가요금/별도 비용이 없다 → 추가요금·옵션 항목을 다뤄라',
+    adHeavy: '상위 결과가 광고성이다 → 중립적 비교/표로 차별화하라',
+    outdated: '상위 결과 연도가 낮다 → 최신 연도 데이터로 갱신하라',
+    faqUnanswered: '사용자 질문형 검색이 보인다 → FAQ/주의사항 섹션을 넣어라'
+  };
+  const gapHits = Object.entries((market.serpGap || {}).signals || {})
+    .filter(([, v]) => v)
+    .map(([k]) => gapLabels[k])
+    .filter(Boolean);
+  if (gapHits.length) {
+    lines.push('경쟁 갭 신호(우선 공략):');
+    for (const g of gapHits) lines.push(`- ${g}`);
+  }
   lines.push('[/시장 리서치 결과]');
   return lines.join('\n');
 }

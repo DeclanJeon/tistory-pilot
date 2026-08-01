@@ -16,7 +16,7 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { loadProjectEnv } from '../lib/load-env.mjs';
 import { qaHtmlPostWithMarket, writeQaReport } from './qa-post.mjs';
-import { researchKeywordMarket, buildMarketPromptBlock, recordPublishFeedback } from './market-research.mjs';
+import { researchKeywordMarket, buildMarketPromptBlock } from './market-research.mjs';
 
 loadProjectEnv({ localEnvPath: '.env.local', fallbackEnvPaths: ['.env'] });
 
@@ -193,6 +193,7 @@ async function buildSystemPrompt() {
   const skillBlock = skill
     ? `\n\n[tistory-blog SKILL.md 원문]\n${skill.slice(0, 12000)}\n[/tistory-blog SKILL.md]\n`
     : '';
+  const curYear = new Date().getFullYear();
 
   return `당신은 한국어 티스토리 블로그 전문 작가다.
 아래 tistory-blog 스킬 규칙을 최우선으로 따른다.
@@ -210,7 +211,15 @@ ${skillBlock}
 9. 본문 한국어 plain text 기준 2,200자 이상. 문단 p 태그 10개 이상.
 10. AI 패턴 금지: "한 줄 요약", "먼저 핵심만 보자", "바로 본론으로".
 11. 문단 길이를 균일하게 쓰지 말고 강약을 섞는다.
-12. 출력은 HTML만. 설명 문장, 코드블록 감싸기 금지.`;
+12. 출력은 HTML만. 설명 문장, 코드블록 감싸기 금지.
+
+수익형 블로그 안전 규칙 (설계 문서 §3):
+13. 제목/본문의 연도는 현재 연도(${curYear}) 기준으로 쓴다. 지난 연도(2025 이하)를 제목에 넣지 않는다.
+14. 비용·가격·수치·기준일을 주장할 때는 반드시 근처에 (출처: …) 를 명시한다. 추정치는 "약/대략"으로 표현한다.
+15. 금지 문구: 무조건 승인, 승인 보장, 가장 좋은 보험/대출, 확실히 줄이는/내리는, 소송에서 이기는, 치료 효과, 완치, 부작용 없이.
+16. 금융·보험·건강·법률(YMYL) 주제는 결정을 강요하지 않고 공식 절차·서류·문의처·수수료 정보만 제공한다.
+17. 비용/요금 주제(비용·가격·요금·견적·렌탈·이사·청소·설치·교체·위약금)는 항목별 가격표(<table>)와 추가요금·별도 비용 항목을 반드시 포함한다.
+18. 첫 문단은 인사말이 아니라 훅으로 시작한다: 구체적 숫자, 문제 공감, 또는 질문.`;
 }
 
 function buildUserPrompt(context) {
@@ -220,10 +229,14 @@ function buildUserPrompt(context) {
     calculator: '계산 방법: 공식 설명 + 실제 계산 예시 + 팁',
     list: '리스트/모음: 관련 도구/방법/상품을 10개 이상 정리',
     tutorial: '튜토리얼: 설치/설정 → 사용법 → 꿀팁',
-    info: '정보 정리: 최신 데이터/정책/수치를 한눈에 정리'
+    info: '정보 정리: 최신 데이터/정책/수치를 한눈에 정리',
+    cost: '비용 정리: (현재 연도 기준) 항목별 가격표 + 추가요금·별도 비용 + 견적 받는 법 + 아끼는 팁',
+    problem: '문제 해결: 증상/문제 인식 → 원인 → 해결 방법 → 예방·주의사항',
+    checklist: '체크리스트: 단계별 체크리스트 표 + 준비물 + 실수 방지'
   };
 
   const typeDesc = contentTypeDescriptions[context.contentType] || contentTypeDescriptions.guide;
+  const curYear = new Date().getFullYear();
 
   return `"${context.keyword}"에 대한 블로그 글을 작성해라.
 
@@ -241,7 +254,7 @@ ${context.marketPrompt || ''}
 - 형식: 순수 HTML만 (마크다운 금지)
 - 시작: <div style="font-size:16px;line-height:1.82;color:#1f2937;max-width:800px;margin:0 auto;">
 - 첫 요소: <h1>SEO 제목</h1> (키워드 포함, 28~48자)
-- 이어서 도입 문단 2~3개
+- 이어서 도입 문단 2~3개 — 인사말 금지, 첫 문단부터 훅(숫자/문제 공감/질문)으로 시작
 - 본문 h2 섹션 5~7개
 - 노란 인사이트 박스 1개+, 파란 정보 박스 2개+, blockquote 1개+
 - 수치/비교가 있으면 table 필수
@@ -251,7 +264,13 @@ ${context.marketPrompt || ''}
 - 글이 중간에 끊기면 안 된다. 마지막 문장은 완전한 종결형(~다/~습니다)으로 끝낸다
 - 미완성 문장, 깨진 HTML, 중국어 한자 혼입 금지
 - 출력은 HTML 문서 조각만. 앞뒤 설명 금지
-- 반드시 </div> 로 정상 종료`;
+- 반드시 </div> 로 정상 종료
+
+데이터 신뢰 규칙:
+- 제목/본문 연도는 현재 연도(${curYear})만 쓴다. 지난 연도(2025 이하) 제목 금지.
+- 비용·가격·수치·기준일 주장에는 근처에 (출처: …) 를 명시한다. 추정치는 "약/대략"으로.
+- 금지 문구: 무조건 승인, 승인 보장, 가장 좋은 보험/대출, 확실히 줄이는, 확실히 내리는, 치료 효과, 완치, 부작용 없이.
+${context.contentType === 'cost' ? '- 비용형: 항목별 가격표(<table>) 필수, 추가요금·별도 비용(옵션/할증/위약금) 섹션 필수.' : ''}`;
 }
 
 async function generateWithLLM(context, args = {}) {

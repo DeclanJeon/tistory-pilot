@@ -14,6 +14,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { researchKeywordMarket, evaluateAgainstMarket } from './market-research.mjs';
 import { notifyQaResult } from '../lib/discord-notify.mjs';
+import { YMYL_DENIED_PATTERNS } from './keyword-score.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const SKILL_CANDIDATES = [
@@ -66,9 +67,12 @@ export async function loadSkillText() {
 export function qaHtmlPost(html, options = {}) {
   const title = String(options.title || '').trim();
   const keyword = String(options.keyword || '').trim();
+  const contentType = String(options.contentType || '').trim();
+  const ymylRisk = String(options.ymylRisk || '').trim();
   const minPlain = options.minPlainChars ?? MIN_PLAIN_CHARS;
   const minParagraphs = options.minParagraphs ?? MIN_PARAGRAPHS;
   const minSections = options.minSections ?? MIN_SECTIONS;
+  const now = options.now ? new Date(options.now) : new Date();
 
   const plain = stripHtml(html);
   const failures = [];
@@ -163,6 +167,56 @@ export function qaHtmlPost(html, options = {}) {
   if (keyword && plain && !plain.includes(keyword.replace(/\s+/g, '')) && !plain.includes(keyword)) {
     // soft: keyword variants may differ
     warnings.push({ code: 'keyword-missing', message: `본문에 키워드가 직접 보이지 않는다: ${keyword}` });
+  }
+
+  // ─── 설계 문서 §7 QA 확장 5종 (기존 판정 유지 + 추가 게이트) ──────────
+
+  // 1) 낡은 연도 제목 (D7: "2025년 실전 가이드"가 2026년에 발행 예정이던 사례)
+  const titleYears = [...String(title).matchAll(/20\d{2}/g)].map(m => Number(m[0]));
+  if (titleYears.length) {
+    const maxYear = Math.max(...titleYears);
+    const curYear = now.getFullYear();
+    if (maxYear < curYear) {
+      failures.push({ code: 'stale-year-title', message: `제목 연도(${maxYear})가 올해(${curYear})보다 낮다. 기준일/연도 갱신 필요: ${title}` });
+    } else if (maxYear > curYear + 1) {
+      warnings.push({ code: 'future-year-title', message: `제목 연도(${maxYear})가 미래로 지나치게 멀다: ${title}` });
+    }
+  }
+
+  // 2) 실측 주장인데 출처 없음 (설계 §7: 비용형/절차형 fail, 그 외 warning)
+  const hasFactClaim = /[\d,]+(\s*만원|\s*원)|(년 기준|년도 기준|개정|시행|발표|보조금|지원금|수수료)/.test(plain);
+  const hasCitation = /출처|자료[:：]|기준[:：]|기준일|참고|통계청|금융감독원|국세청|공식|발표|조사|약관|요금표/.test(plain);
+  const isCostOrProcedure = ['cost', 'checklist', 'guide', 'procedure', 'comparison'].includes(contentType)
+    || (!contentType && /비용|가격|요금|견적|렌탈|이사|청소|설치|교체|위약금/.test(`${title} ${keyword}`));
+  if (hasFactClaim && !hasCitation) {
+    const msg = '비용/기준일/통계 주장이 있는데 출처 표시가 없다. (출처: …) 를 명시하라.';
+    if (isCostOrProcedure) failures.push({ code: 'missing-citation', message: msg });
+    else warnings.push({ code: 'missing-citation', message: msg });
+  }
+
+  // 3) YMYL 금지 문구 — YMYL 위험 주제에서만 hard fail (비용형 일상 표현 오탐 방지)
+  const deniedPhrase = YMYL_DENIED_PATTERNS.find(p => plain.includes(p) || title.includes(p));
+  if (deniedPhrase) {
+    const msg = `YMYL 금지 문구 발견: ${deniedPhrase}`;
+    if (ymylRisk === 'high' || ymylRisk === 'medium') {
+      failures.push({ code: 'ymyl-denied-phrase', message: msg });
+    } else {
+      warnings.push({ code: 'ymyl-denied-phrase', message: msg });
+    }
+  }
+
+  // 4) 비용형 비교표 — contentType=cost 우선, 없으면 키워드 휴리스틱
+  const isCostType = contentType === 'cost' || contentType === 'comparison'
+    || (!contentType && /비용|가격|요금|견적|렌탈|이사|청소|설치|교체|위약금/.test(`${title} ${keyword}`));
+  if (isCostType && tableCount < 1) {
+    failures.push({ code: 'missing-table-for-cost', message: `비용/요금 주제인데 가격표(테이블)가 없다: ${keyword || title}` });
+  }
+
+  // 5) 오프너가 인사말/빈약 (훅 없이 시작하면 체류 지표 하락)
+  const firstPara = (String(html).match(/<p\b[^>]*>([\s\S]*?)<\/p>/i) || [])[1] || '';
+  const firstText = stripHtml(firstPara);
+  if (/^(안녕하세요|반갑습니다|오늘은|이 글은|이번 글)/.test(firstText) || (firstText && firstText.length < 15)) {
+    warnings.push({ code: 'weak-opener', message: '오프너가 인사말/빈약하다. 첫 문단부터 훅(문제 공감·숫자·질문)으로 시작하라.' });
   }
 
   // 균일 문단 길이 탐지 (모든 p가 비슷한 길이면 AI 티)
@@ -307,6 +361,8 @@ export async function qaMetaPost(meta, options = {}) {
     title: meta.title || '',
     keyword: meta.keyword || '',
     category: meta.category || '',
+    contentType: meta.contentType || options.contentType || '',
+    ymylRisk: meta.ymylRisk || options.ymylRisk || '',
     notifyDiscord: options.notifyDiscord === true,
     marketResearch: options.marketResearch !== false,
     ...options
