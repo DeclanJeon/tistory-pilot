@@ -38,7 +38,10 @@ export const INFO_WORDS = ['뜻', '이란', '정의', '종류', '개념'];
 export const SERVICE_NOUNS = [
   '이사', '청소', '정수기', '렌탈', '보일러', '누수', '방충망', '도배', '장판', '변기',
   '세탁기', '에어컨', '가전', '인터넷', '알뜰폰', '요금제', 'CCTV', '비데', '웨딩',
-  '스드메', '학원', '자격증', '보험', '타이어', '블랙박스', '중고차', '렌터카', '리스'
+  '스드메', '학원', '자격증', '보험', '타이어', '블랙박스', '중고차', '렌터카', '리스',
+  '커튼', '블라인드', '싱크대', '샷시', '단열', '방역', '도어락', '공기청정기',
+  '식기세척기', '안마의자', '헬스장', '이불', '카페트', '배수구', '필터', 'IPTV',
+  '도시가스', '아이폰', '휴대폰', '자동차', '배터리', '대형폐기물', '전입신고', '확정일자'
 ];
 
 // 평수/규모 패턴 (+2점) — "30평" 등 서비스 규모 명시는 계약 직전 의도
@@ -293,6 +296,38 @@ export function freshnessFactor(generatedAtIso, now = new Date(), maxAgeDays = 1
   const ageDays = (now.getTime() - new Date(generatedAtIso).getTime()) / 86400000;
   if (ageDays <= 0) return 1;
   return Math.max(0, 1 - ageDays / maxAgeDays);
+}
+export function topicClusterOf(keywordObj = {}) {
+  if (keywordObj?.topicCluster) return String(keywordObj.topicCluster);
+  const tags = Array.isArray(keywordObj?.tags) ? keywordObj.tags : [];
+  const generic = new Set([
+    '비용', '비교', '추천', '견적', '추가요금', '체크리스트', '2026', '신청', '고장',
+    '렌탈', '설치', '청소', '해지', '방법', '가이드', '절차', '후기'
+  ]);
+  for (const t of tags) {
+    if (t && !generic.has(t)) return String(t);
+  }
+  const kw = String(keywordObj?.keyword || '').trim();
+  if (!kw) return String(keywordObj?.id || '');
+  return kw.split(/\s+/)[0];
+}
+
+// 최근 발행/생성 소주제와 겹치면 0~1 감쇠. 동일 클러스터 0회=1, 1회=0.55, 2회=0.25, 3회+=0.1
+export function topicDiversityFactor(cluster, recentClusters = []) {
+  if (!cluster) return 1;
+  const hits = recentClusters.filter(c => c && c === cluster).length;
+  if (hits <= 0) return 1;
+  if (hits === 1) return 0.55;
+  if (hits === 2) return 0.25;
+  return 0.1;
+}
+
+// selectionScore에 소주제 다양성 가중(기본 25%)을 섞는다. base는 기존 0~100.
+export function applyTopicDiversity(baseScore, diversityFactor = 1, weight = 0.25) {
+  const base = Math.min(100, Math.max(0, Number(baseScore) || 0));
+  const div = Math.min(1, Math.max(0, Number(diversityFactor) || 0));
+  const w = Math.min(1, Math.max(0, Number(weight) || 0));
+  return Math.round(base * (1 - w + w * div));
 }
 
 // ─── 키워드 로드/CLI ──────────────────────────────────────────────────

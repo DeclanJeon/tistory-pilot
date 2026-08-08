@@ -19,8 +19,9 @@ import fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { qaMetaPost } from './qa-post.mjs';
-import { scoreKeyword, computeSelectionScore, freshnessFactor, normalizeGapScore } from './keyword-score.mjs';
+import { scoreKeyword, computeSelectionScore, freshnessFactor, normalizeGapScore, topicClusterOf, topicDiversityFactor, applyTopicDiversity } from './keyword-score.mjs';
 import { recentGeneratedPosts, mixBucket } from './select-keywords.mjs';
+import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const GENERATED_DIR = path.join(PROJECT_ROOT, 'content', 'generated');
@@ -29,6 +30,8 @@ const QUEUE_DIR = process.env.SCHEDULED_QUEUE_DIR
   || (existsSync('/srv/publish-workbench/scheduled/queue')
     ? '/srv/publish-workbench/scheduled/queue'
     : path.join(PROJECT_ROOT, 'scheduled', 'queue'));
+const PUBLISHED_LEDGER_PATH = process.env.PUBLISHED_LEDGER_PATH
+  || path.join(PROJECT_ROOT, 'content', 'published.json');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
 
 const TIME_SLOTS = ['0700', '0900', '1200', '1400', '1700', '2000', '2200'];
@@ -171,6 +174,9 @@ async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS
   const rejected = [];
   const candidates = [];
 
+  const recent = (await recentGeneratedPosts(10)).filter(p => kwById.get(p.id)?.enabled);
+  const recentClusters = recent.map(p => topicClusterOf(kwById.get(p.id) || p));
+
   for (const { post, report } of qaResults) {
     const kw = kwById.get(post.id);
     if (!kw) { rejected.push({ post, reason: 'keywords.json에 없는 키워드 id' }); continue; }
@@ -183,26 +189,61 @@ async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS
     const gapScore = normalizeGapScore(kw.gap);
     // 신선도는 글 생성일 기준 (설계 §5). 없으면 키워드 조사일 폴백.
     const freshness = freshnessFactor(post.generatedAt || kw.metrics?.checkedAt || kw.researchedAt, new Date(), 14);
+    const baseScore = computeSelectionScore({
+      commercialIntentScore: r.score.intent,
+      qaScore: report.score,
+      serpGapScore: gapScore,
+      freshness
+    });
+    const cluster = topicClusterOf(kw);
+    const diversity = topicDiversityFactor(cluster, recentClusters);
     candidates.push({
       post,
       kw,
       qaScore: report.score,
       gapTotal: gapScore,
       freshness,
-      selectionScore: computeSelectionScore({
-        commercialIntentScore: r.score.intent,
-        qaScore: report.score,
-        serpGapScore: gapScore,
-        freshness
-      })
+      topicCluster: cluster,
+      diversity,
+      baseScore,
+      selectionScore: applyTopicDiversity(baseScore, diversity)
     });
   }
 
   candidates.sort((a, b) => b.selectionScore - a.selectionScore || (b.kw.score?.total || 0) - (a.kw.score?.total || 0));
 
-  const recent = (await recentGeneratedPosts(10)).filter(p => kwById.get(p.id)?.enabled);
-  const { selected, rejectedMix } = enforceMix(candidates, recent, kwById, maxPosts);
+  // 한 배치 안에서도 같은 소주제가 연속으로 고르이지 않게, 선정 누적 클러스터로 재가중
+  const { selected, rejectedMix } = enforceMix(
+    rerankWithBatchDiversity(candidates, maxPosts),
+    recent,
+    kwById,
+    maxPosts
+  );
   return { selected, rejected, rejectedMix };
+}
+
+// 점수순 greedy + 배치 내 소주제 다양성 재가중. enforceMix 입력 순서를 결정한다.
+export function rerankWithBatchDiversity(candidates, cap = DAILY_MAX_POSTS) {
+  const remaining = [...candidates];
+  const ordered = [];
+  const batchClusters = [];
+  const limit = Math.min(remaining.length, Math.max(cap * 3, cap)); // 믹스 defer 여유분
+  while (remaining.length && ordered.length < limit) {
+    remaining.sort((a, b) => {
+      const da = applyTopicDiversity(a.baseScore ?? a.selectionScore, topicDiversityFactor(a.topicCluster || topicClusterOf(a.kw), batchClusters));
+      const db = applyTopicDiversity(b.baseScore ?? b.selectionScore, topicDiversityFactor(b.topicCluster || topicClusterOf(b.kw), batchClusters));
+      return db - da || (b.kw?.score?.total || 0) - (a.kw?.score?.total || 0);
+    });
+    const next = remaining.shift();
+    const div = topicDiversityFactor(next.topicCluster || topicClusterOf(next.kw), batchClusters);
+    next.diversity = div;
+    next.selectionScore = applyTopicDiversity(next.baseScore ?? next.selectionScore, div);
+    ordered.push(next);
+    batchClusters.push(next.topicCluster || topicClusterOf(next.kw));
+  }
+  // 나머지(캡 밖 후보)는 마지막 다양성 점수 기준으로 뒤에 붙임
+  remaining.sort((a, b) => b.selectionScore - a.selectionScore);
+  return [...ordered, ...remaining];
 }
 
 // ─── 시간대 배분 ──────────────────────────────────────────────────────
@@ -272,6 +313,20 @@ async function main() {
   const existingIds = new Set(existingQueue.posts.map(p => p.id));
   let newPosts = posts.filter(p => !existingIds.has(p.id));
 
+  // 발행 중복 게이트: 이미 블로그에 발행된 주제는 큐에 넣지 않는다.
+  // (state.json 리셋/ID 체계 변경에도 실제 블로그 RSS가 최종 확인.
+  //  RSS 실패 시 원장으로만 판정 — 발행은 submit-queue에서 다시 차단.)
+  const gate = await buildDuplicateGate({ blogUrl: 'https://acstory.tistory.com', ledgerPath: PUBLISHED_LEDGER_PATH, log: console.error });
+  const deduped = [];
+  for (const post of newPosts) {
+    const dup = isAlreadyPublished({ id: post.id, keyword: post.keyword || '', title: post.title || '' }, gate);
+    if (dup.matched) {
+      console.log(`  [DUP SKIP] ${post.keyword || post.id} — ${dup.rule} (${dup.against?.title || dup.source})`);
+    } else {
+      deduped.push(post);
+    }
+  }
+  newPosts = deduped;
   // 발행 전 QA 게이트 — keywords.json contentType/ymylRisk를 전달해 유형 게이트 적용
   const keywordsData = await loadKeywords();
   const kwById = new Map((keywordsData.keywords || []).map(k => [k.id, k]));
@@ -306,7 +361,7 @@ async function main() {
   }
   console.log(`선정: ${selected.length}건`);
   for (const s of [...selected].sort((a, b) => b.selectionScore - a.selectionScore)) {
-    console.log(`  - ${s.post.keyword} [${s.post.category}] score=${s.selectionScore} (QA ${s.qaScore} · 갭 ${s.gapTotal} · 신선도 ${Math.round(s.freshness * 100)}%)`);
+    console.log(`  - ${s.post.keyword} [${s.post.category}/${s.topicCluster || topicClusterOf(s.kw)}] score=${s.selectionScore} (base ${s.baseScore ?? s.selectionScore} · QA ${s.qaScore} · 갭 ${s.gapTotal} · 신선도 ${Math.round(s.freshness * 100)}% · 다양성 ${Math.round((s.diversity ?? 1) * 100)}%)`);
   }
   if (rejectedMix.length) {
     console.log(`[mix] 제약 미뤄짐: ${rejectedMix.map(d => `${d.post.keyword}(${d.reason})`).join(', ')}`);

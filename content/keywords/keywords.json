@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-01",
+  "updatedAt": "2026-08-08",
   "focusCategories": [
     "이사·청소·주거",
     "생활·정보"
@@ -43,7 +43,8 @@
       "ymylRisk": "none",
       "commercialIntent": 8,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "포장이사"
     },
     {
       "id": "move-02",
@@ -81,7 +82,8 @@
       "ymylRisk": "none",
       "commercialIntent": 10,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "입주청소"
     },
     {
       "id": "move-03",
@@ -119,7 +121,8 @@
       "ymylRisk": "none",
       "commercialIntent": 8,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "용달이사"
     },
     {
       "id": "move-04",
@@ -158,7 +161,8 @@
       "ymylRisk": "none",
       "commercialIntent": 14,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "에어컨청소"
     },
     {
       "id": "move-05",
@@ -196,7 +200,8 @@
       "ymylRisk": "none",
       "commercialIntent": 10,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "보일러교체"
     },
     {
       "id": "move-06",
@@ -234,7 +239,8 @@
       "ymylRisk": "none",
       "commercialIntent": 8,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "누수탐지"
     },
     {
       "id": "move-07",
@@ -272,7 +278,8 @@
       "ymylRisk": "none",
       "commercialIntent": 10,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "인터넷이전"
     },
     {
       "id": "move-08",
@@ -310,7 +317,8 @@
       "ymylRisk": "none",
       "commercialIntent": 16,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "정수기위약금"
     },
     {
       "id": "move-09",
@@ -349,7 +357,8 @@
       "ymylRisk": "none",
       "commercialIntent": 10,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "이사이체료"
     },
     {
       "id": "move-10",
@@ -387,7 +396,8 @@
       "ymylRisk": "none",
       "commercialIntent": 10,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "이사업체견적"
     },
     {
       "id": "move-11",
@@ -424,7 +434,8 @@
       "ymylRisk": "none",
       "commercialIntent": 7,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "입주청소준비"
     },
     {
       "id": "move-12",
@@ -462,7 +473,8 @@
       "ymylRisk": "none",
       "commercialIntent": 8,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "도배"
     },
     {
       "id": "life-01",
@@ -487,21 +499,23 @@
         "intent": 6,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 5,
-        "total": 13
+        "total": 16
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "none",
       "commercialIntent": 6,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "에어컨전기료"
     },
     {
       "id": "life-02",
@@ -526,21 +540,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 8,
         "source": 8,
         "durability": 3,
-        "total": 11
+        "total": 19
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 10,
+        "total": 10
       },
       "ymylRisk": "none",
       "commercialIntent": 0,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "전기차보조금"
     },
     {
       "id": "life-03",
@@ -565,21 +581,23 @@
         "intent": 16,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 8,
         "source": 10,
         "durability": 10,
-        "total": 36
+        "total": 44
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 10,
+        "total": 10
       },
       "ymylRisk": "none",
       "commercialIntent": 16,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "알뜰폰"
     },
     {
       "id": "life-04",
@@ -604,21 +622,23 @@
         "intent": 16,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 11,
         "source": 4,
         "durability": 7,
-        "total": 27
+        "total": 38
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 14,
+        "total": 14
       },
       "ymylRisk": "none",
       "commercialIntent": 16,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "정수기렌탈"
     },
     {
       "id": "life-05",
@@ -643,21 +663,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 8,
         "durability": 1,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "none",
       "commercialIntent": 0,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "공무원봉급"
     },
     {
       "id": "tech-01",
@@ -682,21 +704,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 5,
-        "total": 7
+        "total": 10
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "none",
       "commercialIntent": 0,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "ChatGPT"
     },
     {
       "id": "tech-02",
@@ -721,21 +745,23 @@
         "intent": 2,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 5,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "none",
       "commercialIntent": 2,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "Claude"
     },
     {
       "id": "tech-03",
@@ -760,21 +786,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 5,
         "source": 2,
         "durability": 5,
-        "total": 7
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 6,
+        "total": 6
       },
       "ymylRisk": "none",
       "commercialIntent": 0,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "Cursor"
     },
     {
       "id": "tech-04",
@@ -799,21 +827,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 5,
         "source": 2,
         "durability": 1,
-        "total": 3
+        "total": 8
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 6,
+        "total": 6
       },
       "ymylRisk": "none",
       "commercialIntent": 0,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "무료AI"
     },
     {
       "id": "tech-05",
@@ -838,21 +868,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 5,
-        "total": 7
+        "total": 10
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "none",
       "commercialIntent": 0,
       "enabled": true,
-      "ymylDomain": ""
+      "ymylDomain": "",
+      "topicCluster": "Docker"
     },
     {
       "id": "invest-01",
@@ -879,21 +911,23 @@
         "intent": 2,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 5,
         "source": 2,
         "durability": 3,
-        "total": 7
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 6,
+        "total": 6
       },
       "ymylRisk": "high",
       "commercialIntent": 2,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "ISA"
     },
     {
       "id": "invest-02",
@@ -918,21 +952,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 7,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "high",
       "commercialIntent": 0,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "연금저축"
     },
     {
       "id": "invest-03",
@@ -958,21 +994,23 @@
         "intent": 2,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 5,
         "source": 2,
         "durability": 7,
-        "total": 11
+        "total": 16
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 6,
+        "total": 6
       },
       "ymylRisk": "high",
       "commercialIntent": 2,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "ETF"
     },
     {
       "id": "invest-04",
@@ -997,21 +1035,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 7,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "high",
       "commercialIntent": 0,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "신용점수"
     },
     {
       "id": "invest-05",
@@ -1035,21 +1075,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 7,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "high",
       "commercialIntent": 0,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "청약저축"
     },
     {
       "id": "invest-06",
@@ -1074,21 +1116,23 @@
         "intent": 2,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 4,
         "durability": 7,
-        "total": 13
+        "total": 16
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "high",
       "commercialIntent": 2,
       "enabled": false,
-      "ymylDomain": "세무·법률"
+      "ymylDomain": "세무·법률",
+      "topicCluster": "근로장려금"
     },
     {
       "id": "invest-07",
@@ -1113,21 +1157,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 7,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "high",
       "commercialIntent": 0,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "DSR"
     },
     {
       "id": "invest-08",
@@ -1152,21 +1198,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 7,
-        "total": 9
+        "total": 12
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 4,
+        "total": 4
       },
       "ymylRisk": "high",
       "commercialIntent": 0,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "주식세금"
     },
     {
       "id": "invest-09",
@@ -1191,21 +1239,23 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 8,
         "source": 8,
         "durability": 7,
-        "total": 15
+        "total": 23
       },
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
-        "rawTotal": 0
+        "rawTotal": 10,
+        "total": 10
       },
       "ymylRisk": "high",
       "commercialIntent": 0,
       "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylDomain": "대출·금융",
+      "topicCluster": "소상공인대출"
     },
     {
       "id": "invest-10",
@@ -1230,21 +1280,1972 @@
         "intent": 0,
         "bid": 0,
         "volume": 0,
-        "gap": 0,
+        "gap": 3,
         "source": 2,
         "durability": 7,
-        "total": 9
+        "total": 12
       },
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 4,
+        "total": 4
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 0,
+      "enabled": false,
+      "ymylDomain": "대출·금융",
+      "topicCluster": "해외배당"
+    },
+    {
+      "id": "move-13",
+      "keyword": "침대 매트리스 청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 9000,
+        "cpcKrw": 2200,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "매트리스",
+        "청소",
+        "비용",
+        "침대"
+      ],
+      "description": "매트리스 청소 업체 비용과 셀프 습식 청소, 관리 주기 정리",
+      "gap": {
+        "priceTableMissing": true,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 14,
+        "total": 14
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 14,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 14,
+        "bid": 13,
+        "volume": 6,
+        "gap": 11,
+        "source": 10,
+        "durability": 10,
+        "total": 64
+      },
+      "topicCluster": "매트리스청소"
+    },
+    {
+      "id": "move-14",
+      "keyword": "에어컨 설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 12000,
+        "cpcKrw": 1800,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "에어컨",
+        "설치",
+        "비용",
+        "견적"
+      ],
+      "description": "벽걸이/스탠드/시스템 에어컨 설치비와 추가 공사비 항목 정리",
+      "gap": {
+        "priceTableMissing": false,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 8,
+        "total": 8
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 13,
+        "volume": 9,
+        "gap": 6,
+        "source": 10,
+        "durability": 10,
+        "total": 58
+      },
+      "topicCluster": "에어컨설치"
+    },
+    {
+      "id": "move-15",
+      "keyword": "소파 청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 8000,
+        "cpcKrw": 1200,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "소파",
+        "청소",
+        "비용",
+        "패브릭"
+      ],
+      "description": "소파 청소 업체별 가격 비교와 셀프 관리 방법 정리",
+      "gap": {
+        "priceTableMissing": true,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 16,
+        "total": 16
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 12,
+        "source": 10,
+        "durability": 10,
+        "total": 55
+      },
+      "topicCluster": "소파청소"
+    },
+    {
+      "id": "move-16",
+      "keyword": "냉장고 청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 6000,
+        "cpcKrw": 1000,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "냉장고",
+        "청소",
+        "비용"
+      ],
+      "description": "냉장고 청소 업체 비용과 셀프 청소, 가전보험 활용법 정리",
+      "gap": {
+        "priceTableMissing": false,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 8,
+        "total": 8
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 6,
+        "source": 10,
+        "durability": 10,
+        "total": 49
+      },
+      "topicCluster": "냉장고청소"
+    },
+    {
+      "id": "move-17",
+      "keyword": "욕실 타일 줄눈 시공 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 5000,
+        "cpcKrw": 1400,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "줄눈",
+        "시공",
+        "비용",
+        "욕실"
+      ],
+      "description": "욕실 줄눈 시공 단가와 곰팡이 예방, 업체 선택 기준 정리",
       "gap": {
         "priceTableMissing": null,
         "noAsOfDate": null,
         "extraFeesUncovered": null,
         "rawTotal": 0
       },
-      "ymylRisk": "high",
-      "commercialIntent": 0,
-      "enabled": false,
-      "ymylDomain": "대출·금융"
+      "ymylRisk": "none",
+      "commercialIntent": 2,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 2,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 37
+      },
+      "topicCluster": "줄눈시공"
+    },
+    {
+      "id": "move-18",
+      "keyword": "에어컨 냉방 안 될 때 원인",
+      "category": "이사·청소·주거",
+      "contentType": "problem",
+      "metrics": {
+        "monthlySearch": 10000,
+        "cpcKrw": 500,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "에어컨",
+        "냉방",
+        "고장",
+        "원인"
+      ],
+      "description": "에어컨 냉방이 안 될 때 원인별 자가 진단과 조치 순서 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 5,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 31
+      },
+      "topicCluster": "에어컨고장"
+    },
+    {
+      "id": "move-19",
+      "keyword": "세탁기 탈수 안 될 때",
+      "category": "이사·청소·주거",
+      "contentType": "problem",
+      "metrics": {
+        "monthlySearch": 9000,
+        "cpcKrw": 500,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "세탁기",
+        "탈수",
+        "고장"
+      ],
+      "description": "세탁기 탈수 불량 원인(배수/센서/부하)과 셀프 조치 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 28
+      },
+      "topicCluster": "세탁기고장"
+    },
+    {
+      "id": "move-20",
+      "keyword": "보일러 난방 안 될 때",
+      "category": "이사·청소·주거",
+      "contentType": "problem",
+      "metrics": {
+        "monthlySearch": 8000,
+        "cpcKrw": 400,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "보일러",
+        "난방",
+        "고장"
+      ],
+      "description": "보일러 난방 불량 원인별 점검 순서와 AS 신청 방법 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 28
+      },
+      "topicCluster": "보일러고장"
+    },
+    {
+      "id": "move-21",
+      "keyword": "이사 당일 체크리스트",
+      "category": "이사·청소·주거",
+      "contentType": "checklist",
+      "metrics": {
+        "monthlySearch": 7000,
+        "cpcKrw": 500,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "이사",
+        "당일",
+        "체크리스트"
+      ],
+      "description": "이사 당일 놓치기 쉬운 체크리스트(검침·공과금·정산) 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 13,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 13,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 38
+      },
+      "topicCluster": "이사당일"
+    },
+    {
+      "id": "life-06",
+      "keyword": "에어컨 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 8000,
+        "cpcKrw": 2500,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "에어컨",
+        "렌탈",
+        "비교"
+      ],
+      "description": "에어컨 렌탈 vs 구매 비교와 업체별 월 요금·약정 조건 정리",
+      "gap": {
+        "priceTableMissing": true,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 14,
+        "total": 14
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 6,
+        "gap": 11,
+        "source": 4,
+        "durability": 7,
+        "total": 57
+      },
+      "topicCluster": "에어컨렌탈"
+    },
+    {
+      "id": "life-07",
+      "keyword": "가전 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 10000,
+        "cpcKrw": 2200,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "가전",
+        "렌탈",
+        "비교"
+      ],
+      "description": "가전 렌탈 업체별 요금과 구독 vs 구매 비교, 해지 조건 정리",
+      "gap": {
+        "priceTableMissing": true,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 14,
+        "total": 14
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 9,
+        "gap": 11,
+        "source": 4,
+        "durability": 7,
+        "total": 60
+      },
+      "topicCluster": "가전렌탈"
+    },
+    {
+      "id": "life-08",
+      "keyword": "제습기 추천",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 15000,
+        "cpcKrw": 1500,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "제습기",
+        "추천",
+        "비교"
+      ],
+      "description": "제습기 용량별 추천과 구매 가이드, 전기료 비교 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": true,
+        "extraFeesUncovered": null,
+        "rawTotal": 4,
+        "total": 4
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 2,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 2,
+        "bid": 13,
+        "volume": 9,
+        "gap": 3,
+        "source": 2,
+        "durability": 7,
+        "total": 36
+      },
+      "topicCluster": "제습기"
+    },
+    {
+      "id": "life-09",
+      "keyword": "세탁기 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "metrics": {
+        "monthlySearch": 7000,
+        "cpcKrw": 2000,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "세탁기",
+        "렌탈",
+        "비교"
+      ],
+      "description": "세탁기/건조기 렌탈 vs 구매 비교와 월 요금·전기세 고려 정리",
+      "gap": {
+        "priceTableMissing": true,
+        "noAsOfDate": true,
+        "extraFeesUncovered": true,
+        "rawTotal": 14,
+        "total": 14
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 6,
+        "gap": 11,
+        "source": 4,
+        "durability": 7,
+        "total": 57
+      },
+      "topicCluster": "세탁기렌탈"
+    },
+    {
+      "id": "life-10",
+      "keyword": "가전 렌탈 해지 방법",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "metrics": {
+        "monthlySearch": 6000,
+        "cpcKrw": 900,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "가전",
+        "렌탈",
+        "해지"
+      ],
+      "description": "가전 렌탈 중도해지 위약금과 해지 절차, 위약금 줄이는 방법 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 14,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 14,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 5,
+        "total": 38
+      },
+      "topicCluster": "렌탈해지"
+    },
+    {
+      "id": "life-11",
+      "keyword": "폐가전 무상 수거 신청 방법",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "metrics": {
+        "monthlySearch": 12000,
+        "cpcKrw": 800,
+        "source": "serp-research",
+        "checkedAt": "2026-08-04"
+      },
+      "tags": [
+        "폐가전",
+        "수거",
+        "신청"
+      ],
+      "description": "폐가전 무상수거 신청 절차와 제외 품목, 배출 방법 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 5,
+        "total": 35
+      },
+      "topicCluster": "폐가전수거"
+    },
+    {
+      "id": "move-22",
+      "keyword": "커튼 시공 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "커튼",
+      "metrics": {
+        "monthlySearch": 3600,
+        "cpcKrw": 900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "커튼",
+        "시공",
+        "비용",
+        "거실"
+      ],
+      "description": "커튼 시공 평당·장당 가격과 레일·암막 추가요금 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 43
+      }
+    },
+    {
+      "id": "move-23",
+      "keyword": "블라인드 설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "블라인드",
+      "metrics": {
+        "monthlySearch": 2900,
+        "cpcKrw": 850,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "블라인드",
+        "설치",
+        "비용",
+        "롤스크린"
+      ],
+      "description": "블라인드·롤스크린 설치비와 창 크기별 견적 기준",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 9,
+        "volume": 3,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 42
+      }
+    },
+    {
+      "id": "move-24",
+      "keyword": "싱크대 교체 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "싱크대",
+      "metrics": {
+        "monthlySearch": 5400,
+        "cpcKrw": 1400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "싱크대",
+        "교체",
+        "비용",
+        "주방"
+      ],
+      "description": "싱크대 교체 자재·시공비와 상부장 동시 공사 추가요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 45
+      }
+    },
+    {
+      "id": "move-25",
+      "keyword": "샷시 교체 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "샷시",
+      "metrics": {
+        "monthlySearch": 8100,
+        "cpcKrw": 1600,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "샷시",
+        "교체",
+        "비용",
+        "창호"
+      ],
+      "description": "아파트 샷시 교체 평당 가격과 이중창·방음 옵션 비용",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 49
+      }
+    },
+    {
+      "id": "move-26",
+      "keyword": "단열 시공 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "단열",
+      "metrics": {
+        "monthlySearch": 2400,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "단열",
+        "시공",
+        "비용",
+        "결로"
+      ],
+      "description": "내부 단열 시공 비용과 결로·곰팡이 예방 기준",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 3,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 40
+      }
+    },
+    {
+      "id": "move-27",
+      "keyword": "바퀴벌레 방역 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "방역",
+      "metrics": {
+        "monthlySearch": 6600,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "바퀴벌레",
+        "방역",
+        "비용",
+        "해충"
+      ],
+      "description": "가정집 바퀴벌레 방역 업체 비용과 재방문·약제 포함 범위",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 43
+      }
+    },
+    {
+      "id": "move-28",
+      "keyword": "곰팡이 제거 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "곰팡이",
+      "metrics": {
+        "monthlySearch": 7200,
+        "cpcKrw": 1200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "곰팡이",
+        "제거",
+        "비용",
+        "벽지"
+      ],
+      "description": "벽·천장 곰팡이 제거 시공비와 원인 보수 추가요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 2,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 2,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 37
+      }
+    },
+    {
+      "id": "move-29",
+      "keyword": "도어락 설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "도어락",
+      "metrics": {
+        "monthlySearch": 4800,
+        "cpcKrw": 1000,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "도어락",
+        "설치",
+        "비용",
+        "보조키"
+      ],
+      "description": "디지털 도어락 설치비와 방문 교체·보조키 비용",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 45
+      }
+    },
+    {
+      "id": "move-30",
+      "keyword": "CCTV 설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "CCTV",
+      "metrics": {
+        "monthlySearch": 9000,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "CCTV",
+        "설치",
+        "비용",
+        "홈캠"
+      ],
+      "description": "가정용 CCTV 설치 비용과 채널 수·저장장치 옵션",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 49
+      }
+    },
+    {
+      "id": "move-31",
+      "keyword": "이불 세탁 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "이불세탁",
+      "metrics": {
+        "monthlySearch": 5100,
+        "cpcKrw": 700,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "이불",
+        "세탁",
+        "비용",
+        "패딩"
+      ],
+      "description": "이불·패딩 세탁 공장 비용과 수거 배달 요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 39
+      }
+    },
+    {
+      "id": "move-32",
+      "keyword": "카페트 청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "카페트",
+      "metrics": {
+        "monthlySearch": 2800,
+        "cpcKrw": 950,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "카페트",
+        "청소",
+        "비용",
+        "러그"
+      ],
+      "description": "카페트·러그 청소 평당 비용과 얼룩 제거 추가요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 14,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 14,
+        "bid": 9,
+        "volume": 3,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 46
+      }
+    },
+    {
+      "id": "move-33",
+      "keyword": "배수구 막힘 뚫는 비용",
+      "category": "이사·청소·주거",
+      "contentType": "problem",
+      "topicCluster": "배수구",
+      "metrics": {
+        "monthlySearch": 4300,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "배수구",
+        "막힘",
+        "비용",
+        "배관"
+      ],
+      "description": "세면대·싱크 배수구 막힘 출장 비용과 셀프 해결 한계",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 43
+      }
+    },
+    {
+      "id": "move-34",
+      "keyword": "이삿짐 보관 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "이삿짐보관",
+      "metrics": {
+        "monthlySearch": 3200,
+        "cpcKrw": 1000,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "이삿짐",
+        "보관",
+        "비용",
+        "창고"
+      ],
+      "description": "이삿짐 보관 월 비용과 입출고·보험 옵션",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 2,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 2,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 37
+      }
+    },
+    {
+      "id": "move-35",
+      "keyword": "가구 이전설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "가구설치",
+      "metrics": {
+        "monthlySearch": 2600,
+        "cpcKrw": 900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "가구",
+        "이전설치",
+        "비용",
+        "조립"
+      ],
+      "description": "침대·장롱 이전설치 비용과 분해 조립 추가 요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 4,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 4,
+        "bid": 9,
+        "volume": 3,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 36
+      }
+    },
+    {
+      "id": "move-36",
+      "keyword": "변기 막힘 비용",
+      "category": "이사·청소·주거",
+      "contentType": "problem",
+      "topicCluster": "변기",
+      "metrics": {
+        "monthlySearch": 5800,
+        "cpcKrw": 1200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "변기",
+        "막힘",
+        "비용",
+        "배관"
+      ],
+      "description": "변기 막힘 출장 수리 비용과 셀프 해결 가능 범위",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 43
+      }
+    },
+    {
+      "id": "move-37",
+      "keyword": "전입신고 방법",
+      "category": "이사·청소·주거",
+      "contentType": "procedure",
+      "topicCluster": "전입신고",
+      "metrics": {
+        "monthlySearch": 14000,
+        "cpcKrw": 400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "전입신고",
+        "방법",
+        "정부24",
+        "이사"
+      ],
+      "description": "전입신고 온라인·방문 절차와 필요 서류 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 5,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 5,
+        "total": 29
+      }
+    },
+    {
+      "id": "move-38",
+      "keyword": "확정일자 받는 방법",
+      "category": "이사·청소·주거",
+      "contentType": "procedure",
+      "topicCluster": "확정일자",
+      "metrics": {
+        "monthlySearch": 11000,
+        "cpcKrw": 350,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "확정일자",
+        "전세",
+        "방법",
+        "주민센터"
+      ],
+      "description": "확정일자 받는 방법과 온라인 신청·수수료 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 5,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 5,
+        "total": 29
+      }
+    },
+    {
+      "id": "move-39",
+      "keyword": "대형폐기물 수거 신청",
+      "category": "이사·청소·주거",
+      "contentType": "procedure",
+      "topicCluster": "대형폐기물",
+      "metrics": {
+        "monthlySearch": 9800,
+        "cpcKrw": 300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "대형폐기물",
+        "수거",
+        "신청",
+        "스티커"
+      ],
+      "description": "대형폐기물 스티커 신청과 품목별 수수료·배출 방법",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 6,
+        "durability": 5,
+        "total": 30
+      }
+    },
+    {
+      "id": "move-40",
+      "keyword": "정수기 필터 교체 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "정수기필터",
+      "metrics": {
+        "monthlySearch": 4200,
+        "cpcKrw": 800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "정수기",
+        "필터",
+        "교체",
+        "비용"
+      ],
+      "description": "정수기 필터 교체 주기와 자가·방문 비용 비교",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 51
+      }
+    },
+    {
+      "id": "life-12",
+      "keyword": "타이어 교체 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "타이어",
+      "metrics": {
+        "monthlySearch": 12000,
+        "cpcKrw": 1400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "타이어",
+        "교체",
+        "비용",
+        "위치교체"
+      ],
+      "description": "승용차 타이어 교체 비용과 위치교환·휠얼라인먼트 추가요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 9,
+        "volume": 9,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 46
+      }
+    },
+    {
+      "id": "life-13",
+      "keyword": "자동차 배터리 교체 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "자동차배터리",
+      "metrics": {
+        "monthlySearch": 8800,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "자동차",
+        "배터리",
+        "교체",
+        "비용"
+      ],
+      "description": "자동차 배터리 교체 출장·입고 비용과 보증 기준",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 49
+      }
+    },
+    {
+      "id": "life-14",
+      "keyword": "자동차 검사 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "자동차검사",
+      "metrics": {
+        "monthlySearch": 15000,
+        "cpcKrw": 500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "자동차",
+        "검사",
+        "비용",
+        "종합검사"
+      ],
+      "description": "자동차 정기·종합검사 비용과 불합격 시 재검사 절차",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 5,
+        "volume": 9,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 40
+      }
+    },
+    {
+      "id": "life-15",
+      "keyword": "중고차 이전등록 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "중고차",
+      "metrics": {
+        "monthlySearch": 7600,
+        "cpcKrw": 900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "중고차",
+        "이전등록",
+        "비용",
+        "취득세"
+      ],
+      "description": "중고차 이전등록 취득세·인지대·번호판 비용 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 41
+      }
+    },
+    {
+      "id": "life-16",
+      "keyword": "인터넷 요금제 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "인터넷요금",
+      "metrics": {
+        "monthlySearch": 18000,
+        "cpcKrw": 2200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "인터넷",
+        "요금제",
+        "비교",
+        "결합"
+      ],
+      "description": "가정용 인터넷 요금제 비교와 결합할인·위약금 체크",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 10,
+        "durability": 10,
+        "total": 58
+      }
+    },
+    {
+      "id": "life-17",
+      "keyword": "IPTV 요금 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "IPTV",
+      "metrics": {
+        "monthlySearch": 6400,
+        "cpcKrw": 1600,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "IPTV",
+        "요금",
+        "비교",
+        "셋톱"
+      ],
+      "description": "IPTV 월 요금 비교와 셋톱·부가서비스 추가요금",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 10,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 10,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 47
+      }
+    },
+    {
+      "id": "life-18",
+      "keyword": "공기청정기 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "공기청정기",
+      "metrics": {
+        "monthlySearch": 5200,
+        "cpcKrw": 1700,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "공기청정기",
+        "렌탈",
+        "비교",
+        "관리비"
+      ],
+      "description": "공기청정기 렌탈 월 요금 비교와 필터·방문관리 포함 범위",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 46
+      }
+    },
+    {
+      "id": "life-19",
+      "keyword": "식기세척기 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "식기세척기",
+      "metrics": {
+        "monthlySearch": 3900,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "식기세척기",
+        "렌탈",
+        "비교",
+        "설치"
+      ],
+      "description": "식기세척기 렌탈 vs 구매 비용과 설치 조건 비교",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 46
+      }
+    },
+    {
+      "id": "life-20",
+      "keyword": "비데 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "비데",
+      "metrics": {
+        "monthlySearch": 4700,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "비데",
+        "렌탈",
+        "비교",
+        "필터"
+      ],
+      "description": "비데 렌탈 요금 비교와 필터 교체·해지 조건",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 42
+      }
+    },
+    {
+      "id": "life-21",
+      "keyword": "안마의자 렌탈 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "안마의자",
+      "metrics": {
+        "monthlySearch": 4100,
+        "cpcKrw": 1800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "안마의자",
+        "렌탈",
+        "비교",
+        "할부"
+      ],
+      "description": "안마의자 렌탈·할부 비교와 위약금·소유권 이전 조건",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 46
+      }
+    },
+    {
+      "id": "life-22",
+      "keyword": "학원 수강료 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "학원",
+      "metrics": {
+        "monthlySearch": 8300,
+        "cpcKrw": 1000,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "학원",
+        "수강료",
+        "비교",
+        "환불"
+      ],
+      "description": "학원 수강료 비교 기준과 중도 환불 규정 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 2,
+        "durability": 7,
+        "total": 32
+      }
+    },
+    {
+      "id": "life-23",
+      "keyword": "헬스장 회원권 환불",
+      "category": "생활·정보",
+      "contentType": "problem",
+      "topicCluster": "헬스장",
+      "metrics": {
+        "monthlySearch": 9500,
+        "cpcKrw": 700,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "헬스장",
+        "회원권",
+        "환불",
+        "위약금"
+      ],
+      "description": "헬스장 회원권 중도 해지 환불 산정과 위약금 기준",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 2,
+        "durability": 7,
+        "total": 28
+      }
+    },
+    {
+      "id": "life-24",
+      "keyword": "스드메 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "스드메",
+      "metrics": {
+        "monthlySearch": 12000,
+        "cpcKrw": 1900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "스드메",
+        "비용",
+        "웨딩",
+        "패키지"
+      ],
+      "description": "스드메 평균 비용과 패키지 포함·별도 항목 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 48
+      }
+    },
+    {
+      "id": "life-25",
+      "keyword": "도시가스 요금 계산",
+      "category": "생활·정보",
+      "contentType": "calculator",
+      "topicCluster": "도시가스",
+      "metrics": {
+        "monthlySearch": 7000,
+        "cpcKrw": 400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "도시가스",
+        "요금",
+        "계산",
+        "난방"
+      ],
+      "description": "도시가스 요금 계산 방식과 계절·사용량별 절약 포인트",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 8,
+        "bid": 5,
+        "volume": 6,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 37
+      }
+    },
+    {
+      "id": "life-26",
+      "keyword": "아이폰 배터리 교체 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "아이폰",
+      "metrics": {
+        "monthlySearch": 16000,
+        "cpcKrw": 600,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "아이폰",
+        "배터리",
+        "교체",
+        "비용"
+      ],
+      "description": "아이폰 배터리 공식·사설 교체 비용과 보증 비교",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 5,
+        "volume": 9,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 48
+      }
+    },
+    {
+      "id": "life-27",
+      "keyword": "휴대폰 성지 요금제 비교",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "휴대폰성지",
+      "metrics": {
+        "monthlySearch": 22000,
+        "cpcKrw": 2100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "휴대폰",
+        "성지",
+        "요금제",
+        "비교"
+      ],
+      "description": "휴대폰 성지 성지 요금·기기값 비교 시 체크리스트",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 16,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 16,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 8,
+        "durability": 10,
+        "total": 56
+      }
     }
-  ]
+  ],
+  "poolNote": "생활 울타리 소주제 확장 + topicCluster (2026-08-08)"
 }

@@ -17,6 +17,17 @@ import { execSync } from 'node:child_process';
 import { loadProjectEnv } from '../lib/load-env.mjs';
 import { qaHtmlPostWithMarket, writeQaReport } from './qa-post.mjs';
 import { researchKeywordMarket, buildMarketPromptBlock } from './market-research.mjs';
+import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
+import {
+  scoreKeyword,
+  computeSelectionScore,
+  freshnessFactor,
+  normalizeGapScore,
+  topicClusterOf,
+  topicDiversityFactor,
+  applyTopicDiversity
+} from './keyword-score.mjs';
+import { recentGeneratedPosts } from './select-keywords.mjs';
 
 loadProjectEnv({ localEnvPath: '.env.local', fallbackEnvPaths: ['.env'] });
 
@@ -25,6 +36,9 @@ const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.j
 const OUTPUT_DIR = path.join(PROJECT_ROOT, 'content', 'generated');
 const IMAGE_GEN_SCRIPT = process.env.IMAGE_GEN
   || path.join(process.env.HOME || '/home/declan', '.codex', 'skills', '.system', 'imagegen', 'scripts', 'image_gen.py');
+
+const PUBLISHED_LEDGER_PATH = process.env.PUBLISHED_LEDGER_PATH
+  || path.join(PROJECT_ROOT, 'content', 'published.json');
 
 // ─── CLI ───────────────────────────────────────────────────────────
 
@@ -111,9 +125,14 @@ LLM_PROVIDER 환경변수:
 
 // ─── 키워드 로드 ─────────────────────────────────────────────────────
 
-async function loadKeywords() {
+async function loadKeywordsData() {
   const raw = await fs.readFile(KEYWORDS_PATH, 'utf8');
-  return JSON.parse(raw).keywords || [];
+  return JSON.parse(raw);
+}
+
+async function loadKeywords() {
+  const data = await loadKeywordsData();
+  return data.keywords || [];
 }
 
 function pickKeyword(keywords, args) {
@@ -137,7 +156,44 @@ function pickKeyword(keywords, args) {
 }
 
 function pickUnpublished(keywords, generatedIds) {
-  return keywords.filter(k => !generatedIds.has(k.id));
+  return keywords.filter(k => k && k.enabled !== false && !generatedIds.has(k.id));
+}
+
+// 배치 생성 순서: selectionScore + 소주제 다양성 greedy (auto-queue와 동일 취지)
+function rankBatchCandidates(keywords, recentClusters = [], count = 1, gateOpts = {}) {
+  const remaining = keywords.map(kw => {
+    const r = scoreKeyword(kw, gateOpts);
+    const gapScore = normalizeGapScore(kw.gap);
+    const freshness = freshnessFactor(kw.metrics?.checkedAt || kw.researchedAt, new Date(), 14);
+    const baseScore = computeSelectionScore({
+      commercialIntentScore: r.score.intent,
+      qaScore: 50, // 생성 전 — 중립 QA
+      serpGapScore: gapScore,
+      freshness
+    });
+    return {
+      kw,
+      r,
+      topicCluster: topicClusterOf(kw),
+      baseScore,
+      selectionScore: baseScore
+    };
+  }).filter(row => row.kw.enabled !== false && row.r.gates.ymyl.allowed && row.r.gates.focus.allowed);
+
+  const selected = [];
+  const batchClusters = [...recentClusters];
+  while (remaining.length && selected.length < count) {
+    for (const row of remaining) {
+      const div = topicDiversityFactor(row.topicCluster, batchClusters);
+      row.diversity = div;
+      row.selectionScore = applyTopicDiversity(row.baseScore, div);
+    }
+    remaining.sort((a, b) => b.selectionScore - a.selectionScore || b.r.score.total - a.r.score.total);
+    const next = remaining.shift();
+    selected.push(next);
+    batchClusters.push(next.topicCluster);
+  }
+  return selected.map(s => s.kw);
 }
 
 // ─── 소스 리서치 ─────────────────────────────────────────────────────
@@ -410,10 +466,20 @@ function extractHtmlFromResponse(text) {
   return text.trim();
 }
 
+// ─── 유틸 ────────────────────────────────────────────────────────────
+
+// auto-queue.mjs와 동일한 "서버 로컬 날짜" 포맷 (YYYY-MM-DD).
+// 서버 시간대(CEST 등)에서 toISOString()은 UTC 날짜를 반환해 자정~오전 실행 시
+// 생성 폴더/큐 날짜가 어긋나는 버그가 있었다.
+function todayLocalDate() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
 // ─── 템플릿 기반 생성 (LLM 없을 때) ────────────────────────────────
 
 function generateFromTemplate(context) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocalDate();
   const keyword = context.keyword;
   const category = context.category;
   const tags = (context.tags || []).slice(0, 5).join(', ');
@@ -628,7 +694,7 @@ print("${outPath}")
 // ─── HTML 저장 + 메타 정보 ──────────────────────────────────────────
 
 async function savePost(context, htmlContent, thumbnailPath) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocalDate();
   const slug = context.keyword
     .toLowerCase()
     .replace(/[^a-z0-9가-힣]+/g, '-')
@@ -730,7 +796,7 @@ function extractDescription(html, fallback) {
 // ─── 큐 등록 ────────────────────────────────────────────────────────
 
 function buildQueueEntry(meta, timeSlot) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocalDate();
   return {
     id: meta.id,
     publishAt: `${today}T${timeSlot}:00+09:00`,
@@ -776,7 +842,12 @@ async function main() {
   const args = parseArgs(process.argv);
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 
-  const keywords = await loadKeywords();
+  const keywordsData = await loadKeywordsData();
+  const keywords = keywordsData.keywords || [];
+  const gateOpts = {
+    focusCategories: keywordsData.focusCategories,
+    allowLegacySeries: keywordsData.allowLegacySeries
+  };
 
   if (args.list) {
     console.log(`\n사용 가능한 키워드 (${keywords.length}개):\n`);
@@ -792,14 +863,41 @@ async function main() {
   if (args.batch) {
     const generated = await loadGeneratedIds();
     const unpublished = pickUnpublished(keywords, generated);
-    const toProcess = unpublished.slice(0, args.count);
+
+    // 발행 중복 게이트: 이미 블로그에 발행된 주제는 다시 생성하지 않는다.
+    // state.json이 리셋되거나 ID 체계가 바뀌어도 실제 블로그 RSS가 최종 확인.
+    // RSS 실패 시 원장으로만 판정(fail-open) — 발행 자체는 submit-queue에서 다시 차단.
+    const gate = await buildDuplicateGate({ blogUrl: 'https://acstory.tistory.com', ledgerPath: PUBLISHED_LEDGER_PATH, log: console.error });
+    const kept = [];
+    const skipped = [];
+    for (const kw of unpublished) {
+      const dup = isAlreadyPublished({ id: kw.id, keyword: kw.keyword }, gate);
+      if (dup.matched) {
+        skipped.push(kw);
+        console.log(`[dup] 발행 이력과 중복 — 생성 생략: ${kw.id} (${kw.keyword}) [${dup.rule}]`);
+      } else {
+        kept.push(kw);
+      }
+    }
+    if (skipped.length > 0) {
+      console.log(`[dup] 중복 생략 ${skipped.length}건: ${skipped.map(k => k.id).join(', ')}`);
+    }
+    const recentPosts = await recentGeneratedPosts(10);
+    // keywords.json의 topicCluster를 id로 보강
+    const kwById = new Map(keywords.map(k => [k.id, k]));
+    const recentTopicClusters = recentPosts.map(p => topicClusterOf(kwById.get(p.id) || p));
+    const toProcess = rankBatchCandidates(kept, recentTopicClusters, args.count, gateOpts);
 
     if (toProcess.length === 0) {
       console.log('[batch] 처리할 미발행 키워드가 없다.');
       return;
     }
 
-    console.log(`[batch] ${toProcess.length}개 키워드 처리 시작\n`);
+    console.log(`[batch] ${toProcess.length}개 키워드 처리 시작 (다양성 재순위)`);
+    for (const kw of toProcess) {
+      console.log(`  · ${kw.id} [${topicClusterOf(kw)}] ${kw.keyword}`);
+    }
+    console.log('');
     const results = [];
 
     for (const kw of toProcess) {

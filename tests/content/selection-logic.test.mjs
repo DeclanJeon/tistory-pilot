@@ -7,10 +7,13 @@ import {
   scoreCommercialIntent,
   evaluateYmylGate,
   evaluateFocusGate,
-  detectYmylRisk
+  detectYmylRisk,
+  topicClusterOf,
+  topicDiversityFactor,
+  applyTopicDiversity
 } from '../../scripts/content/keyword-score.mjs';
 import { mixBucket } from '../../scripts/content/select-keywords.mjs';
-import { enforceMix } from '../../scripts/content/auto-queue.mjs';
+import { enforceMix, rerankWithBatchDiversity } from '../../scripts/content/auto-queue.mjs';
 
 // ─── computeSelectionScore (설계 §5: 45% 의도 + 25% QA + 20% 갭 + 10% 신선도) ───
 
@@ -195,4 +198,46 @@ test('상업 의도: 강한 상업어·서비스 명사 득점, 정보형 단어
   assert.ok(strong.score >= 8, `강한 상업어 스코어: ${strong.score}`);
   const info = scoreCommercialIntent('ISA 뜻 정의');
   assert.ok(info.score < 0 || info.strongHits.length === 0);
+});
+
+// ─── 소주제 다양성 (생활 울타리 확장) ───
+
+test('topicClusterOf: topicCluster 필드 우선, 없으면 비일반 태그', () => {
+  assert.equal(topicClusterOf({ topicCluster: '타이어', tags: ['비용'], keyword: '타이어 교체 비용' }), '타이어');
+  assert.equal(topicClusterOf({ tags: ['비용', '타이어'], keyword: '타이어 교체 비용' }), '타이어');
+  assert.equal(topicClusterOf({ keyword: '샷시 교체 비용' }), '샷시');
+});
+
+test('topicDiversityFactor: 동일 소주제 반복 시 감쇠', () => {
+  assert.equal(topicDiversityFactor('타이어', []), 1);
+  assert.equal(topicDiversityFactor('타이어', ['타이어']), 0.55);
+  assert.equal(topicDiversityFactor('타이어', ['타이어', '타이어']), 0.25);
+  assert.equal(topicDiversityFactor('타이어', ['타이어', '타이어', '타이어']), 0.1);
+  assert.equal(topicDiversityFactor('샷시', ['타이어']), 1);
+});
+
+test('applyTopicDiversity: 가중 25%로 base 점수 감쇠', () => {
+  assert.equal(applyTopicDiversity(100, 1), 100);
+  assert.equal(applyTopicDiversity(100, 0), 75); // 100 * (0.75 + 0)
+  assert.equal(applyTopicDiversity(100, 0.55), 89); // 100 * (0.75 + 0.25*0.55) = 88.75 → 89
+});
+
+test('rerankWithBatchDiversity: 같은 소주제 연속 선정을 피한다', () => {
+  const candidates = [
+    cand({ id: 'a1', contentType: 'cost', topicCluster: '에어컨' }, 90),
+    cand({ id: 'a2', contentType: 'cost', topicCluster: '에어컨' }, 88),
+    cand({ id: 'b1', contentType: 'cost', topicCluster: '타이어' }, 80),
+    cand({ id: 'c1', contentType: 'cost', topicCluster: '샷시' }, 78)
+  ].map(c => ({
+    ...c,
+    topicCluster: c.kw.topicCluster,
+    baseScore: c.selectionScore,
+    selectionScore: c.selectionScore
+  }));
+  const ordered = rerankWithBatchDiversity(candidates, 3);
+  const top3 = ordered.slice(0, 3).map(c => c.kw.id);
+  // 1등은 에어컨 a1, 2등은 같은 에어컨 대신 타이어/샷시
+  assert.equal(top3[0], 'a1');
+  assert.ok(top3.includes('b1') || top3.includes('c1'));
+  assert.ok(!(top3[0] === 'a1' && top3[1] === 'a2'), `연속 동일 클러스터: ${top3}`);
 });

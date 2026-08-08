@@ -22,7 +22,10 @@ import {
   scoreKeyword,
   computeSelectionScore,
   freshnessFactor,
-  normalizeGapScore
+  normalizeGapScore,
+  topicClusterOf,
+  topicDiversityFactor,
+  applyTopicDiversity
 } from './keyword-score.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
@@ -236,7 +239,7 @@ function mixBucket(contentType = '') {
 export { mixBucket };
 export { latestQaScores };
 
-function selectKeywords(data, qaScores, { count = 5, now = new Date() } = {}) {
+function selectKeywords(data, qaScores, { count = 5, now = new Date(), recentClusters = [] } = {}) {
   const focus = data.focusCategories;
   const allowLegacy = data.allowLegacySeries;
 
@@ -247,10 +250,21 @@ function selectKeywords(data, qaScores, { count = 5, now = new Date() } = {}) {
       rows.push({ kw, r, enabled: false, selectionScore: null });
       continue;
     }
+    if (!r.gates.ymyl.allowed || !r.gates.focus.allowed) {
+      rows.push({ kw, r, enabled: false, selectionScore: null, gateBlocked: true });
+      continue;
+    }
     const qa = qaScores[kw.id] || { score: 50 }; // QA 이력 없음 = 중립 (콜드스타트 페널티 방지)
     const gapScore = normalizeGapScore(kw.gap);
     // 키워드 선정 CLI는 글 생성일이 없으므로 metrics.checkedAt 폴백
     const freshness = freshnessFactor(kw.metrics?.checkedAt || kw.researchedAt, now, 14);
+    const baseScore = computeSelectionScore({
+      commercialIntentScore: r.score.intent,
+      qaScore: qa.score,
+      serpGapScore: gapScore,
+      freshness
+    });
+    const cluster = topicClusterOf(kw);
     rows.push({
       kw,
       r,
@@ -258,20 +272,39 @@ function selectKeywords(data, qaScores, { count = 5, now = new Date() } = {}) {
       qaScore: qa.score,
       gapTotal: gapScore,
       freshness,
-      selectionScore: computeSelectionScore({
-        commercialIntentScore: r.score.intent,
-        qaScore: qa.score,
-        serpGapScore: gapScore,
-        freshness
-      })
+      topicCluster: cluster,
+      baseScore,
+      selectionScore: baseScore // 배치 다양성 재가중 전 초기값
     });
   }
 
-  const ranked = rows
-    .filter(x => x.enabled)
-    .sort((a, b) => b.selectionScore - a.selectionScore || b.r.score.total - a.r.score.total);
+  const eligible = rows.filter(x => x.enabled);
+  // greedy: 고를 때마다 최근+배치 클러스터로 다양성 재가중
+  const remaining = [...eligible];
+  const selected = [];
+  const batchClusters = [...recentClusters];
+  while (remaining.length && selected.length < count) {
+    for (const row of remaining) {
+      const div = topicDiversityFactor(row.topicCluster, batchClusters);
+      row.diversity = div;
+      row.selectionScore = applyTopicDiversity(row.baseScore, div);
+    }
+    remaining.sort((a, b) => b.selectionScore - a.selectionScore || b.r.score.total - a.r.score.total);
+    const next = remaining.shift();
+    selected.push(next);
+    batchClusters.push(next.topicCluster);
+  }
+  // 랭킹 전체(리포트용): 미선정분도 최종 다양성 점수로 정렬
+  for (const row of remaining) {
+    const div = topicDiversityFactor(row.topicCluster, batchClusters);
+    row.diversity = div;
+    row.selectionScore = applyTopicDiversity(row.baseScore, div);
+  }
+  const ranked = [...selected, ...remaining].sort(
+    (a, b) => b.selectionScore - a.selectionScore || b.r.score.total - a.r.score.total
+  );
 
-  return { ranked, selected: ranked.slice(0, count) };
+  return { ranked, selected };
 }
 
 function mixReport(selected) {
@@ -302,8 +335,8 @@ function printSelection({ date, selected, ranked }) {
   selected.forEach((s, i) => {
     const g = s.r.gates;
     const w = `${s.kw.keyword}`;
-    console.log(`${i + 1}. ${w} [${s.kw.category}]`);
-    console.log(`   선택점수 ${s.selectionScore} = 의도 ${s.r.score.intent}/25(45%) · QA ${s.qaScore}/100(25%) · 갭 ${s.gapTotal}/26(20%) · 신선도 ${Math.round(s.freshness * 100)}%(10%)`);
+    console.log(`${i + 1}. ${w} [${s.kw.category}/${s.topicCluster || topicClusterOf(s.kw)}]`);
+    console.log(`   선택점수 ${s.selectionScore} = base ${s.baseScore ?? s.selectionScore} · 의도 ${s.r.score.intent}/25(45%) · QA ${s.qaScore}/100(25%) · 갭 ${s.gapTotal}/26(20%) · 신선도 ${Math.round(s.freshness * 100)}%(10%) · 다양성 ${Math.round((s.diversity ?? 1) * 100)}%`);
     console.log(`   루브릭 총점 ${s.r.score.total}/100 (입찰가 ${s.r.score.bid}/20 · 검색량 ${s.r.score.volume}/15) · 유형 ${mixBucket(s.kw.contentType)}`);
     if (!g.ymyl.allowed) console.log(`   ⛔ YMYL 거부: ${g.ymyl.reason}`);
     if (!g.focus.allowed) console.log(`   ⛔ 주제 거부: ${g.focus.reason}`);
@@ -451,7 +484,10 @@ async function main() {
   }
 
   const qaScores = await latestQaScores();
-  const { ranked, selected } = selectKeywords(data, qaScores, { count: args.count });
+  const recent = await recentGeneratedPosts(10);
+  const kwById = new Map((data.keywords || []).map(k => [k.id, k]));
+  const recentClusters = recent.map(p => topicClusterOf(kwById.get(p.id) || p));
+  const { ranked, selected } = selectKeywords(data, qaScores, { count: args.count, recentClusters });
 
   if (args.json) {
     console.log(JSON.stringify({
@@ -461,7 +497,10 @@ async function main() {
         keyword: s.kw.keyword,
         category: s.kw.category,
         contentType: s.kw.contentType,
+        topicCluster: s.topicCluster || topicClusterOf(s.kw),
         selectionScore: s.selectionScore,
+        baseScore: s.baseScore ?? s.selectionScore,
+        diversity: s.diversity ?? 1,
         scoreTotal: s.r.score.total,
         commercialIntent: s.r.score.intent,
         qaScore: s.qaScore,
