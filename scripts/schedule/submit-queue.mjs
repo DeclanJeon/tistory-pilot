@@ -16,9 +16,14 @@ import path from 'node:path';
 import http from 'node:http';
 import { qaHtmlPost } from '../content/qa-post.mjs';
 import { recordPublishFeedback } from '../content/market-research.mjs';
+import { buildDuplicateGate, isAlreadyPublished, appendPublishedLedger } from '../lib/published-posts.mjs';
+import { evaluateYmylGate } from '../content/keyword-score.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
+const PUBLISHED_LEDGER_PATH = process.env.PUBLISHED_LEDGER_PATH
+  || path.join(PROJECT_ROOT, 'content', 'published.json');
+const DEFAULT_BLOG_URL = 'https://acstory.tistory.com';
 
 const WORKBENCH_HOST = process.env.WORKBENCH_HOST || '127.0.0.1';
 const WORKBENCH_PORT = Number(process.env.WORKBENCH_PORT || 4310);
@@ -27,7 +32,7 @@ const WORKBENCH_BASE = process.env.WORKBENCH_BASE_URL || `http://${WORKBENCH_HOS
 
 // 발행 직전 QA — qa-post 로직 공유 (설계 §9 Phase 2) + 키워드 게이트 중복 방어 (I1).
 // marketResearch는 서버에서 라이브 크롤을 피하려고 끈다.
-async function qaQueuePost(post) {
+export async function qaQueuePost(post) {
   let contentType = post.contentType || '';
   let ymylRisk = post.ymylRisk || '';
   const failures = [];
@@ -48,7 +53,17 @@ async function qaQueuePost(post) {
         contentType = contentType || kw.contentType || '';
         ymylRisk = ymylRisk || kw.ymylRisk || '';
         if (kw.enabled === false) failures.push(`keyword-disabled:${kw.id}`);
-        if (kw.ymylRisk === 'high') failures.push(`keyword-ymyl:${kw.id}`);
+        if (kw.ymylRisk === 'high') {
+          // 선택 단계와 동일한 안전 유형 판정을 쓴다 — 공식 절차·서류·문의처·수수료·경험기록형
+          // YMYL 키워드는 발행 직전에도 허용하고, 비교·추천 등 위험형만 차단한다.
+          const gate = evaluateYmylGate({
+            keyword: kw.keyword || post.keyword || post.id || '',
+            category: kw.category || post.category || '',
+            contentType: contentType || kw.contentType || '',
+            title: post.title || ''
+          });
+          if (!gate.allowed) failures.push(`keyword-ymyl:${kw.id} — ${gate.reason}`);
+        }
       }
     } catch {
       warnings.push('keywords-unreadable');
@@ -252,8 +267,32 @@ async function main() {
     return;
   }
 
-  const results = [];
+  // 발행 중복 게이트: 발행 원장 + 블로그 RSS 기준으로 이미 발행된 글은 차단
+  // (원장이 초기화되어도 실제 블로그 RSS가 최종 확인 — 08-04 정수기/ChatGPT/Docker
+  //  재발행 같은 사고의 최후 방어선. RSS 실패 시 원장으로만 판정.)
+  const blogUrl = todayPosts[0]?.blogUrl || DEFAULT_BLOG_URL;
+  const gate = await buildDuplicateGate({ blogUrl, ledgerPath: PUBLISHED_LEDGER_PATH, log: console.error });
+  const publishable = [];
+  const blocked = [];
   for (const post of todayPosts) {
+    const dup = isAlreadyPublished(post, gate);
+    if (dup.matched) {
+      blocked.push(post);
+      console.error(`  ✗ 중복 발행 차단: ${post.title || post.id} — ${dup.rule} (${dup.against?.title || dup.source})`);
+    } else {
+      publishable.push(post);
+    }
+  }
+  if (blocked.length > 0) {
+    console.error(`중복 차단 ${blocked.length}건 (${blocked.map(p => p.id).join(', ')}) — 발행 생략`);
+  }
+  if (publishable.length === 0) {
+    console.log('발행할 새 글이 없다.');
+    return;
+  }
+
+  const results = [];
+  for (const post of publishable) {
     console.log(`\n→ 발행: ${post.title || post.id || '(제목 없음)'}`);
     try {
       const result = await submitJob(post, { dryRun: args.dryRun, verbose: args.verbose });
@@ -281,6 +320,18 @@ async function main() {
           console.error(`  ⚠ 피드백 기록 실패: ${error instanceof Error ? error.message : String(error)}`);
         });
       }
+      // 발행 원장 기록: 이 키워드 ID를 발행했음을 기억해 재발행을 막는다.
+      if (result.ok && !args.dryRun) {
+        await appendPublishedLedger({
+          id: post.id,
+          keyword: post.keyword || '',
+          title: post.title || '',
+          category: post.category || '',
+          blogUrl: post.blogUrl || blogUrl
+        }, PUBLISHED_LEDGER_PATH).catch(error => {
+          console.error(`  ⚠ 발행 원장 기록 실패: ${error instanceof Error ? error.message : String(error)}`);
+        });
+      }
     } catch (error) {
       console.error(`  ✗ 에러: ${error.message}`);
       results.push({ post, result: { ok: false, error: error.message } });
@@ -299,7 +350,10 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  console.error(error.message);
-  process.exit(1);
-});
+const isCli = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
+if (isCli || process.argv[1]?.endsWith('submit-queue.mjs')) {
+  main().catch(error => {
+    console.error(error.message);
+    process.exit(1);
+  });
+}

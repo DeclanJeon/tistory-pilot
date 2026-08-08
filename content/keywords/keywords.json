@@ -3245,7 +3245,473 @@
         "durability": 10,
         "total": 56
       }
+    },
+    {
+      "id": "life-28",
+      "keyword": "보험금 청구 절차",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "보험금청구",
+      "metrics": {
+        "monthlySearch": 14800,
+        "cpcKrw": 2100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "보험금",
+        "청구",
+        "절차",
+        "보험"
+      ],
+      "description": "보험금 청구 절차를 단계별로 정리, 필요 서류와 처리기간 안내",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 9,
+      "enabled": true,
+      "ymylDomain": "보험",
+      "score": {
+        "intent": 9,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 45
+      }
+    },
+    {
+      "id": "life-29",
+      "keyword": "실손보험 청구 서류",
+      "category": "생활·정보",
+      "contentType": "checklist",
+      "topicCluster": "실손청구",
+      "metrics": {
+        "monthlySearch": 12100,
+        "cpcKrw": 1800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "실손보험",
+        "청구",
+        "서류",
+        "보험"
+      ],
+      "description": "실손보험 청구 시 필요한 서류 목록과 준비 방법 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "보험",
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 41
+      }
+    },
+    {
+      "id": "life-30",
+      "keyword": "자동차보험 할인 신청 절차",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "자동차보험",
+      "metrics": {
+        "monthlySearch": 9900,
+        "cpcKrw": 2600,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "자동차보험",
+        "할인",
+        "신청",
+        "절차"
+      ],
+      "description": "자동차보험 할인 항목별 신청 절차와 조건 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 17,
+      "enabled": true,
+      "ymylDomain": "보험",
+      "score": {
+        "intent": 17,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 50
+      }
+    },
+    {
+      "id": "life-31",
+      "keyword": "보험료 환급 신청 방법",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "보험료환급",
+      "metrics": {
+        "monthlySearch": 8100,
+        "cpcKrw": 1700,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "보험료",
+        "환급",
+        "신청",
+        "보험"
+      ],
+      "description": "보험료 환급 대상과 신청 방법, 처리기간 안내",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "보험",
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 5,
+        "total": 36
+      }
+    },
+    {
+      "id": "life-32",
+      "keyword": "치아보험 청구 서류",
+      "category": "생활·정보",
+      "contentType": "checklist",
+      "topicCluster": "치아보험",
+      "metrics": {
+        "monthlySearch": 6600,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "치아보험",
+        "청구",
+        "서류",
+        "보험"
+      ],
+      "description": "치아보험 청구에 필요한 서류와 주의사항 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "보험",
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "life-33",
+      "keyword": "대출 신청 서류 준비",
+      "category": "생활·정보",
+      "contentType": "checklist",
+      "topicCluster": "대출서류",
+      "metrics": {
+        "monthlySearch": 22200,
+        "cpcKrw": 2200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "대출",
+        "신청",
+        "서류",
+        "준비"
+      ],
+      "description": "대출 신청 전 준비할 서류 목록과 유의사항 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 2,
+      "enabled": true,
+      "ymylDomain": "대출·금융",
+      "score": {
+        "intent": 2,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 35
+      }
+    },
+    {
+      "id": "life-34",
+      "keyword": "주담대 신청 절차",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "주담대",
+      "metrics": {
+        "monthlySearch": 8800,
+        "cpcKrw": 2400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "주담대",
+        "신청",
+        "절차",
+        "대출"
+      ],
+      "description": "주택담보대출 신청 절차와 소요 기간, 필요 서류 안내",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 3,
+      "enabled": true,
+      "ymylDomain": "대출·금융",
+      "score": {
+        "intent": 3,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 36
+      }
+    },
+    {
+      "id": "life-35",
+      "keyword": "전세자금대출 신청 절차",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "전세자금",
+      "metrics": {
+        "monthlySearch": 12100,
+        "cpcKrw": 2100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "전세자금대출",
+        "신청",
+        "절차",
+        "대출"
+      ],
+      "description": "전세자금대출 신청 절차와 조건, 필요 서류 정리",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 3,
+      "enabled": true,
+      "ymylDomain": "대출·금융",
+      "score": {
+        "intent": 3,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 39
+      }
+    },
+    {
+      "id": "life-36",
+      "keyword": "소상공인 대출 신청 절차",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "소상공인대출",
+      "metrics": {
+        "monthlySearch": 7400,
+        "cpcKrw": 1900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "소상공인",
+        "대출",
+        "신청",
+        "절차"
+      ],
+      "description": "소상공인 대상 대출 상품 신청 절차와 준비물 안내",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 3,
+      "enabled": true,
+      "ymylDomain": "대출·금융",
+      "score": {
+        "intent": 3,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 36
+      }
+    },
+    {
+      "id": "life-37",
+      "keyword": "중고차 성능보증 확인 방법",
+      "category": "생활·정보",
+      "contentType": "checklist",
+      "topicCluster": "중고차",
+      "metrics": {
+        "monthlySearch": 9800,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "중고차",
+        "성능보증",
+        "확인"
+      ],
+      "description": "중고차 성능보증 범위와 확인 방법, 계약 전 체크리스트",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 2,
+        "durability": 7,
+        "total": 30
+      }
+    },
+    {
+      "id": "life-38",
+      "keyword": "중고차 이전등록 서류",
+      "category": "생활·정보",
+      "contentType": "checklist",
+      "topicCluster": "중고차",
+      "metrics": {
+        "monthlySearch": 5400,
+        "cpcKrw": 1200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "중고차",
+        "이전등록",
+        "서류"
+      ],
+      "description": "중고차 이전등록 시 필요한 서류와 절차 안내",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "score": {
+        "intent": 6,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 32
+      }
+    },
+    {
+      "id": "life-39",
+      "keyword": "중고차 보험 가입 절차",
+      "category": "생활·정보",
+      "contentType": "procedure",
+      "topicCluster": "중고차",
+      "metrics": {
+        "monthlySearch": 7200,
+        "cpcKrw": 1800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-08"
+      },
+      "tags": [
+        "중고차",
+        "보험",
+        "가입",
+        "절차"
+      ],
+      "description": "중고차 구매 후 보험 가입 절차와 보험료 확인 방법",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "ymylRisk": "high",
+      "commercialIntent": 15,
+      "enabled": true,
+      "ymylDomain": "보험",
+      "score": {
+        "intent": 15,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 10,
+        "total": 48
+      }
     }
   ],
-  "poolNote": "생활 울타리 소주제 확장 + topicCluster (2026-08-08)"
+  "poolNote": "생활 울타리 소주제 확장 + topicCluster + 보험·대출·중고차 안전유형 시드 (2026-08-08)"
 }
