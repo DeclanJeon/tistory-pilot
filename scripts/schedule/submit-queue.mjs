@@ -16,7 +16,7 @@ import path from 'node:path';
 import http from 'node:http';
 import { qaHtmlPost } from '../content/qa-post.mjs';
 import { recordPublishFeedback } from '../content/market-research.mjs';
-import { buildDuplicateGate, isAlreadyPublished, appendPublishedLedger } from '../lib/published-posts.mjs';
+import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
 import { evaluateYmylGate } from '../content/keyword-score.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
@@ -173,7 +173,10 @@ async function submitJob(post, { dryRun, verbose }) {
     description: post.description || '',
     tags: Array.isArray(post.tags) ? post.tags.join(',') : (post.tags || ''),
     category: post.category || '',
-    heroImagePath: post.heroImage || ''
+    heroImagePath: post.heroImage || '',
+    // worker가 발행 성공 시 원장(ledger)에 기록할 수 있도록 키워드 식별자를 함께 넘긴다.
+    // (원장은 발행 성공 시점에만 기록한다 — 제출 시점 기록은 실패 시 재발행을 막는다.)
+    sourceBundle: { id: post.id || '', keyword: post.keyword || '' }
   };
 
   if (verbose || dryRun) {
@@ -320,18 +323,9 @@ async function main() {
           console.error(`  ⚠ 피드백 기록 실패: ${error instanceof Error ? error.message : String(error)}`);
         });
       }
-      // 발행 원장 기록: 이 키워드 ID를 발행했음을 기억해 재발행을 막는다.
-      if (result.ok && !args.dryRun) {
-        await appendPublishedLedger({
-          id: post.id,
-          keyword: post.keyword || '',
-          title: post.title || '',
-          category: post.category || '',
-          blogUrl: post.blogUrl || blogUrl
-        }, PUBLISHED_LEDGER_PATH).catch(error => {
-          console.error(`  ⚠ 발행 원장 기록 실패: ${error instanceof Error ? error.message : String(error)}`);
-        });
-      }
+      // 발행 원장(ledger)은 worker가 발행 성공 시점에 기록한다 (handlers.mjs).
+      // 제출(Job 생성) 시점에 기록하면 실제 발행이 실패해도 원장에 남아
+      // 재발행 시도가 중복 게이트에 막히는 문제가 있다. URL 없이 기록하지 않는다.
     } catch (error) {
       console.error(`  ✗ 에러: ${error.message}`);
       results.push({ post, result: { ok: false, error: error.message } });

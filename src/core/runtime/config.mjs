@@ -34,7 +34,9 @@ export const ALLOWED_ENV_KEYS = Object.freeze([
   'PUBLISH_WORKBENCH_QR_EMAIL_SMTP_SECURE',
   'PUBLISH_WORKBENCH_QR_EMAIL_SMTP_USER',
   'PUBLISH_WORKBENCH_QR_EMAIL_SMTP_PASS',
-  'PUBLISH_WORKBENCH_QR_EMAIL_ALLOWED_RECIPIENTS'
+  'PUBLISH_WORKBENCH_QR_EMAIL_ALLOWED_RECIPIENTS',
+  'PUBLISH_WORKBENCH_KAKAO_EMAIL',
+  'PUBLISH_WORKBENCH_KAKAO_PASSWORD'
 ]);
 
 export const FORBIDDEN_PRODUCTION_ENV_KEYS = Object.freeze([
@@ -190,7 +192,13 @@ export function createRuntimeConfig(options = {}) {
       smtpSecure: readBoolean(env, 'PUBLISH_WORKBENCH_QR_EMAIL_SMTP_SECURE', false),
       smtpUser: readString(env, 'PUBLISH_WORKBENCH_QR_EMAIL_SMTP_USER'),
       smtpPass: readString(env, 'PUBLISH_WORKBENCH_QR_EMAIL_SMTP_PASS'),
-      allowedRecipients: readRecipients(env, 'PUBLISH_WORKBENCH_QR_EMAIL_ALLOWED_RECIPIENTS')
+      allowedRecipients: readRecipients(env, 'PUBLISH_WORKBENCH_QR_EMAIL_ALLOWED_RECIPIENTS'),
+      webUrl: readString(env, 'PUBLISH_WORKBENCH_BASE_URL')
+    },
+    kakaoLogin: {
+      // QR 대신 Kakao 아이디/비밀번호 로그인 (서버 env에만 저장, git 제외)
+      email: readString(env, 'PUBLISH_WORKBENCH_KAKAO_EMAIL'),
+      password: readString(env, 'PUBLISH_WORKBENCH_KAKAO_PASSWORD')
     }
   };
 

@@ -4,6 +4,7 @@ import { importAndAnalyzeSources } from '../core/source/import-service.mjs';
 import { resolveStagedPublishPayload, stagePublishPayload } from '../core/tistory/staged-payload-service.mjs';
 import { notifyPublishResult } from '../../scripts/lib/discord-notify.mjs';
 import { recordPublishFeedback } from '../../scripts/content/market-research.mjs';
+import { appendPublishedLedger } from '../../scripts/lib/published-posts.mjs';
 
 function randomId(prefix) {
   return `${prefix}-${crypto.randomUUID()}`;
@@ -137,6 +138,17 @@ export function createWorkerHandlers({ artifactStore, config, automation, now = 
           title: resolved?.title || '',
           status: 'succeeded',
           category: resolved?.category || ''
+        });
+        // 발행 원장(ledger) 기록 — 실제 발행이 성공했을 때만, 실제 URL과 함께 기록한다.
+        // 제출 시점 기록(submit-queue)은 발행 실패 시 재발행을 막는 독이 된다.
+        const sourceBundle = resolved?.sourceBundle || {};
+        await appendPublishedLedger({
+          id: sourceBundle.id || job.jobId,
+          keyword: sourceBundle.keyword || resolved?.title || '',
+          title: resolved?.title || job.title || '',
+          url: postUrl,
+          category: resolved?.category || '',
+          blogUrl: job.blogUrl || ''
         });
       } catch (notifyError) {
         await emitEvent?.({

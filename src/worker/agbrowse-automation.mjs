@@ -205,6 +205,29 @@ function refreshKakaoQr() {
   return { clicked: true };
 }
 
+function detectKakaoQrExpired() {
+  const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const bodyText = normalize(document.body?.innerText || '');
+  return /(login time expired|만료되었|다시 시작해 주세요|try again from the beginning)/i.test(bodyText);
+}
+
+function restartKakaoQrLogin() {
+  // 만료 화면의 "Confirm / 다시 시작" 버튼을 눌러 QR 로그인 플로우를 새로 시작한다.
+  const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const visible = element => {
+    if (!(element instanceof HTMLElement)) return false;
+    const style = getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  };
+  const target = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+    .filter(element => element instanceof HTMLElement && visible(element))
+    .find(element => /(confirm|다시 시작|처음부터 다시|try again)/i.test(normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '')));
+  if (!target) return { clicked: false };
+  target.click();
+  return { clicked: true, text: normalize(target.innerText || target.textContent || '') };
+}
+
 function captureKakaoQrData() {
   const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
   const visible = element => {
@@ -945,6 +968,100 @@ async function refreshKakaoQrImageOnPage(page, options) {
   return { qrImagePath: writeDataUrlFile(options.qrImagePath, qrCapture.dataUrl), qrState: qrCapture, kakaoState: await evalOnPage(page, detectKakaoLoginState) };
 }
 
+async function restartKakaoQrOnPage(page, options) {
+  // QR 만료 화면에서 로그인 플로우를 새로 시작하고 새 QR을 캡처한다.
+  const kakaoState = await evalOnPage(page, detectKakaoLoginState);
+  if (!kakaoState?.onKakaoHost) return null;
+  const restarted = await evalOnPage(page, restartKakaoQrLogin);
+  if (!restarted?.clicked) return null;
+  await page.waitForTimeout(3000);
+  const qrCapture = await evalOnPage(page, captureKakaoQrData);
+  if (!qrCapture?.ok) return null;
+  return { qrImagePath: writeDataUrlFile(options.qrImagePath, qrCapture.dataUrl), qrState: qrCapture, kakaoState: await evalOnPage(page, detectKakaoLoginState) };
+}
+
+function detectKakaoTwoStepVerification() {
+  // Kakao 로그인 후 2단계 인증(KakaoTalk 확인) 화면 여부
+  const bodyText = String(document.body?.innerText || '').replace(/\s+/g, ' ');
+  return /(2-step verification|two.step verification|2단계 인증|본인확인|confirm your login|kakaotalk message|메시지.*전송)/i.test(bodyText);
+}
+
+function fillKakaoPasswordLogin(loginId, loginPwd) {
+  // Kakao 로그인 폼(accounts.kakao.com/login)에 아이디/비밀번호를 입력하고 제출한다.
+  const emailInput = document.querySelector('#loginId')
+    || document.querySelector('input[name="loginId"]')
+    || document.querySelector('input[type="email"]');
+  const pwdInput = document.querySelector('#loginPwd')
+    || document.querySelector('input[name="loginPwd"]')
+    || document.querySelector('input[type="password"]');
+  if (!(emailInput instanceof HTMLInputElement) || !(pwdInput instanceof HTMLInputElement)) {
+    return { ok: false, reason: 'login-form-not-found', url: location.href };
+  }
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  setter.call(emailInput, loginId);
+  emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+  emailInput.dispatchEvent(new Event('change', { bubbles: true }));
+  setter.call(pwdInput, loginPwd);
+  pwdInput.dispatchEvent(new Event('input', { bubbles: true }));
+  pwdInput.dispatchEvent(new Event('change', { bubbles: true }));
+  // 로그인 상태 유지
+  const stayBox = document.querySelector('input[name="stay_signed_in"], input[type="checkbox"]');
+  if (stayBox instanceof HTMLInputElement && !stayBox.checked) stayBox.click();
+  const submit = document.querySelector('button[type="submit"]') || document.querySelector('.btn_g.highlight');
+  if (submit instanceof HTMLElement) {
+    submit.click();
+    return { ok: true, submitted: true };
+  }
+  return { ok: true, submitted: false };
+}
+
+async function attemptKakaoPasswordLoginOnPage(page, kakaoLogin) {
+  // Kakao 아이디/비밀번호 로그인을 시도한다. 성공 시 에디터로 리다이렉트되고,
+  // 실패(캡차 등) 시 기존 QR 플로우로 폴백한다.
+  if (!kakaoLogin?.email || !kakaoLogin?.password) return { attempted: false };
+  let state = await evalOnPage(page, detectTistoryState);
+  // Tistory 로그인 페이지(Spa)의 "카카오계정으로 로그인" 버튼이 렌더링될 때까지 대기 후 클릭.
+  if (state.authKind === 'tistory-login') {
+    let clicked = false;
+    const clickDeadline = Date.now() + 15000;
+    while (Date.now() < clickDeadline && !clicked) {
+      const result = await evalOnPage(page, clickTistoryKakaoLogin);
+      clicked = Boolean(result?.clicked);
+      if (!clicked) await page.waitForTimeout(1000);
+    }
+    if (!clicked) {
+      console.error(`[kakao-login] 카카오 로그인 버튼을 찾지 못함 (authKind=${state.authKind})`);
+      return { attempted: true, ok: false, reason: 'kakao-login-button-not-found', state };
+    }
+    // accounts.kakao.com 호스트로 이동할 때까지 대기.
+    const navDeadline = Date.now() + 20000;
+    while (Date.now() < navDeadline) {
+      const kakaoState = await evalOnPage(page, detectKakaoLoginState);
+      if (kakaoState?.onKakaoHost) break;
+      await page.waitForTimeout(1000);
+    }
+  }
+  const kakaoState = await evalOnPage(page, detectKakaoLoginState);
+  if (!kakaoState?.onKakaoHost) {
+    console.error(`[kakao-login] Kakao 호스트로 이동하지 않음 (url=${state?.url})`);
+    return { attempted: true, ok: false, reason: 'not-on-kakao-host', state };
+  }
+  // 로그인 폼(#loginId/#loginPwd)이 나타날 때까지 대기 후 입력/제출.
+  const formDeadline = Date.now() + 15000;
+  let filled = null;
+  while (Date.now() < formDeadline) {
+    filled = await evalOnPage(page, fillKakaoPasswordLogin, { loginId: kakaoLogin.email, loginPwd: kakaoLogin.password });
+    if (filled?.ok) break;
+    await page.waitForTimeout(1000);
+  }
+  if (!filled?.ok) {
+    console.error(`[kakao-login] 로그인 폼 입력 실패: ${filled?.reason || 'unknown'}`);
+    return { attempted: true, ok: false, reason: filled?.reason || 'login-form-not-found', state };
+  }
+  console.error(`[kakao-login] 자격증명 제출 완료 (submitted=${filled.submitted})`);
+  return { attempted: true, ok: true, submitted: filled.submitted, state };
+}
+
 async function openEditorAndDetectOnPage(page, editorUrl) {
   await page.goto(editorUrl, { waitUntil: 'commit', timeout: 15000 });
   const deadline = Date.now() + 30000;
@@ -962,11 +1079,12 @@ async function reopenEditorIfBlankOnPage(page, editorUrl, state) {
   return openEditorAndDetectOnPage(page, editorUrl);
 }
 
-export function createAgbrowseAutomation({ qrEmailConfig = null, onQr = null } = {}) {
+export function createAgbrowseAutomation({ qrEmailConfig = null, kakaoLoginConfig = null, onQr = null } = {}) {
   return {
     async publishPost(options) {
       const qrHook = options.onQr || onQr;
       const qrResolvedHook = options.onQrResolved || null;
+      const kakaoLogin = options.kakaoLogin || kakaoLoginConfig || null;
       const editorUrl = buildEditorUrl(options.blogUrl);
       if (!editorUrl) throw new Error('blogUrl is required.');
       const heroImageDataUrl = options.heroImagePath ? toDataUrl(options.heroImagePath) : '';
@@ -979,6 +1097,26 @@ export function createAgbrowseAutomation({ qrEmailConfig = null, onQr = null } =
         let qrLogin = null;
         let lastQrRefreshAt = 0;
         let qrResolvedAt = null;
+
+        // Kakao 아이디/비밀번호 로그인 우선 시도 (QR보다 우선, IP 플래그 우회)
+        if (state.loginRequired && kakaoLogin?.email) {
+          const attempt = await attemptKakaoPasswordLoginOnPage(page, kakaoLogin);
+          if (attempt.attempted && attempt.ok) {
+            // 제출 후 대기: 2단계 인증(KakaoTalk 확인, ~5분 카운트다운)까지 감안해 최대 7분 기다린다.
+            const loginDeadline = Date.now() + 420000;
+            let twoStepSeen = false;
+            while (Date.now() < loginDeadline) {
+              await page.waitForTimeout(3000);
+              state = await evalOnPage(page, detectTistoryState);
+              if (state.ready) break;
+              const twoStep = await evalOnPage(page, detectKakaoTwoStepVerification);
+              if (twoStep && !twoStepSeen) {
+                twoStepSeen = true;
+                console.error('[kakao-login] 2단계 인증 대기 중 — KakaoTalk 앱에서 로그인 확인 필요');
+              }
+            }
+          }
+        }
 
         if (state.loginRequired) {
           qrLogin = await ensureKakaoQrReadyOnPage(page, options);
@@ -995,10 +1133,20 @@ export function createAgbrowseAutomation({ qrEmailConfig = null, onQr = null } =
           state = await reopenEditorIfBlankOnPage(page, editorUrl, await evalOnPage(page, detectTistoryState));
           if (state.loginRequired) {
             const kakaoState = await evalOnPage(page, detectKakaoLoginState);
-            if (kakaoState?.onQrPage && Number.isFinite(kakaoState.timeLeftSeconds) && kakaoState.timeLeftSeconds <= 15 && (Date.now() - lastQrRefreshAt) > 10000) {
+            const qrExpired = await evalOnPage(page, detectKakaoQrExpired);
+            const refreshCooledDown = (Date.now() - lastQrRefreshAt) > 10000;
+            if (kakaoState?.onQrPage && Number.isFinite(kakaoState.timeLeftSeconds) && kakaoState.timeLeftSeconds <= 15 && refreshCooledDown) {
               const refreshedQr = await refreshKakaoQrImageOnPage(page, options);
               if (refreshedQr?.qrImagePath) {
                 qrLogin = { started: true, method: 'kakao-qr', phase: 'refresh', ...refreshedQr };
+                lastQrRefreshAt = Date.now();
+                if (qrHook) await qrHook(qrLogin);
+                if (qrEmailConfig) await maybeSendQrEmail(qrEmailConfig, options, qrLogin);
+              }
+            } else if (qrExpired && refreshCooledDown) {
+              const restartedQr = await restartKakaoQrOnPage(page, options);
+              if (restartedQr?.qrImagePath) {
+                qrLogin = { started: true, method: 'kakao-qr', phase: 'refresh', ...restartedQr };
                 lastQrRefreshAt = Date.now();
                 if (qrHook) await qrHook(qrLogin);
                 if (qrEmailConfig) await maybeSendQrEmail(qrEmailConfig, options, qrLogin);
@@ -1138,6 +1286,7 @@ return {
     async updatePost(options) {
       const qrHook = options.onQr || onQr;
       const qrResolvedHook = options.onQrResolved || null;
+      const kakaoLogin = options.kakaoLogin || kakaoLoginConfig || null;
       const postId = String(options.postId || '').trim();
       const editorUrl = buildManagePostUrl(options.blogUrl, postId);
       if (!editorUrl) throw new Error('blogUrl and postId are required.');
@@ -1213,6 +1362,26 @@ return {
         let lastQrRefreshAt = 0;
         let qrResolvedAt = null;
 
+        // Kakao 아이디/비밀번호 로그인 우선 시도 (QR보다 우선, IP 플래그 우회)
+        if (state.loginRequired && kakaoLogin?.email) {
+          const attempt = await attemptKakaoPasswordLoginOnPage(page, kakaoLogin);
+          if (attempt.attempted && attempt.ok) {
+            // 제출 후 대기: 2단계 인증(KakaoTalk 확인, ~5분 카운트다운)까지 감안해 최대 7분 기다린다.
+            const loginDeadline = Date.now() + 420000;
+            let twoStepSeen = false;
+            while (Date.now() < loginDeadline) {
+              await page.waitForTimeout(3000);
+              state = await evalOnPage(page, detectTistoryState);
+              if (state.ready) break;
+              const twoStep = await evalOnPage(page, detectKakaoTwoStepVerification);
+              if (twoStep && !twoStepSeen) {
+                twoStepSeen = true;
+                console.error('[kakao-login] 2단계 인증 대기 중 — KakaoTalk 앱에서 로그인 확인 필요');
+              }
+            }
+          }
+        }
+
         if (state.loginRequired) {
           qrLogin = await ensureKakaoQrReadyOnPage(page, options);
           if (qrLogin?.started) {
@@ -1228,10 +1397,20 @@ return {
           state = await reopenEditorIfBlankOnPage(page, editorUrl, await evalOnPage(page, detectTistoryState));
           if (state.loginRequired) {
             const kakaoState = await evalOnPage(page, detectKakaoLoginState);
-            if (kakaoState?.onQrPage && Number.isFinite(kakaoState.timeLeftSeconds) && kakaoState.timeLeftSeconds <= 15 && (Date.now() - lastQrRefreshAt) > 10000) {
+            const qrExpired = await evalOnPage(page, detectKakaoQrExpired);
+            const refreshCooledDown = (Date.now() - lastQrRefreshAt) > 10000;
+            if (kakaoState?.onQrPage && Number.isFinite(kakaoState.timeLeftSeconds) && kakaoState.timeLeftSeconds <= 15 && refreshCooledDown) {
               const refreshedQr = await refreshKakaoQrImageOnPage(page, options);
               if (refreshedQr?.qrImagePath) {
                 qrLogin = { started: true, method: 'kakao-qr', phase: 'refresh', ...refreshedQr };
+                lastQrRefreshAt = Date.now();
+                if (qrHook) await qrHook(qrLogin);
+                if (qrEmailConfig) await maybeSendQrEmail(qrEmailConfig, options, qrLogin);
+              }
+            } else if (qrExpired && refreshCooledDown) {
+              const restartedQr = await restartKakaoQrOnPage(page, options);
+              if (restartedQr?.qrImagePath) {
+                qrLogin = { started: true, method: 'kakao-qr', phase: 'refresh', ...restartedQr };
                 lastQrRefreshAt = Date.now();
                 if (qrHook) await qrHook(qrLogin);
                 if (qrEmailConfig) await maybeSendQrEmail(qrEmailConfig, options, qrLogin);

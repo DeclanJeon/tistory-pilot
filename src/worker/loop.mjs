@@ -10,7 +10,8 @@ export async function runWorkerLoop(options = {}) {
   const context = await buildWorkerContext({ ...options, mode });
   const artifactStore = new FileArtifactStore({ paths: context.paths });
   const automation = createAgbrowseAutomation({
-    qrEmailConfig: context.config.qrEmail
+    qrEmailConfig: context.config.qrEmail,
+    kakaoLoginConfig: context.config.kakaoLogin
   });
   const handlers = createWorkerHandlers({ artifactStore, config: context.config, automation });
   const runner = new WorkerJobRunner({ config: context.config, paths: context.paths, handlers });

@@ -1,0 +1,7 @@
+[Unit]
+Description=Tistory Daily Content Generation Timer (매일 01:00, 발행 08:55보다 앞서)
+[Timer]
+OnCalendar=*-*-* 01:00:00
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Tistory Daily Content Generation (LLM 글 생성 → QA → 큐)
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=declan
+WorkingDirectory=/srv/publish-workbench/app
+EnvironmentFile=/srv/publish-workbench/config/publish-workbench.env
+Environment=HOME=/home/declan
+# SCHEDULED_QUEUE_DIR 없이도 auto-queue가 /srv/publish-workbench/scheduled/queue 절대경로를 탐지
+ExecStart=/bin/bash /srv/publish-workbench/app/scripts/schedule/generate-daily.sh
+TimeoutStartSec=5400
