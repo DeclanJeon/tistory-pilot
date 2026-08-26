@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-08",
+  "updatedAt": "2026-08-26",
   "focusCategories": [
     "이사·청소·주거",
     "생활·정보"
@@ -3711,7 +3711,1151 @@
         "durability": 10,
         "total": 48
       }
+    },
+    {
+      "id": "move-41",
+      "keyword": "줄눈 시공 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "줄눈",
+      "metrics": {
+        "monthlySearch": 8100,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "줄눈",
+        "시공",
+        "비용"
+      ],
+      "description": "욕실·거실 줄눈 시공 비용과 추가요금 체크",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "move-42",
+      "keyword": "싱크대 상판 교체 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "상판교체",
+      "metrics": {
+        "monthlySearch": 5400,
+        "cpcKrw": 1400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "싱크대",
+        "상판",
+        "교체"
+      ],
+      "description": "싱크대 상판 교체 비용과 재질별 가격",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "move-43",
+      "keyword": "현관 중문 설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "중문",
+      "metrics": {
+        "monthlySearch": 12100,
+        "cpcKrw": 1600,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "중문",
+        "설치",
+        "비용"
+      ],
+      "description": "현관 중문 설치 비용과 종류별 가격",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 41
+      }
+    },
+    {
+      "id": "move-44",
+      "keyword": "베란다 확장 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "베란다확장",
+      "metrics": {
+        "monthlySearch": 6600,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "베란다",
+        "확장",
+        "비용"
+      ],
+      "description": "베란다 확장 공사 비용과 허가 체크",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 12,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 36
+      }
+    },
+    {
+      "id": "move-45",
+      "keyword": "페인트 시공 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "페인트",
+      "metrics": {
+        "monthlySearch": 7400,
+        "cpcKrw": 1200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "페인트",
+        "시공",
+        "비용"
+      ],
+      "description": "실내 페인트 시공 비용과 평수별 가격",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 12,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 36
+      }
+    },
+    {
+      "id": "move-46",
+      "keyword": "장판 교체 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "장판",
+      "metrics": {
+        "monthlySearch": 8900,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "장판",
+        "교체",
+        "비용"
+      ],
+      "description": "장판 교체 비용과 시공 시 주의사항",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 11,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 35
+      }
+    },
+    {
+      "id": "move-47",
+      "keyword": "붙박이장 설치 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "붙박이장",
+      "metrics": {
+        "monthlySearch": 6000,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "붙박이장",
+        "설치",
+        "비용"
+      ],
+      "description": "붙박이장 설치 비용과 맞춤 견적 팁",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 12,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 36
+      }
+    },
+    {
+      "id": "move-48",
+      "keyword": "화장실 리모델링 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "화장실리모델링",
+      "metrics": {
+        "monthlySearch": 14800,
+        "cpcKrw": 1700,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "화장실",
+        "리모델링",
+        "비용"
+      ],
+      "description": "화장실 리모델링 비용 항목별 가격표",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 41
+      }
+    },
+    {
+      "id": "move-49",
+      "keyword": "주방 리모델링 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "주방리모델링",
+      "metrics": {
+        "monthlySearch": 9900,
+        "cpcKrw": 1800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "주방",
+        "리모델링",
+        "비용"
+      ],
+      "description": "주방 리모델링 비용과 공사 범위별 가격",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "move-50",
+      "keyword": "옥상 방수 공사 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "방수",
+      "metrics": {
+        "monthlySearch": 7200,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "옥상",
+        "방수",
+        "공사",
+        "비용"
+      ],
+      "description": "옥상 방수 공사 비용과 공법별 비교",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "life-40",
+      "keyword": "에어컨 이전 설치 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "에어컨이전",
+      "metrics": {
+        "monthlySearch": 11000,
+        "cpcKrw": 1400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "에어컨",
+        "이전설치",
+        "비용"
+      ],
+      "description": "에어컨 이전 설치 비용과 추가요금",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 41
+      }
+    },
+    {
+      "id": "life-41",
+      "keyword": "세탁기 이전 설치 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "세탁기이전",
+      "metrics": {
+        "monthlySearch": 3600,
+        "cpcKrw": 900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "세탁기",
+        "이전설치",
+        "비용"
+      ],
+      "description": "세탁기 이전 설치 시 비용과 절차",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 10,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 32
+      }
+    },
+    {
+      "id": "life-42",
+      "keyword": "냉장고 이전 설치 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "냉장고이전",
+      "metrics": {
+        "monthlySearch": 2900,
+        "cpcKrw": 900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "냉장고",
+        "이전설치",
+        "비용"
+      ],
+      "description": "냉장고 이전 설치 비용과 주의사항",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 10,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 32
+      }
+    },
+    {
+      "id": "life-43",
+      "keyword": "이사 청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "이사청소",
+      "metrics": {
+        "monthlySearch": 18100,
+        "cpcKrw": 1600,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "이사",
+        "청소",
+        "비용"
+      ],
+      "description": "이사 청소 비용과 평수별 가격표",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 41
+      }
+    },
+    {
+      "id": "life-44",
+      "keyword": "사무실 이사 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "사무실이사",
+      "metrics": {
+        "monthlySearch": 5400,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "사무실",
+        "이사",
+        "비용"
+      ],
+      "description": "사무실 이사 비용과 견적 비교 방법",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "life-45",
+      "keyword": "원룸 청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "원룸청소",
+      "metrics": {
+        "monthlySearch": 6600,
+        "cpcKrw": 1200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "원룸",
+        "청소",
+        "비용"
+      ],
+      "description": "원룸 청소 비용과 업체 선택 팁",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 12,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 36
+      }
+    },
+    {
+      "id": "life-46",
+      "keyword": "아파트 입주청소 비용",
+      "category": "이사·청소·주거",
+      "contentType": "cost",
+      "topicCluster": "아파트청소",
+      "metrics": {
+        "monthlySearch": 12100,
+        "cpcKrw": 1500,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "아파트",
+        "입주청소",
+        "비용"
+      ],
+      "description": "아파트 입주청소 비용과 평수별 가격",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 41
+      }
+    },
+    {
+      "id": "invest-11",
+      "keyword": "퇴직연금 수령 방법",
+      "category": "투자·재테크",
+      "contentType": "procedure",
+      "topicCluster": "퇴직연금",
+      "metrics": {
+        "monthlySearch": 8100,
+        "cpcKrw": 1200,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "퇴직연금",
+        "수령",
+        "방법"
+      ],
+      "description": "퇴직연금 수령 방법과 세금 정리",
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 6,
+        "bid": 12,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 35
+      }
+    },
+    {
+      "id": "invest-12",
+      "keyword": "IRP 계좌 개설 방법",
+      "category": "투자·재테크",
+      "contentType": "procedure",
+      "topicCluster": "IRP",
+      "metrics": {
+        "monthlySearch": 12100,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "IRP",
+        "계좌",
+        "개설"
+      ],
+      "description": "IRP 계좌 개설 방법과 세액공제 혜택",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 12,
+        "volume": 9,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 39
+      }
+    },
+    {
+      "id": "invest-13",
+      "keyword": "청약통장 만들기 조건",
+      "category": "투자·재테크",
+      "contentType": "checklist",
+      "topicCluster": "청약통장",
+      "metrics": {
+        "monthlySearch": 9900,
+        "cpcKrw": 800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "청약통장",
+        "조건",
+        "만들기"
+      ],
+      "description": "청약통장 만들기 조건과 납입 전략",
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 6,
+        "bid": 9,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 32
+      }
+    },
+    {
+      "id": "side-21",
+      "keyword": "스마트스토어 위탁판매 수익",
+      "category": "부업·재테크",
+      "contentType": "cost",
+      "topicCluster": "스마트스토어",
+      "metrics": {
+        "monthlySearch": 4400,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "스마트스토어",
+        "위탁판매",
+        "수익"
+      ],
+      "description": "스마트스토어 위탁판매 수익 구조와 시작법",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 11,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 34
+      }
+    },
+    {
+      "id": "side-22",
+      "keyword": "쿠팡파트너스 수익 인증",
+      "category": "부업·재테크",
+      "contentType": "cost",
+      "topicCluster": "쿠팡파트너스",
+      "metrics": {
+        "monthlySearch": 3600,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "쿠팡파트너스",
+        "수익",
+        "인증"
+      ],
+      "description": "쿠팡파트너스 수익 구조와 실제 인증",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 12,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 35
+      }
+    },
+    {
+      "id": "side-23",
+      "keyword": "배달 부업 수익 추천",
+      "category": "부업·재테크",
+      "contentType": "cost",
+      "topicCluster": "배달부업",
+      "metrics": {
+        "monthlySearch": 2900,
+        "cpcKrw": 1000,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "배달",
+        "부업",
+        "수익"
+      ],
+      "description": "배달 부업 수익과 초보 추천 비교",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 10,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 32
+      }
+    },
+    {
+      "id": "side-24",
+      "keyword": "재택 알바 추천 주부",
+      "category": "부업·재테크",
+      "contentType": "checklist",
+      "topicCluster": "재택알바",
+      "metrics": {
+        "monthlySearch": 6600,
+        "cpcKrw": 900,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "재택알바",
+        "주부",
+        "추천"
+      ],
+      "description": "주부 재택 알바 추천과 수익 비교",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 10,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 34
+      }
+    },
+    {
+      "id": "side-25",
+      "keyword": "프리랜서 세금 신고 방법",
+      "category": "부업·재테크",
+      "contentType": "procedure",
+      "topicCluster": "프리랜서세금",
+      "metrics": {
+        "monthlySearch": 5400,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "프리랜서",
+        "세금",
+        "신고"
+      ],
+      "description": "프리랜서 세금 신고 방법과 절세 팁",
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 6,
+        "bid": 11,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 34
+      }
+    },
+    {
+      "id": "life-47",
+      "keyword": "정수기 렌탈 해지 위약금",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "렌탈위약금",
+      "metrics": {
+        "monthlySearch": 5400,
+        "cpcKrw": 1400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "정수기",
+        "렌탈",
+        "해지",
+        "위약금"
+      ],
+      "description": "정수기 렌탈 해지 위약금 계산과 절약법",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
+    },
+    {
+      "id": "life-48",
+      "keyword": "공기청정기 필터 교체 비용",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "공기청정기필터",
+      "metrics": {
+        "monthlySearch": 3600,
+        "cpcKrw": 800,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "공기청정기",
+        "필터",
+        "교체",
+        "비용"
+      ],
+      "description": "공기청정기 필터 교체 비용과 주기",
+      "ymylRisk": "none",
+      "commercialIntent": 6,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 6,
+        "bid": 9,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 30
+      }
+    },
+    {
+      "id": "life-49",
+      "keyword": "비데 렌탈 위약금 계산",
+      "category": "생활·정보",
+      "contentType": "calculator",
+      "topicCluster": "비데위약금",
+      "metrics": {
+        "monthlySearch": 2900,
+        "cpcKrw": 1100,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "비데",
+        "렌탈",
+        "위약금"
+      ],
+      "description": "비데 렌탈 위약금 계산과 해지 팁",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 11,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 33
+      }
+    },
+    {
+      "id": "life-50",
+      "keyword": "안마의자 렌탈 위약금",
+      "category": "생활·정보",
+      "contentType": "cost",
+      "topicCluster": "안마의자위약금",
+      "metrics": {
+        "monthlySearch": 4400,
+        "cpcKrw": 1300,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "안마의자",
+        "렌탈",
+        "위약금"
+      ],
+      "description": "안마의자 렌탈 위약금과 해지 비용",
+      "ymylRisk": "none",
+      "commercialIntent": 7,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 7,
+        "bid": 12,
+        "volume": 4,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 34
+      }
+    },
+    {
+      "id": "move-51",
+      "keyword": "이사 견적 비교 사이트",
+      "category": "이사·청소·주거",
+      "contentType": "checklist",
+      "topicCluster": "이사견적",
+      "metrics": {
+        "monthlySearch": 8100,
+        "cpcKrw": 1400,
+        "source": "seed-pool",
+        "checkedAt": "2026-08-26"
+      },
+      "tags": [
+        "이사",
+        "견적",
+        "비교",
+        "사이트"
+      ],
+      "description": "이사 견적 비교 사이트와 무료 견적 받는 법",
+      "ymylRisk": "none",
+      "commercialIntent": 8,
+      "enabled": true,
+      "ymylDomain": "",
+      "gap": {
+        "priceTableMissing": null,
+        "noAsOfDate": null,
+        "extraFeesUncovered": null,
+        "rawTotal": 0
+      },
+      "score": {
+        "intent": 8,
+        "bid": 13,
+        "volume": 6,
+        "gap": 0,
+        "source": 4,
+        "durability": 7,
+        "total": 38
+      }
     }
   ],
-  "poolNote": "생활 울타리 소주제 확장 + topicCluster + 보험·대출·중고차 안전유형 시드 (2026-08-08)"
+  "poolNote": "2026-08-26 키워드 고갈 복구: 30건 추가 (리모델링/이사청소/이전설치/IRP/부업 확장)"
 }
