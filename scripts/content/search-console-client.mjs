@@ -11,13 +11,63 @@
  * 성공 시: { impressions, clicks, ctr, position } (position = 평균 게재 순위)
  * 실패: unavailable/rate_limited/error
  */
+import crypto from 'node:crypto';
+
 function readConfig(env = process.env) {
   return {
     credentialsJson: env.GOOGLE_SEARCH_CONSOLE_CREDENTIALS || '',
     accessToken: env.GOOGLE_SEARCH_CONSOLE_ACCESS_TOKEN || '',
-    siteUrl: env.SEARCH_CONSOLE_SITE_URL || 'https://acstory.tistory.com/',
+    siteUrl: env.SEARCH_CONSOLE_SITE_URL || 'http://acstory.tistory.com/',
     mock: env.SEARCH_CONSOLE_MOCK === '1'
   };
+}
+
+function base64url(input) {
+  return Buffer.from(input).toString('base64url');
+}
+
+async function mintAccessTokenFromServiceAccount(credentialsJson) {
+  let creds;
+  try {
+    creds = JSON.parse(credentialsJson);
+  } catch {
+    throw new Error('GOOGLE_SEARCH_CONSOLE_CREDENTIALS JSON 파싱 실패');
+  }
+  const privateKey = creds.private_key;
+  const clientEmail = creds.client_email;
+  if (!privateKey || !clientEmail) throw new Error('service_account private_key/client_email 누락');
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+  const payload = base64url(
+    JSON.stringify({
+      iss: clientEmail,
+      scope: 'https://www.googleapis.com/auth/webmasters.readonly',
+      aud: 'https://oauth2.googleapis.com/token',
+      exp: now + 3600,
+      iat: now
+    })
+  );
+  const signingInput = `${header}.${payload}`;
+  const signer = crypto.createSign('RSA-SHA256');
+  signer.update(signingInput);
+  signer.end();
+  const signature = signer.sign(privateKey, 'base64url');
+  const jwt = `${signingInput}.${signature}`;
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt
+    })
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`JWT 토큰 교환 실패 HTTP ${res.status} ${text.slice(0, 200)}`);
+  }
+  const body = await res.json();
+  if (!body.access_token) throw new Error('access_token 응답 누락');
+  return body.access_token;
 }
 
 export async function fetchSearchConsole({ siteUrl, query, page, startDate, endDate, env = process.env } = {}) {
@@ -62,8 +112,19 @@ export async function fetchSearchConsole({ siteUrl, query, page, startDate, endD
     body.dimensionFilterGroups.push({ filters: [{ dimension: 'page', expression: page }] });
   }
   try {
-    // googleapis 가 없으면 unavailable 로 처리 — Phase 3 shadow 에서는 라이브 호출을 강제하지 않는다.
-    const token = cfg.accessToken || '';
+    // credentialsJson -> accessToken 교환, 이미 accessToken이 있으면 재사용
+    let token = cfg.accessToken || '';
+    if (!token && cfg.credentialsJson) {
+      try {
+        token = await mintAccessTokenFromServiceAccount(cfg.credentialsJson);
+      } catch (e) {
+        return {
+          status: 'unavailable',
+          dataSource: 'search-console',
+          error: e instanceof Error ? e.message : String(e)
+        };
+      }
+    }
     if (!token) {
       return {
         status: 'unavailable',
