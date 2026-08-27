@@ -65,7 +65,7 @@ export async function fetchNaverDataLab({ env = process.env, ttlSeconds = 12 * 6
         startDate,
         endDate,
         timeUnit: 'date',
-        keywordGroups: cfg.keywords.map((keyword) => ({ keyword, groupName: keyword }))
+        keywordGroups: cfg.keywords.map((keyword) => ({ keywords: [keyword], groupName: keyword }))
       })
     });
     if (response.status === 401 || response.status === 403) {

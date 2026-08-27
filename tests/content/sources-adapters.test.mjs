@@ -6,6 +6,7 @@ import path from 'node:path';
 
 import { validateSourceResult, validateSourceItem } from '../../scripts/content/sources/contract.mjs';
 import { buildMerged } from '../../scripts/content/sources/aggregator.mjs';
+import { fetchNaverDataLab } from '../../scripts/content/sources/naver-datalab.mjs';
 import { decodePty, todayKyungyoDate } from '../../scripts/content/sources/kma-weather.mjs';
 import { readCache, writeCache, upsertMetric, viewMetric, buildShadowReport } from '../../scripts/content/metrics-injector.mjs';
 
@@ -16,6 +17,45 @@ test('source contract rejects failures disguised as zero results', () => {
   assert.equal(unavail.status, 'unavailable');
   assert.equal(unavail.error, '키 없음');
   assert.equal(unavail.items.length, 0);
+});
+
+test('naver datalab sends keyword arrays accepted by the API schema', async () => {
+  const originalFetch = globalThis.fetch;
+  let request;
+  globalThis.fetch = async (url, options) => {
+    request = { url, options, body: JSON.parse(options.body) };
+    return {
+      ok: true,
+      status: 200,
+      async json() {
+        return {
+          results: request.body.keywordGroups.map((group) => ({
+            title: group.groupName,
+            data: [{ period: '2026-08-27', ratio: 42 }]
+          }))
+        };
+      }
+    };
+  };
+  try {
+    const result = await fetchNaverDataLab({
+      env: {
+        NAVER_DATALAB_CLIENT_ID: 'test-id',
+        NAVER_DATALAB_CLIENT_SECRET: 'test-secret',
+        NAVER_DATALAB_KEYWORDS: '이사 비용,청소 비용'
+      }
+    });
+    assert.equal(result.status, 'ok');
+    assert.equal(result.items.length, 2);
+    assert.deepEqual(request.body.keywordGroups, [
+      { keywords: ['이사 비용'], groupName: '이사 비용' },
+      { keywords: ['청소 비용'], groupName: '청소 비용' }
+    ]);
+    assert.equal(request.options.headers['X-Naver-Client-Id'], 'test-id');
+    assert.equal(request.options.headers['X-Naver-Client-Secret'], 'test-secret');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test('source item preserves volumeKind, rank and trigger; normalizes volume', () => {
