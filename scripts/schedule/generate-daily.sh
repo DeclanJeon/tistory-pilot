@@ -44,7 +44,7 @@ if [ -z "$DRY_RUN" ]; then
         echo "[0] 트렌드 키워드 생성..."
         while IFS= read -r trend_id; do
           [ -z "$trend_id" ] && continue
-          if node scripts/content/generate-post.mjs --keyword-id "$trend_id" 2>&1 | tail -8; then
+          if node scripts/content/generate-post.mjs --keyword-id "$trend_id" 2>&1 | tail -20; then
             TREND_GENERATED=$((TREND_GENERATED + 1))
           else
             echo "  ⚠ 트렌드 생성 실패: $trend_id"
@@ -57,6 +57,20 @@ if [ -z "$DRY_RUN" ]; then
   fi
 fi
 
+# [0.5] Phase 1 Shadow: 다중 소스 + 실측 메트릭 비교 (발행 미반영, 실패해도 본 흐름 유지)
+echo "[0.5] Shadow 다중 소스 + 실측 메트릭 리포트..."
+if [ -z "$DRY_RUN" ]; then
+  node scripts/content/shadow-run.mjs --date "$TODAY" 2>&1 | tail -30 \
+    || echo "  ⚠ Shadow 수집 실패 — 본 발행 경로에는 영향 없음"
+fi
+
+# [0.6] Phase 4: 이벤트 트리거 감지 (Shadow, 발행 미반영)
+echo "[0.6] 이벤트 트리거 감지..."
+if [ -z "$DRY_RUN" ]; then
+  node scripts/content/event-trigger.mjs --date "$TODAY" 2>&1 | tail -20 \
+    || echo "  ⚠ 이벤트 감지 실패 — 본 발행 경로에는 영향 없음"
+fi
+
 # 1) 미발행 키워드 자동 생성 — QA 통과분만 남는다 (qa_failed는 스킵)
 # 15건 캡: 설계 문서 일일 상한 (트렌드 생성분 제외 나머지). 생성 실패분은 다음 배치가 재시도.
 REMAIN_CAP=$((DAILY_CAP - TREND_GENERATED))
@@ -66,7 +80,7 @@ if [ -n "$DRY_RUN" ]; then
   node scripts/content/generate-post.mjs --list 2>&1 | grep -cE '^  ' \
     && echo "  (dry-run: 생성 생략)" || true
 else
-  node scripts/content/generate-post.mjs --batch --count "$REMAIN_CAP" 2>&1 | tail -40
+  node scripts/content/generate-post.mjs --batch --count "$REMAIN_CAP" 2>&1 | tail -300
 fi
 
 # 2) 생성분을 오늘 큐로 등록 (QA 통과 + selectionScore + 믹스 + 캡)

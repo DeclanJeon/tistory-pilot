@@ -36,6 +36,32 @@ test('job service creates source import and publish jobs with artifact refs', as
   assert.equal(publishJob.artifactRefs.length, 1);
 });
 
+test('job service returns the existing publish job for the same idempotency key', async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-job-service-idempotency-'));
+  const config = createRuntimeConfig({ cwd: tempRoot, env: { PUBLISH_WORKBENCH_DATA_ROOT: 'data' } });
+  const paths = await ensureDataPaths(config);
+  const service = new JobService({ config, paths, now: () => '2026-06-22T00:00:00.000Z' });
+  const input = {
+    createdBy: 'tester',
+    blogUrl: 'https://acstory.tistory.com',
+    title: '예약 글',
+    body: '본문',
+    description: '',
+    tags: '',
+    category: '생활·정보',
+    idempotencyKey: 'queue-test-key',
+    notBefore: '2026-06-22T09:00:00.000Z',
+    maxAttempts: 3
+  };
+  const first = await service.createPublishJob(input);
+  const second = await service.createPublishJob(input);
+  assert.equal(second.jobId, first.jobId);
+  assert.equal(second.idempotencyKey, 'queue-test-key');
+  assert.equal(second.notBefore, '2026-06-22T09:00:00.000Z');
+  assert.equal(second.maxAttempts, 3);
+  assert.equal((await service.listJobs()).length, 1);
+});
+
 test('job service resolves QR artifacts referenced only by job events', async () => {
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-job-service-qr-'));
   const config = createRuntimeConfig({ cwd: tempRoot, env: { PUBLISH_WORKBENCH_DATA_ROOT: 'data' } });

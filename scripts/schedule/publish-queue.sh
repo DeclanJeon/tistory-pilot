@@ -81,9 +81,11 @@ fi
 echo "큐 파일: ${QUEUE_FILE}"
 
 cd "$APP_DIR"
+# Phase 4: due-aware — publishAt 이전 글만 제출 (15분 간격 타이머와 함께)
 node scripts/schedule/submit-queue.mjs \
   --queue-dir "$QUEUE_DIR" \
   --date "$TODAY" \
+  --due \
   --verbose
 
 EXIT_CODE=$?

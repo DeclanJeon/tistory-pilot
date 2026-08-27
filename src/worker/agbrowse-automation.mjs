@@ -392,9 +392,7 @@ export function buildTistoryBodyHtml(input) {
   }
   if (looksLikeHtml(rawBody)) {
     const sanitized = sanitizeHtmlDocumentBody(input);
-    const plain = String(sanitized || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    // Never collapse a long HTML source into description-only fallback.
-    if (sanitized && plain.length >= 400) return sanitized;
+    if (sanitized) return sanitized;
     if (rawBody.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length >= 400) {
       return rawBody.trim();
     }

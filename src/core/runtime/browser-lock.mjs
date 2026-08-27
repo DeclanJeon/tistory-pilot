@@ -30,9 +30,7 @@ export function isLeaseExpired(lock, now) {
 
 export function canTakeOverStaleLock(lock, now) {
   const heartbeatAtMs = new Date(lock.heartbeatAt).getTime();
-  if (heartbeatAtMs + lock.staleThresholdMs <= now) return true;
-  if (heartbeatAtMs + lock.leaseMs <= now) return true;
-  return false;
+  return heartbeatAtMs + lock.staleThresholdMs <= now;
 }
 
 export function renewBrowserLock(lock, heartbeatAt) {

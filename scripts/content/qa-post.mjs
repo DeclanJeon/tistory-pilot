@@ -14,7 +14,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { researchKeywordMarket, evaluateAgainstMarket } from './market-research.mjs';
 import { notifyQaResult } from '../lib/discord-notify.mjs';
-import { YMYL_DENIED_PATTERNS } from './keyword-score.mjs';
+import { YMYL_DENIED_PATTERNS, detectYmylRisk } from './keyword-score.mjs';
+import { inspectProvenance, hasSourceUrls, extractSourceUrls } from './provenance-gate.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const SKILL_CANDIDATES = [
@@ -67,8 +68,25 @@ export async function loadSkillText() {
 export function qaHtmlPost(html, options = {}) {
   const title = String(options.title || '').trim();
   const keyword = String(options.keyword || '').trim();
+  const category = String(options.category || '').trim();
+  let ymylRisk = String(options.ymylRisk || '').trim().toLowerCase();
+  // Derive YMYL risk when empty/none/unknown so denied-phrase gate is fail-closed (ISA etc.)
+  const rawRisk = ymylRisk;
+  if (!ymylRisk || ymylRisk === 'none' || ymylRisk === 'unknown' || ymylRisk === 'null' || ymylRisk === 'undefined') {
+    try {
+      const derived = detectYmylRisk(keyword, category);
+      const dRisk = derived && derived.risk ? String(derived.risk).trim().toLowerCase() : '';
+      if (dRisk) ymylRisk = dRisk;
+    } catch {}
+  } else {
+    // Even when caller says 'none', if keyword itself is high YMYL per detector, escalate to derived
+    try {
+      const derived = detectYmylRisk(keyword, category);
+      const dRisk = derived && derived.risk ? String(derived.risk).trim().toLowerCase() : '';
+      if ((dRisk === 'high' || dRisk === 'medium') && rawRisk === 'none') ymylRisk = dRisk;
+    } catch {}
+  }
   const contentType = String(options.contentType || '').trim();
-  const ymylRisk = String(options.ymylRisk || '').trim();
   const minPlain = options.minPlainChars ?? MIN_PLAIN_CHARS;
   const minParagraphs = options.minParagraphs ?? MIN_PARAGRAPHS;
   const minSections = options.minSections ?? MIN_SECTIONS;
@@ -77,7 +95,6 @@ export function qaHtmlPost(html, options = {}) {
   const plain = stripHtml(html);
   const failures = [];
   const warnings = [];
-
   if (!html || !String(html).trim()) {
     failures.push({ code: 'empty-html', message: 'HTML 본문이 비어 있다.' });
   }
@@ -304,6 +321,29 @@ export async function qaHtmlPostWithMarket(html, options = {}) {
     }
   }
 
+  // ─── Phase 2: 구조화 provenance(출처 URL) 게이트 ───────────────────
+  const sourceBundle = options.sourceBundle ?? null;
+  const provenance = inspectProvenance({
+    ymylRisk: options.ymylRisk || '',
+    sourceBundle,
+    bodyHtml: html,
+    hardNonYmyl: options.provenanceHard !== false && String(process.env.PROVENANCE_HARD_GATE || '').trim() === '1',
+    plagiarismChecked: options.plagiarismChecked === true,
+    keyword,
+    category
+  });
+  for (const r of provenance.reasons) {
+    if (r.verdict === 'fail') {
+      base.failures.push({ code: r.code, message: r.message });
+    } else {
+      base.warnings.push({ code: r.code, message: r.message, verdict: r.verdict });
+    }
+  }
+  for (const w of provenance.warnings) base.warnings.push(w);
+  base.provenance = { verdict: provenance.verdict, sourceCount: extractSourceUrls(sourceBundle).length };
+  base.ok = base.failures.length === 0 && (base.metrics?.plainChars || 0) >= (options.minPlainChars ?? MIN_PLAIN_CHARS);
+  base.score = Math.max(0, (base.score || 0) - (provenance.reasons.some(r => r.verdict === 'fail') ? 18 : 0));
+
   if (options.notifyDiscord) {
     try {
       await notifyQaResult({
@@ -363,6 +403,7 @@ export async function qaMetaPost(meta, options = {}) {
     category: meta.category || '',
     contentType: meta.contentType || options.contentType || '',
     ymylRisk: meta.ymylRisk || options.ymylRisk || '',
+    sourceBundle: meta.sourceBundle || options.sourceBundle || null,
     notifyDiscord: options.notifyDiscord === true,
     marketResearch: options.marketResearch !== false,
     ...options

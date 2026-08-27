@@ -10,6 +10,7 @@ export const JOB_STATES = Object.freeze([
   'running',
   'waiting_for_qr',
   'waiting_for_editor',
+  'waiting_for_reconcile',
   'succeeded',
   'failed',
   'cancelled',
@@ -48,7 +49,6 @@ function assertEnum(value, allowed, label) {
 export function createJobMetadata(input) {
   const createdAt = input.createdAt || new Date().toISOString();
   const updatedAt = input.updatedAt || createdAt;
-
   return validateJobMetadata({
     jobId: input.jobId,
     type: input.type,
@@ -59,11 +59,34 @@ export function createJobMetadata(input) {
     updatedAt,
     artifactRefs: input.artifactRefs || [],
     lockOwner: input.lockOwner ?? null,
-    failureCode: input.failureCode ?? null
+    failureCode: input.failureCode ?? null,
+    runId: input.runId ?? null,
+    idempotencyKey: input.idempotencyKey ?? null,
+    notBefore: input.notBefore ?? null,
+    attempt: input.attempt ?? 0,
+    maxAttempts: input.maxAttempts ?? 1,
+    nextAttemptAt: input.nextAttemptAt ?? null
   });
 }
 
+function assertNullableIso(value, label) {
+  if (value === null) return value;
+  const text = assertString(value, label);
+  if (Number.isNaN(Date.parse(text))) throw new Error(`${label} must be an ISO date.`);
+  return text;
+}
+
+function assertNonNegativeInteger(value, label, { minimum = 0 } = {}) {
+  if (!Number.isInteger(value) || value < minimum) {
+    throw new Error(`${label} must be an integer >= ${minimum}.`);
+  }
+  return value;
+}
+
 export function validateJobMetadata(job) {
+  const maxAttempts = assertNonNegativeInteger(job.maxAttempts ?? 1, 'maxAttempts', { minimum: 1 });
+  const attempt = assertNonNegativeInteger(job.attempt ?? 0, 'attempt');
+  if (attempt > maxAttempts) throw new Error('attempt must not exceed maxAttempts.');
   return {
     jobId: assertString(job.jobId, 'jobId'),
     type: assertEnum(job.type, JOB_TYPES, 'type'),
@@ -74,7 +97,13 @@ export function validateJobMetadata(job) {
     updatedAt: assertString(job.updatedAt, 'updatedAt'),
     artifactRefs: assertArrayOfStrings(job.artifactRefs, 'artifactRefs'),
     lockOwner: assertNullableString(job.lockOwner, 'lockOwner'),
-    failureCode: assertNullableString(job.failureCode, 'failureCode')
+    failureCode: assertNullableString(job.failureCode, 'failureCode'),
+    runId: assertNullableString(job.runId ?? null, 'runId'),
+    idempotencyKey: assertNullableString(job.idempotencyKey ?? null, 'idempotencyKey'),
+    notBefore: assertNullableIso(job.notBefore ?? null, 'notBefore'),
+    attempt,
+    maxAttempts,
+    nextAttemptAt: assertNullableIso(job.nextAttemptAt ?? null, 'nextAttemptAt')
   };
 }
 

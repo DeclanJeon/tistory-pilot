@@ -241,3 +241,60 @@ test('worker job runner requeues a recoverable job before runJobById execution',
   const events = await fs.readFile(path.join(paths.eventsDir, 'job-recoverable.jsonl'), 'utf8');
   assert.match(events, /job-worker-requeue/);
 });
+
+test('worker job runner does not execute a job before notBefore', async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-runner-not-before-'));
+  const config = createRuntimeConfig({ cwd: tempRoot, env: { PUBLISH_WORKBENCH_DATA_ROOT: 'data' } });
+  const paths = await ensureDataPaths(config);
+  const jobStore = new FileJobStore({ paths, now: () => '2026-06-22T00:00:00.000Z' });
+  await jobStore.create({
+    jobId: 'job-future',
+    type: 'publish_post',
+    blogUrl: 'https://acstory.tistory.com',
+    createdBy: 'tester',
+    notBefore: '2026-06-22T01:00:00.000Z'
+  });
+  const runner = new WorkerJobRunner({
+    config,
+    paths,
+    handlers: { async publish_post() { throw new Error('should not run'); } },
+    clock: () => new Date('2026-06-22T00:30:00.000Z')
+  });
+  const result = await runner.runNextJob();
+  assert.equal(result, null);
+  assert.equal((await jobStore.get('job-future')).state, 'queued');
+});
+
+test('worker job runner schedules retryable failures with backoff', async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-runner-retry-'));
+  const config = createRuntimeConfig({ cwd: tempRoot, env: { PUBLISH_WORKBENCH_DATA_ROOT: 'data' } });
+  const paths = await ensureDataPaths(config);
+  const jobStore = new FileJobStore({ paths, now: () => '2026-06-22T00:00:00.000Z' });
+  await jobStore.create({
+    jobId: 'job-retry',
+    type: 'publish_post',
+    blogUrl: 'https://acstory.tistory.com',
+    createdBy: 'tester',
+    maxAttempts: 3
+  });
+  const runner = new WorkerJobRunner({
+    config,
+    paths,
+    handlers: {
+      async publish_post() {
+        const error = new Error('network timeout');
+        error.retryable = true;
+        throw error;
+      }
+    },
+    clock: () => new Date('2026-06-22T00:00:00.000Z')
+  });
+  const result = await runner.runNextJob();
+  assert.equal(result.state, 'queued');
+  const job = await jobStore.get('job-retry');
+  assert.equal(job.attempt, 1);
+  assert.equal(job.failureCode, 'retryable-error');
+  assert.equal(job.nextAttemptAt, '2026-06-22T00:00:30.000Z');
+  const events = await jobStore.readEvents('job-retry');
+  assert.ok(events.some(event => event.type === 'job.retry-scheduled'));
+});

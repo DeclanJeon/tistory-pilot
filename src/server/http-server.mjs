@@ -186,7 +186,11 @@ export async function createHttpServer(options = {}) {
             tags: String(body.tags || ''),
             category: String(body.category || ''),
             heroImagePath: String(body.heroImagePath || ''),
-            sourceBundle: body.sourceBundle || null
+            sourceBundle: body.sourceBundle || null,
+            runId: body.runId ? String(body.runId) : null,
+            idempotencyKey: body.idempotencyKey ? String(body.idempotencyKey) : null,
+            notBefore: body.notBefore ? String(body.notBefore) : null,
+            maxAttempts: Number.isInteger(body.maxAttempts) ? body.maxAttempts : 1
           });
           json(response, 201, { job });
           return;

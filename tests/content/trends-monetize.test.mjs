@@ -7,14 +7,14 @@ import {
   mapCategory
 } from '../../scripts/content/trends-monetize.mjs';
 
-test('cleanTrendCore removes celebrities and news noise', () => {
+test('cleanTrendCore removes celebrities while preserving actionable weather trends', () => {
   assert.equal(cleanTrendCore('강경준'), '');
-  assert.equal(cleanTrendCore('태풍 찬홈 경로'), '');
+  assert.equal(cleanTrendCore('태풍 찬홈 경로'), '태풍 찬홈 경로');
   assert.equal(cleanTrendCore('김용건'), '');
   assert.equal(cleanTrendCore('에어컨 청소'), '에어컨 청소');
   assert.equal(cleanTrendCore('엘리베이터 (노후)'), '엘리베이터');
   assert.equal(cleanTrendCore('실시간 주담대 금리'), '주담대 금리');
-  assert.equal(cleanTrendCore('(속보) 폭우 피해'), '');
+  assert.equal(cleanTrendCore('(속보) 폭우 피해'), '폭우 피해');
 });
 
 test('buildCandidates creates commercial suffixes without verb doubling', () => {
@@ -24,8 +24,7 @@ test('buildCandidates creates commercial suffixes without verb doubling', () => 
   assert.ok(homeCandidates.includes('에어컨 청소 가격'));
 
   const nounCandidates = buildCandidates('엘리베이터', '생활·정보');
-  assert.ok(nounCandidates.includes('엘리베이터 비용'));
-
+  assert.ok(nounCandidates.includes('엘리베이터 설치 비용'));
   // core가 이미 "신청"으로 끝나면 "신청 방법"이 아니라 "방법"만 붙는다
   const processCandidates = buildCandidates('전기차 보조금 신청', '생활·정보');
   assert.ok(processCandidates.includes('전기차 보조금 신청 방법'));

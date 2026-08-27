@@ -17,8 +17,10 @@ import { execSync } from 'node:child_process';
 import { loadProjectEnv } from '../lib/load-env.mjs';
 import { qaHtmlPostWithMarket, writeQaReport } from './qa-post.mjs';
 import { researchKeywordMarket, buildMarketPromptBlock } from './market-research.mjs';
+import { buildSourceBundleFromMarket, isOfficialSourceUrl } from './provenance-gate.mjs';
 import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
 import {
+  detectYmylRisk,
   scoreKeyword,
   computeSelectionScore,
   freshnessFactor,
@@ -197,7 +199,6 @@ function rankBatchCandidates(keywords, recentClusters = [], count = 1, gateOpts 
 }
 
 // ─── 소스 리서치 ─────────────────────────────────────────────────────
-
 async function researchKeyword(keywordEntry) {
   const keyword = keywordEntry.keyword;
   console.log(`[research] "${keyword}" 리서치 중...`);
@@ -213,6 +214,40 @@ async function researchKeyword(keywordEntry) {
     console.error(`[research] market failed: ${error instanceof Error ? error.message : String(error)}`);
   }
 
+  // ymylRisk derive via detectYmylRisk instead of default none
+  let ymylRisk = String(keywordEntry.ymylRisk ?? '').trim().toLowerCase();
+  if (!ymylRisk || ymylRisk === 'unknown' || ymylRisk === 'null' || ymylRisk === 'undefined' || ymylRisk === 'none') {
+    try {
+      const derived = detectYmylRisk(keyword, keywordEntry.category || '');
+      const derivedRisk = derived && derived.risk ? String(derived.risk).trim().toLowerCase() : 'none';
+      // stored 'none'이지만 실제 YMYL 고위험이면 derived high로 교정 (fail-closed)
+      if (ymylRisk === 'none' && derivedRisk === 'none') {
+        ymylRisk = 'none';
+      } else if (!ymylRisk || ymylRisk === 'unknown' || ymylRisk === 'null' || ymylRisk === 'undefined' || ymylRisk === 'none') {
+        ymylRisk = derivedRisk || 'none';
+      }
+    } catch {
+      if (!ymylRisk) ymylRisk = 'none';
+    }
+  }
+  if (!ymylRisk) ymylRisk = 'none';
+
+  // market.competitors를 공식 도메인만 남기도록 필터링한 뒤 sourceBundle 생성 (generic blog URL은 YMYL에서 fail)
+  let filteredMarket = market;
+  if (market && Array.isArray(market.competitors) && market.competitors.length) {
+    const officialOnly = market.competitors.filter((c) => {
+      const url = String(c?.url || c?.link || '').trim();
+      return url && isOfficialSourceUrl(url);
+    });
+    filteredMarket = { ...market, competitors: officialOnly };
+  }
+  const sourceBundle = buildSourceBundleFromMarket(filteredMarket);
+  if (sourceBundle.length) {
+    console.log(`[research] sourceBundle ${sourceBundle.length}건 생성 (official 필터 후)`);
+  } else if (ymylRisk === 'high' || ymylRisk === 'medium') {
+    console.log(`[research] YMYL ${ymylRisk} — 공식 출처 0건 (generic blog URL만 있으면 fail)`);
+  }
+
   const context = {
     keyword: keyword,
     category: keywordEntry.category,
@@ -220,6 +255,8 @@ async function researchKeyword(keywordEntry) {
     contentType: keywordEntry.contentType || 'guide',
     tags: keywordEntry.tags || [],
     cpcTier: market?.cpcTier || keywordEntry.cpcTier || 'B',
+    ymylRisk,
+    sourceBundle,
     market,
     marketPrompt: buildMarketPromptBlock(market)
   };
@@ -356,7 +393,7 @@ async function generateWithLLM(context, args = {}) {
     return generateWithOpenAI(systemPrompt, userPrompt, args);
   }
   console.log('[llm] LLM 없음 — 템플릿 모드로 생성');
-  return generateFromTemplate(context);
+  return { html: generateFromTemplate(context), usingTemplate: true };
 }
 
 async function generateWithHermes(systemPrompt, userPrompt, context, args) {
@@ -382,7 +419,7 @@ async function generateWithHermes(systemPrompt, userPrompt, context, args) {
     const output = result.trim();
     if (output && output.length > 100) {
       console.log(`[hermes] 응답 수신 (${output.length}자)`);
-      return extractHtmlFromResponse(output);
+      return { html: extractHtmlFromResponse(output), usingTemplate: false };
     }
   } catch (e) {
     console.error(`[hermes] CLI 실패: ${e.message.split('\n')[0]}`);
@@ -390,7 +427,7 @@ async function generateWithHermes(systemPrompt, userPrompt, context, args) {
 
   console.log(`[hermes] 수동 실행이 필요하다:`);
   console.log(`  hermes -z "$(cat '${promptFile}')" > output.html`);
-  return generateFromTemplate(context);
+  return { html: generateFromTemplate(context), usingTemplate: true };
 }
 
 async function generateWithOpenAI(systemPrompt, userPrompt, args) {
@@ -411,7 +448,7 @@ async function generateWithOpenAI(systemPrompt, userPrompt, args) {
 
   if (!apiKey) {
     console.log('[openai] API 키 없음 — 템플릿 모드');
-    return generateFromTemplate({ keyword: '' });
+    return { html: generateFromTemplate({ keyword: '' }), usingTemplate: true };
   }
 
   const host = new URL(apiBase.includes('://') ? apiBase : `https://${apiBase}`).hostname;
@@ -450,21 +487,63 @@ async function generateWithOpenAI(systemPrompt, userPrompt, args) {
   const content = data.choices?.[0]?.message?.content || '';
   if (!content) throw new Error('LLM이 빈 응답을 반환했다.');
   console.log(`[llm] 응답 수신 (${content.length}자)`);
-  return extractHtmlFromResponse(content);
+  return { html: extractHtmlFromResponse(content), usingTemplate: false };
 }
 
-function extractHtmlFromResponse(text) {
-  // 코드 블록 안의 HTML 추출
-  const codeBlockMatch = text.match(/```(?:html)?\s*\n([\s\S]*?)```/);
-  if (codeBlockMatch) return codeBlockMatch[1].trim();
-
-  // div 태그로 시작하는 HTML 추출
-  const divMatch = text.match(/(<div[\s\S]*<\/div>)/);
+export function extractHtmlFromResponse(text) {
+  // Any fenced block (```html, ```javascript, ``` etc.) — extract inner and validate
+  const fenceMatch = text.match(/```(?:\w+)?\s*\n([\s\S]*?)```/);
+  if (fenceMatch) {
+    const block = fenceMatch[1].trim();
+    if (!/<\s*(div|p|table)\b/i.test(block)) {
+      throw new Error('LLM 응답의 코드 블록에서 유효한 HTML 구조(div/p/table)를 찾을 수 없습니다');
+    }
+    // Reject any prose outside fence? inner already isolated, ensure no fence markers remain
+    if (/```/.test(block)) throw new Error('LLM 응답의 코드 블록에서 유효한 HTML 구조(div/p/table)를 찾을 수 없습니다');
+    return block;
+  }
+  // Unclosed or stray fence marker is a hard failure — do not leak markdown
+  if (/```/.test(text)) {
+    throw new Error('LLM 응답에 마크다운 코드펜스(```)가 남아 있다');
+  }
+  // Extract only HTML fragment from first structural tag, stripping leading prose
+  const htmlStart = text.search(/<\s*(div|p|table)\b/i);
+  if (htmlStart === -1) {
+    throw new Error('LLM 응답에서 유효한 HTML 구조(div/p/table)를 찾을 수 없습니다');
+  }
+  const fragment = text.slice(htmlStart).trim();
+  if (!fragment) throw new Error('LLM이 빈 응답을 반환했다');
+  if (!/<\s*(div|p|table)\b/i.test(fragment)) {
+    throw new Error('LLM 응답에서 유효한 HTML 구조(div/p/table)를 찾을 수 없습니다');
+  }
+  // Prefer full <div>...</div> wrapper if present, otherwise return fragment from first tag
+  const divMatch = fragment.match(/(<div[\s\S]*<\/div>)/i);
   if (divMatch) return divMatch[1];
-
-  // 그 외에는 전체 텍스트를 HTML로 간주
-  return text.trim();
+  // Strip trailing non-HTML prose after last closing tag
+  const tail = fragment.slice(fragment.lastIndexOf('>') + 1).trim();
+  if (tail && tail.length && !tail.startsWith('<')) {
+    const m = fragment.match(/^([\s\S]*<\/\s*(div|p|table|h[1-3]|ul|ol|blockquote|figure)\s*>)[^<]*$/i);
+    if (m) return m[1].trim();
+    // fallback: truncate to last '>' if tail is pure prose
+    const lastCloseIdx = fragment.lastIndexOf('</');
+    if (lastCloseIdx !== -1) {
+      const end = fragment.indexOf('>', lastCloseIdx);
+      if (end !== -1) return fragment.slice(0, end + 1).trim();
+    }
+  }
+  return fragment;
 }
+
+// ─── runId 생성/캐시 (배치 내 동일 runId 유지, queue 상관용) ─────────────
+let _cachedBatchRunId = null;
+export function getOrCreateRunId({ date = null, env = process.env } = {}) {
+  if (env.RUN_ID) return String(env.RUN_ID);
+  if (_cachedBatchRunId) return _cachedBatchRunId;
+  const d = date || todayLocalDate();
+  _cachedBatchRunId = `generate-${d}-${Date.now()}`;
+  return _cachedBatchRunId;
+}
+export function clearCachedRunId() { _cachedBatchRunId = null; }
 
 // ─── 유틸 ────────────────────────────────────────────────────────────
 
@@ -475,7 +554,6 @@ function todayLocalDate() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 }
-
 // ─── 템플릿 기반 생성 (LLM 없을 때) ────────────────────────────────
 
 function generateFromTemplate(context) {
@@ -693,7 +771,7 @@ print("${outPath}")
 
 // ─── HTML 저장 + 메타 정보 ──────────────────────────────────────────
 
-async function savePost(context, htmlContent, thumbnailPath) {
+async function savePost(context, htmlContent, thumbnailPath, usingTemplate = false) {
   const today = todayLocalDate();
   const slug = context.keyword
     .toLowerCase()
@@ -720,19 +798,27 @@ async function savePost(context, htmlContent, thumbnailPath) {
     tags: context.tags || [],
     contentType: context.contentType || 'guide',
     cpcTier: context.cpcTier || 'B',
+    ymylRisk: context.ymylRisk || 'none',
+    sourceBundle: context.sourceBundle || [],
     title: seoTitle,
     description: extractDescription(htmlContent, context.description),
     bodyFile: htmlPath,
     thumbnail: thumbnailPath || '',
+    runId: context.runId || context.metaRunId || getOrCreateRunId({ date: today }),
+    metaRunId: context.runId || context.metaRunId || getOrCreateRunId({ date: today }),
     generatedAt: new Date().toISOString(),
+    usingTemplate,
     status: 'generated'
   };
 
-  // 발행 전 QA (스킬 + 웹 시장 리서치)
+  // 발행 전 QA (스킬 + 웹 시장 리서치 + provenance)
   const qa = await qaHtmlPostWithMarket(htmlContent, {
     title: meta.title,
     keyword: context.keyword || '',
     category: context.category || '',
+    contentType: context.contentType || 'guide',
+    ymylRisk: context.ymylRisk || meta.ymylRisk || 'none',
+    sourceBundle: context.sourceBundle || meta.sourceBundle || [],
     market: context.market || null,
     marketResearch: true,
     notifyDiscord: false
@@ -747,18 +833,30 @@ async function savePost(context, htmlContent, thumbnailPath) {
     metrics: qa.metrics,
     suggestions: qa.suggestions || [],
     market: qa.market || null,
+    provenance: qa.provenance || null,
     reportFile: qaPath
   };
   meta.market = qa.market || context.market || null;
-  meta.status = qa.ok ? 'qa_passed' : 'qa_failed';
+  meta.provenance = qa.provenance || null;
+  // 템플릿 fallback은 품질이 낮아 자동 발행 금지 — draft_only 로 보관
+  if (usingTemplate) {
+    meta.status = 'draft_only';
+    meta.provenance = { verdict: 'fail', reason: 'template-fallback' };
+  } else {
+    meta.status = qa.ok ? 'qa_passed' : 'qa_failed';
+  }
 
   await fs.writeFile(metaPath, JSON.stringify(meta, null, 2), 'utf8');
   console.log(`[save] HTML: ${htmlPath}`);
   console.log(`[save] META: ${metaPath}`);
-  console.log(`[qa] ${qa.ok ? 'PASS' : 'FAIL'} score=${qa.score}`);
+  console.log(`[qa] ${qa.ok ? 'PASS' : 'FAIL'} score=${qa.score}${usingTemplate ? ' (template draft_only)' : ''}`);
   for (const f of qa.failures || []) console.log(`  - FAIL ${f.code}: ${f.message}`);
   for (const w of qa.warnings || []) console.log(`  - WARN ${w.code}: ${w.message}`);
 
+  if (qa.ok && usingTemplate) {
+    console.log(`  ⚠ 템플릿 fallback — draft_only로 저장, 자동 큐에서 제외`);
+    return meta;
+  }
   if (!qa.ok) {
     for (const s of (qa.suggestions || []).slice(0, 5)) console.log(`  - TODO ${s}`);
     throw new Error(`QA 실패: ${meta.title || context.keyword} (${(qa.failures || []).map(f => f.code).join(', ')})`);
@@ -799,6 +897,7 @@ function buildQueueEntry(meta, timeSlot) {
   const today = todayLocalDate();
   return {
     id: meta.id,
+    runId: meta.runId || meta.metaRunId || getOrCreateRunId({ date: today }),
     publishAt: `${today}T${timeSlot}:00+09:00`,
     blogUrl: 'https://acstory.tistory.com',
     title: meta.title,
@@ -807,7 +906,10 @@ function buildQueueEntry(meta, timeSlot) {
     description: meta.description,
     category: meta.category,
     tags: Array.isArray(meta.tags) ? meta.tags.join(',') : (meta.tags || ''),
-    heroImage: meta.thumbnail || ''
+    heroImage: meta.thumbnail || '',
+    sourceBundle: Array.isArray(meta.sourceBundle) ? [...meta.sourceBundle] : [],
+    ymylRisk: meta.ymylRisk || 'none',
+    status: meta.status || 'generated'
   };
 }
 
@@ -907,14 +1009,14 @@ async function main() {
 
       try {
         const context = await researchKeyword(kw);
-        const html = await generateWithLLM({ ...context, id: kw.id }, args);
+        const { html, usingTemplate } = await generateWithLLM({ ...context, id: kw.id }, args);
 
         let thumbnail = '';
         if (!args.skipImage) {
           thumbnail = await generateThumbnail({ ...context, id: kw.id });
         }
 
-        const meta = await savePost({ ...context, id: kw.id }, html, thumbnail);
+        const meta = await savePost({ ...context, id: kw.id }, html, thumbnail, usingTemplate || false);
         await saveGeneratedId(kw.id);
         results.push(meta);
       } catch (error) {
@@ -938,14 +1040,14 @@ async function main() {
   console.log(`[generate] "${kw.keyword}" (${kw.category})`);
 
   const context = await researchKeyword(kw);
-  const html = await generateWithLLM({ ...context, id: kw.id }, args);
+  const { html, usingTemplate } = await generateWithLLM({ ...context, id: kw.id }, args);
 
   let thumbnail = '';
   if (!args.skipImage) {
     thumbnail = await generateThumbnail({ ...context, id: kw.id });
   }
 
-  const meta = await savePost({ ...context, id: kw.id }, html, thumbnail);
+  const meta = await savePost({ ...context, id: kw.id }, html, thumbnail, usingTemplate || false);
   await saveGeneratedId(kw.id);
 
   console.log(`\n[완료]`);
@@ -966,7 +1068,10 @@ async function main() {
   console.log(`    --tags "${meta.tags.slice(0, 5).join(',')}"`);
 }
 
-main().catch(error => {
-  console.error(error.message);
-  process.exit(1);
-});
+const isCli = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
+if (isCli || process.argv[1]?.endsWith('generate-post.mjs')) {
+  main().catch(error => {
+    console.error(error.message);
+    process.exit(1);
+  });
+}

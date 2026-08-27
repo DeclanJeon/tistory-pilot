@@ -98,8 +98,32 @@ export class JobService {
     });
   }
 
-  async createPublishJob({ createdBy, blogUrl, title, body, description, tags, category, heroImagePath = '', sourceBundle = null }) {
-    const jobIdValue = jobId('publish-post');
+  async createPublishJob({
+    createdBy,
+    blogUrl,
+    title,
+    body,
+    description,
+    tags,
+    category,
+    heroImagePath = '',
+    sourceBundle = null,
+    runId = null,
+    idempotencyKey = null,
+    notBefore = null,
+    maxAttempts = 1
+  }) {
+    const stableJobId = idempotencyKey
+      ? `publish-post-${crypto.createHash('sha256').update(String(idempotencyKey)).digest('hex').slice(0, 32)}`
+      : null;
+    if (stableJobId) {
+      try {
+        return await this.jobStore.get(stableJobId);
+      } catch (error) {
+        if (error?.code !== 'ENOENT') throw error;
+      }
+    }
+    const jobIdValue = stableJobId || jobId('publish-post');
     const staged = await stagePublishPayload({
       artifactStore: this.artifactStore,
       jobId: jobIdValue,
@@ -117,14 +141,25 @@ export class JobService {
       value: staged,
       metadata: { kind: 'staged-publish-payload', jobId: jobIdValue }
     });
-    return this.jobStore.create({
-      jobId: jobIdValue,
-      type: 'publish_post',
-      state: 'queued',
-      blogUrl,
-      createdBy,
-      artifactRefs: [stagedRecord.artifactId]
-    });
+    try {
+      return await this.jobStore.create({
+        jobId: jobIdValue,
+        type: 'publish_post',
+        state: 'queued',
+        blogUrl,
+        createdBy,
+        artifactRefs: [stagedRecord.artifactId],
+        runId,
+        idempotencyKey,
+        notBefore,
+        maxAttempts
+      });
+    } catch (error) {
+      if (stableJobId && /Job already exists/.test(error?.message || '')) {
+        return this.jobStore.get(stableJobId);
+      }
+      throw error;
+    }
   }
 
   async createCategoryEnsureJob({ createdBy, blogUrl, category }) {

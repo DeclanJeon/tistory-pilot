@@ -11,13 +11,15 @@
  *   node scripts/schedule/submit-queue.mjs --queue-dir ./scheduled/queue --dry-run
  *   node scripts/schedule/submit-queue.mjs --queue-dir ./scheduled/queue --date 2026-07-28
  */
+import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import http from 'node:http';
 import { qaHtmlPost } from '../content/qa-post.mjs';
 import { recordPublishFeedback } from '../content/market-research.mjs';
 import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
-import { evaluateYmylGate } from '../content/keyword-score.mjs';
+import { evaluateYmylGate, detectYmylRisk } from '../content/keyword-score.mjs';
+import { hasSourceUrls, hasOfficialSourceUrls } from '../content/provenance-gate.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
@@ -27,6 +29,16 @@ const DEFAULT_BLOG_URL = 'https://acstory.tistory.com';
 
 const WORKBENCH_HOST = process.env.WORKBENCH_HOST || '127.0.0.1';
 const WORKBENCH_PORT = Number(process.env.WORKBENCH_PORT || 4310);
+function idempotencyKeyFor(post) {
+  const source = [
+    post.blogUrl || DEFAULT_BLOG_URL,
+    post.id || '',
+    post.keyword || '',
+    post.title || '',
+    post.publishAt || ''
+  ].join('\x1f');
+  return `queue-${crypto.createHash('sha256').update(source).digest('hex').slice(0, 32)}`;
+}
 const WORKBENCH_BASE = process.env.WORKBENCH_BASE_URL || `http://${WORKBENCH_HOST}:${WORKBENCH_PORT}`;
 
 
@@ -51,9 +63,13 @@ export async function qaQueuePost(post) {
         failures.push(`keyword-missing:${post.id}`);
       } else if (kw) {
         contentType = contentType || kw.contentType || '';
-        ymylRisk = ymylRisk || kw.ymylRisk || '';
+        let derivedRisk = '';
+        try { derivedRisk = detectYmylRisk(kw.keyword || post.keyword || '', kw.category || post.category || '').risk || ''; } catch {}
+        const effectiveRisk = String(derivedRisk || kw.ymylRisk || '').toLowerCase().trim();
+        // stored 'none' must not mask derived high — effectiveRisk authoritative for YMYL
+        ymylRisk = effectiveRisk || ymylRisk || '';
         if (kw.enabled === false) failures.push(`keyword-disabled:${kw.id}`);
-        if (kw.ymylRisk === 'high') {
+        if (effectiveRisk === 'high') {
           // 선택 단계와 동일한 안전 유형 판정을 쓴다 — 공식 절차·서류·문의처·수수료·경험기록형
           // YMYL 키워드는 발행 직전에도 허용하고, 비교·추천 등 위험형만 차단한다.
           const gate = evaluateYmylGate({
@@ -68,6 +84,15 @@ export async function qaQueuePost(post) {
     } catch {
       warnings.push('keywords-unreadable');
     }
+  }
+
+  // Phase 2: template fallback and YMYL official source gate
+  if (post.status === 'draft_only' || post.usingTemplate === true) {
+    failures.push('draft-only-template-fallback');
+  }
+  const postYmyl = String(ymylRisk || '').toLowerCase();
+  if ((postYmyl === 'high' || postYmyl === 'medium') && !hasOfficialSourceUrls(post.sourceBundle)) {
+    failures.push('provenance-ymyl-source-missing: official domain required (gov.kr/go.kr/korea.kr etc.) — blog URL alone does not satisfy YMYL');
   }
 
   const html = post.bodyHtml || post.body || '';
@@ -92,7 +117,7 @@ export async function qaQueuePost(post) {
 
 
 function parseArgs(argv) {
-  const args = { queueDir: '', dryRun: false, date: '', verbose: false };
+  const args = { queueDir: '', dryRun: false, date: '', verbose: false, due: false };
   for (let i = 2; i < argv.length; i++) {
     const arg = argv[i];
     const next = argv[i + 1];
@@ -100,6 +125,7 @@ function parseArgs(argv) {
     else if (arg === '--date' && next) { args.date = next; i++; }
     else if (arg === '--dry-run') { args.dryRun = true; }
     else if (arg === '--verbose') { args.verbose = true; }
+    else if (arg === '--due') { args.due = true; }
     else if (arg === '--help') {
       console.log(`사용법: node submit-queue.mjs --queue-dir <DIR> [옵션]
 
@@ -107,7 +133,8 @@ function parseArgs(argv) {
   --queue-dir DIR   큐 JSON 파일이 있는 디렉토리
   --date YYYY-MM-DD 특정 날짜의 글만 처리 (기본: 오늘)
   --dry-run         실제로 Job 생성하지 않고 출력만
-  --verbose         상세 로그`);
+  --verbose         상세 로그
+  --due             publishAt 이 현재 이전인 due 글만 제출(15분 간격 타이머용)`);
       process.exit(0);
     }
   }
@@ -148,6 +175,42 @@ function matchesDateFilter(post, targetDate) {
   return post.publishAt.startsWith(targetDate);
 }
 
+export function isPostDue(post, nowMs = Date.now()) {
+  if (!post.publishAt) return false;
+  const at = Date.parse(post.publishAt);
+  if (Number.isNaN(at)) return false;
+  return at <= nowMs + 5 * 60 * 1000;
+}
+
+export async function movePost(queueDir, submittedDir, filename, post) {
+  try {
+    const srcPath = path.join(queueDir, filename);
+    const raw = await fs.readFile(srcPath, 'utf8');
+    const data = JSON.parse(raw);
+    if (!data || !Array.isArray(data.posts)) return false;
+    const posts = data.posts;
+    let idx = -1;
+    if (post && typeof post.id === 'string' && post.id) {
+      idx = posts.findIndex((p) => p && p.id === post.id);
+    }
+    if (idx === -1 && post) {
+      const needle = JSON.stringify(post);
+      idx = posts.findIndex((p) => JSON.stringify(p) === needle);
+    }
+    if (idx === -1) return false;
+    const [moved] = posts.splice(idx, 1);
+    const remainingData = { ...data, posts };
+    await fs.writeFile(srcPath, JSON.stringify(remainingData, null, 2) + '\n', 'utf8');
+    await fs.mkdir(submittedDir, { recursive: true });
+    const base = (moved && moved.id) || filename.replace(/\.json$/, '');
+    const dstName = `${base}-${Date.now()}.json`;
+    const dstPath = path.join(submittedDir, dstName);
+    await fs.writeFile(dstPath, JSON.stringify({ posts: [moved] }, null, 2) + '\n', 'utf8');
+    return true;
+  } catch {
+    return false;
+  }
+}
 async function submitJob(post, { dryRun, verbose }) {
   // bodyFile 이 있으면 읽어서 bodyHtml 로 채운다
   if (!post.bodyHtml && !post.body && post.bodyFile) {
@@ -167,6 +230,10 @@ async function submitJob(post, { dryRun, verbose }) {
 
   const payload = {
     type: 'publish_post',
+    runId: post.runId || `queue-${post.publishAt?.slice(0, 10) || 'unknown'}`,
+    idempotencyKey: idempotencyKeyFor(post),
+    notBefore: post.publishAt || null,
+    maxAttempts: 3,
     blogUrl: post.blogUrl || 'https://acstory.tistory.com',
     title: post.title,
     body: post.bodyHtml || post.body || '',
@@ -174,9 +241,8 @@ async function submitJob(post, { dryRun, verbose }) {
     tags: Array.isArray(post.tags) ? post.tags.join(',') : (post.tags || ''),
     category: post.category || '',
     heroImagePath: post.heroImage || '',
-    // worker가 발행 성공 시 원장(ledger)에 기록할 수 있도록 키워드 식별자를 함께 넘긴다.
-    // (원장은 발행 성공 시점에만 기록한다 — 제출 시점 기록은 실패 시 재발행을 막는다.)
-    sourceBundle: { id: post.id || '', keyword: post.keyword || '' }
+    // provenance bundle (official URLs) for audit — preserve any shape recognized by extractSourceUrls (array, {url}, {urls/sources/links}); otherwise ledger ref
+    sourceBundle: (() => { const sb = post.sourceBundle; if (Array.isArray(sb) && sb.length) return sb; if (sb && typeof sb === 'object') { if (sb.url || sb.urls || sb.sources || sb.links) return sb; const keys = Object.keys(sb); if (keys.length && keys.some(k => ['id','keyword','urls'].includes(k)) === false) { /* generic object with url-like keys */ if (typeof sb.url === 'string' || Array.isArray(sb.urls) || Array.isArray(sb.sources) || Array.isArray(sb.links)) return sb; } } if (sb && typeof sb === 'object' && (sb.url || sb.urls || sb.sources || sb.links)) return sb; if (sb && typeof sb === 'object' && Object.keys(sb).length) return sb; return { id: post.id || '', keyword: post.keyword || '', urls: Array.isArray(sb) ? sb : [] }; })(),
   };
 
   if (verbose || dryRun) {

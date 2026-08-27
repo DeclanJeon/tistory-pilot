@@ -25,7 +25,7 @@ import {
   DEFAULT_FOCUS_CATEGORIES
 } from './keyword-score.mjs';
 import { buildDuplicateGate, isAlreadyPublished, normalizeTitle } from '../lib/published-posts.mjs';
-
+import { getSeasonalBridgeCandidates } from './seasonal-bridge.mjs';
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
 const TRENDS_DIR = path.join(PROJECT_ROOT, 'content', 'trends');
@@ -69,31 +69,35 @@ export function inferContentType(keyword = '') {
 // 트렌드 제목에서 핵심 명사구 추출 (뉴스/인물 노이즈 제거)
 export function cleanTrendCore(title = '') {
   let t = String(title || '').trim();
-  // 따옴표/괄호 안 이벤트명 제거 (예: "OO 발표", "(속보)")
   t = t.replace(/["'「」『』“”]/g, '');
   t = t.replace(/\((?:속보|종합|영상|사진)\)/g, '');
-  // 후행 괄호 내용 제거 (예: "엘리베이터 (노후)" → "엘리베이터")
   t = t.replace(/\s*\([^)]*\)\s*$/g, '');
   t = t.trim();
-  // 인물/단체 패턴 제거
-  if (/^[가-힣]{2,4}$/.test(t)) return ''; // 순수 인명(2~4자 한글) — 연예인/정치인
-  if (/(경로|날씨|태풍|지진|폭염|장마|북한|미사일|대통령|총리|국회|폭우|홍수|침수|화재)/.test(t)) return '';
-  // 접두어 "실시간" 등 제거
+  // "토트넘 대 찰턴", "레알 마드리드 대 레알 소시에다드" 같은 스포츠 매치는 노이즈
+  if (/ 대 | vs\.? |토트넘|레알|베트남|대전|울산/.test(t)) return '';
+  // 순수 인명(2~4자 한글) 중 서비스 명사와 무관한 것만 버림 — "과태료/면허/사다리차" 등은 유지
+  if (/^[가-힣]{2,4}$/.test(t)) {
+    // 서비스 명사/생활 명사에 포함된 단어는 버리지 않는다
+    const keep = [...HOME_SERVICE_NOUNS, ...LIFE_SERVICE_NOUNS, '과태료', '면허', '사다리차', '비행기', '엘리베이터', '네팔', '합계출산율', '콜레스테롤', '폭염', '장마', '태풍', '폭우', '한파', '미세먼지', '항공권', '렌터카'];
+    if (!keep.some((k) => k === t || k.includes(t) || t.includes(k))) return '';
+  }
+  // 날씨/정치 등 큰 카테고리 단독 트렌드는 시즌 브릿지로 전환하므로 유지 (예: "폭염" → 에어컨 청소)
   t = t.replace(/^(실시간|오늘의|내일)\s*/g, '');
   if (t.length < 2 || t.length > 24) return '';
   return t;
 }
 
-// 상업 접미사 후보 생성. core가 서비스 명사이면 풍부하게, 아니면 최소로.
-// 이미 core 끝에 같은 성분이 있으면 중복하지 않는다 (예: "...신청" → "...신청 방법").
 export function buildCandidates(core, category) {
+  // 시즌 브릿지 우선: "과태료/면허/폭염" 등은 미리 정의된 고수익 키워드로 확장
+  const bridged = getSeasonalBridgeCandidates(core);
+  if (bridged) return bridged;
   const isHome = category === '이사·청소·주거';
   const hasServiceNoun = SERVICE_NOUNS.some((n) => core.includes(n));
   const rawSuffixes = isHome
     ? ['설치 비용', '청소 비용', '비용', '가격', '비교', '추천', '업체', '고장 원인']
     : hasServiceNoun
       ? ['비용', '가격', '비교', '추천', '렌탈', '신청 방법', '절차']
-      : ['비용', '신청 방법'];
+      : ['비용', '신청 방법', '가격 비교', '절차'];
   const seen = new Set();
   const out = [];
   const SERVICE_VERBS = /(청소|설치|수리|교체|점검|세척|교환)$/;
@@ -195,9 +199,10 @@ async function main() {
   for (const trend of trends) {
     const core = cleanTrendCore(trend.title);
     if (!core) continue;
+    const isBridged = getSeasonalBridgeCandidates(core) !== null;
     const baseCategory = mapCategory(core);
     for (const candidate of buildCandidates(core, baseCategory)) {
-      const category = baseCategory;
+      const category = mapCategory(candidate) !== '생활·정보' || baseCategory === '이사·청소·주거' ? baseCategory : mapCategory(candidate);
       const contentType = inferContentType(candidate);
       const r = scoreKeyword({
         keyword: candidate,
@@ -207,8 +212,10 @@ async function main() {
       }, { focusCategories });
       if (!r.gates.ymyl.allowed) continue;
       if (!r.gates.focus.allowed) continue;
-      // 상업 의도 문턱: 의도 점수 8점 이상 + 상업/혼합형
-      if (r.intent.score < 8 || r.intent.intent === 'informational') continue;
+      // 상업 의도 문턱: 브릿지 키워드는 6점부터 허용, 일반은 8점
+      const intentThreshold = isBridged ? 6 : 8;
+      if (r.intent.score < intentThreshold) continue;
+      if (!isBridged && r.intent.intent === 'informational') continue;
       // 기존 키워드/발행 원장 중복
       if (keywordExists(existingKeywords, candidate)) continue;
       const dup = isAlreadyPublished({ id: '', keyword: candidate, title: candidate }, gate);
@@ -227,8 +234,6 @@ async function main() {
       });
     }
   }
-
-  // 2) 트렌드당 최고 후보 1개만 + 전체 돈 점수 상위 캡
   const byCore = new Map();
   for (const s of scored) {
     const prev = byCore.get(s.core);
@@ -241,10 +246,29 @@ async function main() {
     console.log(`  ✓ ${b.candidate} [${b.category}/${b.contentType}] 의도=${b.intentScore} 총점=${b.totalScore} 돈점수=${b.money} (← "${b.trendTitle}" ${b.trend.trafficText})`);
   }
   if (best.length === 0) {
-    console.log('[trends-monetize] 오늘은 수익형 트렌드가 없다. (뉴스/연예 위주)');
-    return;
+    // 트렌드가 전부 연예/스포츠면 월별 계절 키워드로 fallback — 매일 최소 1건은 돈되는 글로 연결
+    const { getMonthlySeasonalKeywords } = await import('./seasonal-bridge.mjs');
+    const month = Number.parseInt(args.date.slice(5, 7), 10) || new Date().getMonth() + 1;
+    const seasonal = getMonthlySeasonalKeywords(month);
+    const fallbackCandidates = [];
+    for (const kw of seasonal.slice(0, args.cap)) {
+      if (keywordExists(existingKeywords, kw)) continue;
+      const dup = isAlreadyPublished({ id: '', keyword: kw, title: kw }, gate);
+      if (dup.matched) continue;
+      const category = mapCategory(kw);
+      const contentType = inferContentType(kw);
+      const r = scoreKeyword({ keyword: kw, category, contentType, metrics: { monthlySearch: 0, cpcKrw: 0, source: 'estimate', checkedAt: '' } }, { focusCategories });
+      if (!r.gates.ymyl.allowed || !r.gates.focus.allowed) continue;
+      fallbackCandidates.push({ candidate: kw, category, contentType, core: kw.split(' ')[0], trendTitle: `${month}월 시즌 키워드`, trend: { traffic: 5000, trafficText: '시즌 수요', increasePct: 0 }, intentScore: r.intent.score, totalScore: r.score.total, ymylRisk: detectYmylRisk(kw, category), money: moneyScore({ intentScore: r.intent.score, totalScore: r.score.total, trend: { traffic: 5000 } }) });
+    }
+    if (fallbackCandidates.length > 0) {
+      console.log(`[trends-monetize] 트렌드 0건 → 시즌 fallback ${fallbackCandidates.length}건 주입 (${month}월)`);
+      best.push(...fallbackCandidates.slice(0, args.cap));
+    } else {
+      console.log('[trends-monetize] 오늘은 수익형 트렌드가 없다. (뉴스/연예 위주) — 시즌 fallback도 중복으로 스킵');
+      return;
+    }
   }
-
   // 3) keywords.json 등록
   if (args.dryRun) {
     console.log(`[trends-monetize] (dry-run) 등록 생략`);

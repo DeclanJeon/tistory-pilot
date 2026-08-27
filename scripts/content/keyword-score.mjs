@@ -12,7 +12,7 @@
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
-
+import { isWeatherTriggered } from './seasonal-bridge.mjs';
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
 
@@ -126,6 +126,17 @@ export function cpcTierFromCpc(cpcKrw) {
   if (cpc >= 800) return 'B';
   if (cpc >= 300) return 'C';
   return 'D';
+}
+
+// ─── 실측 선정 반영 (Phase 5): measured CPC/검색량을 selectionScore 보너스로 ──
+// bid 20점 만점 → 6점, volume 15점 만점 → 4점, 합 최대 10점. 0으로 치환 금지 — 실측 없으면 0.
+export function measuredSelectionBonus(measuredCpcKrw, monthlySearch) {
+  const bid = scoreBid(measuredCpcKrw);
+  const vol = scoreVolume(monthlySearch);
+  if (bid === 0 && vol === 0) return 0;
+  const bidBonus = Math.round((bid / 20) * 6);
+  const volBonus = Math.round((vol / 15) * 4);
+  return Math.min(10, bidBonus + volBonus);
 }
 
 // ─── 경쟁 갭 점수 (배점 20) ───────────────────────────────────────────
@@ -285,14 +296,30 @@ export function scoreKeyword(keywordObj = {}, options = {}) {
 
 // ─── 큐 선택용 selectionScore (auto-queue.mjs G005에서 사용) ──────────
 // selectionScore = 45% 상업 의도 + 25% qaScore + 20% 경쟁 갭 + 10% 신선도 (설계 §5)
-
-export function computeSelectionScore({ commercialIntentScore = 0, qaScore = 0, serpGapScore = 0, freshness = 1 } = {}) {
+// Phase 5 확장: measuredBonus(실측 bid/volume → 최대 10점)와 weatherTriggered(+30% 별도 가중)는
+// 선택적 가중으로, 없으면 기존 동작을 그대로 유지한다 (shadow-run 호환).
+export function computeSelectionScore({ commercialIntentScore = 0, qaScore = 0, serpGapScore = 0, freshness = 1, measuredBonus = 0, weatherTriggered = false, weatherBoost = false, keyword = '', activeTriggers = null, activeWeatherTriggers = null } = {}) {
   const intentNorm = Math.min(25, Math.max(0, commercialIntentScore)) / 25; // 0~1
   const qaNorm = Math.min(100, Math.max(0, qaScore)) / 100;
   const gapNorm = Math.min(20, Math.max(0, serpGapScore)) / 20;
   const freshNorm = Math.min(1, Math.max(0, freshness));
   const raw = 0.45 * intentNorm + 0.25 * qaNorm + 0.20 * gapNorm + 0.10 * freshNorm;
-  return Math.round(raw * 100);
+  let score = Math.round(raw * 100);
+  // 실측 보너스: bid/volume 실측 반영 (별도 10점, 캡 100) — NaN guard, 실패를 0으로 치환 금지
+  const mBonusNum = Number(measuredBonus);
+  const mBonus = Number.isFinite(mBonusNum) ? mBonusNum : 0;
+  if (mBonus !== 0) score = Math.min(100, score + Math.round(mBonus));
+  // 날씨 부스팅: trigger 시 +30% 별도 가중 (캡 100, 실패를 0으로 치환 금지)
+  // weatherTriggered가 직접 주어지면 그대로 사용, 아니면 keyword+activeTriggers로 seasonal-bridge 통해 유도
+  let shouldWeatherBoost = Boolean(weatherTriggered || weatherBoost);
+  if (!shouldWeatherBoost && keyword) {
+    const triggers = activeTriggers ?? activeWeatherTriggers;
+    if (Array.isArray(triggers) && triggers.length) {
+      try { shouldWeatherBoost = isWeatherTriggered(String(keyword), triggers); } catch {}
+    }
+  }
+  if (shouldWeatherBoost) score = Math.min(100, Math.round(score * 1.3));
+  return score;
 }
 
 export function freshnessFactor(generatedAtIso, now = new Date(), maxAgeDays = 14) {
@@ -332,6 +359,14 @@ export function applyTopicDiversity(baseScore, diversityFactor = 1, weight = 0.2
   const div = Math.min(1, Math.max(0, Number(diversityFactor) || 0));
   const w = Math.min(1, Math.max(0, Number(weight) || 0));
   return Math.round(base * (1 - w + w * div));
+}
+
+// ─── 날씨 부스팅 (Phase 5): trigger 시 +30% 별도 가중 ─────────────────────
+// metrics-injector/selectionScore에서 trigger 시 적용. 0으로 치환 금지 — trigger 없으면 기존 점수 유지.
+export function applyWeatherBoost(baseScore, triggered = false) {
+  const base = Math.min(100, Math.max(0, Number(baseScore) || 0));
+  if (!triggered) return base;
+  return Math.min(100, Math.round(base * 1.3));
 }
 
 // ─── 키워드 로드/CLI ──────────────────────────────────────────────────

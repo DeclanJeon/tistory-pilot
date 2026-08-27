@@ -289,6 +289,7 @@ content/keywords/keywords.json   ← 수동 큐레이션 (20개)
 | 프롬프트 | `scripts/content/generate-post.mjs` | ✅ | YMYL·출처·연도·비용표·오프너 지침 + cost/problem/checklist 유형 템플릿 |
 | 발행 게이트 | `scripts/schedule/submit-queue.mjs` | ✅ | 발행 직전 재검증(I1) + 키워드 enabled/YMYL 중복 방어 + 피드백 기록, 07-30 큐 드라이런에서 "신용점수 2025년" 차단 확인 |
 | 피드백 | `recordPublishFeedback` 연결 | ✅ | submit 성공/실패 → `content/learning/market-memory.json` |
+| 발행 중복 게이트 | `scripts/lib/published-posts.mjs` (신규) + `submit-queue`/`auto-queue`/`generate-post` | ✅ | 발행 원장(`content/published.json`) + 블로그 RSS 제목 유사도 이중 판정. 08-04 정수기/ChatGPT/Docker 재발행 등 실중복 8쌍 전부 차단 실측, 11개 단위 테스트 통과, 서버 배포 완료 |
 
 **검증 결과**: `npm test` 62/64 통과 (실패 2건은 사전 존재·본 변경 무관). 전체 드라이런(auto-queue/submit-queue/select-keywords) 통과.
 

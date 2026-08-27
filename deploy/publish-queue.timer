@@ -1,8 +1,8 @@
 [Unit]
-Description=Tistory Publish Queue Timer (매일 08:55 실행)
+Description=Tistory Publish Queue Timer (15분 간격 due-aware)
 
 [Timer]
-OnCalendar=*-*-* 08:55:00
+OnCalendar=*-*-* *:00,15,30,45:00
 Persistent=true
 
 [Install]

@@ -22,7 +22,8 @@ import { qaMetaPost } from './qa-post.mjs';
 import { scoreKeyword, computeSelectionScore, freshnessFactor, normalizeGapScore, topicClusterOf, topicDiversityFactor, applyTopicDiversity } from './keyword-score.mjs';
 import { recentGeneratedPosts, mixBucket } from './select-keywords.mjs';
 import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
-
+import { readCache, applyMeasuredMetricsToCandidates } from './metrics-injector.mjs';
+import { isWeatherTriggered } from './seasonal-bridge.mjs';
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const GENERATED_DIR = path.join(PROJECT_ROOT, 'content', 'generated');
 // 서버는 /srv/publish-workbench/scheduled/queue, 로컬은 프로젝트 scheduled/queue
@@ -82,8 +83,9 @@ async function findGeneratedPosts(date) {
       if (!f.endsWith('.meta.json')) continue;
       const raw = await fs.readFile(path.join(dayDir, f), 'utf8');
       const meta = JSON.parse(raw);
-      // QA 통과 글만 큐 등록 대상
-      if (meta.status === 'qa_failed') continue;
+      // QA 통과 글만 큐 등록 대상 (draft_only는 템플릿 fallback — 자동 발행 금지)
+      if (meta.status === 'qa_failed' || meta.status === 'draft_only') continue;
+      if (meta.usingTemplate === true) continue;
       if (meta.status === 'generated' || meta.status === 'qa_passed' || !meta.status) {
         metas.push(meta);
       }
@@ -115,6 +117,71 @@ async function loadKeywords() {
   const raw = await fs.readFile(KEYWORDS_PATH, 'utf8');
   return JSON.parse(raw);
 }
+
+// ─── 날씨 트리거 활성 목록 해석 ─────────────────────────────────────────
+// 우선순위: 1) 환경변수 WEATHER_ACTIVE_TRIGGERS/ACTIVE_WEATHER_TRIGGERS (콤마 구분)
+//          2) content/learning/shadow-sources-<today>.json 의 kma-weather items
+//          3) 빈 배열 (부스팅 없음, 실패를 0으로 치환 금지)
+export function parseActiveWeatherTriggers(env = process.env) {
+  const primary = String(env.WEATHER_ACTIVE_TRIGGERS || '').trim();
+  const alias = String(env.ACTIVE_WEATHER_TRIGGERS || '').trim();
+  for (const raw of [primary, alias]) {
+    if (!raw) continue;
+    const parts = raw.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length) return parts;
+  }
+  return [];
+}
+export async function loadActiveWeatherTriggers({ env = process.env, date = null } = {}) {
+  const fromEnv = parseActiveWeatherTriggers(env);
+  if (fromEnv.length) return fromEnv;
+  // Shadow 파일에서 kma-weather 트리거 추출 시도 (없으면 빈 배열)
+  try {
+    const d = date || new Date().toISOString().slice(0, 10);
+    const candidates = [
+      path.join(PROJECT_ROOT, 'content', 'learning', `shadow-sources-${d}.json`),
+      path.join(PROJECT_ROOT, 'content', 'learning', 'shadow-sources.json'),
+    ];
+    for (const p of candidates) {
+      try {
+        const raw = await fs.readFile(p, 'utf8');
+        const data = JSON.parse(raw);
+        const sources = data.sources || data.snapshot || data;
+        // aggregator snapshot: data.sourceStatus + merged, 또는 validateSourceResult 배열
+        // kma-weather 어댑터는 items[].normalized 또는 raw를 trigger로 반환
+        if (Array.isArray(sources)) {
+          for (const s of sources) {
+            if (s.source === 'kma-weather' && Array.isArray(s.items)) {
+              const trigs = s.items.map(i => i.normalized || i.raw).filter(Boolean);
+              if (trigs.length) return trigs;
+            }
+          }
+        }
+        if (sources && typeof sources === 'object' && sources['kma-weather']) {
+          // sourceStatus 형태가 아니면 스킵
+        }
+        // snapshot.sources 배열 탐색
+        const snapSources = data.snapshot?.sources || data.sources?.sources || [];
+        if (Array.isArray(snapSources)) {
+          for (const s of snapSources) {
+            if (s.source === 'kma-weather' && Array.isArray(s.items)) {
+              const trigs = s.items.map(i => i.normalized || i.raw).filter(Boolean);
+              if (trigs.length) return trigs;
+            }
+          }
+        }
+        // merged items에 trigger 플래그가 있으면 키 추출 (fallback)
+        const merged = data.merged || data.snapshot?.merged || [];
+        if (Array.isArray(merged)) {
+          const trigs = merged.filter(m => m.trigger).map(m => m.normalized || m.raw).filter(Boolean);
+          if (trigs.length) return trigs;
+        }
+      } catch {}
+    }
+  } catch {}
+  return [];
+}
+
 
 // ─── 선택 단계 (설계 §5) ──────────────────────────────────────────────
 
@@ -166,9 +233,24 @@ export function enforceMix(candidates, recentPosts, kwById, cap) {
   }
   return { selected, rejectedMix: deferred };
 }
-
-async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS } = {}) {
-  const kwById = new Map(keywordsData.keywords.map(k => [k.id, k]));
+async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS, activeWeatherTriggers = null, weatherActiveTriggers = null, activeTriggers = null } = {}) {
+  // Phase 5: 실측 캐시 hit 시 bid/volume 직접 반영 (없으면 기존 유지, 실패를 0으로 치환 금지)
+  let keywordsForScoring = keywordsData.keywords || [];
+  try {
+    const cache = await readCache();
+    if (cache && cache.metrics && Object.keys(cache.metrics).length > 0) {
+      const enriched = applyMeasuredMetricsToCandidates(keywordsForScoring, cache);
+      // enriched가 원본과 다른 경우(측정 반영) 반영, 아니면 원본 유지
+      if (Array.isArray(enriched) && enriched.length === keywordsForScoring.length) {
+        const hasMeasured = enriched.some((k) => k && k._measured && k._measured.kind === 'measured');
+        // 측정 히트가 있으면 enriched 사용, 없으면 원본 유지(기존 동작 보장)
+        if (hasMeasured) keywordsForScoring = enriched;
+      }
+    }
+  } catch {
+    // 캐시 읽기 실패 시 기존 경로 유지 (외부 키 없이도 35/35 통과)
+  }
+  const kwById = new Map(keywordsForScoring.map(k => [k.id, k]));
   const focus = keywordsData.focusCategories;
   const allowLegacy = keywordsData.allowLegacySeries;
   const rejected = [];
@@ -176,6 +258,16 @@ async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS
 
   const recent = (await recentGeneratedPosts(10)).filter(p => kwById.get(p.id)?.enabled);
   const recentClusters = recent.map(p => topicClusterOf(kwById.get(p.id) || p));
+  // 날씨 트리거 활성 목록 해석 (환경변수/Shadow 파일, 실패 시 빈 배열 — 0으로 치환 금지)
+  let weatherTriggers = activeWeatherTriggers ?? weatherActiveTriggers ?? activeTriggers;
+  if (weatherTriggers == null) {
+    try {
+      weatherTriggers = await loadActiveWeatherTriggers({ date: keywordsData._queueDate || null });
+    } catch {
+      weatherTriggers = [];
+    }
+  }
+  if (!Array.isArray(weatherTriggers)) weatherTriggers = [];
 
   for (const { post, report } of qaResults) {
     const kw = kwById.get(post.id);
@@ -189,11 +281,16 @@ async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS
     const gapScore = normalizeGapScore(kw.gap);
     // 신선도는 글 생성일 기준 (설계 §5). 없으면 키워드 조사일 폴백.
     const freshness = freshnessFactor(post.generatedAt || kw.metrics?.checkedAt || kw.researchedAt, new Date(), 14);
+    const measuredBonus = (kw && kw._measured && Number.isFinite(kw._measured.bonus)) ? kw._measured.bonus : 0;
+    const keywordText = kw.keyword || post.keyword || '';
+    const weatherTriggered = isWeatherTriggered(keywordText, weatherTriggers);
     const baseScore = computeSelectionScore({
       commercialIntentScore: r.score.intent,
       qaScore: report.score,
       serpGapScore: gapScore,
-      freshness
+      freshness,
+      measuredBonus,
+      weatherTriggered
     });
     const cluster = topicClusterOf(kw);
     const diversity = topicDiversityFactor(cluster, recentClusters);
@@ -206,6 +303,7 @@ async function selectPosts(qaResults, keywordsData, { maxPosts = DAILY_MAX_POSTS
       topicCluster: cluster,
       diversity,
       baseScore,
+      weatherTriggered,
       selectionScore: applyTopicDiversity(baseScore, diversity)
     });
   }
@@ -354,6 +452,7 @@ async function main() {
   }
 
   // 선택 단계: 게이트 + selectionScore + 믹스 + 캡
+    keywordsData._queueDate = args.date;
   const { selected, rejected, rejectedMix } = await selectPosts(qaResults, keywordsData, { maxPosts: args.maxPosts });
 
   for (const r of rejected) {
@@ -391,14 +490,25 @@ async function main() {
     return;
   }
 
-  // 큐에 등록
-  const merged = { posts: [...existingQueue.posts] };
+  // runId 상관: 기존 큐 runId > 생성 메타 runId(가장 빈도 높은 값) > 신규 mint
+  let runId = existingQueue.runId || null;
+  if (!runId) {
+    const metaRunIds = selected.map(s => s.post?.runId || s.post?.metaRunId).filter(Boolean);
+    if (metaRunIds.length) {
+      const freq = new Map();
+      for (const rid of metaRunIds) freq.set(rid, (freq.get(rid) || 0) + 1);
+      runId = [...freq.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    }
+  }
+  if (!runId) runId = `generate-${args.date}-${Date.now()}`;
+  const merged = { runId, posts: [...existingQueue.posts] };
 
   for (const slot of TIME_SLOTS) {
     const hhmm = slot.slice(0, 2) + ':' + slot.slice(2);
     for (const post of slots[slot]) {
       const scored = selected.find(s => s.post.id === post.id);
       merged.posts.push({
+        runId: post.runId || post.metaRunId || runId,
         id: post.id,
         keyword: post.keyword || '',
         publishAt: `${args.date}T${hhmm}:00+09:00`,
@@ -411,7 +521,10 @@ async function main() {
         tags: Array.isArray(post.tags) ? post.tags.join(',') : (post.tags || ''),
         heroImage: post.thumbnail || '',
         selectionScore: scored?.selectionScore ?? null,
-        qaScore: scored?.qaScore ?? null
+        qaScore: scored?.qaScore ?? null,
+        sourceBundle: Array.isArray(post.sourceBundle) ? [...post.sourceBundle] : (Array.isArray(post.qa?.provenance?.sources) ? [...post.qa.provenance.sources] : []),
+        ymylRisk: post.ymylRisk || post.qa?.ymylRisk || 'none',
+        status: post.status || (post.qa?.ok ? 'qa_passed' : 'generated')
       });
     }
   }
