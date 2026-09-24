@@ -1,0 +1,105 @@
+PonsWarp를 회고할 때 가장 조심해야 할 부분은 시작점을 너무 늦게 잡는 일입니다.
+
+2025년 11월의 첫 커밋만 보면 PonsWarp는 WebRTC, React, Rust/WASM, signaling 서버가 엮인 현대적인 브라우저 파일 전송 제품처럼 보입니다. 그런데 그 전에 이미 같은 문제가 두 번 나타났습니다. 2021년 11월 30일의 KronDelivery , 2022년 5월 31일의 filetransfer 입니다.
+
+두 저장소의 내부 코드를 지금 같은 깊이로 열람할 수 있는 것은 아닙니다. 그래서 이 글은 “그때 이미 지금의 PonsWarp 구조가 있었다”라고 쓰지 않겠습니다. 확인 가능한 것은 저장소 이름, 생성 시점, 몇 개의 커밋 문구, 그리고 그 문구가 가리키는 제품 언어입니다.
+
+[KronDelivery와 filetransfer에 남은 초기 제품 언어]
+
+KronDelivery와 filetransfer에서 확인 가능한 것은 완성된 구조가 아니라, 파일 전달을 제품 언어로 보려는 초기 신호입니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 반복된 문제의 시작점을 먼저 복원합니다.
+
+실패 지점 — 예전 프로젝트에 이미 남아 있던 제품 언어를 코드와 기록으로 확인합니다.
+
+지금의 판단 — 같은 불편을 다른 구조로 다시 풀어낸 이유를 회고의 결론으로 둡니다.
+
+💡 오래된 저장소에서 중요한 것은 완성도가 아닙니다. 파일 전송을 별도 제품 문제로 떼어 내고, 보내는 사람과 받는 사람의 언어를 화면에 올리려 했다는 반복입니다.
+
+🧭 이름부터 이미 제품 쪽으로 기울어 있었습니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 KronDelivery와 filetransfer에서 이미 드러난 집착 라는 사건을 기능 소개로 소비하지 않습니다. 예전 프로젝트에 이미 남아 있던 제품 언어를 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+KronDelivery 라는 이름은 흥미롭습니다. 파일 처리나 스토리지 유틸리티가 아니라 delivery라는 단어를 씁니다. 이 단어는 구현보다 경험에 가깝습니다. 파일을 어디에 저장한다는 말이 아니라, 누군가에게 도착하게 만든다는 말입니다.
+
+반년 뒤 filetransfer 가 나옵니다. 2022-05-31 ec8cbb6 로 시작하고, 같은 날 d71f15b 의 File Transfer Popup 전환이 이어집니다. 2022년 6월 14일에는 3750bbf 의 title 변경, 즉 File Send / File Receive를 Send a File / Receive a File로 바꾼 기록이 남아 있습니다.
+
+“File Send”와 “File Receive”는 개발자식 레이블입니다. “Send a File”과 “Receive a File”은 사용자의 행동에 더 가까운 문장입니다.
+
+📦 당시의 시스템은 작았지만 사용자 플로우는 이미 둘로 나뉘었습니다
+
+filetransfer 의 커밋 문구만 놓고 보아도 최소한 두 개의 화면 언어가 있었습니다. Send a File, Receive a File입니다. 이것은 나중의 PonsWarp에서 SenderView와 ReceiverView로 나뉘는 구조와 직접 동일하다고 말할 수는 없습니다. 하지만 같은 방향의 초기는 맞습니다.
+
+제품 플로우로 쓰면 단순합니다. 보내는 사람은 파일을 고르고, 전송을 시작하고, 상대가 받을 수 있는 상태를 기다립니다. 받는 사람은 수신 경로를 열고, 들어오는 파일을 확인하고, 저장합니다. 초기 저장소가 이 모든 상태를 실제로 안정적으로 처리했는지는 알 수 없습니다. 중요한 것은 화면 언어가 벌써 그 방향을 가리켰다는 점입니다.
+
+🔍 팝업이라는 선택도 그냥 UI 장식은 아니었습니다
+
+팝업은 긴 전송 상태를 품기에는 약하지만, 파일 전송을 사용자의 현재 작업 맥락 안에 붙는 행동으로 보려 했다는 신호로 읽을 수 있습니다.
+
+File Transfer Popup 창으로 변경이라는 문구는 작게 지나칠 수 있습니다. 하지만 파일 전송 UX에서는 팝업이 가지는 의미가 있습니다. 팝업은 현재 작업 위에 잠깐 올라오는 경계면입니다. 사용자는 원래 하던 흐름을 떠나지 않고, 파일만 골라 보내거나 받는 작은 절차를 통과합니다.
+
+PonsWarp가 나중에 별도 앱 셸, 전송 화면, 수신 화면, Cloud Drop 화면을 갖게 된 것은 이 감각의 확장판으로 볼 수 있습니다. 다만 규모가 달라졌습니다. 팝업 안에서 처리할 수 있던 간단한 선택은 WebRTC 연결 상태, TURN fallback, 저장 backpressure, 모바일 백그라운드 복구를 만나면서 별도 제품 구조가 필요해졌습니다.
+
+[반복된 제품 신호가 PonsWarp 구조로 커지는 과정]
+
+초기 UI 언어는 PonsWarp에서 제품 화면, 전송 엔진, 저장 책임, 운영 책임으로 커졌습니다.
+
+⚙️ 반복된 것은 기술 스택보다 문제 분해 방식이었습니다
+
+초기 두 저장소에서 지금 확인 가능한 증거는 많지 않습니다. 그래서 당시 기술 스택을 과하게 복원하면 안 됩니다. 대신 반복된 문제 분해 방식은 볼 수 있습니다. 파일 전송을 독립 프로젝트로 떼어냈고, 보내는 사람과 받는 사람을 구분했고, UI 문장을 고쳤습니다.
+
+이 세 가지는 PonsWarp에서 더 복잡한 형태로 반복됩니다. 프로젝트 구성은 Product/UI, browser transfer engine, storage/recovery, core/backend로 갈라졌고, 사용자 플로우는 direct transfer와 Cloud Drop으로 넓어졌습니다. 시스템 플로우는 파일 선택, chunk 생성, packet encode, encrypt, data channel, decode, verify, write, ack로 길어졌습니다.
+
+🧪 현대적인 아키텍처는 없었지만 현대적인 골칫거리는 예고돼 있었습니다
+
+KronDelivery와 filetransfer에 지금의 PonsWarp 같은 대용량 WebRTC 엔진이 있었다고 말할 근거는 없습니다. pons-core-wasm 같은 Rust 코어도, Cloud Drop 같은 비동기 다운로드 경로도, production signaling 서버도 이 시기 이야기로 끌어오면 안 됩니다.
+
+그런데 제품 관점의 골칫거리는 이미 보입니다. 보내는 사람과 받는 사람을 나누는 순간 상태 동기화 문제가 생깁니다. 파일 선택을 팝업으로 올리는 순간 사용자의 작업 맥락과 전송 상태를 어떻게 연결할지 고민해야 합니다. 제목을 Send a File과 Receive a File로 바꾸는 순간 제품은 이 기능이 누구의 어떤 행동인가를 설명해야 합니다.
+
+PonsWarp의 초기 커밋들은 이 골칫거리가 기술적으로 커진 버전이었습니다. ad322f3 뒤에 c647df9 의 WebRTC 서비스 개선과 프로덕션 로깅, 4efb394 의 STUN 서버 보강이 따라옵니다. 638bc83 은 메모리 폭발 방지를, 21dc9ba 는 저장 완료 핸드셰이크를 다룹니다.
+
+🧱 디자인 선택은 점점 상태를 설명하는 쪽으로 이동했습니다
+
+초기 기록에서 눈에 띄는 것은 UI 문구입니다. 팝업, title 변경, Send a File, Receive a File. 이 시기에는 아직 화려한 아키텍처보다 사용자가 보는 말이 먼저 보입니다. 파일 전송 서비스의 디자인은 예쁜 박스를 그리는 일이 아니라, 불안한 상태를 사용자가 견딜 수 있게 설명하는 일에 가깝기 때문입니다.
+
+보내는 사람은 상대가 받을 준비가 되었는지 알고 싶어 합니다. 받는 사람은 받은 파일이 실제로 저장됐는지 알고 싶어 합니다. 전송이 느려지면 왜 느려졌는지, 끊기면 다시 할 수 있는지, 클라우드 링크로 바꿀 수 있는지 알고 싶어 합니다. PonsWarp가 나중에 속도 표시, 저장 완료 대기, Cloud Drop, 무료/유료 정책, production traffic measurement까지 가게 된 것도 결국 상태를 설명해야 했기 때문입니다.
+
+📊 초기 신호와 PonsWarp의 차이
+
+구간 확인 가능한 신호 보수적 해석
+
+KronDelivery 2021-11-30 first commit, delivery라는 이름 파일을 전달 문제로 따로 보려는 초기 관심
+
+filetransfer File Transfer Popup, Send a File / Receive a File 보내는 사람과 받는 사람의 사용자 플로우 분리
+
+PonsWarp WebRTC, STUN/TURN, memory, save handshake, Cloud Drop 같은 사용자 문장을 실제 서비스 책임으로 확장
+
+🧾 지금 돌아보는 판단
+
+💡 KronDelivery와 filetransfer는 완성된 제품의 전신이라기보다 언어의 전신에 가깝습니다. 현대적인 구조는 나중에 붙었지만, 집착의 방향은 훨씬 전부터 보였습니다.
+
+지금 돌아보면 KronDelivery와 filetransfer에는 아직 WebRTC의 지저분한 현실도, 대용량 파일의 메모리 압력도, 수신 저장 완료의 신뢰 문제도 충분히 드러나지 않았습니다. 대신 더 원초적인 질문이 있습니다. 사용자가 파일을 보낸다는 것은 어떤 행동인가. 받는다는 것은 어떤 화면이어야 하는가. 이 기능은 어느 순간 별도 제품으로 부를 만큼 중요해지는가.
+
+PonsWarp는 그 질문에 너무 큰 답을 달기 시작한 프로젝트였습니다. 브라우저끼리 직접 보내고, 안 되면 TURN을 타고, 기다릴 수 없으면 Cloud Drop으로 넘기고, 저장 완료 전에는 끝났다고 말하지 않으려 했습니다. 파일을 옮기는 기술보다, 사용자가 “보냈다”와 “받았다”를 믿을 수 있게 만드는 일에 계속 돌아왔다는 점입니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 같은 불편을 다른 구조로 다시 풀어낸 이유를 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 기록
+
+content/ponswarp-retrospective/series-plan.md — 시리즈 구조, PonsWarp 4층 설명, 전사 저장소 시간축
+
+content/ponswarp-retrospective/evidence-index.md — KronDelivery, filetransfer, wormhole-file-gate, PonsWarp 핵심 커밋 인덱스
+
+content/ponswarp-retrospective/drafts/post-03.txt — filetransfer와 wormhole-file-gate 사이의 문장 전환 근거
+
+DeclanJeon/KronDelivery — 2021-11-30 3720959 first commit
+
+DeclanJeon/filetransfer — ec8cbb6, d71f15b, 3750bbf
+
+PonsWarp commits — ad322f3, c647df9, 4efb394, 638bc83, 21dc9ba

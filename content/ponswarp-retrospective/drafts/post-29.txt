@@ -1,0 +1,97 @@
+Season 3에서 PonsWarp는 JS에서 Rust/WASM 코어로 책임을 내려보냈습니다.
+
+ZIP64, Merkle tree, file signature, reordering buffer, zero-copy는 모두 같은 방향의 이야기였습니다. 그런데 암호화는 더 까다로운 위치에 있었습니다. 신뢰를 높이는 기능이면서 동시에 처리량과 메모리 예산을 바로 건드렸기 때문입니다.
+
+[PonsWarp crypto overhead in packet pipeline]
+
+암호화는 packet path에 세션, header, 인증 태그, decrypt/verify 비용을 추가합니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 성능 문제가 드러난 순간을 먼저 복원합니다.
+
+실패 지점 — 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 속도보다 먼저 닫아야 했던 제어 루프를 회고의 결론으로 둡니다.
+
+🔐 암호화는 packet path에 새 대기열을 만든다
+
+🎯 독자가 가져갈 질문
+
+이 글은 암호화와 성능 최적화가 충돌하던 지점 라는 사건을 기능 소개로 소비하지 않습니다. 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 핵심은 암호화를 우회해서 빠르게 만드는 쪽이 아니었습니다. PonsWarp는 CryptoSession , encrypted packet header, key confirmation 같은 경계를 유지하면서 ZeroCopyPacketPool 과 backpressure로 비용을 통제하는 쪽을 택했습니다.
+
+post-22에서 정리한 현재 sender worker 근거는 중요합니다. src/workers/file-sender.worker.ts 는 pons-core-wasm 의 PacketEncoder , CryptoSession , Zip64Stream , ZeroCopyPacketPool 을 한 흐름 안에서 사용합니다.
+
+평문 packet path에서는 chunk를 읽고 header와 checksum을 붙인 뒤 전송하면 됩니다. 암호화 path에서는 여기에 세션 상태, encrypted packet header, 인증 태그, receiver 쪽 decrypt/verify가 따라붙습니다. receiver worker도 PacketDecoder , CryptoSession , fallback CRC32를 다룹니다.
+
+이 단계들은 보안 기능으로는 당연하지만, 성능 기능으로 보면 모두 비용입니다. CPU 시간이 들고, packet 크기가 늘 수 있고, buffer 수명이 길어지고, 실패 시점이 writer 앞쪽으로 이동합니다.
+
+⚙️ zero-copy는 암호화 비용을 없애지 않고 위치를 바꿨다
+
+post-15의 근거처럼 현재 sender worker는 ZeroCopyPacketPool 을 초기화하고 WASM memory 참조를 잡은 뒤, acquire_slot() , commit_slot() , get_packet_view() , release_slot() 흐름으로 packet을 만듭니다.
+
+pons-core-wasm/src/zero_copy_pool.rs 는 WASM 선형 메모리 안에 사전 할당된 buffer를 두고 JS와 WASM 경계의 복사를 줄이는 의도를 드러냅니다. 슬롯은 기본 64개이고, 각 슬롯은 64KB 데이터와 header, 인증 태그 여유 공간을 포함합니다.
+
+[PonsWarp ZeroCopyPacketPool crypto slot compromise]
+
+ZeroCopyPacketPool은 암호화 비용을 없애기보다 반복 할당과 buffer 수명을 통제 가능한 슬롯 모델로 옮깁니다.
+
+여기서 중요한 표현은 “여유 공간”입니다. 암호화 packet은 payload만 생각하면 안 됩니다. header와 인증 태그가 같이 움직여야 하고, 그 크기와 수명도 pool이 감당해야 합니다. zero-copy pool은 암호화를 공짜로 만들지 않습니다.
+
+현재 sender worker 주석은 WebRTC가 ArrayBuffer를 전송 후 detach하므로 복사가 필요하다고 남깁니다. PonsWarp가 얻은 것은 모든 복사의 제거가 아니라, 암호화와 packet 조립이 반복적으로 만드는 메모리 압력을 pool 안으로 가두는 능력이었습니다.
+
+📉 처리량 목표는 보안 경계를 밀어내고 싶어 한다
+
+성능 최적화 관점에서는 유혹이 분명합니다. batch를 키우고, prefetch를 늘리고, 여러 packet을 더 빨리 밀어 넣으면 headline throughput이 좋아질 수 있습니다. Season 2의 Push, AIMD, pipeline, multi-channel, RTT 제어는 모두 sender가 쉬는 시간을 줄이려는 시도였습니다.
+
+하지만 암호화와 검증이 붙은 packet에서는 이 유혹이 위험해집니다. sender가 더 빨리 packet을 만들수록 receiver는 decrypt, verify, reorder, write를 더 빨리 따라가야 합니다. DataChannel의 bufferedAmount 가 비었다는 사실도 receiver 저장 완료를 의미하지 않습니다.
+
+이 판단은 post-22의 constants.ts 근거와 이어집니다. 현재 코드는 MAX_BUFFERED_AMOUNT 를 4MB bounded queue로 제한하고 BATCH_SIZE_MAX 를 1로 묶습니다.
+
+🧱 인증, 검증, 저장 완료는 같은 방향의 브레이크였다
+
+wasmCore.ts 가 CRC32, packet encode/decode, encrypted packet header, key confirmation, reordering buffer, zero-copy pool을 노출한다는 post-22의 근거는 이 글의 핵심입니다. 이 목록은 서로 다른 기능처럼 보이지만, 전송 제품에서는 같은 방향의 브레이크입니다.
+
+CRC32와 packet verification은 우발적 손상을 조용히 저장하지 않게 합니다. encrypted packet header와 key confirmation은 맞는 세션의 데이터인지 확인하게 합니다. reordering buffer는 multi-channel이나 jitter가 만든 순서 흔들림을 writer 앞에서 정리합니다. zero-copy pool은 이 모든 작업이 반복될 때 메모리 할당이 폭발하지 않게 합니다.
+
+[PonsWarp security speed completion contract]
+
+보안 경계, flow control, 저장 완료 판정이 함께 작동할 때만 빠른 전송이 제품 성공이 됩니다.
+
+🔄 타협은 “보안을 낮춘다”가 아니라 “속도 제어를 보수화한다”였다
+
+PonsWarp가 선택한 타협은 암호화 경계를 빼는 것이 아니었습니다. CryptoSession 과 encrypted packet header, key confirmation은 코어 경계로 내려갔고, packet pool과 reordering buffer도 함께 내려갔습니다.
+
+대신 속도 제어는 보수화됐습니다. transferFlowControl.ts 의 conservative hotfix profile은 one small chunk per pump를 택하고, 16KB chunk, batch size 1, prefetch buffer 0 같은 값을 둡니다. shouldRequestMoreChunks() 도 paused peer와 pending ACK가 없고 가장 높은 bufferedAmount가 high watermark 아래인지 확인한 뒤에야 더 요청합니다.
+
+보안 기능을 유지하면 비용이 생깁니다. 그 비용을 감추려고 queue를 키우면 receiver와 writer가 늦게 망가집니다. 그래서 PonsWarp는 보안/검증/저장 완료 경계 안에서만 throughput을 말할 수 있게 만들었습니다.
+
+🧭 지금 돌아보는 판단
+
+암호화는 제품 문구로는 간단합니다. “E2E encryption을 지원한다”라고 쓰면 됩니다. 하지만 구현 기록에서 암호화는 packet format, pool slot, auth tag, key confirmation, decrypt/verify, backpressure, writer completion까지 이어지는 긴 비용 사슬입니다.
+
+PonsWarp가 이 충돌을 완전히 해결했다고 말할 수는 없습니다. 실제 코드에도 WebRTC detach 때문에 남는 복사가 있고, conservative profile은 최고 속도보다 안정성을 택한 흔적입니다. 다만 이 흔적은 후퇴라기보다 제품 판단입니다.
+
+암호화와 성능 최적화는 서로 싸웠지만, 승자는 둘 중 하나가 아니었습니다. PonsWarp가 고른 답은 보안 경계를 코어로 내리고, 성능 경계를 backpressure와 pool로 관리하고, 완료 판정은 receiver 저장 계약으로 닫는 것이었습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 속도보다 먼저 닫아야 했던 제어 루프를 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+content/ponswarp-retrospective/series-plan.md:208-217,273-281 — Season 3에 zero-copy와 crypto가 함께 배치됨
+
+PonsWarp/src/workers/file-sender.worker.ts:5-19,159-188,801-865 — WASM packet encoding, CryptoSession, ZeroCopyPacketPool, WebRTC detach 복사 경계
+
+pons-core-wasm/src/zero_copy_pool.rs:24-34 — WASM 선형 메모리 기반 pool, 64KB slot, header/auth tag 여유 공간
+
+PonsWarp/src/workers/file-receiver.worker.ts:6-12,38-55 — packet verification, E2E decryption, CryptoSession, CRC32 fallback 경계
+
+PonsWarp/src/utils/wasmCore.ts — CRC32, packet encode/decode, encrypted packet header, key confirmation, reordering buffer, zero-copy pool 노출
+
+PonsWarp/src/utils/constants.ts:11-43 / transferFlowControl.ts:12-54 — bounded queue, single-flight batch, conservative 추가 chunk 요청 조건
+
+PonsWarp commit 7fe0ca1 — 암호화 지원 Zero-Copy Pool 구현

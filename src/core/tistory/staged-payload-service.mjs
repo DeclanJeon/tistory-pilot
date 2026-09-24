@@ -14,9 +14,18 @@ async function storeOptionalText(artifactStore, { jobId, kind, value }) {
   });
   return record.artifactId;
 }
+async function storeOptionalJson(artifactStore, { jobId, kind, value }) {
+  if (value == null) return null;
+  const record = await artifactStore.putJson({
+    artifactId: artifactId(jobId, kind),
+    value,
+    metadata: { kind, jobId }
+  });
+  return record.artifactId;
+}
 
 
-export async function stagePublishPayload({ artifactStore, jobId, blogUrl, title, body, description = '', tags = '', category = '', heroImagePath = '', sourceBundle = null }) {
+export async function stagePublishPayload({ artifactStore, jobId, blogUrl, title, body, description = '', tags = '', category = '', heroImagePath = '', templateId = '', sourceBundle = null, imageProvenance = null }) {
   const titleRecord = await artifactStore.putText({
     artifactId: artifactId(jobId, 'title'),
     text: String(title),
@@ -47,7 +56,9 @@ export async function stagePublishPayload({ artifactStore, jobId, blogUrl, title
     tagsRef: await storeOptionalText(artifactStore, { jobId, kind: 'tags', value: tags }),
     categoryRef: await storeOptionalText(artifactStore, { jobId, kind: 'category', value: category }),
     heroImageRef: await storeOptionalText(artifactStore, { jobId, kind: 'hero-image-path', value: heroImagePath }),
+    templateIdRef: await storeOptionalText(artifactStore, { jobId, kind: 'template-id', value: templateId }),
     sourceBundleRef,
+    imageProvenanceRef: await storeOptionalJson(artifactStore, { jobId, kind: 'image-provenance', value: imageProvenance }),
     createdAt: new Date().toISOString()
   });
 }
@@ -75,7 +86,8 @@ export async function resolveStagedPublishPayload({ artifactStore, payload }) {
     description: await loadText(staged.descriptionRef),
     tags: await loadText(staged.tagsRef),
     category: await loadText(staged.categoryRef),
-    heroImagePath: await loadText(staged.heroImageRef),
-    sourceBundle: await loadJson(staged.sourceBundleRef)
+    templateId: await loadText(staged.templateIdRef),
+    sourceBundle: await loadJson(staged.sourceBundleRef),
+    imageProvenance: await loadJson(staged.imageProvenanceRef)
   };
 }

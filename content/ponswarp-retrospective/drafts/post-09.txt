@@ -1,0 +1,101 @@
+PonsWarp 초기에 가장 불편했던 깨달음은 WebRTC를 붙였다고 해서 곧바로 P2P 제품이 되는 것은 아니라는 사실이었습니다.
+
+데스크톱 브라우저 두 개를 같은 네트워크에서 열어 놓고 보면 연결은 꽤 그럴듯하게 붙습니다. 하지만 모바일이 들어오면 NAT, 브라우저 sleep, 화면 전환, 통신사망 조건이 한꺼번에 제품 문제로 올라옵니다.
+
+[PonsWarp mobile NAT reality]
+
+모바일망에서는 직접 P2P 후보가 실패하고 TURN 릴레이가 정상 플로우의 일부가 됩니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 처음 믿었던 문장을 먼저 복원합니다.
+
+실패 지점 — 절반만 맞았던 전제가 어디에서 깨졌는지를 코드와 기록으로 확인합니다.
+
+지금의 판단 — 기술 선택을 제품 책임으로 다시 읽는 기준을 회고의 결론으로 둡니다.
+
+💡 문제는 WebRTC가 아니라 제품 약속이었습니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 TURN 없이는 모바일이 안 붙는다는 현실 라는 사건을 기능 소개로 소비하지 않습니다. 절반만 맞았던 전제가 어디에서 깨졌는지를 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 TURN은 프로토콜 옵션이 아니라, 모바일 사용자를 정상 사용자로 인정할 때 따라오는 운영 비용이었습니다.
+
+PonsWarp의 초기 약속은 “서버에 파일을 올리지 않고 브라우저끼리 직접 보낸다”에 가까웠습니다. 이 문장은 마케팅으로는 매력적입니다. 개인정보 관점에서도 좋고, 서버 비용을 줄일 수 있다는 기대도 줍니다. 하지만 사용자가 모바일에서 방 코드를 입력했을 때 연결이 붙지 않으면, 그 약속은 곧바로 이상한 변명이 됩니다.
+
+WebRTC는 STUN 서버로 공인 주소를 알아내고 가능한 경우 양쪽 브라우저가 직접 통신합니다. 하지만 대칭 NAT, 통신사 NAT, 방화벽, 모바일 브라우저의 라이프사이클이 겹치면 직접 경로가 사라집니다. 이때 TURN은 중계 서버가 됩니다. 데이터가 서버를 지나가므로 비용이 들고, 대역폭과 장애 대응 책임도 생깁니다.
+
+📐 당시 제품 구조에서 TURN이 들어갈 자리
+
+사용자에게는 방 코드 입력 하나로 보이지만, 내부에서는 signaling, ICE server 목록, TURN credential, receiver 저장 준비가 이어지는 별도 시스템 플로우가 움직입니다.
+
+PonsWarp의 4층 구조로 보면 TURN은 의외로 아래쪽에만 머물지 않습니다. UI는 React 19, Vite 7, Tailwind 4, Framer Motion 기반으로 sender와 receiver 화면을 나눕니다. 브라우저 전송 엔진은 SinglePeerConnection과 worker 기반 전송 구조로 정리됩니다. 저장 계층에는 DirectFileWriter와 StreamSaver, File System Access API, OPFS fallback이 들어갑니다. 그리고 가장 아래쪽에는 signaling 서버와 TURN 자격 증명 발급이 있습니다.
+
+사용자 플로우는 단순합니다. 보내는 사람은 파일을 고르고 방을 엽니다. 받는 사람은 모바일에서 방 코드를 입력합니다. 그러나 시스템 플로우는 더 복잡합니다. signaling 서버가 offer, answer, ICE candidate를 중계하고, 클라이언트는 ICE server 목록을 받아 peer connection을 만듭니다. 직접 경로가 실패하면 TURN relay candidate가 마지막 안전망이 됩니다.
+
+현재 PonsWarp의 receiver 쪽 webRTCService.ts 는 기본값으로 Google STUN을 들고 있다가, 방에 들어간 뒤 signaling 서버에 TURN 설정을 요청합니다. 요청이 실패하면 기본 STUN으로라도 시도하지만, 성공하면 iceServers 가 동적으로 교체됩니다. sender 쪽 swarmManager.ts 도 방을 시작할 때 TURN 설정을 가져온 뒤 peer config에 반영합니다.
+
+⚙️ 2025년 11월 21일의 방향 전환
+
+TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화 라는 커밋 문장은 PonsWarp가 모바일 연결을 별도 제품 문제로 만났다는 사실을 보여줍니다.
+
+증거 인덱스에서 이 글과 가장 직접적으로 맞닿은 커밋은 2025년 11월 21일의 2def330 입니다. 같은 흐름에서 2025년 11월 20일의 4efb394 는 모든 호스트 허용과 추가 STUN 서버 적용을 다룹니다. 처음에는 더 많은 STUN 후보와 개발 편의 설정으로 연결 문제를 완화하려 했던 것으로 읽힙니다.
+
+하지만 다음 날 곧바로 TURN 동적 설정이 등장합니다. STUN만 늘리는 방식으로는 모바일 연결의 현실을 충분히 해결하기 어렵다는 판단이 들어온 셈입니다. 이후 2025년 12월 6일의 7393c8f 는 TURN 서버 연결 안정성 개선으로 이어지고, 2025년 12월 10일의 0b4b007 은 Rust signaling 서버 연동과 P2P 연결 안정화를 다룹니다.
+
+🐛 모바일 실패는 “느린 연결”처럼 보이지만 실제로는 다른 실패입니다
+
+데스크톱에서 연결이 늦으면 사용자는 조금 기다립니다. 모바일에서 연결이 늦으면 사용자는 앱을 전환하거나 화면을 잠급니다. 연결 후보 수집이 늦어지고, 데이터 채널이 열리기 전에 브라우저가 background 상태가 되고, 수신 저장소 준비가 끝나기도 전에 네트워크가 끊깁니다.
+
+현재 mobileResumePolicy.ts 는 이 현실을 잘 보여줍니다. 수신 중이고, 방이 있고, writer가 있고, 파일 수가 있으며, 재연결 시도 횟수가 남아 있으면 receiver reconnect를 살려 둡니다. 시도 횟수를 넘겨도 페이지가 hidden 상태라면 바로 죽이지 않습니다.
+
+2026년 5월 17일의 8f7299d 커밋 문구가 fix: resume mobile receiver transfers after backgrounding 인 것도 같은 맥락입니다. TURN은 붙는 문제를 다루고, mobile resume은 붙은 뒤 살아남는 문제를 다룹니다.
+
+[PonsWarp TURN cost versus reliability]
+
+TURN은 연결 성공률을 사는 대신 릴레이 대역폭과 운영 복잡도를 제품 비용으로 가져옵니다.
+
+🔄 TURN은 서버 없는 제품의 예외가 아니라 비용 모델입니다
+
+PonsWarp가 TURN을 받아들이는 순간, “서버 없는 전송”이라는 문장은 더 조심스럽게 써야 합니다. 파일이 기본적으로 직접 전송된다는 말은 가능하지만, 모든 사용자가 항상 직접 경로를 얻는다는 뜻은 아닙니다. TURN이 개입하면 데이터는 릴레이 서버를 지나가고, 그 서버의 트래픽 비용은 서비스 운영자가 부담합니다.
+
+이 비용은 단순 인프라 비용만이 아닙니다. credential을 안전하게 발급해야 하고, TTL을 정해야 하고, fallback 서버를 관리해야 하고, 운영 환경에서 어떤 URL이 브라우저에 유효한지 검증해야 합니다. ponswarp-signaling-rs/src/handlers/turn.rs 는 HMAC-SHA1 기반 임시 자격 증명을 만들고, turn: , turns: , stun: fallback URL을 구분해 ICE 서버 목록을 만듭니다.
+
+💸 Cloud Drop이 왜 자연스럽게 뒤따라왔는가
+
+TURN을 붙인다고 모든 문제가 사라지는 것은 아닙니다. TURN은 동시 접속 기반 전송을 더 잘 붙게 만들지만, 여전히 양쪽 사용자가 같은 시간에 살아 있어야 합니다. 그래서 나중에 Cloud Drop이 등장한 흐름은 갑작스럽지 않습니다. 2026년 5월 12일의 4847872 는 delayed downloads를 위한 async cloud drops를 켭니다.
+
+TURN은 direct transfer를 최대한 살리는 다리였고, 릴레이로도 해결되지 않는 시간 조건은 Cloud Drop이라는 별도 제품 플로우로 흡수해야 했습니다. 이 구조를 보면 PonsWarp의 제품 판단은 “무조건 P2P”에서 “상황별 전달 계약”으로 옮겨갔다고 볼 수 있습니다.
+
+📱 사용자에게 보여줘야 했던 것은 기술명이 아니라 상태였습니다
+
+모바일 사용자는 TURN, STUN, ICE candidate를 알 필요가 없습니다. 대신 제품은 지금 무엇을 하고 있는지 정직하게 말해야 합니다. 방 코드를 입력했는지, 상대를 기다리는지, 연결 후보를 찾는지, 저장소를 준비하는지, 재연결을 시도하는지, 실패했다면 다시 시도할 수 있는지 보여줘야 합니다.
+
+PonsWarp의 UI가 SenderView, ReceiverView, CloudSenderView로 나뉘는 것도 이 관점에서 중요합니다. 단순히 화면을 분리한 것이 아니라 사용자의 책임과 기대를 분리한 것입니다. 모바일 NAT 문제는 이 UI 분리의 의미를 더 키웠습니다. 화면이 작다는 이유만으로 버튼 크기를 바꾸는 수준이 아니라, 제품 상태 머신 자체가 모바일의 끊김을 받아들여야 합니다.
+
+🧭 지금 돌아보는 판단
+
+초기에 TURN을 붙이는 일은 귀찮은 인프라 작업처럼 느껴졌을 가능성이 큽니다. 하지만 지금 보면 그 시점이 PonsWarp가 장난감 데모에서 서비스 쪽으로 이동한 분기점 중 하나였습니다. 데모는 같은 네트워크의 두 브라우저만 붙어도 충분합니다. 서비스는 모바일 통신사 NAT 뒤의 사용자를 정상 사용자로 봐야 합니다.
+
+그래서 TURN 없이는 모바일이 안 붙는다 는 말은 프로토콜 불평이 아닙니다. 제품의 책임 범위를 다시 그은 문장입니다. 서버 없는 전송을 말하려면, 서버가 정말 없어도 되는 조건과 서버가 반드시 필요한 조건을 같이 설명해야 합니다. PonsWarp가 배운 것은 바로 그 경계였습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 기술 선택을 제품 책임으로 다시 읽는 기준을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp/src/services/webRTCService.ts:90-97 — receiver가 기본 STUN 목록을 들고 시작하고 TURN 설정 로딩 Promise를 따로 추적하는 지점
+
+PonsWarp/src/services/webRTCService.ts:250-258 — 방 입장 뒤 TURN 설정을 요청하되 실패하면 기본 STUN으로 폴백하는 흐름
+
+PonsWarp/src/services/webRTCService.ts:429-487 — signaling에서 받은 TURN 설정을 peer connection 생성에 반영하는 지점
+
+PonsWarp/src/services/swarmManager.ts:2231-2236 — sender/multi-receiver 쪽 TURN 설정 반영
+
+PonsWarp/src/utils/mobileResumePolicy.ts:11-28 — 모바일 background 이후 receiver reconnect 유지 정책
+
+ponswarp-signaling-rs/src/handlers/turn.rs:15-49 — Rust signaling 서버의 TURN config 응답
+
+ponswarp-signaling-rs/src/handlers/turn.rs:80-158 — TURN/TURNS/STUN fallback URL과 임시 credential 조합

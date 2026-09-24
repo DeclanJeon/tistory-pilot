@@ -1,0 +1,2771 @@
+[
+  {
+    "order": 2,
+    "title": "`KronDelivery`와 `filetransfer`에서 이미 드러난 집착",
+    "ok": true,
+    "startedAt": "2026-06-23T15:20:24.807Z",
+    "finishedAt": "2026-06-23T15:20:34.145Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 42,
+        "bodyLength": 111,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 104,
+        "bodyHtmlLength": 133
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "KronDelivery",
+          "filetransfer",
+          "파일전송",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 `KronDelivery`와 `filetransfer`에서 이미 드러난 집착 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리770 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 3,
+    "title": "wormhole-file-gate는 무엇을 시험한 프로젝트였나",
+    "ok": true,
+    "startedAt": "2026-06-23T15:20:34.153Z",
+    "finishedAt": "2026-06-23T15:20:43.141Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 34,
+        "bodyLength": 86,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 79,
+        "bodyHtmlLength": 108
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "wormhole-file-gate",
+          "WebTorrent",
+          "P2P",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 wormhole-file-gate는 무엇을 시험한 프로젝트였나 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리771 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 4,
+    "title": "PonsWarp를 시작할 때 내가 착각한 것들",
+    "ok": true,
+    "startedAt": "2026-06-23T15:20:43.141Z",
+    "finishedAt": "2026-06-23T15:20:52.090Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 25,
+        "bodyLength": 111,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 104,
+        "bodyHtmlLength": 133
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "WebRTC",
+          "TURN",
+          "개발회고",
+          "signaling"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 PonsWarp를 시작할 때 내가 착각한 것들 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리772 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 5,
+    "title": "첫 커밋에서 세운 약속",
+    "ok": true,
+    "startedAt": "2026-06-23T15:20:52.091Z",
+    "finishedAt": "2026-06-23T15:21:01.274Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 12,
+        "bodyLength": 90,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 83,
+        "bodyHtmlLength": 112
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "WebRTC",
+          "CloudDrop",
+          "개발회고",
+          "첫커밋"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 첫 커밋에서 세운 약속 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리773 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 6,
+    "title": "WebRTC로 대용량 전송을 하겠다는 무모한 선언",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:01.274Z",
+    "finishedAt": "2026-06-23T15:21:09.276Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 27,
+        "bodyLength": 131,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 124,
+        "bodyHtmlLength": 153
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "WebRTC",
+          "P2P",
+          "TURN",
+          "signaling",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 WebRTC로 대용량 전송을 하겠다는 무모한 선언 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리774 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 7,
+    "title": "메모리 폭발을 처음 마주했을 때",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:09.276Z",
+    "finishedAt": "2026-06-23T15:21:18.187Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 17,
+        "bodyLength": 91,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 84,
+        "bodyHtmlLength": 113
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "메모리",
+          "backpressure",
+          "buffer",
+          "브라우저저장",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 메모리 폭발을 처음 마주했을 때 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리775 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 8,
+    "title": "전송 완료라고 뜬다고 정말 끝난 게 아니었다",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:18.188Z",
+    "finishedAt": "2026-06-23T15:21:26.769Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 24,
+        "bodyLength": 94,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 87,
+        "bodyHtmlLength": 116
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "파일전송",
+          "무결성",
+          "저장완료",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 전송 완료라고 뜬다고 정말 끝난 게 아니었다 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리776 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 9,
+    "title": "TURN 없이는 모바일이 안 붙는다는 현실",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:26.770Z",
+    "finishedAt": "2026-06-23T15:21:34.692Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 23,
+        "bodyLength": 102,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 95,
+        "bodyHtmlLength": 124
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "TURN",
+          "WebRTC",
+          "모바일",
+          "resume",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 TURN 없이는 모바일이 안 붙는다는 현실 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리777 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 10,
+    "title": "Push 방식과 AIMD 혼잡 제어를 붙이던 날",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:34.693Z",
+    "finishedAt": "2026-06-23T15:21:43.193Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 26,
+        "bodyLength": 100,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 93,
+        "bodyHtmlLength": 122
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "AIMD",
+          "Push",
+          "WebRTC",
+          "혼잡제어",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 Push 방식과 AIMD 혼잡 제어를 붙이던 날 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리778 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 11,
+    "title": "파일 손상은 UX 문제가 아니라 신뢰 문제였다",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:43.194Z",
+    "finishedAt": "2026-06-23T15:21:52.224Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 25,
+        "bodyLength": 103,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 96,
+        "bodyHtmlLength": 125
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "파일손상",
+          "무결성",
+          "CRC32",
+          "MerkleTree",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 파일 손상은 UX 문제가 아니라 신뢰 문제였다 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리779 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 12,
+    "title": "초반 UI보다 먼저 해결해야 했던 것들",
+    "ok": true,
+    "startedAt": "2026-06-23T15:21:52.227Z",
+    "finishedAt": "2026-06-23T15:22:01.500Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 21,
+        "bodyLength": 97,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 90,
+        "bodyHtmlLength": 119
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "UI",
+          "backpressure",
+          "모바일",
+          "resume",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 초반 UI보다 먼저 해결해야 했던 것들 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리780 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 13,
+    "title": "멀티 채널 전략은 왜 필요했나",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:01.501Z",
+    "finishedAt": "2026-06-23T15:22:10.295Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 16,
+        "bodyLength": 78,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 71,
+        "bodyHtmlLength": 100
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "멀티채널",
+          "WebRTC",
+          "성능",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 멀티 채널 전략은 왜 필요했나 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리781 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 14,
+    "title": "파이프라인 병렬화가 실제로 바꾼 것",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:10.296Z",
+    "finishedAt": "2026-06-23T15:22:18.950Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 19,
+        "bodyLength": 75,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 68,
+        "bodyHtmlLength": 97
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "파이프라인",
+          "이중버퍼링",
+          "청크풀링",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 파이프라인 병렬화가 실제로 바꾼 것 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리782 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 15,
+    "title": "청크 풀링과 이중 버퍼링을 붙인 이유",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:18.951Z",
+    "finishedAt": "2026-06-23T15:22:28.389Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 87,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 80,
+        "bodyHtmlLength": 109
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "청크풀링",
+          "이중버퍼링",
+          "GC",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 청크 풀링과 이중 버퍼링을 붙인 이유 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리783 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 16,
+    "title": "backpressure를 구현하면서 배운 것",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:28.390Z",
+    "finishedAt": "2026-06-23T15:22:37.382Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 24,
+        "bodyLength": 120,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 113,
+        "bodyHtmlLength": 142
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "backpressure",
+          "receiver",
+          "bufferedAmount",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 backpressure를 구현하면서 배운 것 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리784 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 17,
+    "title": "RTT 기반 적응형 제어를 넣고 나서",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:37.386Z",
+    "finishedAt": "2026-06-23T15:22:46.360Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 85,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 78,
+        "bodyHtmlLength": 107
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "RTT",
+          "AIMD",
+          "cwnd",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 RTT 기반 적응형 제어를 넣고 나서 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리785 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 18,
+    "title": "LAN 최적화는 왜 따로 필요했나",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:46.361Z",
+    "finishedAt": "2026-06-23T15:22:56.261Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 18,
+        "bodyLength": 92,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 85,
+        "bodyHtmlLength": 114
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "LAN",
+          "RTT",
+          "queue",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 LAN 최적화는 왜 따로 필요했나 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리786 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 19,
+    "title": "파일 깨짐 문제를 끝까지 붙잡은 기록",
+    "ok": true,
+    "startedAt": "2026-06-23T15:22:56.262Z",
+    "finishedAt": "2026-06-23T15:23:05.711Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 99,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 92,
+        "bodyHtmlLength": 121
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "파일깨짐",
+          "무결성",
+          "recovery",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 파일 깨짐 문제를 끝까지 붙잡은 기록 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리787 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 20,
+    "title": "재정렬 버퍼를 둘러싼 고민",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:05.713Z",
+    "finishedAt": "2026-06-23T15:23:14.443Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 14,
+        "bodyLength": 105,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 98,
+        "bodyHtmlLength": 127
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "reordering",
+          "buffer",
+          "WASM",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 재정렬 버퍼를 둘러싼 고민 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리788 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 21,
+    "title": "partial file recovery를 왜 늦게 붙였나",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:14.445Z",
+    "finishedAt": "2026-06-23T15:23:23.191Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 31,
+        "bodyLength": 106,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 99,
+        "bodyHtmlLength": 128
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "partial recovery",
+          "resume",
+          "모바일",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 partial file recovery를 왜 늦게 붙였나 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리789 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 22,
+    "title": "빠른 전송보다 무결성이 먼저라는 판단",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:23.192Z",
+    "finishedAt": "2026-06-23T15:23:32.594Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 110,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 103,
+        "bodyHtmlLength": 132
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "무결성",
+          "완료",
+          "backpressure",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 빠른 전송보다 무결성이 먼저라는 판단 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리790 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 23,
+    "title": "JS로 버티다 Rust로 내려간 순간",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:32.595Z",
+    "finishedAt": "2026-06-23T15:23:41.330Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 103,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 96,
+        "bodyHtmlLength": 125
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "Rust",
+          "WASM",
+          "packet",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 JS로 버티다 Rust로 내려간 순간 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리791 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 24,
+    "title": "`pons-core-wasm`를 따로 만든 이유",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:41.332Z",
+    "finishedAt": "2026-06-23T15:23:50.713Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 26,
+        "bodyLength": 104,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 97,
+        "bodyHtmlLength": 154
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "pons-core-wasm",
+          "Rust",
+          "WASM",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 `pons-core-wasm`를 따로 만든 이유 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리792 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 25,
+    "title": "ZIP64가 필요해진 진짜 이유",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:50.715Z",
+    "finishedAt": "2026-06-23T15:23:59.468Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 17,
+        "bodyLength": 97,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 90,
+        "bodyHtmlLength": 133
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "ZIP64",
+          "대용량파일",
+          "무결성",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 ZIP64가 필요해진 진짜 이유 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리793 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 26,
+    "title": "zero-copy와 메모리 경계 문제",
+    "ok": true,
+    "startedAt": "2026-06-23T15:23:59.469Z",
+    "finishedAt": "2026-06-23T15:24:08.252Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 113,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 106,
+        "bodyHtmlLength": 135
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "zero-copy",
+          "메모리",
+          "WASM",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 zero-copy와 메모리 경계 문제 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리794 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 27,
+    "title": "Merkle tree와 file signature를 왜 넣었나",
+    "ok": true,
+    "startedAt": "2026-06-23T15:24:08.257Z",
+    "finishedAt": "2026-06-23T15:24:17.289Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 34,
+        "bodyLength": 92,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 85,
+        "bodyHtmlLength": 114
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "MerkleTree",
+          "file-signature",
+          "무결성",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 Merkle tree와 file signature를 왜 넣었나 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리795 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 28,
+    "title": "reordering buffer를 WASM으로 옮긴 이유",
+    "ok": true,
+    "startedAt": "2026-06-23T15:24:17.291Z",
+    "finishedAt": "2026-06-23T15:24:26.545Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 31,
+        "bodyLength": 90,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 83,
+        "bodyHtmlLength": 112
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "reordering",
+          "WASM",
+          "offset",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 reordering buffer를 WASM으로 옮긴 이유 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리796 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 29,
+    "title": "암호화와 성능 최적화가 충돌하던 지점",
+    "ok": true,
+    "startedAt": "2026-06-23T15:24:26.548Z",
+    "finishedAt": "2026-06-23T15:24:34.864Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 20,
+        "bodyLength": 114,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 107,
+        "bodyHtmlLength": 136
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "암호화",
+          "성능",
+          "ZeroCopyPacketPool",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 암호화와 성능 최적화가 충돌하던 지점 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리797 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 30,
+    "title": "브라우저 앱인데 왜 코어가 Rust인가",
+    "ok": true,
+    "startedAt": "2026-06-23T15:24:34.866Z",
+    "finishedAt": "2026-06-23T15:24:43.773Z",
+    "result": {
+      "mode": "publish",
+      "editorUrl": "https://acstory.tistory.com/manage/newpost",
+      "finalState": {
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "host": "acstory.tistory.com",
+        "authKind": "editor",
+        "loginRequired": false,
+        "ready": false,
+        "titleCandidates": [
+          {
+            "score": 5,
+            "tag": "input",
+            "id": null,
+            "className": null,
+            "name": null,
+            "placeholder": "검색어 입력",
+            "ariaLabel": null,
+            "text": null,
+            "width": 154,
+            "height": 26
+          },
+          {
+            "score": 3,
+            "tag": "input",
+            "id": "inpAllCheck",
+            "className": "inp_check",
+            "name": null,
+            "placeholder": null,
+            "ariaLabel": null,
+            "text": null,
+            "width": 13,
+            "height": 13
+          }
+        ],
+        "bodyCandidates": [],
+        "buttons": [
+          "카테고리 관리"
+        ],
+        "bodyPreview": "본문 바로가기메뉴 바로가기티스토리서비스 주요 메뉴홈피드스킨포럼검색티스토리 검색검색공지사항카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내글쓰기알림알림0개인정보ACdeclan0301@kakao.com계정관리운영중인 블로그앜스토리 | 호기심 많은 개발자의 보물창고쓰기블로그 관리호기심 많은 개발자의 보물창고쓰기블로그 관리픽딜쓰기블로그 관리로그아웃프로필앜스토리 | 호기심 많은 개발자의 보물창고acstory.tistory"
+      },
+      "fillResult": {
+        "ok": true,
+        "titleLength": 21,
+        "bodyLength": 96,
+        "titleClassName": "textarea_tit",
+        "bodyTextLength": 89,
+        "bodyHtmlLength": 139
+      },
+      "categoryResult": {
+        "ok": true,
+        "requested": "개발 회고",
+        "selectedText": "개발 회고",
+        "buttonText": "개발 회고 더보기"
+      },
+      "tagResult": {
+        "ok": true,
+        "added": [
+          "PonsWarp",
+          "Rust",
+          "WASM",
+          "브라우저앱",
+          "개발회고"
+        ]
+      },
+      "publishResult": {
+        "ok": true,
+        "modalOpen": true,
+        "publishText": "공개 발행",
+        "cancelText": "취소",
+        "layerText": "발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 브라우저 앱인데 왜 코어가 Rust인가 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행",
+        "clicked": [
+          {
+            "target": "publish-btn",
+            "text": "공개 발행"
+          }
+        ],
+        "modalClosed": true,
+        "url": "https://acstory.tistory.com/manage/posts/",
+        "title": "블로그관리 | 앜스토리 | 호기심 많은 개발자의 보물창고",
+        "modalOpenAfter": false,
+        "publishTextAfter": null,
+        "bodyPreview": "본문 바로가기메뉴 바로가기 티스토리 서비스 주요 메뉴 홈 피드 스킨 포럼 검색 티스토리 검색 검색 공지사항 카카오 애드핏(kakao AdFit) 신규 연동 신청 종료 안내 글쓰기 알림 알림 0 프로필 앜스토리 | 호기심 많은 개발자의 보물창고 acstory.tistory.com 글 쓰기 바로가기 글쓰기 글 쓰기 메뉴 열기 블로그 관리센터 메뉴 블로그관리 홈 콘텐츠 글 관리 페이지 관리 카테고리 관리 공지 관리 서식 관리 설정 댓글·방명록 댓글 관리 방명록 관리 설정 통계 방문 통계 유입 경로 수익 애드센스 관리 꾸미기 스킨 변경 스킨 편집 사이드바 메뉴 모바일 메뉴바/구독 설정 플러그인 링크 나의 링크 관리 블로그 팀블로그 티스토리 관리센터 본문 글 관리798 글 쓰기 선택 됨 검색열기 변경 보기 선택 안됨"
+      },
+      "qrLogin": null,
+      "qrImagePath": "/home/declan/Pictures/kakao-tistory-qr.png"
+    }
+  },
+  {
+    "order": 31,
+    "title": "서버 없는 전송이라는 말의 절반만 맞았던 이유",
+    "ok": false,
+    "startedAt": "2026-06-23T15:24:43.775Z",
+    "finishedAt": "2026-06-23T15:25:05.923Z",
+    "error": "Error: 발행 확인에 실패했다: {\"ok\":false,\"modalOpen\":true,\"publishText\":\"공개 발행\",\"cancelText\":\"취소\",\"layerText\":\"발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 서버 없는 전송이라는 말의 절반만 맞았던 이유 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.com/entry/ 대표이미지 추가 취소공개 발행\",\"clicked\":[{\"target\":\"publish-btn\",\"text\":\"공개 발행\"}],\"modalClosed\":false,\"url\":\"https://acstory.tistory.com/manage/newpost\",\"title\":\"글쓰기\",\"modalOpenAfter\":true,\"publishTextAfter\":\"공개 발행\",\"bodyPreview\":\"티스토리 AC AC 카테고리 선택 개발 회고 더보기 본문2 기본서체 기본모드 #PonsWarpPonsWarp 태그 삭제#P2PP2P 태그 삭제#signalingsignaling 태그 삭제#TURNTURN 태그 삭제#CloudDropCloudDrop 태그 삭제#개발회고개발회고 태그 삭제# 미리보기 맞춤법 open source / DOWNLOAD POWERED BY TINY 자동 저장 완료 00:24:55 임시저장 2 완료 0개의 파일을 업로드 중입니다. 발행정보 입력폼 발행 저작물 사용허가상업적 허용 안함콘텐츠 변경 허용 안함 서버 없는 전송이라는 말의 절반만 맞았던 이유 기본 공개공개(보호)비공개 댓글 허용더보기 홈주제 선택 안 함더보기 발행일 현재 예약 URL https://acstory.tistory.c\"}\n    at Object.publishPost (file:///home/declan/Documents/Develop/Project/tistory-pilot/src/worker/agbrowse-automation.mjs:767:11)\n    at async file:///home/declan/Documents/Develop/Project/tistory-pilot/[eval1]:12:20"
+  }
+]

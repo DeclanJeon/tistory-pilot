@@ -30,32 +30,38 @@ if [ -n "$DRY_RUN" ]; then
   echo "[mode] 드라이 런 (생성/큐 없음)"
 fi
 
-# 0) Google 트렌드 → 수익형 키워드 발굴 (트렌드 우선 발행)
-#    트렌드 키워드를 keywords.json에 등록한 뒤 먼저 생성한다. 생성 실패분은 다음 배치가 재시도.
+# 0) 다중 소스 시장 수요 → 상업 키워드 발굴 (dry-run 기본, --apply에서만 등록)
+#    Google Trends/KMA는 동적 관심사, Naver DataLab은 상대 검색 추세로
+#    별도 보존한다. 수집 불가를 0건으로 가장하지 않는다.
 DAILY_CAP="${DAILY_CAP:-15}"
-TREND_CAP="${TREND_CAP:-5}"
+MARKET_CAP="${MARKET_CAP:-5}"
+if [ "$MARKET_CAP" -gt "$DAILY_CAP" ]; then MARKET_CAP="$DAILY_CAP"; fi
 TODAY="$(date +%Y-%m-%d)"
-TREND_GENERATED=0
+MARKET_GENERATED=0
 if [ -z "$DRY_RUN" ]; then
-  echo "[0] Google 트렌드 분석 (KR) — 수익형 키워드 최대 ${TREND_CAP}건 발굴..."
-  if node scripts/content/trends-fetch.mjs --date "$TODAY" 2>&1 | tail -20; then
-    if node scripts/content/trends-monetize.mjs --date "$TODAY" --cap "$TREND_CAP" 2>&1 | tail -20; then
-      if [ -f "content/trends/${TODAY}.selected.txt" ]; then
-        echo "[0] 트렌드 키워드 생성..."
-        while IFS= read -r trend_id; do
-          [ -z "$trend_id" ] && continue
-          if node scripts/content/generate-post.mjs --keyword-id "$trend_id" 2>&1 | tail -20; then
-            TREND_GENERATED=$((TREND_GENERATED + 1))
-          else
-            echo "  ⚠ 트렌드 생성 실패: $trend_id"
-          fi
-        done < "content/trends/${TODAY}.selected.txt"
-      fi
+  echo "[0] 다중 소스 시장 키워드 분석 — 최대 ${MARKET_CAP}건 발굴..."
+  if node scripts/content/market-discovery.mjs --date "$TODAY" --cap "$MARKET_CAP" --apply 2>&1 | tail -60; then
+    SELECTED_FILE="content/learning/market-discovery-${TODAY}.selected.txt"
+    if [ -f "$SELECTED_FILE" ]; then
+      echo "[0] 시장 발굴 키워드 생성..."
+      while IFS= read -r market_id; do
+        [ -z "$market_id" ] && continue
+        if node scripts/content/generate-post.mjs --keyword-id "$market_id" 2>&1 | tail -20; then
+          MARKET_GENERATED=$((MARKET_GENERATED + 1))
+        else
+          echo "  ⚠ 시장 키워드 생성 실패: $market_id"
+        fi
+      done < "$SELECTED_FILE"
     fi
   else
-    echo "  ⚠ 트렌드 수집 실패 — 기존 키워드 풀로만 진행"
+    echo "  ⚠ 시장 키워드 분석 실패 — 기존 키워드 풀로만 진행"
   fi
+else
+  node scripts/content/market-discovery.mjs --date "$TODAY" --cap "$MARKET_CAP" --dry-run 2>&1 | tail -60 \
+    || echo "  ⚠ dry-run 시장 키워드 분석 실패"
 fi
+
+# 기존 Google Trends 결과를 수동으로 재처리할 때는 trends-monetize.mjs를 사용한다.
 
 # [0.5] Phase 1 Shadow: 다중 소스 + 실측 메트릭 비교 (발행 미반영, 실패해도 본 흐름 유지)
 echo "[0.5] Shadow 다중 소스 + 실측 메트릭 리포트..."
@@ -72,10 +78,10 @@ if [ -z "$DRY_RUN" ]; then
 fi
 
 # 1) 미발행 키워드 자동 생성 — QA 통과분만 남는다 (qa_failed는 스킵)
-# 15건 캡: 설계 문서 일일 상한 (트렌드 생성분 제외 나머지). 생성 실패분은 다음 배치가 재시도.
-REMAIN_CAP=$((DAILY_CAP - TREND_GENERATED))
+# 일일 캡에서 시장 발굴 생성분을 먼저 차감한다.
+REMAIN_CAP=$((DAILY_CAP - MARKET_GENERATED))
 [ "$REMAIN_CAP" -lt 0 ] && REMAIN_CAP=0
-echo "[1] 미발행 키워드 ${REMAIN_CAP}건 생성 시도 (트렌드 ${TREND_GENERATED}건 생성 완료)..."
+echo "[1] 미발행 키워드 ${REMAIN_CAP}건 생성 시도 (시장 발굴 ${MARKET_GENERATED}건 생성 완료)..."
 if [ -n "$DRY_RUN" ]; then
   node scripts/content/generate-post.mjs --list 2>&1 | grep -cE '^  ' \
     && echo "  (dry-run: 생성 생략)" || true

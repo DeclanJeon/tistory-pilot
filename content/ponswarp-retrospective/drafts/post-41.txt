@@ -1,0 +1,86 @@
+QUIC와 native streaming이 더 좋아 보였던 이유
+
+웹을 포기하고 싶었던 날이 있었다면, 그 다음에는 자연스럽게 이런 생각이 따라왔습니다. “브라우저 바깥으로 나가면 더 단순해지지 않을까?” PonsWarp의 데스크톱 분기는 바로 그 유혹에서 시작된 쪽에 가깝습니다. Tauri 같은 native shell을 두고, 전송은 QUIC로 가져가고, 저장은 브라우저 권한 모델을 통하지 않는 native streaming으로 닫으면 지금까지 부딪힌 문제들이 훨씬 정직한 구조로 보였습니다.
+
+물론 여기서 조심해야 합니다. 이 글은 ponswarp-desktop이 완성된 대체 제품이었다고 말하는 글이 아닙니다. 시리즈 계획과 증거 인덱스가 남긴 사실은 더 제한적입니다. ponswarp-desktop은 2025-12-17에 생겼고, 관찰 포인트는 native / QUIC / Tauri 분기였으며, 이후 2026-02-18까지 늦은 가시 활동이 보입니다. 즉 이 글의 주제는 “왜 그 방향이 좋아 보였는가”이지 “왜 성공했는가”가 아닙니다.
+
+💡 이 글은 WebRTC가 나쁘고 QUIC가 정답이라는 비교가 아닙니다. PonsWarp가 브라우저 안에서 겪은 queue, 저장, backpressure, signaling, TURN, core 분리의 압력이 쌓였을 때 왜 native streaming이라는 그림이 매력적으로 보였는지를 정리합니다.
+
+🧱 당시 제품 상태
+
+post-30까지의 흐름을 이어 보면, PonsWarp는 이미 단순한 브라우저 파일 전송 앱이 아니었습니다. React UI, WebRTC DataChannel, sender/receiver worker, DirectFileWriter, StreamSaver와 File System Access API, pons-core-wasm, signaling 서버가 서로 맞물려 있었습니다. 사용자는 파일을 보내는 화면만 보지만, 내부에서는 패킷 인코딩, 암호화, ZIP64, 재정렬, zero-copy, ACK, writer idle, 저장 완료 신호가 같이 돌아갑니다.
+
+이 구조는 우연히 복잡해진 것이 아닙니다. 2025-11-20의 첫 커밋 이후 대용량 전송, 프로덕션 로깅, STUN/TURN, 모바일 연결, 메모리 폭발 방지, 저장 완료 핸드셰이크가 빠르게 붙었습니다. 2025-11-21의 Push 방식과 AIMD 혼잡 제어, TURN 동적 설정, 2025-11-22와 11-29의 파일 손상 수정은 모두 같은 압력을 보여 줍니다. 브라우저에서 큰 파일을 직접 전송한다는 약속은 연결, 큐, 저장, 무결성을 한꺼번에 끌고 들어왔습니다.
+
+그 뒤 2025-12-04의 pons-core-wasm 생성, ZIP64, reordering buffer, Merkle tree, file signature, zero-copy, crypto는 바이트 단위 계약을 브라우저 UI에서 분리하려는 움직임이었습니다. 2025-12-10의 Rust signaling 서버 생성과 이후 readiness, cleanup, TURN handling, Cloud Drop 흐름은 서버 없는 전송이라는 말도 절반만 맞았다는 사실을 드러냈습니다.
+
+이 상태에서 데스크톱이 좋아 보였던 이유는 “앱을 설치하면 멋있다”가 아니었습니다. 이미 제품은 브라우저 바깥의 책임을 계속 발견하고 있었습니다. core는 Rust로 내려갔고, signaling은 Rust 서버로 굳어졌고, 저장 완료는 브라우저 API의 실제 완료 신호를 기다려야 했습니다. 그러면 남는 질문은 자연스럽습니다. 전송과 저장의 가장 어려운 부분도 native로 내려가면 더 곧게 닫히지 않을까?
+
+🧭 브라우저 경로에서 계속 남던 마찰
+
+브라우저 경로의 장점은 분명합니다. 설치 없이 열리고, 링크 공유가 쉽고, WebRTC는 브라우저에 이미 들어 있습니다. PonsWarp가 처음부터 direct transfer를 제품 중심에 둔 것도 이 장점 때문이었습니다. 하지만 대용량 파일 전송에서는 브라우저의 장점이 곧 제약이 되기도 했습니다.
+
+첫 번째 마찰은 DataChannel queue입니다. sender가 보낸다는 사실과 receiver가 디스크에 썼다는 사실은 다릅니다. 그래서 PonsWarp는 bufferedAmount만 믿지 않고 ACK, pause/resume, writer idle, DOWNLOAD_COMPLETE 같은 신호를 계속 붙였습니다. 이것은 post-16, post-22에서 반복해서 다룬 문제입니다. 전송 큐가 비었다고 해서 저장이 끝났다고 말하면 파일 전송 제품은 거짓말을 하게 됩니다.
+
+두 번째 마찰은 저장 권한과 파일 시스템 경계입니다. 브라우저는 사용자를 보호하기 위해 파일 접근을 엄격하게 제한합니다. 이 제한은 옳지만, 대용량 전송 제품 입장에서는 저장 위치 선택, 스트림 writer, partial recovery, backgrounding, 완료 확인을 모두 제품 흐름으로 설명해야 합니다. 사용자는 “받기”를 눌렀는데, 내부에서는 권한, stream, buffer, actualSize, completion handshake가 별도 실패 지점이 됩니다.
+
+세 번째 마찰은 운영 경계입니다. P2P라고 해도 signaling 서버는 필요했고, 모바일 NAT와 TURN 현실은 피할 수 없었습니다. Rust signaling 서버, cleanup deadlock 수정, readiness, production env는 모두 브라우저 앱이 운영을 피해갈 수 없다는 증거였습니다. 그러니 데스크톱 분기는 단순한 UI 취향이 아니라, 누적된 시스템 경계를 다시 그려 보려는 시도였습니다.
+
+🚄 QUIC가 좋아 보였던 지점
+
+QUIC가 매력적으로 보였던 이유는 막연한 속도 기대보다 구조적 기대에 가까웠습니다. WebRTC DataChannel 위에서는 SCTP, 브라우저 구현, peer connection 상태, bufferedAmount, worker prefetch, receiver writer가 함께 얽힙니다. 반면 QUIC를 직접 다룰 수 있다면 control stream, file stream, resume/check stream을 더 명시적으로 나눌 수 있을 것처럼 보입니다.
+
+예를 들어 control stream은 room, metadata, cancel, error를 담당하고, file stream은 순서 있는 바이트 흐름과 flow control을 담당하고, resume/check stream은 offset, proof, completion을 담당하는 식입니다. 이 그림은 PonsWarp가 이미 겪은 문제들과 잘 맞습니다. 파일 손상은 데이터 stream만의 문제가 아니고, 재개는 offset과 검증 stream의 문제이며, 완료는 receiver의 저장 완료와 proof가 닫혀야 하는 문제입니다.
+
+또 QUIC는 애플리케이션이 transport를 더 직접적으로 모델링할 수 있다는 기대를 줍니다. 브라우저 WebRTC에서는 내부 구현을 제품 코드가 완전히 통제할 수 없습니다. 반대로 native QUIC 경로에서는 연결, stream, flow control, error propagation을 Rust 코드의 계약으로 더 가까이 가져올 수 있을 것처럼 보입니다. PonsWarp가 이미 pons-core-wasm과 ponswarp-signaling-rs로 Rust 쪽 책임을 늘려 가던 상황에서는 이 방향이 꽤 자연스러웠습니다.
+
+다만 이것도 과장하면 안 됩니다. QUIC가 있으면 NAT 문제가 사라진다거나, 운영이 필요 없어진다거나, 파일 무결성이 자동으로 해결된다는 뜻은 아닙니다. PonsWarp의 기존 교훈은 오히려 반대입니다. transport가 좋아져도 completion, integrity, resume semantics, user feedback은 별도의 제품 계약으로 남습니다. QUIC는 그 계약을 더 깔끔하게 표현할 수 있을 것처럼 보였을 뿐, 계약 자체를 대신하지 않습니다.
+
+💾 native streaming이 준 착시와 가능성
+
+native streaming이 좋아 보였던 이유는 더 직접적입니다. 브라우저에서는 파일 저장이 사용자 권한과 API 제약을 거칩니다. StreamSaver와 File System Access API는 훌륭한 도구지만, 제품은 언제나 “이 chunk가 메모리에 있는가, 브라우저 stream에 들어갔는가, 실제 파일에 반영됐는가, 완료 표시를 해도 되는가”를 구분해야 했습니다.
+
+native 앱에서는 적어도 이 계층을 더 명시적으로 다룰 수 있을 것처럼 보입니다. 파일 핸들을 열고, offset을 관리하고, fsync나 flush 의미를 판단하고, partial file을 제품 정책에 맞게 남기거나 지우는 일을 브라우저 권한 모델 뒤에 숨기지 않아도 됩니다. PonsWarp가 partial recovery와 actualSize 검증을 중요하게 다뤘던 만큼, native file writer는 매력적인 탈출구처럼 보였습니다.
+
+특히 대용량 파일 전송에서는 “전체 파일을 메모리에 모으지 않는다”는 원칙이 중요합니다. PonsWarp는 이미 memory blow-up 방지, chunk pooling, zero-copy pool, ZIP64 streaming, receiver-side watermark를 거치며 이 원칙을 반복했습니다. native streaming은 이 원칙을 브라우저 workaround가 아니라 운영체제 파일 쓰기 모델에 가깝게 가져갈 수 있다는 기대를 줬습니다.
+
+하지만 여기에도 착시는 있습니다. native라고 해서 저장 완료가 공짜로 증명되지는 않습니다. 파일 writer가 닫혔다고 해서 암호화 검증, file signature, Merkle proof, resume offset이 자동으로 맞는 것은 아닙니다. 브라우저의 제약은 줄어들 수 있지만, 제품이 사용자에게 “완료”라고 말하기 위한 증거는 여전히 만들어야 합니다.
+
+🔄 시스템 구조를 다시 그리면
+
+브라우저 PonsWarp의 구조는 Product/UI, Browser transfer engine, Storage and recovery, Core and backend의 4층으로 설명할 수 있었습니다. 데스크톱 분기가 매력적으로 보였던 이유는 이 4층 중 가운데 두 층을 다시 붙일 수 있을 것처럼 보였기 때문입니다.
+
+기존 구조에서는 UI가 React에 있고, 전송은 WebRTC와 worker가 맡고, 저장은 브라우저 writer가 맡고, 바이트 계약은 WASM core와 Rust core가 나눠 가졌습니다. 데스크톱 구조를 상상하면 Tauri shell은 얇은 제품 표면이 되고, Rust transfer core가 QUIC stream, packet contract, resume contract, native file writer를 더 직접적으로 묶습니다. signaling 서버는 여전히 필요하지만, 클라이언트 내부의 전송/저장 경계는 더 적은 번역층을 거칠 수 있습니다.
+
+이 그림이 좋아 보인 이유는 책임이 줄어드는 것처럼 보였기 때문입니다. 브라우저 queue를 보며 sender를 멈추고, receiver writer 상태를 기다리고, worker와 WASM 사이를 오가고, 저장 API의 완료 의미를 다시 확인하는 대신, Rust 안에서 stream backpressure와 file writer backpressure를 같은 제어 루프로 묶을 수 있을 것 같았습니다.
+
+그러나 “같은 언어와 같은 프로세스에 있다”는 말은 “문제가 사라진다”와 다릅니다. 실제 제품에서는 UI 상태, 에러 메시지, 설치/업데이트, 플랫폼별 파일 권한, 보안 모델, 배포, 서명, 네트워크 fallback이 다시 생깁니다. 그래서 이 분기는 좋아 보였지만, 아직 검증된 생존 경로는 아니었습니다. post-42가 이어질 수 있는 이유도 여기에 있습니다.
+
+🧪 왜 그 판단이 당시에는 합리적이었나
+
+돌아보면 데스크톱/QUIC/native streaming 방향은 도피라기보다 누적된 증거에 대한 반응이었습니다. PonsWarp는 이미 빠른 데모 단계를 지나 있었습니다. 파일 손상, 재정렬, 저장 완료, TURN, signaling 서버, production readiness, Cloud Drop까지 겪은 뒤였습니다. 이 정도의 압력이 쌓이면, 브라우저의 기본 전송 도구를 끝까지 밀어붙이는 것만이 유일한 답은 아닙니다.
+
+QUIC는 stream과 flow control을 제품이 더 직접적으로 모델링할 수 있을 것처럼 보였습니다. native streaming은 디스크 쓰기와 partial state를 더 정직하게 다룰 수 있을 것처럼 보였습니다. Tauri는 웹 UI 자산을 완전히 버리지 않고도 native shell을 붙일 수 있는 절충안처럼 보였습니다. PonsWarp가 React UI와 Rust core를 이미 함께 쓰고 있었다는 점을 생각하면, 이 조합은 뜬금없는 새 출발이 아니라 기존 방향의 연장선이었습니다.
+
+다만 그 합리성은 어디까지나 “탐색할 이유가 있었다”는 뜻입니다. 성공을 보장했다는 뜻은 아닙니다. PonsWarp의 회고에서 중요한 것은 기술 이름을 정답처럼 세우지 않는 것입니다. WebRTC도, WASM도, Rust signaling도, QUIC도 모두 특정 실패 모드를 줄이기 위한 도구였습니다. 제품의 최종 질문은 여전히 같습니다. 사용자가 보낸 파일이 상대에게 안전하게, 끝까지, 설명 가능한 방식으로 도착했는가.
+
+🧭 지금 돌아보는 판단
+
+QUIC와 native streaming이 더 좋아 보였던 이유는 결국 “브라우저가 싫어서”가 아니었습니다. 브라우저 경로에서 책임 경계가 너무 많이 드러났기 때문입니다. DataChannel queue와 receiver writer 사이의 간극, 저장 완료와 UI 완료 사이의 간극, P2P라는 말과 signaling/TURN 운영 사이의 간극이 계속 보였습니다.
+
+데스크톱 분기는 그 간극을 줄일 수 있을 것처럼 보였습니다. QUIC stream은 전송 계약을 더 명시적으로 만들 수 있을 것 같았고, native file writer는 저장 계약을 더 직접적으로 닫을 수 있을 것 같았고, Rust 중심 구조는 이미 분리한 core와 signaling의 방향과 맞아 보였습니다.
+
+하지만 회고의 문장은 여기서 멈춰야 합니다. 좋아 보였다는 것은 검증됐다는 뜻이 아닙니다. ponswarp-desktop은 시리즈 증거에서 native / QUIC / Tauri hope로 남아 있고, 이후 stall을 다룰 여지가 남아 있습니다. 그러니 이 글의 판단은 단정이 아니라 정리입니다. 당시의 선택은 이해할 만했지만, 좋은 구조처럼 보이는 것과 살아남는 제품 경로는 다른 문제였습니다.
+
+📚 읽은 코드와 근거
+
+- `content/ponswarp-retrospective/series-plan.md:101-159` — PonsWarp를 Product/UI, Browser transfer engine, Storage and recovery, Core and backend의 4층으로 설명하는 기본 구조
+- `content/ponswarp-retrospective/series-plan.md:208-233` — core 분리, Rust signaling 현실화, ponswarp-desktop created on 2025-12-17, native / QUIC / Tauri hope, later stall 기록
+- `content/ponswarp-retrospective/series-plan.md:293-297` — Season 5 데스크톱 분기의 post-39~42 배치
+- `content/ponswarp-retrospective/evidence-index.md:28-32` — ponswarp-desktop created, native / QUIC / Tauri 관찰 포인트, late visible activity
+- `content/ponswarp-retrospective/evidence-index.md:44-65` — 초기 WebRTC, TURN, 대용량 저장, 파일 손상 수정 커밋 흐름
+- `content/ponswarp-retrospective/evidence-index.md:76-87` — backpressure, RTT 제어, pons-core-wasm, ZIP64, reordering buffer, Merkle Tree, file signature, zero-copy pool 근거
+- `content/ponswarp-retrospective/evidence-index.md:90-92` — Rust signaling 서버 초기 구현과 cleanup deadlock 수정 근거
+- `content/ponswarp-retrospective/drafts/post-16.txt` — backpressure와 receiver 저장 완료 압력
+- `content/ponswarp-retrospective/drafts/post-22.txt` — 빠른 전송보다 무결성이 먼저라는 판단
+- `content/ponswarp-retrospective/drafts/post-30.txt` — 브라우저 앱과 Rust/WASM core 경계 정리

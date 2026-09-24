@@ -186,15 +186,19 @@ function buildPublishArgs(post, options) {
   const requestedVisibility = normalizeVisibility(options.visibility);
   const resolvedBodyFile = path.resolve(post.bodyFile);
   const body = fs.readFileSync(resolvedBodyFile, 'utf8');
+  const heroImagePath = resolveOptionalPath(post.heroImage || post.thumbnail || post.representativeImagePath);
   return {
     blogUrl: options.blogUrl,
     title: post.title,
     description: post.description || '',
     body,
+    bodyBaseDir: path.dirname(resolvedBodyFile),
     tags: post.tags || '',
     category: options.category || post.category || '개발 회고',
-    heroImagePath: resolveOptionalPath(post.heroImage),
-    representativeImagePath: requestedVisibility === 'public' ? resolveOptionalPath(post.representativeImagePath) : '',
+    heroImagePath,
+    representativeImagePath: requestedVisibility === 'public'
+      ? (resolveOptionalPath(post.representativeImagePath || post.heroImage || post.thumbnail) || heroImagePath || '')
+      : '',
     homeTopic: requestedVisibility === 'public' ? (post.homeTopic || '') : '',
     schedule: requestedVisibility === 'public' ? (post.schedule || null) : null,
     visibility: requestedVisibility,

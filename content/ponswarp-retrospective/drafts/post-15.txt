@@ -1,0 +1,101 @@
+PonsWarp가 Push 방식과 AIMD를 붙인 뒤에도 전송은 곧바로 안정되지 않았습니다.
+
+sender가 더 적극적으로 보내기 시작하자, 다음 문제는 네트워크가 아니라 브라우저 안의 메모리와 복사 비용으로 옮겨갔습니다. 파일을 자르고, 패킷을 만들고, worker에서 main thread로 넘기고, WebRTC DataChannel에 싣는 과정마다 새 버퍼가 생겼습니다.
+
+2025년 11월 27일의 949d921 은 이 구간을 정면으로 다룬 커밋입니다. 이름은 성능 최적화처럼 보이지만, 실제로는 “빨리 보내기”보다 “빨리 보내는 동안 브라우저가 흔들리지 않게 하기”에 가까웠습니다.
+
+[Phase 2 sender pipeline with double buffering]
+
+Phase 2는 active buffer에서 즉시 보내고 inactive buffer를 비동기로 채우는 구조로 전송 대기 시간을 줄였습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 성능 문제가 드러난 순간을 먼저 복원합니다.
+
+실패 지점 — 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 속도보다 먼저 닫아야 했던 제어 루프를 회고의 결론으로 둡니다.
+
+🧱 Phase 1의 prefetch buffer는 충분하지 않았다
+
+🎯 독자가 가져갈 질문
+
+이 글은 청크 풀링과 이중 버퍼링을 붙인 이유 라는 사건을 기능 소개로 소비하지 않습니다. 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 핵심은 청크 하나의 처리 시간이 아니라, 청크가 계속 흐를 때 생기는 반복 할당과 대기 시간을 줄이는 것이었습니다.
+
+949d921 의 diff는 이전 구조를 Phase 1 프리페치 버퍼 기반 고성능 Sender Worker 라고 부릅니다. 이 구조에는 PREFETCH_BUFFER_MAX = 8MB , PREFETCH_LOW_THRESHOLD = 2MB 같은 값이 있었습니다.
+
+전송 요청이 왔을 때 prefetch buffer가 비어 있으면 worker는 즉시 파일을 다시 읽고 패킷을 만들어야 했습니다. 빠른 네트워크에서는 이 작은 대기 시간이 반복됩니다. DataChannel은 보낼 준비가 됐는데 애플리케이션이 다음 패킷을 만드는 동안 쉬게 됩니다.
+
+반대로 buffer를 크게 잡으면 sender가 파일을 너무 앞당겨 읽고, ArrayBuffer와 Uint8Array가 계속 늘어나며, GC가 전송 리듬에 끼어듭니다. 실제 사용자는 수 GB 파일을 보내며 브라우저 탭이 버티는지를 봅니다.
+
+🔄 이중 버퍼링은 읽기와 보내기를 분리했다
+
+이중 버퍼링은 무한히 앞당겨 읽자는 뜻이 아니었습니다. 준비 구간을 두되, 메모리 상한을 작게 잡아 sender가 receiver와 네트워크보다 너무 앞서가지 않게 하는 장치 였습니다.
+
+949d921 은 단일 prefetch buffer를 없애고 DoubleBuffer 를 넣습니다. active buffer는 processBatch 가 즉시 꺼내 전송하는 곳이고, inactive buffer는 prefetchBatch 가 비동기로 채우는 곳입니다. active가 비면 swap() 으로 A/B를 바꿉니다.
+
+전송 요청을 처리하는 길에서는 되도록 파일 I/O를 하지 않습니다. worker는 이미 준비된 active buffer에서 청크를 꺼내 chunk-batch 로 보내고, 동시에 inactive 쪽은 다음 청크를 준비합니다.
+
+여기서 같이 들어간 제한은 BUFFER_SIZE = 4MB per buffer , PREFETCH_BATCH = 8 입니다. 속도를 위해 경계를 없앤 것이 아니라, 경계를 가진 pipeline을 만든 것입니다.
+
+[Chunk pool and zero copy packet pool memory pressure]
+
+ChunkPool은 반복 할당을 줄이려는 중간 단계였고, 나중의 ZeroCopyPacketPool은 같은 문제를 WASM 메모리 경계로 옮겼습니다.
+
+🧩 청크 풀링은 반복 할당을 줄이려는 시도였다
+
+같은 커밋은 ChunkPool 도 추가합니다. POOL_SIZE = 64 로 제한된 Uint8Array 풀을 만들고, 패킷 생성 때 acquire() 로 버퍼를 얻은 뒤 release() 로 돌려놓습니다. 주석은 목적을 “메모리 재사용으로 GC 압박 감소”라고 설명합니다.
+
+이전 방식에서는 파일 조각을 얻고, 그 위에 헤더를 붙인 새 패킷 배열을 계속 만들었습니다. 청크 하나는 작아 보여도 128KB 단위로 수만 번 반복되면 브라우저 런타임에는 계속 새 객체가 들어옵니다.
+
+다만 이 시기의 청크 풀링은 완전한 zero-copy가 아니었습니다. 949d921 에서도 실제 반환 직전에는 정확한 크기의 새 ArrayBuffer 를 만들고 필요한 범위만 복사합니다. WebRTC로 넘길 transferable buffer가 필요했기 때문입니다.
+
+🦀 나중의 ZeroCopyPacketPool은 같은 문제를 더 아래로 내렸다
+
+현재 코드의 src/workers/file-sender.worker.ts 는 더 나아가 ZeroCopyPacketPool 을 사용합니다. WASM 초기화 시 pool을 만들고, WASM 메모리 참조를 잡은 뒤 acquire_slot() , commit_slot() , get_packet_view() , release_slot() 흐름으로 패킷을 만듭니다.
+
+pons-core-wasm/src/zero_copy_pool.rs 도 같은 의도를 명시합니다. WASM 선형 메모리 안에 사전 할당된 버퍼를 두고, JS와 WASM 경계에서의 메모리 복사를 최소화합니다. 슬롯은 기본 64개이고, 각 슬롯은 64KB 데이터와 헤더, 인증 태그 여유 공간을 포함합니다.
+
+흥미로운 점은 현재 sender worker에도 현실적인 한계가 남아 있다는 것입니다. 코드 주석은 “WebRTC는 ArrayBuffer를 전송 후 detach하므로 복사 필요”라고 적고, WASM 메모리의 packet view를 다시 새 ArrayBuffer 로 복사합니다. zero-copy라는 이름은 모든 복사를 없앴다는 뜻이 아니라, 복사와 할당이 일어나는 경계를 통제했다는 뜻에 가깝습니다.
+
+[Sender receiver pressure and backpressure]
+
+sender가 더 매끄럽게 보내면 receiver 저장 계층의 watermark와 backpressure가 더 중요해집니다.
+
+📉 sender 최적화는 receiver 압력으로 되돌아왔다
+
+청크 풀링과 이중 버퍼링은 sender 쪽 문제를 줄였지만, 전체 제품 문제를 끝낸 것은 아니었습니다. sender가 더 매끄럽게 보내면 receiver는 더 꾸준히 받아야 합니다. 저장 계층이 느리면 DirectFileWriter 의 write queue와 batch buffer가 쌓입니다.
+
+현재 directFileWriter.ts 에는 쓰기 전 데이터까지 포함한 pendingBytesInBuffer 추적이 있고, 32MB 이상 쌓이면 pause, 16MB 이하로 떨어지면 resume하는 watermark가 있습니다.
+
+현재 constants.ts 의 보수화도 중요합니다. MAX_BUFFERED_AMOUNT 와 HIGH_WATER_MARK 는 4MB로 잡혀 있고, 주석은 DataChannel의 bufferedAmount 가 sender 로컬 큐일 뿐 receiver 저장 완료를 의미하지 않는다고 못 박습니다.
+
+🧠 지금 돌아보는 판단
+
+949d921 은 PonsWarp가 전송을 파이프라인으로 보기 시작한 시점입니다. 파일 읽기, 패킷 생성, worker 메시지, DataChannel 전송을 한 줄의 반복문으로 보면 대기와 할당이 어디서 생기는지 놓치기 쉽습니다.
+
+빠른 sender는 좋은 기능이지만, 혼자 빠른 sender는 위험한 기능입니다. PonsWarp가 배운 것은 “더 많이 준비하기”가 아니라 “준비한 만큼을 끝까지 책임질 수 있는가”였습니다.
+
+풀을 만들어도 transferable buffer 경계에서는 복사가 남고, prefetch를 붙여도 receiver 저장 속도보다 앞서가면 backpressure가 필요합니다. 성능 최적화는 단독 기능이 아니라 흐름 제어, 저장 완료 확인, 무결성 검증과 같이 움직여야 했습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 속도보다 먼저 닫아야 했던 제어 루프를 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp commit 949d921 — Phase 2 파이프라인 병렬화, 이중 버퍼링, 청크 풀링
+
+PonsWarp/workers/file-sender.worker.v2.ts at 949d921 — ChunkPool, DoubleBuffer, BUFFER_SIZE, POOL_SIZE, PREFETCH_BATCH
+
+PonsWarp/src/workers/file-sender.worker.ts:40-144 — 현재 DoubleBuffer와 prefetch 상태
+
+PonsWarp/src/workers/file-sender.worker.ts:801-865 — ZeroCopyPacketPool 기반 패킷 생성과 WebRTC detach 때문에 남는 복사
+
+pons-core-wasm/src/zero_copy_pool.rs:24-34 — WASM 선형 메모리 기반 pool 사용 흐름
+
+PonsWarp/src/services/directFileWriter.ts:47-104 — receiver write buffer watermark와 pending bytes 추적
+
+PonsWarp/src/utils/constants.ts:18-29 — DataChannel queue를 4MB로 보수화한 현재 판단

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { DOMParser } from 'linkedom';
+import { downloadImageCandidate } from '../media/image-acquisition.mjs';
 
 const DEFAULT_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 
@@ -282,23 +283,6 @@ function buildMergedBodyText(sources, options = {}) {
   return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
-function extensionFromContentType(contentType) {
-  if (/png/i.test(contentType)) return '.png';
-  if (/jpe?g/i.test(contentType)) return '.jpg';
-  if (/webp/i.test(contentType)) return '.webp';
-  if (/gif/i.test(contentType)) return '.gif';
-  if (/svg/i.test(contentType)) return '.svg';
-  return '';
-}
-
-function extensionFromUrl(url) {
-  try {
-    const ext = path.extname(new URL(url).pathname);
-    return ext && ext.length <= 6 ? ext : '';
-  } catch {
-    return '';
-  }
-}
 
 function toUrlList(input) {
   const list = Array.isArray(input) ? input : [input];
@@ -308,20 +292,21 @@ function toUrlList(input) {
     .filter(Boolean);
 }
 
-export async function downloadImage(url, targetPath) {
-  const response = await fetch(url, {
-    headers: { 'user-agent': DEFAULT_USER_AGENT }
-  });
-  if (!response.ok) {
-    throw new Error(`이미지 다운로드에 실패했다: ${response.status} ${response.statusText}`);
-  }
-  const contentType = response.headers.get('content-type') || '';
-  const ext = extensionFromUrl(url) || extensionFromContentType(contentType) || '.img';
-  const resolved = targetPath.endsWith(ext) ? targetPath : `${targetPath}${ext}`;
-  fs.mkdirSync(path.dirname(resolved), { recursive: true });
-  const arrayBuffer = await response.arrayBuffer();
-  fs.writeFileSync(resolved, Buffer.from(arrayBuffer));
-  return resolved;
+export async function downloadImage(url, targetPath, options = {}) {
+  const result = await downloadImageCandidate(
+    { imageUrl: url, sourceUrl: options.sourceUrl || url },
+    targetPath,
+    {
+      minBytes: options.minBytes ?? 1024,
+      minWidth: options.minWidth ?? 320,
+      minHeight: options.minHeight ?? 180,
+      maxBytes: options.maxBytes ?? 12 * 1024 * 1024,
+      minAspect: options.minAspect ?? 0.7,
+      maxAspect: options.maxAspect ?? 3.2,
+      timeoutMs: options.timeoutMs ?? 20000
+    }
+  );
+  return result.path;
 }
 
 export async function fetchSource(url, options = {}) {

@@ -45,6 +45,7 @@
     "content:batch": "node scripts/content/generate-post.mjs --batch --skip-image",
     "content:qa": "node scripts/content/qa-post.mjs",
     "content:market": "node scripts/content/market-research.mjs",
+    "content:market-discover": "node scripts/content/market-discovery.mjs",
     "content:score": "node scripts/content/keyword-score.mjs",
     "content:select": "node scripts/content/select-keywords.mjs",
     "content:queue": "node scripts/content/auto-queue.mjs",

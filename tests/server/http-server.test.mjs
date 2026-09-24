@@ -64,7 +64,8 @@ test('http server serves session, template, blog, job, and markdown analysis end
         blogUrl: 'https://acstory.tistory.com',
         title: '제목',
         body: '본문',
-        category: 'IT·테크'
+        category: 'IT·테크',
+        templateId: 'tutorial-guide'
       })
     });
     payload = await response.json();
@@ -73,6 +74,8 @@ test('http server serves session, template, blog, job, and markdown analysis end
     response = await fetch(`${url}/api/jobs/${encodeURIComponent(payload.job.jobId)}`, { headers: { cookie } });
     payload = await response.json();
     assert.equal(Array.isArray(payload.artifacts), true);
+    const stagedPayload = payload.artifacts.find(artifact => artifact.kind === 'staged-publish-payload');
+    assert.equal(typeof stagedPayload?.value?.templateIdRef, 'string');
 
     response = await fetch(`${url}/api/jobs`, { headers: { cookie } });
     payload = await response.json();

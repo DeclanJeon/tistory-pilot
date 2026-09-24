@@ -18,9 +18,9 @@ const STAGED_ARTIFACT_KINDS = new Set([
   'publish-body',
   'description',
   'tags',
-  'category',
   'hero-image-path',
-  'source-bundle'
+  'source-bundle',
+  'image-provenance'
 ]);
 
 

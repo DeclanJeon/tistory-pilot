@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "createdAt": "2026-08-27T10:46:19.010Z",
+  "updatedAt": "2026-08-27T11:38:11.434Z",
+  "briefPath": ".omx/ultragoal/brief.md",
+  "goalsPath": ".omx/ultragoal/goals.json",
+  "ledgerPath": ".omx/ultragoal/ledger.jsonl",
+  "codexGoalMode": "aggregate",
+  "goals": [
+    {
+      "id": "G001-season-calendar",
+      "title": "Season calendar 외부화",
+      "objective": "content/config/season-calendar.json 외부화 + 날씨 부스팅",
+      "status": "complete",
+      "attempt": 1,
+      "createdAt": "2026-08-27T10:46:19.010Z",
+      "updatedAt": "2026-08-27T10:54:03.130Z",
+      "startedAt": "2026-08-27T10:47:53.387Z",
+      "completedAt": "2026-08-27T10:54:03.130Z",
+      "evidence": "Season calendar 외부화: content/config/season-calendar.json 12개월×4키워드 + weatherTriggers 15, seasonal-bridge.mjs JSON 로드 + 캐시 + weather boost, keyword-score measuredBonus+weatherBoost, 9/9 tests pass, shadow-run fallback unchanged"
+    },
+    {
+      "id": "G002-metrics",
+      "title": "Metrics 실측 선정 반영",
+      "objective": "metrics-injector cache hit 시 bid/volume 실측 반영",
+      "status": "complete",
+      "attempt": 1,
+      "createdAt": "2026-08-27T10:46:19.010Z",
+      "updatedAt": "2026-08-27T10:56:57.721Z",
+      "startedAt": "2026-08-27T10:56:41.198Z",
+      "completedAt": "2026-08-27T10:56:57.721Z",
+      "evidence": "Metrics 실측 선정 반영: keyword-score measuredSelectionBonus(bid6+volume4 max10) + computeSelectionScore weather 확장, metrics-injector applyMeasuredMetricsToCandidates + buildShadowReport, auto-queue measuredBonus 주입, 54/54 content tests pass, shadow delta 검증"
+    },
+    {
+      "id": "G003-provenance-sourcebundle",
+      "title": "Provenance sourceBundle 생성기",
+      "objective": "researchKeyword 결과를 sourceBundle로 변환해 meta 주입",
+      "status": "complete",
+      "attempt": 0,
+      "createdAt": "2026-08-27T10:46:19.010Z",
+      "updatedAt": "2026-08-27T10:54:09.020Z",
+      "completedAt": "2026-08-27T10:54:09.020Z",
+      "evidence": "Provenance sourceBundle 생성기: provenance-gate buildSourceBundleFromMarket, generate-post researchKeyword sourceBundle 주입, ymylRisk+sourceBundle meta, YMYL high with bundle pass / without fail, 2 files"
+    },
+    {
+      "id": "G004-run-summary",
+      "title": "Run-summary 대시보드",
+      "objective": "content/learning/run-summary-<date>.json daily runId 집계",
+      "status": "complete",
+      "attempt": 1,
+      "createdAt": "2026-08-27T10:46:19.010Z",
+      "updatedAt": "2026-08-27T11:03:11.031Z",
+      "startedAt": "2026-08-27T10:57:08.201Z",
+      "completedAt": "2026-08-27T11:03:11.031Z",
+      "evidence": "Run-summary 대시보드: scripts/content/run-summary.mjs runId별 posts/qaPassed/due 집계, outputs run-summary-2026-07-28.json/2026-08-27.json, exports 12개, 123/123 pass, due +5min 동일 로직"
+    },
+    {
+      "id": "G005-vault",
+      "title": "Vault 문서 정합",
+      "objective": "남은 작업 90% 표 + 진단/설계/보고서 갱신",
+      "status": "complete",
+      "attempt": 0,
+      "createdAt": "2026-08-27T10:46:19.010Z",
+      "updatedAt": "2026-08-27T11:00:30.223Z",
+      "completedAt": "2026-08-27T11:00:30.223Z",
+      "evidence": "Vault 문서 정합: 진단/설계/보고서 3종에 Phase 0~4 완료 + Ultragoal 90% 표 + Phase 5 진행 상태 반영, 링크 검증 통과, 문서 간 상태 일치"
+    },
+    {
+      "id": "G006",
+      "title": "최종 검증·원격 배포",
+      "objective": "35+ tests 통과, 원격 해시 일치, shadow 정상",
+      "status": "complete",
+      "attempt": 1,
+      "createdAt": "2026-08-27T10:46:19.010Z",
+      "updatedAt": "2026-08-27T11:37:50.904Z",
+      "startedAt": "2026-08-27T11:03:15.049Z",
+      "reviewBlockedAt": "2026-08-27T11:07:19.224Z",
+      "evidence": "G006 blockers resolved via G007 fixes: HotfixGenerateImport restored qa imports + contract null fix, FixMetricsProvenance official domain + derive, FixQueueWeatherParser queue propagation + weather wiring, CodeReviewG7 fixes for parser/provenance/queue/weather all verified, 123/123 tests pass",
+      "reviewBlockerResolution": {
+        "resolverGoalId": "G007-resolve-final-code-review-blockers",
+        "status": "pending",
+        "evidence": "Architect BLOCKED: parser 461 fallback treats any text as HTML without validation; YMYL 216-230 competitor URLs satisfy official source; runId 731-738/autoqueue 413-421 not correlated; metrics 172-186 swallows errors and defaults 0"
+      },
+      "completedAt": "2026-08-27T11:37:50.904Z"
+    },
+    {
+      "id": "G007-resolve-final-code-review-blockers",
+      "title": "Resolve final code-review blockers",
+      "objective": "Address architect BLOCKED findings: parser boundary validation, YMYL official source check, runId correlation, failure-zero handling",
+      "status": "complete",
+      "attempt": 1,
+      "createdAt": "2026-08-27T11:07:19.225Z",
+      "updatedAt": "2026-08-27T11:38:11.434Z",
+      "evidence": "G007 blockers resolved: parser, YMYL official, runId, failure-zero, weather, 123/123 tests, APPROVE/CLEAR",
+      "resolvesReviewBlockedGoalId": "G006",
+      "startedAt": "2026-08-27T11:11:32.047Z",
+      "completedAt": "2026-08-27T11:38:11.434Z"
+    }
+  ],
+  "codexObjective": "Complete the durable ultragoal plan in .omx/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .omx/ultragoal/ledger.jsonl as the audit trail.",
+  "aggregateCompletion": {
+    "status": "complete",
+    "completedAt": "2026-08-27T11:38:11.434Z",
+    "evidence": "G007 blockers resolved: parser, YMYL official, runId, failure-zero, weather, 123/123 tests, APPROVE/CLEAR",
+    "codexGoal": {
+      "available": true,
+      "objective": "Complete the durable ultragoal plan in .omx/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .omx/ultragoal/ledger.jsonl as the audit trail.",
+      "status": "complete",
+      "remainingTokens": null,
+      "raw": {
+        "objective": "Complete the durable ultragoal plan in .omx/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .omx/ultragoal/ledger.jsonl as the audit trail.",
+        "status": "complete"
+      }
+    }
+  }
+}

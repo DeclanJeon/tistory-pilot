@@ -1,0 +1,76 @@
+매치메이커일 뿐인 서버가 점점 무거워진 이유
+
+💡 문제 제기
+
+PonsWarp를 처음 설명할 때 가장 편한 문장은 “서버 없는 파일 전송”이었습니다. 파일 바이트는 WebRTC DataChannel을 타고 브라우저에서 브라우저로 이동합니다. 서버는 두 사용자를 같은 방에 넣고, offer와 answer와 ICE candidate를 상대에게 전달하는 매치메이커처럼 보입니다.
+
+그 설명은 완전히 틀리지는 않습니다. 하지만 제품을 만들수록 점점 덜 정확해졌습니다. 서버가 파일을 직접 들고 가지 않아도, 연결을 성립시키고, TURN 정보를 건네고, 방을 정리하고, Cloud Drop을 만들고, 인증과 결제를 다루고, readiness를 말해야 한다면 그 서버는 더 이상 얇은 중계기가 아닙니다.
+
+post-31부터 post-35까지의 흐름이 “서버 없는 전송”이라는 문장의 빈틈을 봤다면, 이 글은 그 다음 질문을 다룹니다. 왜 매치메이커일 뿐이던 서버가 제품 백엔드처럼 무거워졌는가입니다.
+
+🧭 당시 제품 상태
+
+초기 PonsWarp의 관심사는 브라우저 전송 엔진이었습니다. 메모리 폭발, ACK, backpressure, RTT 제어, ZIP64, 재정렬 버퍼, WASM 코어 같은 문제는 모두 파일 바이트를 안전하게 이동시키는 쪽에 가까웠습니다. 이때 서버는 상대적으로 단순해 보였습니다.
+
+그러나 이미 초반부터 서버 책임은 새고 있었습니다. `2def330`은 TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결을 안정화하는 방향이었습니다. TURN은 파일을 대신 보내는 기능은 아니지만, “두 브라우저가 실제 네트워크에서 만날 수 있는가”라는 제품 신뢰와 직접 연결됩니다.
+
+`2025-12-10 44fb5ad`에서 `ponswarp-signaling-rs`가 만들어진 것도 같은 맥락입니다. 단순한 데모용 signaling이 아니라 Rust 기반 서버로 방, 피어 세션, WebSocket 메시지, 설정, 운영 로그를 감당하게 된 순간입니다. 다음 날 `b834716`의 시그널링 서버 안정성 향상과 배포 자동화는 이 서버가 로컬 보조 스크립트가 아니라 운영 대상이 되기 시작했다는 신호였습니다.
+
+🧱 시스템 구조
+
+현재 `ponswarp-signaling-rs/src/main.rs`를 보면 서버의 무게가 한눈에 보입니다. 라우터에는 `/ws`만 있는 것이 아닙니다. `/health`, `/ready`, `/api/cloud-plans`, `/api/auth/me`, Google OAuth start/callback/logout, admin overview와 operations, Cloud Share 생성·조회·완료·중단·다운로드, billing checkout/capture/webhook이 함께 붙어 있습니다.
+
+`AppState`도 rooms와 peers만 들고 있지 않습니다. `Config`, optional `CloudStorage`, optional `CloudDatabase`, optional `BillingClient`, shared outbound HTTP client가 같은 상태에 들어갑니다. `rooms: DashMap<String, Room>`과 `peers: DashMap<String, PeerSession>`은 매치메이커의 핵심이지만, 그 옆에 R2, DB, PayPal, OAuth 호출을 위한 상태가 붙으면서 서버는 제품 계층을 들게 됩니다.
+
+이 구조가 나쁘다는 뜻은 아닙니다. 오히려 P2P 제품에서 흔히 피하기 어려운 구조입니다. 브라우저끼리 파일을 직접 보내더라도, 비동기 공유 링크, 유료 정책, 관리자 확인, 배포 상태, 만료 정리는 어딘가의 신뢰 가능한 서버가 맡아야 합니다. PonsWarp에서는 그 무게가 signaling 서버에 모였습니다.
+
+⚠️ 실제 실패 지점
+
+서버가 무거워진 가장 직접적인 실패 지점은 “상태를 들고 있으면서 동시에 비동기 메시지를 보내는 일”이었습니다. `handlers/room.rs`의 주석은 이 문제를 숨기지 않습니다. DashMap room guard를 잡은 상태에서 await나 broadcast를 호출하면 같은 shard를 다시 조회하면서 런타임 전체가 멈출 수 있다고 적고, 필요한 상태만 복사한 뒤 guard를 해제하고 네트워크/채널 작업을 수행하도록 바꿉니다.
+
+이것은 signaling 서버가 단순 전달기일 때는 잘 드러나지 않는 종류의 문제입니다. 방에 누가 있는지, peer 세션의 sender는 무엇인지, 사용자가 나갔을 때 누구에게 알려야 하는지, 비어 있는 방을 삭제해야 하는지를 모두 서버가 판단하는 순간 락 범위와 await 위치가 제품 안정성 문제가 됩니다.
+
+`2026-05-17 f1c69cb fix: prevent signaling room cleanup deadlocks`는 이 글의 핵심 증거입니다. 파일 바이트 전송이 아니라 방 정리와 브로드캐스트 순서 때문에 서버가 멈출 수 있었습니다. “우리는 파일을 서버로 안 보낸다”는 말은 이 실패를 설명하지 못합니다. 사용자가 보는 제품은 연결 대기, 입장, 나가기, 재연결, 정리까지 포함하기 때문입니다.
+
+🔄 설계 변경
+
+설계는 두 방향으로 바뀌었습니다. 첫째, signaling 서버의 최소 책임을 더 명확하게 했습니다. `/ws`는 offer, answer, ICE candidate, manifest, transfer ready, transfer complete 같은 메시지를 상대에게 전달합니다. `handlers/signaling.rs`는 target이 있으면 직접 보내고, 없으면 room에 브로드캐스트합니다. 이것은 여전히 매치메이커의 영역입니다.
+
+둘째, 제품 백엔드 책임을 현실적으로 받아들였습니다. `main.rs`의 cleanup task는 오래된 방을 정리하고, Cloud Drop이 켜져 있으면 만료된 cloud share도 주기적으로 정리합니다. `/ready`는 cloud와 billing 준비 상태를 나눠서 `cloudShare`, `billing`으로 반환합니다. `Config`는 CORS, database, auth, admin, billing, room, TURN, cloud 설정을 환경 변수에서 읽습니다.
+
+이 변화의 의미는 서버를 괴물처럼 키우자는 것이 아닙니다. 얇은 서버라는 구호로 제품 책임을 숨기지 않겠다는 쪽에 가깝습니다. P2P 전송의 장점은 파일 바이트가 중앙 서버를 통과하지 않는다는 점입니다. 하지만 제품의 약속은 바이트 경로만으로 끝나지 않습니다.
+
+☁️ 왜 Cloud Drop이 결정적이었나
+
+Cloud Drop은 서버가 무거워진 이유를 가장 노골적으로 보여줍니다. `2026-05-12 4847872 Enable async cloud drops for delayed downloads`는 상대가 동시에 온라인이 아니어도 파일을 받을 수 있는 방향입니다. 이 순간 P2P의 “같은 시간에 둘 다 접속해야 한다”는 제약을 제품이 우회하기 시작합니다.
+
+그 다음 `b6f3ea8`의 pricing page, `f8f2120`의 Stripe entitlement, PayPal 경유, `3628858`의 large upload resumable parts, `a004c91`의 Free plan cloud policy는 모두 같은 압력입니다. 비동기 전달을 넣으면 저장소가 필요하고, 저장소가 생기면 보존 기간과 용량 정책이 필요하고, 정책이 생기면 과금과 권한이 붙습니다.
+
+그래서 Cloud Drop은 단순한 “서버에 잠깐 올리는 기능”이 아닙니다. PonsWarp가 순수한 실시간 P2P 도구에서 제품형 파일 전달 서비스로 움직인 분기점입니다. 이 분기점 이후 signaling 서버는 연결만 도와주는 서버가 아니라, 온라인 상태가 엇갈린 사용자 사이의 제품 약속을 관리하는 서버가 됩니다.
+
+🧭 지금 돌아보는 판단
+
+지금 돌아보면 서버가 무거워진 것은 실패라기보다, 제품 설명이 현실을 따라잡은 과정이었습니다. 처음의 “매치메이커” 모델은 시작하기 좋은 추상화였습니다. 하지만 모바일 연결, TURN, 방 정리, readiness, OAuth, Cloud Drop, billing이 붙은 뒤에도 같은 말을 계속 쓰면 중요한 비용을 숨기게 됩니다.
+
+PonsWarp에서 서버는 파일 데이터 플레인을 독점하지 않습니다. 그 점은 여전히 중요합니다. 하지만 컨트롤 플레인, 운영 플레인, 비동기 전달 플레인, 수익화 플레인은 서버 쪽으로 모였습니다. 이 네 가지가 붙으면 서버는 작아 보일 수 없습니다.
+
+좋은 판단은 서버를 억지로 얇게 유지하는 것이 아니라, 무거워진 이유를 정확히 이름 붙이는 것입니다. 방과 peer 세션은 연결의 책임입니다. TURN과 CORS와 readiness는 운영의 책임입니다. Cloud Drop과 R2와 DB는 비동기 전달의 책임입니다. OAuth와 billing은 제품 정책의 책임입니다. 서로 다른 책임을 같은 서버가 들고 있다면, 그 무게를 인정하고 경계를 관리해야 합니다.
+
+📚 읽은 코드
+
+- `ponswarp-signaling-rs/src/main.rs:78-118` — `/ws`, `/health`, `/ready`, auth, admin, cloud-share, billing route가 한 라우터에 묶이는 구조
+
+- `ponswarp-signaling-rs/src/main.rs:47-72` — room cleanup과 expired cloud share cleanup 스케줄러
+
+- `ponswarp-signaling-rs/src/main.rs:176-194` — cloud와 billing 준비 상태를 나눠 반환하는 readiness handler
+
+- `ponswarp-signaling-rs/src/state.rs:17-33` — rooms, peers, config, CloudStorage, CloudDatabase, BillingClient, HTTP client를 포함하는 AppState
+
+- `ponswarp-signaling-rs/src/handlers/room.rs:15-18, 114-120` — DashMap guard와 await/broadcast deadlock을 피하려는 스코프 제한 주석과 처리
+
+- `ponswarp-signaling-rs/src/handlers/signaling.rs:7-86, 115-180` — offer, answer, ICE, transfer ready/complete relay
+
+- `ponswarp-signaling-rs/src/config.rs:6-20, 71-120` — CORS, database, auth, admin, billing, room, TURN, cloud 설정 구조
+
+- `2def330`, `44fb5ad`, `b834716`, `4847872`, `f8f2120`, `3628858`, `f1c69cb` — TURN 동적 설정, Rust signaling, 배포 자동화, Cloud Drop, 과금, resumable multipart, room cleanup deadlock 방지 흐름
+

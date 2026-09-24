@@ -1,0 +1,95 @@
+{
+  "seriesTitle": "PonsWarp가 만들어진 시간",
+  "category": "개발 회고",
+  "blogUrl": "https://acstory.tistory.com",
+  "generatedAt": "2026-06-23T16:04:03.644Z",
+  "posts": [
+    {
+      "order": 46,
+      "slug": "2026-06-23-ponswarp-46-why-paypal-entitlement-flow-was-harder",
+      "title": "[PonsWarp] - PayPal, entitlement, checkout flow가 더 어려웠던 이유",
+      "bodyFile": "content/ponswarp-retrospective/html/post-46.html",
+      "category": "개발 회고",
+      "description": "결제 provider 선택보다 checkout 이후 권한 상태를 제품 계약으로 번역하는 일이 왜 더 어려웠는지 정리한 회고 글.",
+      "tags": "PonsWarp,PayPal,entitlement,checkout,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-46/checkout-entitlement-flow.svg",
+      "schedule": {
+        "date": "2026-06-25",
+        "hour": "09",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 47,
+      "slug": "2026-06-23-ponswarp-47-what-the-free-plan-rollback-revealed",
+      "title": "[PonsWarp] - free plan rollback에서 드러난 판단",
+      "bodyFile": "content/ponswarp-retrospective/html/post-47.html",
+      "category": "개발 회고",
+      "description": "무료 정책의 rollback이 PonsWarp의 가격·운영·제품 책임을 어떻게 드러냈는지 정리한 회고 글.",
+      "tags": "PonsWarp,free-plan,rollback,pricing,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-47/free-plan-rollback-flow.svg",
+      "schedule": {
+        "date": "2026-06-25",
+        "hour": "10",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 48,
+      "slug": "2026-06-23-ponswarp-48-what-analytics-finally-revealed",
+      "title": "[PonsWarp] - analytics를 붙이고 나서야 보인 것들",
+      "bodyFile": "content/ponswarp-retrospective/html/post-48.html",
+      "category": "개발 회고",
+      "description": "GA4 같은 측정 계층이 늦게 들어오며 direct transfer, Cloud Drop, pricing, free plan의 실제 제품 질문을 어떻게 드러냈는지 정리한 회고 글.",
+      "tags": "PonsWarp,analytics,GA4,product,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-48/analytics-blind-spot.svg",
+      "schedule": {
+        "date": "2026-06-25",
+        "hour": "11",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 49,
+      "slug": "2026-06-23-ponswarp-49-how-ponswarp-led-to-ponslink",
+      "title": "[PonsWarp] - PonsWarp가 PonsLink 계열로 이어진 방식",
+      "bodyFile": "content/ponswarp-retrospective/html/post-49.html",
+      "category": "개발 회고",
+      "description": "PonsWarp에서 정리된 브라우저 실시간 신뢰 경계가 PonsLink 계열의 room, request, replay, control plane으로 어떻게 이어졌는지 정리한 회고 글.",
+      "tags": "PonsWarp,PonsLink,realtime,control-plane,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-49/architecture-transfer.svg",
+      "schedule": {
+        "date": "2026-06-25",
+        "hour": "12",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 50,
+      "slug": "2026-06-23-ponswarp-50-what-id-keep-and-what-id-cut",
+      "title": "[PonsWarp] - 지금 다시 만든다면 무엇을 남기고 무엇을 버릴까",
+      "bodyFile": "content/ponswarp-retrospective/html/post-50.html",
+      "category": "개발 회고",
+      "description": "PonsWarp를 다시 만든다면 유지할 것과 줄일 것, 다시 설계할 순서를 어떻게 나눌지 정리한 최종 회고 글.",
+      "tags": "PonsWarp,retrospective,architecture,product,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-50/architecture-reset.svg",
+      "schedule": {
+        "date": "2026-06-25",
+        "hour": "13",
+        "minute": "00"
+      }
+    }
+  ],
+  "homeTopic": "IT 인터넷",
+  "titlePrefix": "[PonsWarp] "
+}

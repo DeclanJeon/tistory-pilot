@@ -1,0 +1,265 @@
+{
+  "seriesTitle": "PonsWarp가 만들어진 시간",
+  "category": "개발 회고",
+  "blogUrl": "https://acstory.tistory.com",
+  "generatedAt": "2026-06-23T16:04:03.643Z",
+  "posts": [
+    {
+      "order": 31,
+      "slug": "2026-06-23-ponswarp-31-serverless-transfer-was-half-true",
+      "title": "[PonsWarp] - 서버 없는 전송이라는 말의 절반만 맞았던 이유",
+      "bodyFile": "content/ponswarp-retrospective/html/post-31.html",
+      "category": "개발 회고",
+      "description": "P2P direct transfer의 장점을 인정하면서도 signaling, TURN, cleanup, Cloud Drop 같은 서버 책임이 어떻게 제품 현실로 남았는지 정리한 회고 글.",
+      "tags": "PonsWarp,P2P,signaling,TURN,CloudDrop,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-31/backend-responsibility-growth.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "09",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 32,
+      "slug": "2026-06-23-ponswarp-32-from-ponswarp-signal-to-signaling-rs",
+      "title": "[PonsWarp] - `ponswarp-signal`에서 `ponswarp-signaling-rs`로",
+      "bodyFile": "content/ponswarp-retrospective/html/post-32.html",
+      "category": "개발 회고",
+      "description": "초기 signaling 보조 서버에서 운영 가능한 Rust 백엔드로 넘어가며 방 상태, TURN, cleanup, Cloud Drop, billing 책임이 어떻게 커졌는지 정리한 회고 글.",
+      "tags": "PonsWarp,signaling,Rust,CloudDrop,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-32/backend-productization-layers.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "10",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 33,
+      "slug": "2026-06-23-ponswarp-33-why-a-rust-signaling-server",
+      "title": "[PonsWarp] - Rust signaling 서버를 따로 세운 이유",
+      "bodyFile": "content/ponswarp-retrospective/html/post-33.html",
+      "category": "개발 회고",
+      "description": "파일 바이트는 브라우저 사이에 남겨 두면서도 방·피어·TURN·health·cleanup을 Rust signaling 서버로 분리한 이유를 정리한 회고 글.",
+      "tags": "PonsWarp,Rust,signaling,WebRTC,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-33/operational-stack.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "11",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 34,
+      "slug": "2026-06-23-ponswarp-34-turn-cleanup-deadlock-edges",
+      "title": "[PonsWarp] - TURN, room cleanup, deadlock, protocol edge case",
+      "bodyFile": "content/ponswarp-retrospective/html/post-34.html",
+      "category": "개발 회고",
+      "description": "TURN 자격증명, room cleanup deadlock, protocol serialization edge case가 왜 작은 서버 디테일이 아니라 제품 신뢰 문제였는지 정리한 회고 글.",
+      "tags": "PonsWarp,TURN,cleanup,deadlock,protocol,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-34/protocol-edge-cases.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "12",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 35,
+      "slug": "2026-06-23-ponswarp-35-signaling-shaped-product-trust",
+      "title": "[PonsWarp] - signaling 서버가 제품 신뢰를 좌우한 순간",
+      "bodyFile": "content/ponswarp-retrospective/html/post-35.html",
+      "category": "개발 회고",
+      "description": "P2P 파일 전송에서도 사용자의 신뢰가 signaling 단계에서 먼저 형성된다는 점과 서버 안정성이 제품 신뢰를 좌우한 순간들을 정리한 회고 글.",
+      "tags": "PonsWarp,signaling,신뢰,WebRTC,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-35/server-reliability-gates.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "13",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 36,
+      "slug": "2026-06-23-ponswarp-36-when-the-matchmaker-got-heavy",
+      "title": "[PonsWarp] - 매치메이커일 뿐인 서버가 점점 무거워진 이유",
+      "bodyFile": "content/ponswarp-retrospective/html/post-36.html",
+      "category": "개발 회고",
+      "description": "중계만 하던 signaling 서버가 readiness, cleanup, Cloud Drop, billing까지 떠안으며 제품 백엔드로 무거워진 과정을 정리한 회고 글.",
+      "tags": "PonsWarp,backend,CloudDrop,billing,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-36/server-flow-map.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "14",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 37,
+      "slug": "2026-06-23-ponswarp-37-when-readiness-cleanup-and-prod-mattered",
+      "title": "[PonsWarp] - readiness, cleanup, production env가 중요해진 시점",
+      "bodyFile": "content/ponswarp-retrospective/html/post-37.html",
+      "category": "개발 회고",
+      "description": "health와 readiness의 차이, cleanup 설계, production env의 현실이 P2P 제품에서 왜 운영 신뢰의 핵심이 되었는지 정리한 회고 글.",
+      "tags": "PonsWarp,readiness,cleanup,production,운영,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-37/cleanup-state.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "15",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 38,
+      "slug": "2026-06-23-ponswarp-38-why-p2p-could-not-escape-operations",
+      "title": "[PonsWarp] - P2P 서비스가 운영을 피해갈 수 없다는 사실",
+      "bodyFile": "content/ponswarp-retrospective/html/post-38.html",
+      "category": "개발 회고",
+      "description": "P2P direct transfer를 택해도 TURN, room state, readiness, cleanup, production measurement 같은 운영 책임이 사라지지 않는다는 점을 정리한 회고 글.",
+      "tags": "PonsWarp,P2P,운영,signaling,readiness,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-38/failure-translation.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "16",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 39,
+      "slug": "2026-06-23-ponswarp-39-the-day-i-wanted-to-give-up-the-web",
+      "title": "[PonsWarp] - 웹을 포기하고 싶었던 날",
+      "bodyFile": "content/ponswarp-retrospective/html/post-39.html",
+      "category": "개발 회고",
+      "description": "브라우저의 권한·네트워크·저장·무결성 압력이 겹치면서 데스크톱 분기를 상상하게 된 순간과 그 판단 기준을 정리한 회고 글.",
+      "tags": "PonsWarp,desktop,브라우저,QUIC,Tauri,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-39/browser-pressure-map.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "17",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 40,
+      "slug": "2026-06-23-ponswarp-40-why-ponswarp-desktop-existed",
+      "title": "[PonsWarp] - ponswarp-desktop를 만든 진짜 이유",
+      "bodyFile": "content/ponswarp-retrospective/html/post-40.html",
+      "category": "개발 회고",
+      "description": "브라우저 제약과 제품 약속을 분리해 보기 위해 ponswarp-desktop 분기를 만들게 된 이유와 그 실험의 성격을 정리한 회고 글.",
+      "tags": "PonsWarp,desktop,Tauri,QUIC,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-40/decision-filter.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "18",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 41,
+      "slug": "2026-06-23-ponswarp-41-why-quic-and-native-streaming-looked-better",
+      "title": "[PonsWarp] - QUIC와 native streaming이 더 좋아 보였던 이유",
+      "bodyFile": "content/ponswarp-retrospective/html/post-41.html",
+      "category": "개발 회고",
+      "description": "브라우저의 WebRTC·저장 제약을 지나며 QUIC와 native streaming이 왜 더 깨끗한 mental model처럼 보였는지 정리한 회고 글.",
+      "tags": "PonsWarp,QUIC,native-streaming,desktop,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-41/native-streaming-stack.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "19",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 42,
+      "slug": "2026-06-23-ponswarp-42-why-the-desktop-branch-did-not-survive",
+      "title": "[PonsWarp] - 그런데 왜 결국 살아남지 못했나",
+      "bodyFile": "content/ponswarp-retrospective/html/post-42.html",
+      "category": "개발 회고",
+      "description": "데스크톱 분기가 기술적으로 매력적이었어도 제품 생존 경로로 이어지지 못한 이유를 제품 표면과 운영 면적 관점에서 정리한 회고 글.",
+      "tags": "PonsWarp,desktop,product,운영,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-42/complexity-stack.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "20",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 43,
+      "slug": "2026-06-23-ponswarp-43-why-cloud-drop-was-added",
+      "title": "[PonsWarp] - Cloud Drop은 왜 붙었나",
+      "bodyFile": "content/ponswarp-retrospective/html/post-43.html",
+      "category": "개발 회고",
+      "description": "직접 전송의 동시 접속 한계를 메우기 위해 Cloud Drop이 어떻게 붙었고, 그 순간 제품의 질문이 어떻게 바뀌었는지 정리한 회고 글.",
+      "tags": "PonsWarp,CloudDrop,P2P,product,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-43/cloud-drop-product-shift.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "21",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 44,
+      "slug": "2026-06-23-ponswarp-44-free-10gb-24hours-compromise",
+      "title": "[PonsWarp] - 무료 10GB / 24시간이라는 타협",
+      "bodyFile": "content/ponswarp-retrospective/html/post-44.html",
+      "category": "개발 회고",
+      "description": "Cloud Drop 무료 정책이 사용자 친절, 운영 비용, 유료 경계 사이의 타협으로 만들어진 과정을 정리한 회고 글.",
+      "tags": "PonsWarp,CloudDrop,pricing,free-plan,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-44/cloud-drop-lifecycle.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "22",
+        "minute": "00"
+      }
+    },
+    {
+      "order": 45,
+      "slug": "2026-06-23-ponswarp-45-when-billing-changed-the-product",
+      "title": "[PonsWarp] - 결제를 붙이는 순간 제품이 달라지는 방식",
+      "bodyFile": "content/ponswarp-retrospective/html/post-45.html",
+      "category": "개발 회고",
+      "description": "결제가 단순 부가 기능이 아니라 Cloud Drop 권한, 정책, 운영 책임을 바꾸는 제품 경계였다는 점을 정리한 회고 글.",
+      "tags": "PonsWarp,billing,entitlement,pricing,개발회고",
+      "status": "draft",
+      "homeTopic": "IT 인터넷",
+      "representativeImagePath": "content/ponswarp-retrospective/assets/post-45/billing-product-shift.svg",
+      "schedule": {
+        "date": "2026-06-24",
+        "hour": "23",
+        "minute": "00"
+      }
+    }
+  ],
+  "homeTopic": "IT 인터넷",
+  "titlePrefix": "[PonsWarp] "
+}

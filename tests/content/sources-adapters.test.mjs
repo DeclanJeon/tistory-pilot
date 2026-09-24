@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { validateSourceResult, validateSourceItem } from '../../scripts/content/sources/contract.mjs';
-import { buildMerged } from '../../scripts/content/sources/aggregator.mjs';
+import { buildMerged, runAdapters } from '../../scripts/content/sources/aggregator.mjs';
 import { fetchNaverDataLab } from '../../scripts/content/sources/naver-datalab.mjs';
 import { decodePty, todayKyungyoDate } from '../../scripts/content/sources/kma-weather.mjs';
 import { readCache, writeCache, upsertMetric, viewMetric, buildShadowReport } from '../../scripts/content/metrics-injector.mjs';
@@ -38,12 +38,15 @@ test('naver datalab sends keyword arrays accepted by the API schema', async () =
     };
   };
   try {
+    const usageDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tistory-datalab-'));
     const result = await fetchNaverDataLab({
       env: {
         NAVER_DATALAB_CLIENT_ID: 'test-id',
         NAVER_DATALAB_CLIENT_SECRET: 'test-secret',
         NAVER_DATALAB_KEYWORDS: '이사 비용,청소 비용'
-      }
+      },
+      usageFile: path.join(usageDir, 'usage.json'),
+      now: new Date('2026-08-27T00:00:00.000Z')
     });
     assert.equal(result.status, 'ok');
     assert.equal(result.items.length, 2);
@@ -53,9 +56,101 @@ test('naver datalab sends keyword arrays accepted by the API schema', async () =
     ]);
     assert.equal(request.options.headers['X-Naver-Client-Id'], 'test-id');
     assert.equal(request.options.headers['X-Naver-Client-Secret'], 'test-secret');
+    const usage = JSON.parse(await fs.readFile(path.join(usageDir, 'usage.json'), 'utf8'));
+    assert.equal(usage.months['2026-08'].requests, 1);
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+test('naver datalab does not invent a static seed when no keywords are configured', async () => {
+  let called = false;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    called = true;
+    throw new Error('network must not be called without dynamic seeds');
+  };
+  try {
+    const result = await fetchNaverDataLab({
+      env: {
+        NAVER_DATALAB_CLIENT_ID: 'test-id',
+        NAVER_DATALAB_CLIENT_SECRET: 'test-secret'
+      }
+    });
+    assert.equal(result.status, 'unavailable');
+    assert.equal(result.items.length, 0);
+    assert.equal(called, false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+test('naver datalab blocks requests at the hard monthly quota before network access', async () => {
+  const usageDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tistory-datalab-quota-'));
+  const usageFile = path.join(usageDir, 'usage.json');
+  await fs.writeFile(usageFile, JSON.stringify({
+    version: 1,
+    months: { '2026-09': { requests: 50_000, updatedAt: '2026-09-09T00:00:00.000Z' } }
+  }));
+  let called = false;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    called = true;
+    throw new Error('network must not be called at the monthly cap');
+  };
+  try {
+    const result = await fetchNaverDataLab({
+      env: {
+        NAVER_DATALAB_CLIENT_ID: 'test-id',
+        NAVER_DATALAB_CLIENT_SECRET: 'test-secret'
+      },
+      keywords: ['현재 인기 검색어'],
+      usageFile,
+      monthlyLimit: 999_999,
+      now: new Date('2026-09-09T00:00:00.000Z')
+    });
+    assert.equal(result.status, 'rate_limited');
+    assert.match(result.error, /50,?000/);
+    assert.equal(called, false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+
+test('aggregator derives Naver provider seeds from the current trend snapshot', async () => {
+  const providerCalls = [];
+  const adapters = [
+    {
+      label: 'google-trends',
+      run: async () => ({
+        source: 'google-trends',
+        status: 'ok',
+        items: [
+          { raw: '현재 인기 검색어', normalized: '현재 인기 검색어', volume: 50000, volumeKind: 'range' }
+        ]
+      })
+    },
+    {
+      label: 'naver-datalab',
+      run: async (env, keywords) => {
+        providerCalls.push({ source: 'naver-datalab', keywords });
+        return { source: 'naver-datalab', status: 'ok', items: [] };
+      }
+    },
+    {
+      label: 'kma-weather',
+      run: async () => ({
+        source: 'kma-weather',
+        status: 'ok',
+        items: [{ raw: '기상: 여름 날씨', normalized: '기상: 여름 날씨', volume: null, volumeKind: 'unknown' }]
+      })
+    }
+  ];
+  const results = await runAdapters({ env: {}, adapters });
+  assert.deepEqual(providerCalls, [
+    { source: 'naver-datalab', keywords: ['현재 인기 검색어', '여름 날씨'] }
+  ]);
+  assert.deepEqual(results.map((result) => result.source), ['google-trends', 'naver-datalab', 'kma-weather']);
 });
 
 test('source item preserves volumeKind, rank and trigger; normalizes volume', () => {

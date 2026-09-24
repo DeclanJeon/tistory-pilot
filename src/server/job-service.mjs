@@ -105,9 +105,11 @@ export class JobService {
     body,
     description,
     tags,
-    category,
+    category = '',
     heroImagePath = '',
+    templateId = '',
     sourceBundle = null,
+    imageProvenance = null,
     runId = null,
     idempotencyKey = null,
     notBefore = null,
@@ -134,7 +136,9 @@ export class JobService {
       tags,
       category,
       heroImagePath,
-      sourceBundle
+      templateId,
+      sourceBundle,
+      imageProvenance
     });
     const stagedRecord = await this.artifactStore.putJson({
       artifactId: artifactId('staged-publish-payload'),

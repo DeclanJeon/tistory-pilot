@@ -7,6 +7,7 @@ import {
   buildCategoryUrl,
   buildEditorUrl,
   collectBodyImageDataUrls,
+  inlineBodyImageSources,
   normalizeBlogUrl,
   writeDataUrlFile
 } from '../../src/core/tistory/helpers.mjs';
@@ -29,6 +30,18 @@ test('tistory helpers persist data urls and collect local markdown images', asyn
   const written = writeDataUrlFile(outputPath, collected[imagePath]);
   const writtenBytes = await fs.readFile(written);
   assert.equal(writtenBytes.toString(), 'hello');
+});
+
+test('tistory helpers resolve relative html assets from the body directory', async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-tistory-relative-image-'));
+  const assetDir = path.join(tempRoot, 'assets');
+  await fs.mkdir(assetDir, { recursive: true });
+  await fs.writeFile(path.join(assetDir, 'hero.png'), Buffer.from('hero'));
+
+  const body = '<figure><img src="assets/hero.png" alt="hero"></figure>';
+  const collected = collectBodyImageDataUrls(body, { baseDir: tempRoot });
+  assert.match(collected['assets/hero.png'], /^data:image\/png;base64,/);
+  assert.match(inlineBodyImageSources(body, collected), /src="data:image\/png;base64,/);
 });
 
 test('tistory helpers ignore missing local html assets', () => {

@@ -52,3 +52,18 @@ test('buildTistoryBodyHtml strips wrapper html and keeps article content only', 
   assert.match(html, /data:image\/png;base64,AAAA/);
   assert.match(html, /href="https:\/\/example.com\/source"/);
 });
+
+test('buildTistoryBodyHtml inlines body assets and places the hero image in HTML', () => {
+  const paragraph = '본문 이미지가 발행 전에 업로드되도록 실제 경로를 data URL로 치환한다. '.repeat(18);
+  const html = buildTistoryBodyHtml({
+    title: '이미지 업로드 테스트',
+    body: `<div style="font-size:16px;line-height:1.82;color:#1f2937;max-width:800px;margin:0 auto;"><h1>이미지 업로드 테스트</h1><p>${paragraph}</p><p>${paragraph}</p><h2>검증 섹션</h2><p>${paragraph}</p><img src="assets/body.png" alt="본문"></div>`,
+    heroImageDataUrl: 'data:image/png;base64,HERO',
+    bodyImageDataUrls: { 'assets/body.png': 'data:image/png;base64,BODY' }
+  });
+
+  assert.match(html, /data:image\/png;base64,HERO/);
+  assert.match(html, /data:image\/png;base64,BODY/);
+  assert.match(html, /data-tistory-hero="true"/);
+  assert.doesNotMatch(html, /src="assets\/body\.png"/);
+});

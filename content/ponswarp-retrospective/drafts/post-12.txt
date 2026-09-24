@@ -1,0 +1,111 @@
+PonsWarp를 처음 보면 UI부터 손보고 싶어집니다.
+
+보내기 화면을 더 매끈하게 만들고, 진행률을 예쁘게 그리고, 공유 코드를 보기 좋게 정리하고, 모바일 화면의 간격을 다듬고 싶어집니다. 하지만 초반 기록을 따라가면 UI가 덜 예뻐서 위험했던 것이 아니라, UI가 말하는 상태를 시스템이 아직 보증하지 못해서 위험했습니다.
+
+💡 UI가 중요하지 않았다는 말이 아닙니다. PonsWarp에서 초반 UI polish는 더 아래층의 신뢰 계약이 정리된 뒤에야 의미가 생겼다는 말입니다.
+
+[PonsWarp foundation priority stack before UI polish]
+
+화면 polish는 맨 위에 있었고, 아래층이 흔들리면 버튼과 진행률은 곧 거짓말이 됐습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 성능 문제가 드러난 순간을 먼저 복원합니다.
+
+실패 지점 — 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 속도보다 먼저 닫아야 했던 제어 루프를 회고의 결론으로 둡니다.
+
+🧱 제품 표면보다 먼저 깨진 것은 상태의 진실성이었습니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 초반 UI보다 먼저 해결해야 했던 것들 라는 사건을 기능 소개로 소비하지 않습니다. 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+초기 파일 전송 앱의 표면은 단순합니다. 파일을 고르고, 방을 만들고, 상대가 들어오고, 전송률이 올라가고, 완료가 표시됩니다. 이 흐름만 보면 UI 작업이 제품 완성의 중심처럼 보입니다. 하지만 PonsWarp의 evidence index는 초반부터 다른 순서를 보여 줍니다.
+
+2025년 11월 20일에는 638bc83 의 메모리 폭발 방지가 등장합니다. 다음 날에는 21dc9ba 의 저장 완료 핸드셰이크, 6e635f3 의 Push/AIMD, 2def330 의 동적 TURN 설정이 이어집니다. 화면보다 먼저 연결, 메모리, 완료 의미, 전송 제어가 터진 것입니다.
+
+진행률 막대가 아무리 세련돼도, receiver 저장이 끝나기 전에 완료라고 말하면 거짓말입니다. 연결 화면이 아무리 깔끔해도, 모바일 NAT에서 방에 못 들어오면 제품은 실패합니다. 전송 버튼이 좋아 보여도, sender가 너무 빨리 밀어 receiver 메모리를 터뜨리면 사용자는 UI를 평가할 기회조차 얻지 못합니다.
+
+🔌 연결은 성공/실패보다 더 복잡했습니다
+
+WebRTC를 붙이면 브라우저끼리 직접 연결된다는 설명은 매력적입니다. 하지만 c647df9 의 WebRTC 서비스 개선과 production logging, 4efb394 의 STUN 서버 보강, 2def330 의 동적 TURN 설정은 모두 같은 방향을 가리킵니다. 연결은 데모의 성공 장면이 아니라 제품의 첫 신뢰 조건이었습니다.
+
+PonsWarp에서 연결 상태는 “초록불이 켜졌는가”가 아니었습니다. ICE 서버를 어떻게 받았는지, TURN relay가 필요한지, receiver 탭이 다시 살아났는지, 연결 실패가 사용자에게 어떤 경로로 보이는지 까지 포함한 제품 상태였습니다.
+
+현재 코드 앵커로 정리된 PonsWarp/src/services/webRTCService.ts 에는 receiver 연결 생명주기, TURN 설정 로딩, 재연결, visibility/focus/pageshow 대응이 함께 묶여 있습니다. PonsWarp/src/utils/mobileResumePolicy.ts 가 따로 언급되는 것도 모바일 resume이 단순 UI 이벤트가 아니라 정책 문제였다는 증거입니다.
+
+💾 완료 표시는 저장 완료 뒤에야 의미가 생겼습니다
+
+PonsWarp가 초반에 가장 빨리 배운 것 중 하나는 완료가 하나가 아니라는 사실입니다. sender 입장에서는 마지막 chunk를 보냈고 DataChannel queue가 비면 끝난 것처럼 보입니다. receiver worker 입장에서는 마지막 packet을 decode하고 verify하면 거의 끝난 것처럼 보입니다. 하지만 사용자가 원하는 완료는 파일이 실제로 저장 가능한 형태로 끝까지 써진 상태입니다.
+
+21dc9ba 의 양방향 핸드셰이크는 이 차이를 제품 계약으로 바꾼 커밋입니다. 송신자는 모든 청크를 보낸 뒤 바로 완료하지 않고, 수신자의 저장 완료 신호를 기다립니다. 보낸 쪽에서는 다 보냈지만, 받는 쪽 처리가 아직 남아 있으면 최종 완료가 아닙니다.
+
+[PonsWarp truthful completion control flow]
+
+보냄, 받음, 저장, ACK, resume 신호는 서로 다른 사건이며, 이 차이를 숨기지 않아야 완료 표시가 정직해집니다.
+
+🚦 빠른 전송보다 먼저 필요한 것은 멈출 줄 아는 전송이었습니다
+
+PonsWarp 초반의 성능 작업은 단순히 속도 숫자를 올리는 일이 아니었습니다. 6e635f3 의 Push 방식과 AIMD는 sender가 쉬지 않게 만드는 동시에, 혼잡이 보이면 window를 줄이는 제어였습니다. 너무 느리면 사용자는 앱이 멈췄다고 느끼고, 너무 빠르면 브라우저 큐와 receiver 저장 계층이 압력을 받습니다.
+
+이 균형은 12월 3일의 54cf5f4 에서 더 분명해집니다. receiver가 못 써내는 만큼 sender도 늦춰야 합니다. DirectFileWriter 가 batch write, pending bytes, high/low watermark, pause/resume을 다룬다는 사실은 저장 계층이 단순 출력기가 아니라 전송 제어의 일부였다는 뜻입니다.
+
+🧠 메모리 압력은 디자인으로 덮을 수 없는 문제였습니다
+
+대용량 파일 전송에서 메모리는 조용히 제품을 망가뜨립니다. 오류 메시지가 예쁘게 뜨기 전에 탭이 버벅이고, GC가 길어지고, 모바일 브라우저가 탭을 죽일 수 있습니다. 638bc83 이 아주 이른 시점에 메모리 폭발 방지를 다룬 것은 그래서 중요합니다.
+
+receiver 쪽에는 src/workers/file-receiver.worker.ts 에서 packet decode와 verify가 있고, 그 뒤에 src/services/directFileWriter.ts 가 batch write와 watermark를 다룹니다. 네트워크, worker, 저장기가 서로 다른 속도로 움직이고, 그 차이가 전부 메모리에 쌓입니다.
+
+📱 모바일 resume은 제품 약속의 숨은 조건이었습니다
+
+PonsWarp의 direct transfer는 두 브라우저가 동시에 살아 있어야 합니다. 데스크톱에서는 이 조건이 그나마 눈에 보입니다. 하지만 모바일에서는 사용자가 잠깐 앱을 내리거나 화면을 잠그거나 네트워크가 바뀌는 일이 흔합니다. 사용자는 이것을 특별한 행위로 여기지 않지만, 브라우저 P2P 전송에는 큰 사건입니다.
+
+2026-05-17 8f7299d 는 이 문제가 나중까지 이어졌다는 증거입니다. 초반의 TURN 안정화와 후속 mobile resume은 같은 질문의 앞뒤입니다. 모바일 사용자를 제품 대상으로 인정한다면, 연결을 붙이는 것만으로는 부족하고, 돌아온 뒤 어떤 상태를 복원할지까지 정해야 합니다.
+
+[PonsWarp early failure condition matrix]
+
+각 실패 조건은 사용자가 보는 문구보다 아래층의 계약을 먼저 요구했습니다.
+
+🧩 그래서 UI는 나중으로 밀린 것이 아니라 제자리를 찾았습니다
+
+PonsWarp에서 UI가 중요하지 않았던 것은 아닙니다. 오히려 UI는 더 중요해졌습니다. 다만 그 역할이 바뀌었습니다. 예쁜 껍데기를 먼저 씌우는 층이 아니라, 아래 시스템이 합의한 상태를 사용자 언어로 번역하는 층이 됐습니다.
+
+좋은 UI는 시스템의 불확실성을 감추는 층이 아니라, 사용자가 믿어도 되는 상태와 아직 기다려야 하는 상태를 구분해 주는 층이어야 했습니다.
+
+연결 화면은 WebRTC의 성공 감각이 아니라 연결 조건과 fallback 가능성을 설명해야 했습니다. 진행률 화면은 sender가 보낸 byte가 아니라 receiver가 처리 중인 상태를 반영해야 했습니다. 완료 화면은 마지막 packet이 아니라 save-complete ACK 이후에 의미를 가져야 했습니다. 모바일 화면은 작은 해상도 대응만이 아니라 탭 생명주기와 resume 가능성까지 고려해야 했습니다.
+
+⚖️ 지금 돌아보는 판단
+
+초반에 UI polish를 미룬 것은 제품 감각이 부족해서가 아니었습니다. 오히려 제품이 무엇을 약속해야 하는지 너무 빨리 드러났기 때문입니다. “파일을 보낸다”는 문장은 작은 UI 플로우처럼 보이지만, 실제로는 연결 가능성, 메모리 생존, 저장 완료, backpressure, 모바일 resume을 모두 통과해야 합니다.
+
+이 순서를 지키지 않으면 UI는 빨리 좋아질 수 있습니다. 하지만 그 UI는 곧 상태를 과장하게 됩니다. PonsWarp 초반 기록에서 더 흥미로운 지점은 화려한 화면을 늦게 만들었다는 사실이 아니라, 화면이 말해도 되는 문장을 시스템이 하나씩 갚아 나갔다는 점입니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 속도보다 먼저 닫아야 했던 제어 루프를 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+content/ponswarp-retrospective/evidence-index.md — 초반 핵심 커밋과 코드 앵커 매핑
+
+PonsWarp commit 638bc83 — 대용량 파일 다운로드 시 메모리 폭발 방지 기능 추가
+
+PonsWarp commit 21dc9ba — 수신자 저장까지 대기하는 양방향 핸드셰이크 구현
+
+PonsWarp commit 6e635f3 — Push 방식과 AIMD 혼잡 제어 구현
+
+PonsWarp commit 2def330 — TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화
+
+PonsWarp commit 54cf5f4 — 수신 측 역압 제어 구현
+
+PonsWarp commit 8f7299d — 모바일 receiver transfer background resume 수정
+
+PonsWarp/src/services/webRTCService.ts — receiver 연결 생명주기, TURN 설정 로딩, 재연결, page lifecycle 대응
+
+PonsWarp/src/utils/mobileResumePolicy.ts — 모바일 background/foreground 이후 receiver transfer 복원 판단
+
+PonsWarp/src/services/directFileWriter.ts — batch write, pending bytes, high/low watermark, pause/resume, 저장 fallback 정책
+
+PonsWarp/src/workers/file-receiver.worker.ts — packet decode, verify, write-chunk 전달 구조

@@ -149,7 +149,7 @@ function inferBodyFormatFromPath(filePath) {
   if (ext === '.html' || ext === '.htm') return 'html';
   return 'markdown';
 }
-function collectBodyImageDataUrls(body, bodyFormat = 'markdown') {
+function collectBodyImageDataUrls(body, bodyFormat = 'markdown', baseDir = '') {
   const imageDataUrls = {};
   const source = String(body || '');
   const pattern = bodyFormat === 'html'
@@ -158,8 +158,16 @@ function collectBodyImageDataUrls(body, bodyFormat = 'markdown') {
   let match;
   while ((match = pattern.exec(source)) !== null) {
     const src = String(bodyFormat === 'html' ? match[1] : match[2] || '').trim();
-    if (!src || /^https?:/i.test(src) || /^data:/i.test(src)) continue;
-    imageDataUrls[src] = toDataUrl(src);
+    if (!src || /^(?:https?:|data:|blob:)/i.test(src) || src.startsWith('//')) continue;
+    const candidates = path.isAbsolute(src)
+      ? [src]
+      : [path.resolve(baseDir || process.cwd(), src), path.resolve(src)];
+    for (const candidate of [...new Set(candidates)]) {
+      if (!fs.existsSync(candidate)) continue;
+      imageDataUrls[src] = toDataUrl(candidate);
+      imageDataUrls[candidate] = imageDataUrls[src];
+      break;
+    }
   }
   return imageDataUrls;
 }
@@ -609,8 +617,15 @@ function fillTistoryPost(payload) {
     if (input.description) {
       blocks.push(`<p><strong>${escapeHtml(input.description)}</strong></p>`);
     }
+    const inlineLocalImages = value => String(value || '').replace(
+      /(<img\b[^>]*\bsrc\s*=\s*)(["'])([^"']+)\2/gi,
+      (match, prefix, quote, src) => {
+        const replacement = String(input.bodyImageDataUrls?.[String(src).trim()] || '').trim();
+        return replacement ? `${prefix}${quote}${replacement}${quote}` : match;
+      }
+    );
     if (input.bodyFormat === 'html') {
-      const htmlBody = String(input.body || '').trim();
+      const htmlBody = inlineLocalImages(String(input.body || '').trim());
       return `${blocks.join('')}${htmlBody || '<p><br></p>'}`;
     }
 
@@ -621,9 +636,10 @@ function fillTistoryPost(payload) {
       const imageMatch = trimmed.match(/^!\[(.*?)\]\(([^\s)]+)\)$/i);
       if (imageMatch) {
         const [, alt, src] = imageMatch;
-        const resolvedSrc = /^https?:/i.test(src) || /^data:/i.test(src)
+        const resolvedSrc = /^(?:https?:|data:|blob:)/i.test(src)
           ? src
-          : (input.bodyImageDataUrls?.[src] || src);
+          : (input.bodyImageDataUrls?.[src] || '');
+        if (!resolvedSrc) continue;
         blocks.push(`<p><img src="${escapeHtml(resolvedSrc)}" alt="${escapeHtml(alt || input.title || 'source image')}" style="max-width:100%;height:auto;" /></p>`);
         continue;
       }
@@ -1007,7 +1023,8 @@ async function main() {
   }
 
   const heroImageDataUrl = options.heroImage ? toDataUrl(options.heroImage) : '';
-  const bodyImageDataUrls = collectBodyImageDataUrls(options.body, options.bodyFormat);
+  const bodyBaseDir = options.bodyFile ? path.dirname(path.resolve(options.bodyFile)) : process.cwd();
+  const bodyImageDataUrls = collectBodyImageDataUrls(options.body, options.bodyFormat, bodyBaseDir);
   ensureBrowserStarted({ headed: options.headed });
   navigate(editorUrl);
 

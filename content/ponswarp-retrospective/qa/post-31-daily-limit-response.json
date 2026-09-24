@@ -1,0 +1,29 @@
+{
+  "postOrder": 31,
+  "title": "[PonsWarp] 서버 없는 전송이라는 말의 절반만 맞았던 이유",
+  "blogUrl": "https://acstory.tistory.com",
+  "requestSequence": [
+    {
+      "url": "https://acstory.tistory.com/manage/dkaptcha/widgetId",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "url": "https://acstory.tistory.com/manage/post.json",
+      "method": "POST",
+      "status": 403,
+      "responseBody": "하루에 새롭게 공개 발행할 수 있는 글은 최대 30개까지입니다."
+    }
+  ],
+  "appliedMetadata": {
+    "category": "개발 회고",
+    "homeTopic": "IT 인터넷",
+    "schedule": {
+      "date": "2026-06-24",
+      "hour": "09",
+      "minute": "00"
+    },
+    "representativeImagePath": "content/ponswarp-retrospective/assets/post-31/backend-responsibility-growth.svg"
+  },
+  "conclusion": "예약 발행 실패 원인은 메타데이터 누락이 아니라 티스토리 일일 공개 발행 한도다."
+}

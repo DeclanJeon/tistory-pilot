@@ -1,0 +1,84 @@
+P2P 서비스가 운영을 피해갈 수 없다는 사실
+
+PonsWarp를 처음 설명할 때 가장 말하기 쉬운 문장은 “브라우저끼리 직접 파일을 보낸다”였습니다. 이 문장은 틀리지 않습니다. 파일 바이트는 서버를 거치지 않고 WebRTC DataChannel을 통해 sender와 receiver 사이를 흐릅니다. 하지만 그 문장만 붙잡고 있으면 제품의 절반을 놓칩니다. 직접 전송이 시작되기 전까지 사용자는 서버 위를 걷고 있었기 때문입니다.
+
+방을 만들고, 링크나 QR을 공유하고, 상대가 들어오고, offer와 answer가 오가고, ICE candidate가 쌓이고, TURN 설정이 필요할 때 제공되고, 죽은 방이 다음 연결을 방해하지 않게 정리되어야 합니다. 이 모든 것은 파일 바이트를 저장하지 않는 서버의 일입니다. 서버가 파일을 들고 있지 않다는 말은 서버가 운영 책임에서 벗어난다는 뜻이 아니었습니다.
+
+PonsWarp의 기록도 그 방향으로 움직였습니다. `2025-12-10 44fb5ad feat(server): Rust 기반 시그널링 서버 초기 구현`으로 `ponswarp-signaling-rs`가 따로 생겼고, `2025-12-11 b834716 feat: 시그널링 서버 안정성 향상 및 배포 자동화 추가`가 바로 뒤따랐습니다. 이후 `2026-05-17 f1c69cb fix: prevent signaling room cleanup deadlocks`는 정리 작업이 제품 상태를 멈출 수 있다는 사실을 보여 줍니다. 여기에 `2026-05-11 58cec5b Raise transfer reliability to production readiness`, `2026-06-08 d88a625 Enable production traffic measurement with GA4`까지 이어지면, P2P라는 단어가 운영을 지워 주지 못했다는 흐름이 분명해집니다.
+
+💡 이 글은 P2P가 틀렸다는 글이 아닙니다. P2P 제품에서 서버가 맡는 책임이 작아 보일수록 오히려 더 정확하게 운영되어야 한다는 사실을 PonsWarp의 signaling, readiness, cleanup, production measurement 흐름으로 정리합니다.
+
+🧭 당시 제품 상태
+
+Season 4의 마지막 글에서 PonsWarp는 더 이상 “서버 없는 전송”이라는 말로 설명하기 어려운 상태였습니다. React 기반 UI는 sender와 receiver의 화면을 만들었고, `simple-peer` 기반 WebRTC와 sender/receiver worker는 전송을 처리했습니다. `DirectFileWriter`, StreamSaver, File System Access API, high/low watermark, partial recovery는 저장 경계를 맡았습니다. `pons-core-wasm`은 ZIP64, 암호화, reordering buffer, zero-copy, file signature 같은 바이트 계약을 받쳤습니다.
+
+이 전체 구조에서 signaling 서버는 파일 데이터를 대신 운반하지 않았습니다. 하지만 사용자 플로우의 입구를 쥐고 있었습니다. 보내는 사람은 방을 만들고, 받는 사람은 링크로 들어오며, 양쪽 브라우저는 서버를 통해 서로의 존재와 연결 정보를 확인합니다. 이 단계가 실패하면 전송 엔진은 실행될 기회도 얻지 못합니다.
+
+그래서 post-38의 핵심 질문은 “서버가 얼마나 많은 기능을 갖고 있었나”가 아닙니다. “서버가 적은 일을 맡고도 왜 운영 책임을 피하지 못했나”입니다. P2P 제품의 서버는 바이트를 저장하지 않는 대신 연결 가능성, 상태 위생, 환경 준비, 실패 관찰성을 책임졌습니다.
+
+[FIGURE 1: p2p-operational-surface.svg — 직접 전송 앞에 놓인 운영 표면]
+
+🧱 시스템 구조: 직접 전송 앞의 운영 표면
+
+PonsWarp의 사용자 플로우는 단순합니다. sender가 파일을 고르고 방을 만들면, receiver가 링크나 QR로 들어와 연결을 기다립니다. 겉으로는 두 브라우저가 만나는 장면입니다. 그러나 내부 흐름은 세 단계로 나뉩니다.
+
+첫째, product/UI 층은 사용자가 지금 무엇을 해야 하는지 보여 줍니다. 둘째, signaling/backend 층은 방과 peer 상태, WebSocket, TURN/STUN 설정, readiness를 다룹니다. 셋째, browser transfer engine과 storage/core 층은 실제 파일 전송, 암호화, 패킷 처리, 저장 완료 검증을 맡습니다.
+
+중요한 점은 두 번째 층이 전송의 주변부가 아니라 입구라는 것입니다. WebRTC는 peer끼리 직접 연결되지만, 서로를 발견하고 연결 후보를 교환하는 과정은 signaling 없이는 시작되지 않습니다. 모바일 NAT나 회사망처럼 네트워크가 까다로운 환경에서는 TURN 설정이 연결 성공률을 좌우합니다. readiness가 부정확하면 준비되지 않은 배포가 사용자 트래픽을 받습니다. cleanup이 멈추면 죽은 room state가 다음 사용자의 실패로 돌아옵니다.
+
+이 구조에서 운영은 별도의 배포팀 일이 아니라 제품 플로우의 가운데에 있었습니다. 사용자는 `/ready`를 보지 않지만 readiness 실패를 경험합니다. 사용자는 room cleanup을 모르지만 stale room 때문에 연결이 이상해지는 것을 경험합니다. 사용자는 TURN credential을 읽지 않지만 모바일에서 붙지 않는 증상을 경험합니다.
+
+⚠️ 실제 실패 지점: 서버 장애가 아니라 연결 불신
+
+P2P 제품의 실패는 자주 애매합니다. REST API처럼 명확한 500 응답으로 끝나지 않습니다. 방이 만들어졌는데 receiver가 보이지 않거나, 서로 붙은 것처럼 보이지만 ICE negotiation이 끝나지 않거나, 한쪽 탭이 닫혔는데 서버 상태에는 peer가 남아 있거나, cleanup이 lock과 부딪혀 오래 멈출 수 있습니다.
+
+`f1c69cb fix: prevent signaling room cleanup deadlocks`는 이 지점에서 중요합니다. deadlock은 내부 구현 용어입니다. 하지만 signaling 서버에서는 죽은 상태를 치우는 작업이 멈춘다는 뜻이고, 그것은 다음 사용자에게 살아 있는 방처럼 보이는 실패를 만들 수 있습니다. 운영자가 보는 문제명은 cleanup deadlock이지만 사용자가 보는 문제명은 “왜 연결이 안 되지?”입니다.
+
+`b834716`의 안정성 향상과 배포 자동화도 같은 맥락입니다. 개발 환경에서는 서버를 띄우고 두 브라우저를 열어 연결을 확인하면 충분해 보일 수 있습니다. 실제 운영에서는 프로세스가 재시작되고, 환경 변수가 빠지고, origin이 달라지고, WebSocket이 끊기고, 네트워크가 불안정해집니다. 배포 자동화와 readiness는 이런 변수를 제품 경로 밖에서 걸러 내기 위한 장치였습니다.
+
+[FIGURE 2: failure-translation.svg — 서버 내부 문제가 사용자 실패로 번역되는 과정]
+
+🔧 설계 변경: 서버를 작게 보되 가볍게 보지 않기
+
+P2P라는 말은 서버를 크게 만들지 말자는 압력을 줍니다. 이 압력 자체는 유효했습니다. PonsWarp가 파일 바이트를 서버로 올리는 구조였다면 제품의 성격은 완전히 달라졌을 겁니다. 직접 전송은 프라이버시, 비용, 즉석 공유라는 장점을 가졌습니다.
+
+하지만 서버를 작게 둔다는 것과 운영을 가볍게 본다는 것은 다른 말입니다. PonsWarp에서 signaling 서버는 데이터 플레인에서 빠져 있었지만 컨트롤 플레인에는 깊게 들어와 있었습니다. 방 생성, peer matching, offer/answer relay, ICE candidate relay, TURN 설정, readiness, cleanup은 모두 전송이 시작되기 전에 필요한 조건입니다.
+
+그래서 설계 판단은 “서버를 없애자”가 아니라 “서버가 맡는 책임을 정확히 제한하고, 그 제한된 책임은 운영 가능하게 만들자”에 가까워졌습니다. `/health`와 `/ready`를 나누는 일, cleanup의 lock 경계를 조심하는 일, production env를 검증하는 일, traffic measurement를 붙이는 일은 모두 같은 방향입니다. 서버가 바이트를 저장하지 않는다고 해서 운영 로그와 상태 검증이 덜 중요해지는 것이 아니었습니다.
+
+📊 운영 항목이 제품 기능으로 바뀐 표
+
+- signaling room state는 “서버 내부 map”이 아니라 sender와 receiver가 서로를 찾는 제품 상태입니다.
+- TURN/STUN 설정은 “네트워크 옵션”이 아니라 모바일과 제한된 NAT 환경에서 연결 가능성을 결정하는 조건입니다.
+- cleanup은 “메모리 정리”가 아니라 죽은 연결이 다음 사용자에게 살아 있는 상태처럼 보이지 않게 하는 위생 작업입니다.
+- readiness는 “배포 체크”가 아니라 준비되지 않은 서버가 실제 사용자 플로우를 받지 않게 하는 안전장치입니다.
+- traffic measurement는 “분석 도구”가 아니라 production에서 어떤 경로가 실제로 쓰이고 실패하는지 확인하는 관찰 표면입니다.
+
+[FIGURE 3: operations-as-product.svg — 운영 항목이 제품 조건으로 편입되는 흐름]
+
+🚫 P2P가 운영을 없애 준다는 착각
+
+P2P를 선택하면 서버 비용과 중앙 저장 부담은 줄어듭니다. 이 장점은 분명합니다. 그러나 운영 문제가 사라지는 것은 아닙니다. 오히려 실패가 분산되어 보이기 때문에 더 까다로워집니다. 브라우저, NAT, TURN, WebSocket, room state, worker, writer, 모바일 생명주기가 함께 실패할 수 있고, 사용자는 그중 어느 층이 원인인지 알 수 없습니다.
+
+PonsWarp에서 이 착각은 여러 번 깨졌습니다. 초기에 `2def330`으로 TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결을 안정화한 것도 같은 흐름입니다. 서버가 파일을 중계하지 않아도 연결 환경을 보강해야 했습니다. 뒤이어 Rust signaling 서버, 배포 자동화, cleanup deadlock 방지, production readiness, GA4 traffic measurement가 붙은 것은 우연한 기능 추가가 아니었습니다. P2P 제품이 현실 네트워크와 운영 환경을 만난 흔적이었습니다.
+
+그래서 “P2P니까 서버 운영은 간단하다”는 말은 절반만 맞습니다. 서버가 하는 일의 범위는 줄어들 수 있습니다. 하지만 그 일이 사용자 플로우의 입구라면, 작은 서버라도 제품 신뢰의 큰 부분을 떠안습니다. 실패했을 때 사용자는 “signaling 서버의 room cleanup이 꼬였구나”라고 생각하지 않습니다. 그냥 서비스가 불안하다고 느낍니다.
+
+🧭 지금 돌아보는 판단
+
+지금 돌아보면 PonsWarp의 Season 4는 서버 기능을 늘린 이야기가 아니라 운영 책임을 인정한 이야기였습니다. 직접 전송이라는 제품 약속은 유지됐습니다. 파일은 가능하면 브라우저끼리 흐르고, 서버는 데이터 본문을 들지 않는 방향이었습니다. 그러나 연결을 시작하게 만들고, 죽은 상태를 치우고, 준비된 배포만 트래픽을 받게 하고, production에서 실제 사용을 관찰하는 일은 서버의 책임으로 남았습니다.
+
+이 판단은 뒤의 데스크톱 분기와도 이어집니다. 웹이 힘들어서 native나 QUIC가 좋아 보이더라도 운영은 사라지지 않습니다. 플랫폼을 바꾸면 저장과 네트워크 제어의 일부 문제는 옮겨 갈 수 있지만, 사용자 연결, 배포, 관찰, 실패 설명이라는 제품 운영은 계속 남습니다.
+
+그래서 post-38의 결론은 단순합니다. P2P는 운영을 피해가는 기술이 아니었습니다. 운영의 모양을 바꾸는 기술이었습니다. PonsWarp가 배운 것은 서버를 무겁게 만들자는 이야기가 아니라, 서버가 작아도 그 작은 경계가 제품의 신뢰 입구라면 끝까지 운영해야 한다는 사실이었습니다.
+
+📚 읽은 코드와 근거
+
+- `content/ponswarp-retrospective/series-plan.md` — Season 4 post-38을 “P2P 서비스가 운영을 피해갈 수 없다는 사실”로 배치하고, Core/backend 층에 signaling backend, `/health`, `/ready`, `/ws`, auth, billing, state를 둔 설계 기록
+- `content/ponswarp-retrospective/evidence-index.md` — Rust signaling 현실화, 제품화와 수익화 구간의 커밋 근거
+- `PonsWarp commit 2def330` — TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화
+- `ponswarp-signaling-rs commit 44fb5ad` — Rust 기반 시그널링 서버 초기 구현
+- `ponswarp-signaling-rs commit b834716` — 시그널링 서버 안정성 향상 및 배포 자동화 추가
+- `ponswarp-signaling-rs commit f1c69cb` — signaling room cleanup deadlock 방지
+- `PonsWarp commit 58cec5b` — transfer reliability를 production readiness로 끌어올린 제품화 구간
+- `PonsWarp commit d88a625` — production traffic measurement 활성화

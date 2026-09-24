@@ -1,0 +1,107 @@
+PonsWarp에서 파일이 깨진다는 말은 “사용자가 불편했다”보다 훨씬 무거운 문제였습니다.
+
+진행률이 조금 이상하거나 완료 문구가 늦게 뜨는 수준이 아니라, 상대가 받은 파일을 열었을 때 내용이 틀릴 수 있다는 뜻이었기 때문입니다. 2025년 11월 22일의 db175bf , 같은 날의 8aff234 , 그리고 11월 29일의 4650d02 는 이 문제를 UX 문구가 아니라 제품 신뢰의 경계로 다룬 기록입니다.
+
+[PonsWarp corruption path from packet to saved file]
+
+파일 손상은 한 지점의 버그라기보다 패킷, 정렬, 비동기 저장, ZIP 크기 의미론이 동시에 어긋난 결과였습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 신뢰가 흔들린 순간을 먼저 복원합니다.
+
+실패 지점 — 완료 표시와 실제 파일 신뢰 사이의 빈틈을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 검증 가능한 파일 계약을 세우는 방식을 회고의 결론으로 둡니다.
+
+🧨 깨진 파일은 가장 나쁜 실패입니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 파일 손상은 UX 문제가 아니라 신뢰 문제였다 라는 사건을 기능 소개로 소비하지 않습니다. 완료 표시와 실제 파일 신뢰 사이의 빈틈을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 파일 전송 서비스에서 “끝났다”는 말은 화면 상태가 아니라 검증된 약속이어야 합니다. PonsWarp는 이 약속을 늦게 배웠고, 그 대가로 저장, 순서, 크기, 체크섬을 다시 봐야 했습니다.
+
+전송이 실패했다고 솔직히 말하는 앱은 불편합니다. 하지만 깨진 파일을 성공처럼 내보내는 앱은 위험합니다. 사용자는 받은 파일을 다시 열어 보기 전까지 문제를 모를 수 있고, 사진이나 압축 파일처럼 내부 포맷이 있는 파일은 일부만 깨져도 원인을 추적하기 어렵습니다.
+
+초기 PonsWarp의 문제는 WebRTC 연결 자체보다 그 이후의 경계에 있었습니다. DataChannel은 바이트를 전달할 수 있지만, 애플리케이션이 만든 청크의 순서, payload 길이, 저장 완료, ZIP central directory의 보존까지 대신 보증하지는 않습니다. 브라우저 전송 엔진과 저장 계층 사이에 제품이 책임져야 할 구멍이 있었습니다.
+
+db175bf 와 8aff234 는 수신부 버퍼 처리 오류와 파일 손상 문제를 직접 언급합니다. 이 시점의 판단은 “받은 데이터를 곧바로 파일로 만든다”가 아니라, “받은 데이터가 정말 다음에 써야 할 데이터인지 확인해야 한다”로 이동합니다.
+
+🔄 순서가 바뀌면 내용도 바뀝니다
+
+PonsWarp의 사용자 플로우는 단순하지만, 시스템 플로우는 sender worker, WebRTC DataChannel, receiver worker, DirectFileWriter, reordering buffer를 차례로 통과합니다.
+
+네트워크에서는 청크가 항상 예쁘게 도착하지 않습니다. 특히 나중의 멀티 채널 전략이나 배치 전송에서는 out-of-order 도착이 자연스러운 일이 됩니다. 여기서 순서가 한 번만 틀려도 파일은 “대체로 받은 파일”이 아니라 “다른 바이트 배열”이 됩니다.
+
+현재 코드의 src/services/reorderingBuffer.ts 주석은 이 문제를 노골적으로 설명합니다. 비순차적으로 도착하는 청크를 순서대로 정렬해 내보내며, StreamSaver처럼 순차 쓰기만 지원하는 writer에서 파일 손상을 방지하기 위해 필요하다고 적습니다. DirectFileWriter 도 reorderingBuffer.push(data, offset) 으로 쓰기 전에 순서를 맞춥니다.
+
+이 구조는 디자인 패턴으로 보면 작은 reorder queue입니다. 복잡한 추상화는 아니지만 책임은 선명합니다. 전송 계층은 도착을 담당하고, 저장 계층은 순서를 보증합니다.
+
+🧾 ZIP 크기 문제는 진행률 문제가 아니었습니다
+
+4650d02 의 커밋 메시지와 FILE_CORRUPTION_FIX.md 는 더 구체적인 실패를 남깁니다. Manifest의 totalSize 는 원본 파일 크기 합계인데, 실제 전송되는 ZIP 파일 크기는 압축률에 따라 달라질 수 있었습니다. 압축 효율이 좋으면 뒤가 null byte로 채워져 ZIP 포맷이 손상되고, 압축 효율이 나쁘면 central directory가 잘려 파일이 열리지 않을 수 있었습니다.
+
+[ZIP size semantics in PonsWarp]
+
+원본 크기 합계는 진행률에는 유용하지만, ZIP으로 저장될 실제 byte length를 보증하지 않습니다.
+
+이것은 UI 진행률 계산의 문제가 아닙니다. 100% 라는 숫자가 저장될 byte length의 진실이 아닐 수 있다는 문제입니다. ZIP은 끝부분의 central directory까지 있어야 하나의 파일로 열립니다.
+
+그래서 TransferManifest 에 isSizeEstimated?: boolean 이 추가됩니다. 현재 DirectFileWriter 는 manifest가 있고 크기 추정 모드가 아닐 때만 totalSize를 엄격하게 봅니다. ZIP 모드에서는 central directory 같은 오버헤드 때문에 totalSize를 초과해도 데이터를 받아야 한다고 설명합니다.
+
+🛡️ 체크섬은 사용자를 의심하지 않게 만드는 장치입니다
+
+PonsWarp의 현재 packet 구조는 22바이트 헤더를 사용합니다. constants.ts 는 HEADER_SIZE = 22 를 FileIndex, ChunkIndex, Offset, DataLen, Checksum의 합으로 설명합니다. pons-core-wasm/src/packet.rs 의 PacketEncoder 는 payload의 CRC32를 계산해 헤더에 넣고, PacketDecoder::verify 는 길이와 체크섬을 다시 계산해 맞지 않으면 false를 반환합니다.
+
+CRC32는 모든 보안 문제를 해결하는 장치가 아닙니다. 악의적 변조를 막는 서명도 아니고, 충돌 가능성이 없는 해시도 아닙니다. 하지만 이 글에서 중요한 것은 역할입니다. CRC32는 “전송 중 실수로 바뀐 바이트를 조용히 저장하지 말자”는 약속입니다.
+
+[PonsWarp integrity and trust layers]
+
+무결성은 CRC32 하나로 끝나지 않고, 순서 보장, 저장 완료, Merkle Tree와 file signature 같은 여러 층으로 나뉩니다.
+
+⚙️ 저장 완료는 전송 완료와 다릅니다
+
+손상 문제는 save-complete handshake와도 연결됩니다. 2025년 11월 21일의 21dc9ba 는 파일 전송 완료 후 수신자 저장까지 대기하는 양방향 핸드셰이크를 구현했습니다. post-08에서 다룬 주제이지만, post-11에서는 다른 이유로 다시 중요해집니다.
+
+sender 입장에서 DataChannel buffer가 비었다고 해서 receiver의 디스크 쓰기가 끝난 것은 아닙니다. receiver worker가 청크를 받았다고 해서 StreamSaver나 File System Access API가 close까지 끝낸 것도 아닙니다. 4650d02 의 문서에는 writeChunk() 가 Promise를 반환하지만 await 없이 연속 호출되면서 StreamSaver 스트림이 꼬이거나 FileSystem API 파일 핸들 lock으로 쓰기가 실패할 수 있었다는 분석이 남아 있습니다.
+
+진행률 100%, DataChannel drain, receiver write 완료, 사용자가 열 수 있는 파일은 같은 사건이 아닙니다. 이 넷을 구분하지 못하면 빠른 전송은 오히려 빠른 불신이 됩니다.
+
+📦 시스템은 네 층에서 신뢰를 나눠 가졌습니다
+
+PonsWarp의 구성은 React UI 하나로 끝나지 않습니다. Product/UI 층은 사용자가 보는 진행률과 완료 상태를 맡고, browser transfer engine은 sender/receiver worker와 WebRTC DataChannel을 다룹니다. storage/recovery 층은 DirectFileWriter, StreamSaver, File System Access API, reordering buffer를 다룹니다. core/backend 층에는 pons-core-wasm 의 packet, CRC32, Merkle Tree, file signature, 그리고 signaling 서버가 붙습니다.
+
+파일 손상 문제는 이 네 층 전체를 통과합니다. UI가 “완료”라고 말하려면 전송 엔진이 모든 청크를 보냈다는 사실만으로는 부족합니다. 저장 계층은 순서대로 쓰고 flush해야 하며, core는 packet이 자기 checksum과 맞는지 검증해야 합니다. 폴더 ZIP 전송에서는 manifest의 원본 크기와 실제 ZIP 크기의 차이도 고려해야 합니다.
+
+⚖️ 지금 돌아보면 늦었지만 방향은 맞았습니다
+
+4650d02 의 커밋 메시지는 “완전 해결”이라고 말합니다. 지금 읽으면 조금 세게 들립니다. 이후에도 backpressure, RTT 제어, WASM 재정렬 버퍼, partial recovery 같은 주제가 이어지기 때문입니다. 그래도 그 커밋이 중요한 이유는 분명합니다. 파일 깨짐을 주변 버그로 넘기지 않고, 저장 의미론과 무결성 검증의 문제로 끌어올렸습니다.
+
+오판도 있습니다. 원본 size를 너무 믿었고, async write의 완료 의미를 너무 쉽게 봤고, 전송 완료와 저장 완료를 구분하는 데 시간이 걸렸습니다. 하지만 그 시행착오 덕분에 나중의 구조가 생겼습니다. HEADER_SIZE , checksum , reorderingBuffer , isSizeEstimated , save-complete , MerkleTree 같은 단어들은 따로 떨어진 기능명이 아니라, 같은 불안을 다른 층에서 막는 이름입니다.
+
+사용자는 이 이름들을 몰라도 됩니다. 사용자가 알아야 하는 것은 하나입니다. 받은 파일이 열리고, 내용이 맞고, 앱이 끝났다고 말한 순간 정말 끝났다는 사실입니다. PonsWarp가 파일 손상을 신뢰 문제로 다루기 시작한 순간, 제품은 단순 전송 데모에서 조금 더 서비스에 가까워졌습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 검증 가능한 파일 계약을 세우는 방식을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp commit db175bf — WebRTC 데이터 수신부 버퍼 처리 오류로 인한 파일 손상 문제 해결
+
+PonsWarp commit 8aff234 — 같은 수신부 버퍼 처리 손상 수정의 개선판
+
+PonsWarp commit 4650d02 — ZIP 크기 불일치, 비동기 쓰기 레이스, 순차 쓰기, ReorderingBuffer 통합을 다룬 파일 깨짐 수정
+
+PonsWarp/FILE_CORRUPTION_FIX.md at 4650d02 — ZIP totalSize와 실제 ZIP byte length 차이, async write race 분석
+
+PonsWarp/src/services/directFileWriter.ts:1019-1093 — 크기 추정 모드, packet length 검증, reordering buffer, batch flush 경계
+
+PonsWarp/src/workers/file-receiver.worker.ts:220-250 — packet length, WASM verification, fallback CRC32 mismatch 처리
+
+pons-core-wasm/src/packet.rs:31-141 — PacketEncoder CRC32 기록과 PacketDecoder 검증
+
+pons-core-wasm/src/merkle_tree.rs:1-6, 232-245 — 대용량 파일 부분 무결성 검증과 proof verification
+
+pons-core-wasm commit e589cf2 — 압축, Merkle Tree, 파일 서명 기능 추가

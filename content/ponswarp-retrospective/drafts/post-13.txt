@@ -1,0 +1,91 @@
+PonsWarp의 성능 문제는 Push 방식과 AIMD를 붙였다고 곧바로 끝나지 않았습니다.
+
+sender가 쉬지 않게 만드는 데 성공하면, 다음에는 “한 통로가 감당하지 못하는 압력을 어떻게 나눌 것인가”라는 문제가 올라옵니다. 2025년 11월 27일의 541dd0c 는 그 압력을 정면으로 다룬 커밋입니다.
+
+[PonsWarp multi channel topology]
+
+멀티 채널 구상은 control 채널과 여러 data 채널로 전송 압력을 나누려는 시도였습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 당시의 제품 장면을 먼저 복원합니다.
+
+실패 지점 — 기능 설명 뒤에 숨어 있던 운영 책임을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 지금 다시 남겨야 할 설계 판단을 회고의 결론으로 둡니다.
+
+🧭 왜 단일 채널만으로 답답해졌는가
+
+🎯 독자가 가져갈 질문
+
+이 글은 멀티 채널 전략은 왜 필요했나 라는 사건을 기능 소개로 소비하지 않습니다. 기능 설명 뒤에 숨어 있던 운영 책임을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 멀티 채널 전략은 “더 많은 채널이면 무조건 더 빠르다”는 판단이 아니라, 단일 DataChannel 큐와 브라우저 버퍼에 몰리던 압력을 여러 관찰 지점으로 나누려는 시도였습니다.
+
+post-10에서 다룬 6e635f3 의 Push 방식은 전송 주도권을 sender 쪽으로 옮겼습니다. pull 요청을 기다리는 대신, 허용된 window 안에서 계속 청크를 밀어 넣는 구조입니다. 이 변화는 빠른 네트워크에서 링크가 놀지 않게 만드는 데 필요했습니다.
+
+하지만 Push는 단일 DataChannel의 bufferedAmount 를 더 예민한 병목으로 만듭니다. 보내는 쪽은 아직 네트워크가 받아 갈 수 있다고 생각하지만, 브라우저의 SCTP/DataChannel 큐는 이미 차 있을 수 있습니다. 반대로 한 채널의 큐가 순간적으로 막히면 worker는 다음 청크를 보낼 곳이 없어지고, 전체 전송 리듬이 다시 흔들립니다.
+
+541dd0c 의 services/multiChannelManager.ts 는 이 문제를 여러 DataChannel로 나누려 했습니다. control 채널은 메타데이터와 ACK 같은 제어 메시지를 맡고, data-0 , data-1 , data-2 같은 데이터 채널이 파일 청크를 나눠 받는 구조입니다. 당시 기본 설정은 channelCount: 3 이었습니다.
+
+🔀 멀티 채널은 압력을 분산하는 장치였다
+
+PonsWarp에서 멀티 채널은 네트워크 대역폭을 마법처럼 늘리는 기능이 아니었습니다. 이미 열린 WebRTC 연결 안에서 애플리케이션 레벨 큐를 여러 줄로 나누고, 각 줄의 막힘을 관찰하려는 설계였습니다.
+
+멀티 채널의 핵심은 채널 수 자체가 아니라 선택 기준입니다. MultiChannelManager.getBestChannel() 은 열려 있고 healthy한 채널 중 bufferedAmount 가 가장 낮은 채널을 고릅니다. load balancing을 끄면 round-robin으로 돌릴 수 있지만, 기본 의도는 버퍼 여유가 가장 큰 통로로 다음 청크를 보내는 쪽이었습니다.
+
+이 설계가 풀려던 압력은 세 가지였습니다. 단일 DataChannel 큐가 찼을 때 sender가 바로 멈추지 않게 하고, 고속 네트워크에서 청크가 한 줄로 서서 기다리는 시간을 줄이며, 채널별 bytesSent , chunksSent , avgLatency , isHealthy 를 추적해 어느 통로가 문제인지 볼 수 있게 하는 것입니다.
+
+[PonsWarp channel selection loop]
+
+채널 선택은 healthy 상태와 bufferedAmount를 기준으로 다음 청크를 보낼 통로를 고르는 루프였습니다.
+
+⚙️ 스케줄링 로직은 단순했지만 부담은 단순하지 않았다
+
+sendBatch(chunks) 는 각 청크마다 getBestChannel() 을 호출하고, 선택된 채널에 sendToChannel() 을 실행합니다. sendToChannel() 은 채널이 open인지, bufferedAmount 가 MAX_BUFFERED_AMOUNT 를 넘지 않았는지 확인한 뒤 전송합니다. 성공하면 bytes, chunks, bufferedAmount, avgLatency 통계를 갱신합니다.
+
+여기까지는 꽤 합리적입니다. 문제는 receiver 쪽에서 시작됩니다. 여러 DataChannel은 각 채널 내부의 순서는 지킬 수 있지만, 채널 사이의 도착 순서는 제품이 기대한 파일 순서와 달라질 수 있습니다. 그러면 packet index, offset, checksum, write queue, ACK가 모두 더 조심스러워져야 합니다.
+
+sender 압력을 낮추는 선택은 receiver의 재정렬과 저장 완료 판단을 더 무겁게 만듭니다. 파일 전송 제품에서는 이 비용을 무시하기 어렵습니다.
+
+📡 네트워크 적응형 제어와 같이 붙은 이유
+
+541dd0c 가 단순히 MultiChannelManager만 추가한 커밋이 아니라 networkAdaptiveController.ts 도 함께 다룬 점이 중요합니다. 채널을 여러 개 열면 “몇 개를 열 것인가”, “어느 채널을 쓸 것인가”, “언제 줄일 것인가”가 모두 제어 문제가 됩니다.
+
+당시 MultiChannelManager.updateNetworkMetrics() 는 RTCPeerConnection.getStats() 를 읽어 currentRoundTripTime , availableOutgoingBitrate , packet loss 비슷한 지표를 모으려 했습니다. getRecommendedChannelCount() 는 대역폭이 높으면 4개, 중간이면 2~3개, 낮으면 1개로 낮추고, RTT가 200ms를 넘거나 packet loss가 5%를 넘으면 추천 채널 수를 줄이는 방식이었습니다.
+
+이 판단은 방향상 자연스럽습니다. 채널을 늘리면 빠른 LAN에서는 도움이 될 수 있지만, 지연이 크거나 손실이 있는 환경에서는 오히려 혼잡을 키울 수 있습니다. 그래서 멀티 채널은 반드시 네트워크 적응형 제어와 같이 붙어야 했습니다.
+
+🧱 무엇을 복잡하게 만들었나
+
+멀티 채널은 시스템을 적어도 네 군데에서 복잡하게 만듭니다. 연결 단계가 늘고, 장애 단위가 늘고, 순서 보장이 어려워지고, 사용자에게 보여줄 상태가 애매해집니다. 세 채널 중 둘은 건강하고 하나만 막혔을 때, UI는 빠른 전송으로 말해야 할지 불안정한 전송으로 말해야 할지 판단해야 합니다.
+
+이 복잡도는 추상적인 우려가 아닙니다. 현재 src/utils/constants.ts 에는 안정성 우선으로 보수화된 값이 남아 있습니다. MAX_BUFFERED_AMOUNT 는 4MB bounded queue로 제한되고, BATCH_SIZE_MAX 는 1로 묶여 있습니다. 주석도 “DataChannel bufferedAmount는 sender 로컬 큐일 뿐 receiver 저장 완료를 의미하지 않는다”고 못박습니다.
+
+[PonsWarp multi channel strategy rollback timeline]
+
+멀티 채널은 성능 압력을 낮추려는 실험이었지만, 이후 단일 채널 안정화로 되돌아간 흔적도 함께 남았습니다.
+
+🧭 지금 돌아보는 판단
+
+멀티 채널 전략은 필요했습니다. Push와 AIMD 이후에도 단일 채널 큐는 제품 성능의 병목처럼 보였고, WebRTC가 제공하는 여러 DataChannel을 활용해 압력을 나누려는 판단은 충분히 자연스럽습니다. 특히 대용량 파일 전송에서 “한 줄로 보내기”가 느려 보이는 순간, 병렬 통로를 시험하는 것은 피하기 어렵습니다.
+
+하지만 필요했다는 말과 최종 해답이었다는 말은 다릅니다. 864c18b 가 불필요한 MultiChannelManager를 삭제 하고 SimplePeer 단일 채널에 최적화 했다고 말하는 이상, 이 전략은 적어도 한 번은 안정성·단순성 쪽에 자리를 내줬다고 보는 편이 맞습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 지금 다시 남겨야 할 설계 판단을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp commit 6e635f3 — Push 방식과 AIMD 혼잡 제어를 도입해 sender 주도 전송으로 이동한 시작점
+
+PonsWarp commit 541dd0c — Phase 3 멀티 채널 전략과 네트워크 적응형 제어 구현
+
+PonsWarp/services/multiChannelManager.ts at 541dd0c — control 채널, data 채널, load balancing, channel stats, recommended channel count 구조
+
+PonsWarp commit 26a0ccc — Multi-Receiver Swarm으로 1:N 전송 제품 플로우 확장
+
+PonsWarp commit 864c18b — MultiChannelManager 삭제와 SimplePeer 단일 채널 최적화
+
+PonsWarp/src/utils/constants.ts:18-43 — 현재 코드의 4MB DataChannel queue, 단일-flight batch, receiver 안정성 우선 주석

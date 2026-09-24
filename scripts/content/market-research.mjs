@@ -587,6 +587,8 @@ export async function recordPublishFeedback({
 
 export function buildMarketPromptBlock(market) {
   if (!market) return '';
+  const metrics = market.metrics && typeof market.metrics === 'object' ? market.metrics : null;
+  const discovery = market.discovery && typeof market.discovery === 'object' ? market.discovery : null;
   const lines = [
     '[시장 리서치 결과 — 발행 전 반드시 반영]',
     `키워드: ${market.keyword}`,
@@ -596,6 +598,12 @@ export function buildMarketPromptBlock(market) {
     `평균 제목 길이: ${market.avgTitleLength || '-'}자`,
     `먹히는 제목 훅: ${(market.topHookLabels || []).join(', ') || '-'}`,
     `고노출 토큰: ${(market.commonTokens || []).slice(0, 10).join(', ') || '-'}`,
+    ...(metrics?.source && metrics.source !== 'estimate'
+      ? [`실측 지표(${metrics.source}): 월검색량 ${metrics.monthlySearch ?? '미제공'}, CPC ${metrics.cpcKrw ?? '미제공'}원, 확인일 ${metrics.checkedAt || '미제공'}`]
+      : []),
+    ...(discovery?.marketScore != null
+      ? [`시장 발굴 점수: ${discovery.marketScore}/100, 수요 신호 신뢰도: ${discovery.confidence || 'unknown'}`]
+      : []),
     '상위 경쟁 제목:'
   ];
   for (const c of (market.competitors || []).slice(0, 6)) {

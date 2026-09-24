@@ -30,14 +30,17 @@ import {
   applyTopicDiversity
 } from './keyword-score.mjs';
 import { recentGeneratedPosts } from './select-keywords.mjs';
-
+import { buildTemplatePrompt, getTemplateById, renderTemplateFallback, selectTemplate } from '../../src/core/templates/catalog.mjs';
+import {
+  acquireRepresentativeImage,
+  validateImageFile,
+  writeImageProvenance
+} from '../../src/core/media/image-acquisition.mjs';
 loadProjectEnv({ localEnvPath: '.env.local', fallbackEnvPaths: ['.env'] });
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
 const OUTPUT_DIR = path.join(PROJECT_ROOT, 'content', 'generated');
-const IMAGE_GEN_SCRIPT = process.env.IMAGE_GEN
-  || path.join(process.env.HOME || '/home/declan', '.codex', 'skills', '.system', 'imagegen', 'scripts', 'image_gen.py');
 
 const PUBLISHED_LEDGER_PATH = process.env.PUBLISHED_LEDGER_PATH
   || path.join(PROJECT_ROOT, 'content', 'published.json');
@@ -60,6 +63,8 @@ function parseArgs(argv) {
     apiBase: process.env.LLM_API_BASE || process.env.XIAOMI_BASE_URL || '',
     apiKey: process.env.LLM_API_KEY || process.env.XIAOMI_API_KEY || process.env.OPENAI_API_KEY || '',
     model: process.env.LLM_MODEL || '',
+    templateId: '',
+    templateSeed: '',
     promptOnly: false
   };
   for (let i = 2; i < argv.length; i++) {
@@ -79,6 +84,8 @@ function parseArgs(argv) {
     else if (arg === '--api-base' && next) { args.apiBase = next; i++; }
     else if (arg === '--api-key' && next) { args.apiKey = next; i++; }
     else if (arg === '--model' && next) { args.model = next; i++; }
+    else if (arg === '--template-id' && next) { args.templateId = next; i++; }
+    else if (arg === '--template-seed' && next) { args.templateSeed = next; i++; }
     else if (arg === '--prompt-only') { args.promptOnly = true; }
     else if (arg === '--help') {
       console.log(`사용법: node generate-post.mjs [옵션]
@@ -98,6 +105,8 @@ function parseArgs(argv) {
   --api-base URL      OpenAI-compatible API 엔드포인트 (Mimo v2.5 등)
   --api-key KEY       API 키
   --model NAME        사용할 모델 이름
+  --template-id ID    템플릿 고정 선택 (기본: 키워드 ID 기반 결정적 선택)
+  --template-seed KEY 템플릿 선택 시드 덮어쓰기
   --prompt-only       프롬프트 파일만 출력 (수동 실행용)
 
 LLM_PROVIDER 환경변수:
@@ -232,14 +241,20 @@ async function researchKeyword(keywordEntry) {
   }
   if (!ymylRisk) ymylRisk = 'none';
 
-  // market.competitors를 공식 도메인만 남기도록 필터링한 뒤 sourceBundle 생성 (generic blog URL은 YMYL에서 fail)
-  let filteredMarket = market;
-  if (market && Array.isArray(market.competitors) && market.competitors.length) {
-    const officialOnly = market.competitors.filter((c) => {
+  // SERP 경쟁 정보와 키워드 발굴 당시의 실측/추세 신호를 함께 보존한다.
+  let filteredMarket = market
+    ? {
+      ...market,
+      metrics: keywordEntry.metrics || market.metrics || null,
+      discovery: keywordEntry.marketDiscovery || market.discovery || null
+    }
+    : null;
+  if (filteredMarket && Array.isArray(filteredMarket.competitors) && filteredMarket.competitors.length) {
+    const officialOnly = filteredMarket.competitors.filter((c) => {
       const url = String(c?.url || c?.link || '').trim();
       return url && isOfficialSourceUrl(url);
     });
-    filteredMarket = { ...market, competitors: officialOnly };
+    filteredMarket = { ...filteredMarket, competitors: officialOnly };
   }
   const sourceBundle = buildSourceBundleFromMarket(filteredMarket);
   if (sourceBundle.length) {
@@ -249,6 +264,7 @@ async function researchKeyword(keywordEntry) {
   }
 
   const context = {
+    id: keywordEntry.id || '',
     keyword: keyword,
     category: keywordEntry.category,
     description: keywordEntry.description || '',
@@ -257,11 +273,25 @@ async function researchKeyword(keywordEntry) {
     cpcTier: market?.cpcTier || keywordEntry.cpcTier || 'B',
     ymylRisk,
     sourceBundle,
-    market,
-    marketPrompt: buildMarketPromptBlock(market)
+    market: filteredMarket,
+    marketPrompt: buildMarketPromptBlock(filteredMarket)
   };
 
   return context;
+}
+
+function applyTemplateSelection(context, args = {}) {
+  const templateSeed = String(args.templateSeed || context.templateSeed || context.id || context.keyword || 'post');
+  const template = selectTemplate({
+    seed: templateSeed,
+    templateId: args.templateId || context.templateId || ''
+  });
+  return {
+    ...context,
+    templateId: template.id,
+    templateLabel: template.label,
+    templateSeed
+  };
 }
 
 // ─── HTML 글 생성 (LLM) ─────────────────────────────────────────────
@@ -281,16 +311,24 @@ async function loadTistoryBlogSkill() {
   return '';
 }
 
-async function buildSystemPrompt() {
+async function buildSystemPrompt(context = {}) {
   const skill = await loadTistoryBlogSkill();
   const skillBlock = skill
     ? `\n\n[tistory-blog SKILL.md 원문]\n${skill.slice(0, 12000)}\n[/tistory-blog SKILL.md]\n`
     : '';
   const curYear = new Date().getFullYear();
+  const template = getTemplateById(context.templateId)
+    || selectTemplate({ seed: context.templateSeed || context.id || context.keyword });
 
   return `당신은 한국어 티스토리 블로그 전문 작가다.
 아래 tistory-blog 스킬 규칙을 최우선으로 따른다.
 ${skillBlock}
+
+이번 글의 고정 템플릿:
+- ID: ${template.id}
+- 이름: ${template.label}
+- 레이아웃 요소: ${template.layout.join(' → ')}
+- 템플릿 지시: ${template.prompt}
 
 필수 준수:
 1. 순수 HTML만 출력한다. 마크다운 금지.
@@ -304,15 +342,16 @@ ${skillBlock}
 9. 본문 한국어 plain text 기준 2,200자 이상. 문단 p 태그 10개 이상.
 10. AI 패턴 금지: "한 줄 요약", "먼저 핵심만 보자", "바로 본론으로".
 11. 문단 길이를 균일하게 쓰지 말고 강약을 섞는다.
-12. 출력은 HTML만. 설명 문장, 코드블록 감싸기 금지.
+12. 선택 템플릿의 순서와 정보 밀도를 지키되, 근거 없는 사실이나 형식용 문장을 만들지 않는다.
+13. 출력은 HTML만. 설명 문장, 코드블록 감싸기 금지.
 
 수익형 블로그 안전 규칙 (설계 문서 §3):
-13. 제목/본문의 연도는 현재 연도(${curYear}) 기준으로 쓴다. 지난 연도(2025 이하)를 제목에 넣지 않는다.
-14. 비용·가격·수치·기준일을 주장할 때는 반드시 근처에 (출처: …) 를 명시한다. 추정치는 "약/대략"으로 표현한다.
-15. 금지 문구: 무조건 승인, 승인 보장, 가장 좋은 보험/대출, 확실히 줄이는/내리는, 소송에서 이기는, 치료 효과, 완치, 부작용 없이.
-16. 금융·보험·건강·법률(YMYL) 주제는 결정을 강요하지 않고 공식 절차·서류·문의처·수수료 정보만 제공한다.
-17. 비용/요금 주제(비용·가격·요금·견적·렌탈·이사·청소·설치·교체·위약금)는 항목별 가격표(<table>)와 추가요금·별도 비용 항목을 반드시 포함한다.
-18. 첫 문단은 인사말이 아니라 훅으로 시작한다: 구체적 숫자, 문제 공감, 또는 질문.`;
+14. 제목/본문의 연도는 현재 연도(${curYear}) 기준으로 쓴다. 지난 연도(2025 이하)를 제목에 넣지 않는다.
+15. 비용·가격·수치·기준일을 주장할 때는 반드시 근처에 (출처: …) 를 명시한다. 추정치는 "약/대략"으로 표현한다.
+16. 금지 문구: 무조건 승인, 승인 보장, 가장 좋은 보험/대출, 확실히 줄이는/내리는, 소송에서 이기는, 치료 효과, 완치, 부작용 없이.
+17. 금융·보험·건강·법률(YMYL) 주제는 결정을 강요하지 않고 공식 절차·서류·문의처·수수료 정보만 제공한다.
+18. 비용/요금 주제(비용·가격·요금·견적·렌탈·이사·청소·설치·교체·위약금)는 항목별 가격표(<table>)와 추가요금·별도 비용 항목을 반드시 포함한다.
+19. 첫 문단은 인사말이 아니라 훅으로 시작한다: 구체적 숫자, 문제 공감, 또는 질문.`;
 }
 
 function buildUserPrompt(context) {
@@ -330,11 +369,17 @@ function buildUserPrompt(context) {
 
   const typeDesc = contentTypeDescriptions[context.contentType] || contentTypeDescriptions.guide;
   const curYear = new Date().getFullYear();
+  const template = getTemplateById(context.templateId)
+    || selectTemplate({ seed: context.templateSeed || context.id || context.keyword });
+  const templateInstructions = buildTemplatePrompt(template.id);
 
   return `"${context.keyword}"에 대한 블로그 글을 작성해라.
 
 카테고리: ${context.category}
 글 유형: ${typeDesc}
+선택 템플릿: ${template.label} (${template.id})
+템플릿 레이아웃: ${template.layout.join(' → ')}
+템플릿별 작성 지시: ${templateInstructions}
 ${context.description ? `주제 설명: ${context.description}` : ''}
 태그: ${(context.tags || []).join(', ')}
 추정 CPC 티어: ${context.cpcTier || 'B'}
@@ -351,9 +396,9 @@ ${context.marketPrompt || ''}
 - 본문 h2 섹션 5~7개
 - 노란 인사이트 박스 1개+, 파란 정보 박스 2개+, blockquote 1개+
 - 수치/비교가 있으면 table 필수
-- figure+figcaption 이미지 1개 이상
+- figure+figcaption 이미지 1개 이상. 출처와 대체 텍스트를 함께 둔다.
 - 첫 문단에 키워드를 자연스럽게 포함
-- 마지막에 핵심 정리 섹션을 반드시 완성한다
+- 마지막에 선택 템플릿에 맞는 결론·참고 자료 섹션을 완성한다
 - 글이 중간에 끊기면 안 된다. 마지막 문장은 완전한 종결형(~다/~습니다)으로 끝낸다
 - 미완성 문장, 깨진 HTML, 중국어 한자 혼입 금지
 - 출력은 HTML 문서 조각만. 앞뒤 설명 금지
@@ -368,7 +413,7 @@ ${context.contentType === 'cost' ? '- 비용형: 항목별 가격표(<table>) �
 
 async function generateWithLLM(context, args = {}) {
   const provider = args.provider || 'auto';
-  const systemPrompt = await buildSystemPrompt();
+  const systemPrompt = await buildSystemPrompt(context);
   const userPrompt = buildUserPrompt(context);
 
   // ── Provider 자동 탐지 ──
@@ -390,10 +435,10 @@ async function generateWithLLM(context, args = {}) {
     return generateWithHermes(systemPrompt, userPrompt, context, args);
   }
   if (resolvedProvider === 'openai' || resolvedProvider === 'openai-compat') {
-    return generateWithOpenAI(systemPrompt, userPrompt, args);
+    return generateWithOpenAI(systemPrompt, userPrompt, context, args);
   }
   console.log('[llm] LLM 없음 — 템플릿 모드로 생성');
-  return { html: generateFromTemplate(context), usingTemplate: true };
+  return { html: renderTemplateFallback(context), usingTemplate: true };
 }
 
 async function generateWithHermes(systemPrompt, userPrompt, context, args) {
@@ -427,10 +472,10 @@ async function generateWithHermes(systemPrompt, userPrompt, context, args) {
 
   console.log(`[hermes] 수동 실행이 필요하다:`);
   console.log(`  hermes -z "$(cat '${promptFile}')" > output.html`);
-  return { html: generateFromTemplate(context), usingTemplate: true };
+  return { html: renderTemplateFallback(context), usingTemplate: true };
 }
 
-async function generateWithOpenAI(systemPrompt, userPrompt, args) {
+async function generateWithOpenAI(systemPrompt, userPrompt, context, args) {
   const apiKey = args.apiKey
     || process.env.LLM_API_KEY
     || process.env.XIAOMI_API_KEY
@@ -448,7 +493,7 @@ async function generateWithOpenAI(systemPrompt, userPrompt, args) {
 
   if (!apiKey) {
     console.log('[openai] API 키 없음 — 템플릿 모드');
-    return { html: generateFromTemplate({ keyword: '' }), usingTemplate: true };
+    return { html: renderTemplateFallback(context), usingTemplate: true };
   }
 
   const host = new URL(apiBase.includes('://') ? apiBase : `https://${apiBase}`).hostname;
@@ -554,131 +599,47 @@ function todayLocalDate() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 }
-// ─── 템플릿 기반 생성 (LLM 없을 때) ────────────────────────────────
-
-function generateFromTemplate(context) {
-  const today = todayLocalDate();
-  const keyword = context.keyword;
-  const category = context.category;
-  const tags = (context.tags || []).slice(0, 5).join(', ');
-
-  return `<div style="font-size:16px;line-height:1.82;color:#1f2937;">
-
-<p style="margin:0.8rem 0;">${keyword}에 대해 정리했다.</p>
-
-<div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:15px;">
-💡 <strong>이 글은 ${keyword}의 핵심 개념과 실전 방법을 다룬다.</strong>
-</div>
-
-<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
-📖 ${keyword}이란?
-</h2>
-
-<p style="margin:0.8rem 0;">${context.description || `${keyword}에 대한 상세한 설명이 들어갑니다.`}</p>
-
-<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
-⚙️ 핵심 포인트
-</h2>
-
-<div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:0.8rem 1.2rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:15px;">
-<strong>첫 번째 포인트:</strong> 상세한 설명이 들어간다.
-</div>
-
-<p style="margin:0.8rem 0;">추가 설명이 이어진다.</p>
-
-<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
-⚖️ 비교 분석
-</h2>
-
-<div style="overflow-x:auto;margin:1.5rem 0;">
-<table style="width:100%;border-collapse:collapse;font-size:15px;">
-<thead>
-<tr style="background:#1f2937;color:#fff;">
-<th style="padding:10px 16px;text-align:left;">항목</th>
-<th style="padding:10px 16px;text-align:left;">상세</th>
-</tr>
-</thead>
-<tbody>
-<tr style="background:#f8fafc;">
-<td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;">항목 1</td>
-<td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;">설명</td>
-</tr>
-</tbody>
-</table>
-</div>
-
-<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
-💡 실전 팁
-</h2>
-
-<p style="margin:0.8rem 0;">실제 활용 방법과 주의사항을 정리한다.</p>
-
-<div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;font-size:15px;">
-⚠️ <strong>주의:</strong> 실제 정보로 교체해야 한다.
-</div>
-
-<h2 style="margin:3rem 0 1.2rem;font-size:20px;color:#111827;border-bottom:2px solid #e5e7eb;padding-bottom:8px;">
-📌 마무리
-</h2>
-
-<p style="margin:0.8rem 0;">${keyword}의 핵심을 다시 한번 정리했다.</p>
-
-<blockquote style="border-left:3px solid #d1d5db;padding:0.8rem 1.2rem;margin:1.5rem 0;color:#4b5563;font-style:italic;background:#f9fafb;border-radius:0 8px 8px 0;">
-${keyword}에 대해 더 알고 싶다면 위의 포인트들을 참고하라.
-</blockquote>
-
-<p style="margin:1.5rem 0 0.5rem;font-size:14px;color:#6b7280;">
-#tags
-</p>
-
-</div>`.replace('#tags', (context.tags || ['#' + keyword.replace(/\s+/g, '')]).map(t => t.startsWith('#') ? t : '#' + t.replace(/\s+/g, '')).join(' '));
-}
 
 // ─── 이미지 생성 ─────────────────────────────────────────────────────
 
 async function generateThumbnail(context) {
-  const outDir = path.join(OUTPUT_DIR, 'images');
-  await fs.mkdir(outDir, { recursive: true });
-  const outPath = path.join(outDir, `${context.id || 'post'}-${Date.now()}.png`);
+  const result = await acquireRepresentativeImage(context, {
+    outDir: path.join(OUTPUT_DIR, 'images')
+  });
+  if (result.ok) {
+    console.log(`[image] ${result.method} 적용 완료: ${result.path}`);
+    return result;
+  }
 
-  // image_gen CLI가 있으면 사용
-  const imageGenScript = IMAGE_GEN_SCRIPT;
-  const hasImageGen = await fs.access(imageGenScript).then(() => true).catch(() => false);
-  const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-
-  if (hasImageGen && hasOpenAIKey) {
-    console.log('[image] Codex Imagen으로 대표 이미지 생성...');
-    const prompt = buildImagePrompt(context);
-    try {
-      execSync(`python "${imageGenScript}" generate --prompt "${prompt.replace(/"/g, '\\"')}" --quality medium --size 1536x1024 --out "${outPath}" --force`, {
-        timeout: 60000,
-        stdio: 'pipe'
-      });
-      if (await fs.access(outPath).then(() => true).catch(() => false)) {
-        console.log(`[image] 생성 완료: ${outPath}`);
-        return outPath;
+  // PIL은 명시적으로 켠 경우에만 사용한다. 기본 경로에서 부적합한
+  // 범용 이미지를 조용히 적용해 발행하는 일을 막는다.
+  if (process.env.IMAGE_ALLOW_PIL_FALLBACK === '1') {
+    const outPath = path.join(OUTPUT_DIR, 'images', `${context.id || 'post'}-${Date.now()}.png`);
+    console.warn('[image] Google/Imagen 실패 — 명시적 PIL emergency fallback 사용');
+    const pilPath = await generatePilThumbnail(context, outPath);
+    if (pilPath) {
+      const checked = await validateImageFile(pilPath);
+      if (checked.ok) {
+        const provenance = {
+          method: 'pil-emergency',
+          status: 'needs_review',
+          query: result.query,
+          generatedAt: new Date().toISOString(),
+          license: 'locally-generated-fallback',
+          licenseVerified: true,
+          width: checked.width,
+          height: checked.height,
+          bytes: checked.bytes
+        };
+        const provenancePath = await writeImageProvenance(pilPath, provenance);
+        return { ok: true, status: 'needs_review', method: 'pil-emergency', path: pilPath, provenancePath, query: result.query, provenance };
       }
-    } catch (e) {
-      console.error(`[image] Imagen 실패: ${e.message}`);
     }
   }
 
-  // PIL 폴백
-  console.log('[image] PIL로 대표 이미지 생성...');
-  return generatePilThumbnail(context, outPath);
+  throw new Error(`[image] 적합한 대표 이미지 확보 실패: ${result.errors.join(' | ')}`);
 }
 
-function buildImagePrompt(context) {
-  const categoryStyles = {
-    '투자·재테크': 'Professional financial infographic, clean white background, blue (#3b82f6) and green (#10b981) accent colors, upward trending elements, modern flat design',
-    'IT·테크': 'Clean minimalist tech illustration, dark navy background (#0a1628), teal accent lines (#2de2e6), abstract network/connection nodes, modern design',
-    '생활·정보': 'Warm friendly lifestyle illustration, soft pastel colors, clean modern design, relevant iconography',
-    '개발지식': 'Clean minimalist tech diagram, dark theme, teal accent, code/algorithm visualization',
-    '개발 회고': 'Warm retrospective illustration, timeline/roadmap elements, soft colors'
-  };
-  const style = categoryStyles[context.category] || categoryStyles['IT·테크'];
-  return `${style}, 1536x1024, blog thumbnail, no text, no logos, no watermark`;
-}
 
 async function generatePilThumbnail(context, outPath) {
   const pyCode = `
@@ -771,7 +732,11 @@ print("${outPath}")
 
 // ─── HTML 저장 + 메타 정보 ──────────────────────────────────────────
 
-async function savePost(context, htmlContent, thumbnailPath, usingTemplate = false) {
+async function savePost(context, htmlContent, thumbnailResult, usingTemplate = false) {
+  const imageResult = typeof thumbnailResult === 'string'
+    ? { ok: true, status: 'ready', method: 'legacy', path: thumbnailResult }
+    : (thumbnailResult || null);
+  const thumbnailPath = imageResult?.path || '';
   const today = todayLocalDate();
   const slug = context.keyword
     .toLowerCase()
@@ -791,12 +756,19 @@ async function savePost(context, htmlContent, thumbnailPath, usingTemplate = fal
   const seoTitle = extractedTitle && extractedTitle.length >= 12
     ? extractedTitle
     : `${context.keyword} 완벽 정리 가이드`;
+  const selectedTemplate = selectTemplate({
+    seed: context.templateSeed || context.id || context.keyword,
+    templateId: context.templateId
+  });
   const meta = {
     id: context.id || `gen-${Date.now()}`,
     keyword: context.keyword,
     category: context.category,
     tags: context.tags || [],
     contentType: context.contentType || 'guide',
+    templateId: selectedTemplate.id,
+    templateLabel: selectedTemplate.label,
+    templateSeed: context.templateSeed || context.id || context.keyword || '',
     cpcTier: context.cpcTier || 'B',
     ymylRisk: context.ymylRisk || 'none',
     sourceBundle: context.sourceBundle || [],
@@ -804,6 +776,10 @@ async function savePost(context, htmlContent, thumbnailPath, usingTemplate = fal
     description: extractDescription(htmlContent, context.description),
     bodyFile: htmlPath,
     thumbnail: thumbnailPath || '',
+    imageRequired: context.imageRequired !== false,
+    image: imageResult?.provenance
+      ? { ...imageResult.provenance, path: thumbnailPath, provenancePath: imageResult.provenancePath || null }
+      : null,
     runId: context.runId || context.metaRunId || getOrCreateRunId({ date: today }),
     metaRunId: context.runId || context.metaRunId || getOrCreateRunId({ date: today }),
     generatedAt: new Date().toISOString(),
@@ -820,6 +796,7 @@ async function savePost(context, htmlContent, thumbnailPath, usingTemplate = fal
     ymylRisk: context.ymylRisk || meta.ymylRisk || 'none',
     sourceBundle: context.sourceBundle || meta.sourceBundle || [],
     market: context.market || null,
+    imageRequired: meta.imageRequired,
     marketResearch: true,
     notifyDiscord: false
   });
@@ -836,12 +813,12 @@ async function savePost(context, htmlContent, thumbnailPath, usingTemplate = fal
     provenance: qa.provenance || null,
     reportFile: qaPath
   };
-  meta.market = qa.market || context.market || null;
+  meta.market = context.market || qa.market || null;
   meta.provenance = qa.provenance || null;
-  // 템플릿 fallback은 품질이 낮아 자동 발행 금지 — draft_only 로 보관
-  if (usingTemplate) {
+  // 템플릿 fallback과 검토 필요 이미지 모두 자동 발행 금지.
+  if (usingTemplate || imageResult?.status === 'needs_review') {
     meta.status = 'draft_only';
-    meta.provenance = { verdict: 'fail', reason: 'template-fallback' };
+    meta.provenance = { verdict: 'fail', reason: usingTemplate ? 'template-fallback' : 'image-needs-review' };
   } else {
     meta.status = qa.ok ? 'qa_passed' : 'qa_failed';
   }
@@ -907,6 +884,9 @@ function buildQueueEntry(meta, timeSlot) {
     category: meta.category,
     tags: Array.isArray(meta.tags) ? meta.tags.join(',') : (meta.tags || ''),
     heroImage: meta.thumbnail || '',
+    image: meta.image || null,
+    imageRequired: meta.imageRequired !== false,
+    templateId: meta.templateId || '',
     sourceBundle: Array.isArray(meta.sourceBundle) ? [...meta.sourceBundle] : [],
     ymylRisk: meta.ymylRisk || 'none',
     status: meta.status || 'generated'
@@ -1008,16 +988,19 @@ async function main() {
       console.log(`${'='.repeat(60)}`);
 
       try {
-        const context = await researchKeyword(kw);
-        const { html, usingTemplate } = await generateWithLLM({ ...context, id: kw.id }, args);
+        const context = {
+          ...applyTemplateSelection(await researchKeyword(kw), args),
+          imageRequired: !args.skipImage
+        };
+        console.log(`[template] ${context.templateId} — ${context.templateLabel}`);
+        const { html, usingTemplate } = await generateWithLLM(context, args);
 
-        let thumbnail = '';
+        let thumbnail = null;
         if (!args.skipImage) {
-          thumbnail = await generateThumbnail({ ...context, id: kw.id });
+          thumbnail = await generateThumbnail(context);
         }
 
-        const meta = await savePost({ ...context, id: kw.id }, html, thumbnail, usingTemplate || false);
-        await saveGeneratedId(kw.id);
+        const meta = await savePost(context, html, thumbnail, usingTemplate || false);
         results.push(meta);
       } catch (error) {
         console.error(`[batch] QA/생성 실패: ${kw.id} — ${error instanceof Error ? error.message : String(error)}`);
@@ -1038,16 +1021,19 @@ async function main() {
   // 단일 키워드 처리
   const kw = pickKeyword(keywords, args);
   console.log(`[generate] "${kw.keyword}" (${kw.category})`);
-
-  const context = await researchKeyword(kw);
-  const { html, usingTemplate } = await generateWithLLM({ ...context, id: kw.id }, args);
+  const context = {
+    ...applyTemplateSelection(await researchKeyword(kw), args),
+    imageRequired: !args.skipImage
+  };
+  console.log(`[template] ${context.templateId} — ${context.templateLabel}`);
+  const { html, usingTemplate } = await generateWithLLM(context, args);
 
   let thumbnail = '';
   if (!args.skipImage) {
-    thumbnail = await generateThumbnail({ ...context, id: kw.id });
+    thumbnail = await generateThumbnail(context);
   }
 
-  const meta = await savePost({ ...context, id: kw.id }, html, thumbnail, usingTemplate || false);
+  const meta = await savePost(context, html, thumbnail, usingTemplate || false);
   await saveGeneratedId(kw.id);
 
   console.log(`\n[완료]`);
@@ -1065,7 +1051,8 @@ async function main() {
   console.log(`    --title "${meta.title}" \\`);
   console.log(`    --body-file "${meta.bodyFile}" \\`);
   console.log(`    --category "${meta.category}" \\`);
-  console.log(`    --tags "${meta.tags.slice(0, 5).join(',')}"`);
+  console.log(`    --tags "${meta.tags.slice(0, 5).join(',')}" \\`);
+  console.log(`    --template-id "${queueEntry.templateId}"`);
 }
 
 const isCli = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));

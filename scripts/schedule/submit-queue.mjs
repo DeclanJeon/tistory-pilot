@@ -16,10 +16,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import http from 'node:http';
 import { qaHtmlPost } from '../content/qa-post.mjs';
+import { collectBodyImageDataUrls, inlineBodyImageSources } from '../../src/core/tistory/helpers.mjs';
 import { recordPublishFeedback } from '../content/market-research.mjs';
 import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
 import { evaluateYmylGate, detectYmylRisk } from '../content/keyword-score.mjs';
 import { hasSourceUrls, hasOfficialSourceUrls } from '../content/provenance-gate.mjs';
+import { validateImageFile } from '../../src/core/media/image-acquisition.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const KEYWORDS_PATH = path.join(PROJECT_ROOT, 'content', 'keywords', 'keywords.json');
@@ -89,6 +91,22 @@ export async function qaQueuePost(post) {
   // Phase 2: template fallback and YMYL official source gate
   if (post.status === 'draft_only' || post.usingTemplate === true) {
     failures.push('draft-only-template-fallback');
+  }
+  const imageStatus = String(post.image?.status || '').trim();
+  if (imageStatus === 'needs_review') {
+    failures.push('image-needs-review');
+  } else if (imageStatus && imageStatus !== 'ready') {
+    failures.push(`image-not-ready:${imageStatus}`);
+  }
+  if (post.imageRequired === true) {
+    const heroImage = String(post.heroImage || '').trim();
+    if (!heroImage) {
+      failures.push('image-missing');
+    } else {
+      const resolvedHero = path.isAbsolute(heroImage) ? heroImage : path.resolve(PROJECT_ROOT, heroImage);
+      const imageCheck = await validateImageFile(resolvedHero);
+      if (!imageCheck.ok) failures.push(`image-invalid:${imageCheck.reason}`);
+    }
   }
   const postYmyl = String(ymylRisk || '').toLowerCase();
   if ((postYmyl === 'high' || postYmyl === 'medium') && !hasOfficialSourceUrls(post.sourceBundle)) {
@@ -212,16 +230,23 @@ export async function movePost(queueDir, submittedDir, filename, post) {
   }
 }
 async function submitJob(post, { dryRun, verbose }) {
-  // bodyFile 이 있으면 읽어서 bodyHtml 로 채운다
-  if (!post.bodyHtml && !post.body && post.bodyFile) {
+  // bodyFile 이 있으면 읽어서 bodyHtml 로 채우고, 같은 디렉터리의 로컬 이미지를 data URL로 inline한다.
+  let bodyPath = '';
+  if (post.bodyFile) {
+    bodyPath = path.isAbsolute(post.bodyFile)
+      ? post.bodyFile
+      : path.join(PROJECT_ROOT, post.bodyFile);
+  }
+  if (!post.bodyHtml && !post.body && bodyPath) {
     try {
-      const bodyPath = path.isAbsolute(post.bodyFile)
-        ? post.bodyFile
-        : path.join(PROJECT_ROOT, post.bodyFile);
       post.bodyHtml = await fs.readFile(bodyPath, 'utf8');
     } catch (error) {
       return { ok: false, error: `bodyFile 읽기 실패: ${post.bodyFile}` };
     }
+  }
+  if (bodyPath && post.bodyHtml) {
+    const bodyImageDataUrls = collectBodyImageDataUrls(post.bodyHtml, { baseDir: path.dirname(bodyPath) });
+    post.bodyHtml = inlineBodyImageSources(post.bodyHtml, bodyImageDataUrls);
   }
   const qa = await qaQueuePost(post);
   if (!qa.ok) {
@@ -241,6 +266,8 @@ async function submitJob(post, { dryRun, verbose }) {
     tags: Array.isArray(post.tags) ? post.tags.join(',') : (post.tags || ''),
     category: post.category || '',
     heroImagePath: post.heroImage || '',
+    templateId: post.templateId || '',
+    imageProvenance: post.image || null,
     // provenance bundle (official URLs) for audit — preserve any shape recognized by extractSourceUrls (array, {url}, {urls/sources/links}); otherwise ledger ref
     sourceBundle: (() => { const sb = post.sourceBundle; if (Array.isArray(sb) && sb.length) return sb; if (sb && typeof sb === 'object') { if (sb.url || sb.urls || sb.sources || sb.links) return sb; const keys = Object.keys(sb); if (keys.length && keys.some(k => ['id','keyword','urls'].includes(k)) === false) { /* generic object with url-like keys */ if (typeof sb.url === 'string' || Array.isArray(sb.urls) || Array.isArray(sb.sources) || Array.isArray(sb.links)) return sb; } } if (sb && typeof sb === 'object' && (sb.url || sb.urls || sb.sources || sb.links)) return sb; if (sb && typeof sb === 'object' && Object.keys(sb).length) return sb; return { id: post.id || '', keyword: post.keyword || '', urls: Array.isArray(sb) ? sb : [] }; })(),
   };

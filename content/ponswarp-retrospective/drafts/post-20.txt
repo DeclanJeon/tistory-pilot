@@ -1,0 +1,89 @@
+PonsWarp에서 재정렬 버퍼는 처음부터 멋진 알고리즘 이름으로 등장한 기능이 아니었습니다.
+
+파일이 깨지지 않아야 한다는 훨씬 단순하고 무거운 요구에서 나온 장치였습니다. post-13에서 다룬 멀티 채널 전략은 sender 쪽 압력을 나누려는 시도였지만, 여러 통로를 열거나 네트워크 jitter가 커지면 receiver는 청크를 파일 순서대로 받는다는 가정을 버려야 합니다.
+
+[Out of order chunks become product risk]
+
+빠르게 도착한 청크라도 파일 offset 순서와 다르면 receiver writer에는 위험이 됩니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 신뢰가 흔들린 순간을 먼저 복원합니다.
+
+실패 지점 — 완료 표시와 실제 파일 신뢰 사이의 빈틈을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 검증 가능한 파일 계약을 세우는 방식을 회고의 결론으로 둡니다.
+
+🧭 왜 out-of-order가 제품 문제가 되었나
+
+🎯 독자가 가져갈 질문
+
+이 글은 재정렬 버퍼를 둘러싼 고민 라는 사건을 기능 소개로 소비하지 않습니다. 완료 표시와 실제 파일 신뢰 사이의 빈틈을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 재정렬 버퍼는 “빠르게 도착한 청크를 바로 쓰자”는 본능을 막고, offset 기준으로 안전하게 쓸 수 있는 데이터만 writer로 넘기는 장치였습니다.
+
+WebRTC DataChannel은 전송 계층의 순서를 어느 정도 맡아 주지만, PonsWarp가 겪은 문제는 그보다 애플리케이션 경계에 가까웠습니다. 멀티 채널 구상, batch 전송, worker 처리, writer 큐, 브라우저 저장 API가 섞이면 “도착했다”와 “정확한 위치에 저장됐다”는 서로 다른 말이 됩니다.
+
+현재 PonsWarp의 src/services/reorderingBuffer.ts 주석은 이 문제를 직접 설명합니다. 이 버퍼는 비순차적으로 도착하는 청크를 순서대로 정렬하여 내보내며, StreamSaver처럼 순차 쓰기만 지원하는 Writer를 위해 필수라고 적혀 있습니다. 또한 Multi-Channel 전송이나 네트워크 지연 상황에서 패킷 순서가 뒤바뀌면 파일 손상을 막기 위해 필요하다고 말합니다.
+
+사용자 입장에서는 청크 순서라는 말을 알 필요가 없습니다. 다운로드가 끝났다고 표시됐는데 파일이 열리지 않거나, 진행률은 끝났는데 저장 결과가 깨져 있으면 제품 전체를 믿을 수 없게 됩니다. 그래서 out-of-order는 성능 튜닝 문제가 아니라 완료 판정과 파일 신뢰의 문제였습니다.
+
+🧱 ReorderingBuffer가 실제로 해결한 것
+
+ReorderingBuffer 의 핵심 상태는 단순합니다. Map<number, BufferedChunk> 에 offset별 청크를 잡아 두고, nextExpectedOffset 으로 다음에 써야 할 위치를 기억합니다. push(chunk, offset) 은 이미 처리된 offset이면 버리고, 기다리던 offset이면 바로 output에 넣은 뒤 drainBuffer() 로 연속된 다음 청크를 꺼냅니다. 아직 앞쪽이 비어 있으면 Map에 저장합니다.
+
+이 구조가 해결한 것은 쓰기 순서입니다. receiver는 1MB 조각이 먼저 왔다고 해서 바로 파일 앞에 쓸 수 없습니다. 0MB 조각이 도착해야 0MB를 쓰고, 그 뒤에 이미 기다리던 1MB와 2MB를 차례대로 배출할 수 있습니다. 재정렬 버퍼는 도착 순서와 저장 순서를 분리해 줍니다.
+
+[Reordering buffer flow]
+
+ReorderingBuffer는 nextExpectedOffset과 offset Map으로 순차 배출 가능 여부를 판단합니다.
+
+현재 DirectFileWriter 도 이 책임을 모든 저장 모드에서 사용합니다. StreamSaver 준비 단계에서 WasmReorderingBuffer 를 만들고 initialize(0) 을 호출합니다. 이후 processChunkInternal() 은 패킷에서 offset 과 size 를 읽고, payload만 잘라 this.reorderingBuffer.push(..., offset) 에 넣습니다. 반환된 chunksToWrite 만 writeBuffer 로 이동합니다.
+
+이 흐름은 “받은 즉시 쓰기”가 아니라 “순서가 증명된 것만 쓰기”입니다.
+
+⚙️ 새로 생긴 복잡도
+
+재정렬 버퍼는 공짜가 아니었습니다. 현재 JS fallback 버퍼에는 MAX_BUFFER_SIZE = 128 * 1024 * 1024 가 있고, 초과 시 오래된 청크부터 정리해 80% 수준까지 낮추는 로직이 있습니다. CHUNK_TTL = 30000 과 5초 주기 stale check도 있습니다.
+
+중복과 과거 데이터 처리도 생겼습니다. offset < nextExpectedOffset 이면 이미 처리된 데이터로 보고 빈 배열을 반환합니다. 상태 관찰을 위해 getStatus() 는 bufferedCount , bufferedBytes , nextExpected , totalProcessed 를 내보냅니다.
+
+이 복잡도는 backpressure와도 붙습니다. DirectFileWriter 에는 pendingBytesInBuffer 가 있고, 반환된 순차 청크만 write buffer에 넣은 뒤 checkBackpressure() 를 호출합니다. receiver의 압력은 DataChannel 큐만으로 설명되지 않습니다.
+
+🦀 왜 나중에 Rust/WASM 경계로 이어졌나
+
+시리즈 설계 문서의 코어 분리 구간에는 pons-core-wasm 의 책임으로 packet , reordering_buffer , zero_copy_pool , zip64 , file_signature , merkle_tree 가 함께 적혀 있습니다.
+
+이 목록은 우연이 아닙니다. 재정렬 버퍼는 packet offset을 읽고, payload 복사를 줄이고, 저장 완료와 무결성 검증으로 이어지는 경계에 놓입니다. 현재 PonsWarp 코드도 이미 이 방향을 보여 줍니다. src/services/wasmReorderingBuffer.ts 는 pons-core-wasm 의 WasmReorderingBuffer 를 먼저 초기화하고, 실패하면 JS ReorderingBuffer fallback으로 전환합니다.
+
+다만 여기서도 과장은 금물입니다. 현재 저장소에는 JS fallback이 남아 있고, DirectFileWriter는 브라우저 저장 API와 직접 맞물립니다. Rust/WASM은 모든 문제를 지우는 마법이 아니라, offset 기반 정렬과 packet 처리처럼 반복적이고 검증 가능해야 하는 부분을 더 단단한 코어로 내려보내려는 방향에 가깝습니다.
+
+[Reordering buffer pressure leads to Rust WASM extraction]
+
+재정렬 책임은 packet, zero-copy, writer 경계와 맞물리며 Rust/WASM 코어 분리의 압력이 되었습니다.
+
+🧭 지금 돌아보는 판단
+
+재정렬 버퍼는 PonsWarp가 “빠른 전송”보다 “정확한 저장”을 우선하기 시작한 지점 중 하나였습니다. 멀티 채널, batch, 적응형 제어는 sender가 더 많은 데이터를 밀어 넣게 만들 수 있습니다. 하지만 receiver가 순서를 보장하지 못하면 그 성능은 제품 가치가 아니라 파일 손상 리스크가 됩니다.
+
+좋은 점은 책임을 명확히 했다는 것입니다. writer는 순차 데이터만 받습니다. out-of-order 청크는 offset 기준으로 기다립니다. 진행률과 backpressure는 pending bytes까지 고려합니다. 나쁜 점은 시스템이 더 무거워졌다는 것입니다. 메모리 상한, TTL, stale cleanup, fallback 전환, 상태 조회가 모두 필요해졌습니다.
+
+그래서 이 기능은 성능 최적화의 승리라기보다 제품 신뢰를 지키기 위해 복잡도를 떠안은 사례로 보는 편이 맞습니다. 나중에 reordering buffer가 WASM 코어의 이름 있는 책임으로 올라간 것도 같은 흐름입니다. 브라우저 앱이어도 파일 순서와 무결성은 UI 주변부에 둘 수 없는 문제였습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 검증 가능한 파일 계약을 세우는 방식을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp/src/services/reorderingBuffer.ts:1-44 — 비순차 청크를 순서대로 정렬해 내보내는 목적, StreamSaver와 Multi-Channel/jitter 맥락, push() 의 기본 계약
+
+PonsWarp/src/services/reorderingBuffer.ts:53-118 — fast path, buffered path, drainBuffer() 로 연속 offset을 배출하는 구조
+
+PonsWarp/src/services/reorderingBuffer.ts:25-35, 61-91, 125-143 — 128MB 상한, TTL, stale chunk 점검과 cleanup
+
+PonsWarp/src/services/wasmReorderingBuffer.ts:15-45, 54-86, 112-129 — WASM 우선 초기화, JS fallback, 동일한 status 표면
+
+PonsWarp/src/services/directFileWriter.ts:90-104, 704-706, 995-1084 — DirectFileWriter가 WASM 기반 재정렬 버퍼를 만들고, offset 기반으로 순차 청크만 write buffer에 넣는 흐름
+
+content/ponswarp-retrospective/series-plan.md:137-148, 208-215, 273-280 — pons-core-wasm 책임 목록과 reordering buffer를 WASM으로 옮기는 후속 시리즈 위치

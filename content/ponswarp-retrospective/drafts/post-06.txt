@@ -1,0 +1,105 @@
+PonsWarp 초기에 가장 매력적이었던 문장은 브라우저끼리 바로 큰 파일을 보낸다는 약속이었습니다.
+
+서버에 올렸다가 다시 내려받지 않고, 링크를 열고, 상대가 방에 들어오면 WebRTC 데이터 채널로 파일이 흘러간다는 그림은 제품 소개로는 거의 완벽했습니다. 문제는 그 약속이 너무 빨리 제품의 중심 문장이 됐다는 점입니다.
+
+[PonsWarp signaling TURN data path]
+
+WebRTC 데이터는 직접 흐르고 싶어 하지만, 제품의 연결 상태는 signaling과 TURN 없이는 설명되지 않았습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 처음 믿었던 문장을 먼저 복원합니다.
+
+실패 지점 — 절반만 맞았던 전제가 어디에서 깨졌는지를 코드와 기록으로 확인합니다.
+
+지금의 판단 — 기술 선택을 제품 책임으로 다시 읽는 기준을 회고의 결론으로 둡니다.
+
+💡 처음 약속은 단순해 보였습니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 WebRTC로 대용량 전송을 하겠다는 무모한 선언 라는 사건을 기능 소개로 소비하지 않습니다. 절반만 맞았던 전제가 어디에서 깨졌는지를 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 WebRTC는 서버 저장을 피하게 해주는 매력적인 선택지였지만, 서버 책임을 없애 주지는 않았습니다. signaling, ICE, TURN, 재연결, 상태 동기화가 모두 제품 신뢰의 일부로 되돌아왔습니다.
+
+PonsWarp의 초반 커밋 축은 꽤 솔직합니다. 2025-11-20 ad322f3 feat : first commit 으로 시작한 뒤, 같은 날 c647df9 feat: WebRTC 서비스 개선 및 프로덕션 환경 로깅 추가 가 이어집니다.
+
+첫날부터 WebRTC와 production logging이 같이 등장한다는 점이 흥미롭습니다. 데모용 연결이 아니라, 실제 서비스처럼 실패를 관찰해야 하는 연결로 보기 시작했다는 뜻이기 때문입니다. 이어지는 4efb394 의 모든 호스트 허용과 추가 STUN 서버 적용도 같은 맥락입니다.
+
+사용자가 보는 플로우는 단순해야 했습니다. 파일 선택, 방 코드 공유, 상대 접속, 전송 시작. 하지만 내부 플로우는 offer, answer, ICE candidate, STUN 조회, TURN relay 가능성, 데이터 채널 개방, bufferedAmount 감시까지 이어졌습니다. 제품의 표면은 단순할수록 좋지만, 그 단순함을 WebRTC가 공짜로 만들어 주지는 않았습니다.
+
+📐 signaling은 부가 기능이 아니었습니다
+
+PonsWarp에서 signaling은 “방을 찾아 주는 서버” 정도가 아니었습니다. WebRTC offer/answer, ICE candidate, TURN 설정, 재연결 상태를 제품이 이해할 수 있는 이벤트로 바꾸는 번역 계층이었습니다.
+
+WebRTC를 쓰겠다고 하면 처음에는 데이터가 브라우저끼리 직접 오간다는 점에 눈이 갑니다. 그런데 제품을 만들기 시작하면 가장 먼저 붙잡는 것은 데이터 경로가 아니라 signaling입니다. 두 브라우저는 서로를 찾고, SDP를 주고받고, ICE candidate를 교환해야 합니다.
+
+지금 코드의 PonsWarp/src/services/signaling-adapter.ts 는 이 사실을 잘 보여줍니다. WebSocket으로 Connected , Offer , Answer , IceCandidate , TurnConfig 같은 메시지를 받아 기존 프론트엔드 이벤트로 변환합니다.
+
+PonsWarp/src/services/singlePeerConnection.ts 도 같은 흐름에 있습니다. simple-peer 를 감싸고, trickle: true , iceServers , ordered DataChannel, bufferedAmountLowThreshold 를 한데 묶습니다. 연결을 한 번 열고 끝내는 코드가 아니라, 데이터 채널의 순서 보장과 버퍼 압력까지 제품 설정으로 끌어올린 구조입니다.
+
+⚠️ TURN은 선택지가 아니라 현실 검증이었습니다
+
+초반 약속이 가장 크게 흔들린 지점은 모바일과 NAT였습니다. evidence index가 post 06에 직접 묶어 둔 커밋 중 하나가 2025-11-21 2def330 feat: TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화 입니다. 직접 연결을 내세운 제품이 하루 만에 TURN 설정을 동적으로 받아와야 했다는 뜻입니다.
+
+TURN은 제품 서사에서 애매한 위치에 있습니다. 사용자는 “서버를 거치지 않는 전송”을 기대하지만, 실제 네트워크에서는 relay가 없으면 연결 자체가 실패하는 경우가 있습니다. 특히 모바일 네트워크나 엄격한 NAT 환경에서는 더 그렇습니다.
+
+[PonsWarp direct connection and TURN fallback overview]
+
+직접 연결은 제품 메시지를 단순하게 만들지만, TURN fallback은 실제 연결 성공률을 지키기 위해 필요했습니다.
+
+PonsWarp는 직접 연결만 고집하지 않았습니다. 이 판단은 제품적으로 맞지만, 동시에 비용과 운영을 끌어옵니다. TURN을 쓰면 대역폭 비용, 서버 상태, 자격 증명, 지역 지연, 장애 대응이 따라옵니다. 작은 채팅 메시지와 달리 4GB, 10GB 파일이 relay를 타면 그것 자체가 운영비가 됩니다.
+
+⚙️ 대용량 전송은 연결 이후부터 더 어려웠습니다
+
+“WebRTC로 대용량 전송”이라는 선언은 사실 “브라우저 위에서 전송 엔진과 저장 엔진과 재시도 정책을 같이 만들겠다”는 선언에 가까웠습니다.
+
+WebRTC DataChannel은 파일 전송 전용 파이프가 아닙니다. 브라우저 메모리, DataChannel 버퍼, worker 처리량, 수신 저장 속도, 탭 생명주기 영향을 모두 받습니다. 그래서 연결이 됐다고 대용량 전송 서비스가 완성되는 것은 아니었습니다.
+
+2025-11-24 80e2be0 feat: WebRTC 연결 안정성 및 속도 표시 개선 은 이 차이를 잘 보여줍니다. 연결이 됐는지만 보는 단계에서, 사용자가 체감하는 안정성과 속도 표시를 다루는 단계로 넘어간 것입니다. 전송 서비스에서 속도 표시는 장식이 아니라 사용자가 기다릴지 포기할지 판단하는 근거입니다.
+
+현재 구조에서도 이 무게가 보입니다. PonsWarp/src/services/webRTCService.ts 는 receiver 쪽 서비스인데도 ICE 서버 기본값, TURN 설정 로딩 상태, 재연결 시도 횟수, visibility/focus/pageshow 이벤트를 모두 다룹니다. 후속 커밋 2026-05-17 8f7299d fix: resume mobile receiver transfers after backgrounding 도 모바일 생명주기가 단순 edge case가 아니었다는 점을 보여줍니다.
+
+🔄 fallback은 패배가 아니라 제품 경로였습니다
+
+PonsWarp의 초반 문장은 direct transfer에 가까웠지만, 시간이 지나면서 제품은 fallback을 더 노골적으로 받아들입니다. post 06 시점에서 직접 다룰 수 있는 fallback은 TURN relay입니다. 직접 연결이 안 되면 relay를 탄다는 네트워크 fallback입니다.
+
+그런데 이 사고방식은 나중에 Cloud Drop으로 확장됩니다. 상대가 동시에 온라인이 아니거나, 모바일이 오래 버티기 어렵거나, 대용량 업로드가 더 안정적인 경로를 요구할 때는 P2P만으로 사용자 문제를 풀 수 없습니다.
+
+[PonsWarp direct TURN and Cloud Drop product paths]
+
+direct transfer, TURN relay, Cloud Drop은 같은 제품 안에서 서로 다른 실패 조건을 맡는 경로가 됐습니다.
+
+경로 제품상 장점 현실 비용
+
+Direct WebRTC 서버 저장 최소화, 즉시성 NAT와 모바일 환경에 취약
+
+TURN relay 연결 성공률 개선 대역폭 비용과 운영 책임
+
+Cloud Drop 비동기 전달, 재시도 가능성 초기 direct promise가 복잡해짐
+
+evidence index의 제품화 구간도 같은 질문을 다른 층에서 반복합니다. 2026-05-12 4847872 Enable async cloud drops for delayed downloads , 2026-05-14 3628858 Make Cloud Drop large uploads resumable by parts , 8f7299d 는 모두 사용자가 파일을 보내려는 순간에 두 브라우저가 안정적으로 동시에 살아 있지 않으면 어떻게 할 것인가를 다룹니다.
+
+📚 지금 돌아보면 선언보다 가격표가 늦었습니다
+
+WebRTC 선택 자체가 틀렸다고 보기는 어렵습니다. PonsWarp가 만들고 싶었던 감각, 즉 서버에 먼저 맡기지 않고 브라우저끼리 바로 파일을 넘기는 감각에는 WebRTC가 가장 가까웠습니다. 사용자가 링크를 열고 상대가 들어오면 곧바로 파일이 흐르는 경험은 여전히 강합니다.
+
+다만 그 선택을 제품의 핵심 약속으로 너무 빨리 올린 것은 위험했습니다. WebRTC는 연결 가능성을 열어 주지만, 연결 실패를 설명해 주지 않습니다. TURN은 실패율을 낮춰 주지만, 운영비를 없애 주지 않습니다. 모바일 resume은 경험을 살려 주지만, 브라우저 생명주기를 통제하게 해 주지는 않습니다.
+
+그래서 PonsWarp의 초반 선언은 매력적이면서도 무모했습니다. 매력은 사용자가 원하는 문장을 정확히 겨냥했다는 데 있었습니다. “서버에 올리지 말고 바로 보내자.” 무모함은 그 문장 뒤에 숨어 있던 서버, 네트워크, 모바일, 저장, 운영의 비용을 너무 늦게 가격표로 붙였다는 데 있었습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 기술 선택을 제품 책임으로 다시 읽는 기준을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp/src/services/signaling-adapter.ts:17-24 — Rust signaling 서버와 프론트엔드 이벤트 계약 사이를 맞추는 어댑터 상태
+
+PonsWarp/src/services/signaling-adapter.ts:122-133 — Offer, Answer, IceCandidate, TurnConfig를 제품 이벤트로 매핑하는 지점
+
+PonsWarp/src/services/singlePeerConnection.ts:64-75 — simple-peer, ICE 서버, ordered DataChannel, bufferedAmount threshold 설정
+
+PonsWarp/src/services/webRTCService.ts:90-97 — 기본 STUN과 TURN 설정 로딩 상태가 receiver 연결 책임에 들어온 지점
+
+PonsWarp/src/services/webRTCService.ts:127-137 — 모바일 page lifecycle 복귀 시 재연결과 resume hint를 다루는 지점

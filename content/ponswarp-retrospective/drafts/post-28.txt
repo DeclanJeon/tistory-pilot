@@ -1,0 +1,105 @@
+PonsWarp의 reordering buffer 이야기는 이미 post-20에서 한 번 다뤘습니다.
+
+비순차로 도착한 청크를 offset 기준으로 잡아 두고, nextExpectedOffset 이 맞는 것만 writer로 내보내는 장치입니다. 그때의 결론은 “받은 즉시 쓰기”가 아니라 “순서가 증명된 것만 쓰기”였습니다.
+
+post-28에서 질문은 한 단계 더 내려갑니다. 왜 이 책임을 JS 유틸로 계속 두지 않고 WASM 경계로 옮기려 했을까요. 답은 “JS가 느려서”가 아닙니다. 순서 보장, packet offset, zero-copy, writer 완료, recovery 기준이 한 덩어리의 신뢰 계약이 되었고, 그 계약을 브라우저 glue 코드에 오래 두기 어려웠기 때문입니다.
+
+[JS reordering boundary became overloaded]
+
+JS reordering은 자연스러운 시작점이었지만, 장기적으로는 너무 많은 신뢰 책임이 한 경계에 모였습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 신뢰가 흔들린 순간을 먼저 복원합니다.
+
+실패 지점 — 완료 표시와 실제 파일 신뢰 사이의 빈틈을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 검증 가능한 파일 계약을 세우는 방식을 회고의 결론으로 둡니다.
+
+🧭 JS reordering은 처음에는 자연스러운 선택이었습니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 reordering buffer를 WASM으로 옮긴 이유 라는 사건을 기능 소개로 소비하지 않습니다. 완료 표시와 실제 파일 신뢰 사이의 빈틈을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 이 글은 Rust/WASM이 모든 문제를 해결했다고 말하지 않습니다. 현재 구조에도 JS fallback은 남아 있고, DirectFileWriter는 여전히 브라우저 저장 API와 직접 맞물립니다.
+
+처음에는 JS에 reordering buffer를 두는 것이 가장 현실적이었습니다. WebRTC DataChannel 이벤트도 JS에서 받고, StreamSaver나 File System Access API 같은 저장 API도 JS에서 다룹니다. src/services/reorderingBuffer.ts 는 이 상황에 맞게 설계된 작은 저장 전 게이트였습니다.
+
+역할도 분명했습니다. out-of-order chunk를 offset 기준으로 보관하고, 이미 처리된 offset이면 버리고, 기다리던 offset이 오면 바로 내보낸 뒤 drainBuffer() 로 연속된 다음 조각을 비웁니다. Map<number, BufferedChunk> 와 nextExpectedOffset 이라는 단순한 상태만으로 도착 순서와 저장 순서를 분리했습니다.
+
+이 장치는 post-19와 post-20의 맥락에서 꼭 필요했습니다. 멀티 채널, pipeline, batch write, 네트워크 jitter가 섞이면 DataChannel에서 “도착했다”는 사실과 파일의 “정확한 위치에 저장해도 된다”는 판단이 달라집니다. 4650d02 가 ReorderingBuffer 통합, 순차적 쓰기, 파일 깨짐 수정을 한꺼번에 다룬 것도 같은 이유입니다.
+
+⚠️ 하지만 장기 경계로는 너무 많은 책임이 모였습니다
+
+문제는 reordering buffer가 더 이상 단순한 배열 정렬 유틸이 아니었다는 점입니다. post-20의 코드 근거처럼 JS 구현에는 fast path, buffered path, drainBuffer() 뿐 아니라 128MB 상한, TTL, stale chunk 점검과 cleanup이 붙었습니다. 이것들은 성능 장식이 아니라 파일 손상을 막기 위한 방어선입니다.
+
+게다가 DirectFileWriter 는 저장 모드 선택, write queue, flush, backpressure, incomplete transfer 방어까지 같이 다룹니다. 여기에 offset 정렬까지 JS 한쪽에 계속 얹으면 책임 경계가 흐려집니다. 전송 계층은 chunk를 전달하고, 저장 계층은 writer API를 다루며, core 계층은 packet과 byte order 같은 반복 가능한 규칙을 보증해야 하는데, reordering은 점점 세 번째 쪽에 가까워졌습니다.
+
+“JS가 느리다”는 설명은 너무 얕습니다. 더 정확한 문제는 JS receiver가 네트워크 도착 순서, packet header, payload slice, writer 순서, fallback 상태, cleanup 정책을 동시에 들고 있었다는 점입니다.
+
+🦀 WASM으로 이동한 책임
+
+증거 인덱스에서 58e6b89 는 “수신측 패킷 재정렬 버퍼를 wasm으로 마이그레이션”한 커밋으로 남아 있습니다. 시리즈 계획도 Season 3에서 pons-core-wasm 의 책임으로 packet , reordering_buffer , zero_copy_pool , zip64 , file_signature , merkle_tree 를 함께 둡니다. 이 묶음은 우연이 아닙니다.
+
+현재 글에서 확인할 수 있는 코드 앵커도 같은 방향입니다. src/services/wasmReorderingBuffer.ts 는 pons-core-wasm 의 WasmReorderingBuffer 초기화를 먼저 시도합니다. 성공하면 WASM 경로로 push(payload, offset) 을 처리하고, 실패하면 JS ReorderingBuffer fallback으로 전환합니다. getStatus() 도 WASM 모드와 fallback 모드가 같은 표면을 갖도록 맞춥니다.
+
+[WASM first reordering buffer with JS fallback]
+
+현재 wrapper는 WASM 우선 초기화와 JS fallback을 같은 status 표면으로 묶습니다.
+
+DirectFileWriter 쪽에서는 이 wrapper가 저장 전 경계로 쓰입니다. StreamSaver 준비 단계에서 WasmReorderingBuffer 를 만들고 initialize(0) 을 호출합니다. 이후 processChunkInternal() 은 packet에서 offset 과 size 를 읽고 payload만 잘라 reordering buffer에 넣으며, 반환된 chunksToWrite 만 write buffer로 보냅니다.
+
+WASM으로 내려간 것은 “파일 저장 전체”가 아니라 “offset 기준으로 어떤 바이트 범위가 이제 순서대로 써도 되는가”라는 판단입니다.
+
+🔁 JS fallback은 왜 남았나
+
+WASM으로 옮겼다고 JS 구현을 지우지는 않았습니다. 이것도 중요한 제품 판단입니다. 브라우저 앱에서 WASM 초기화는 실패할 수 있고, 로딩 순서나 환경 차이도 있습니다. 파일 전송 제품에서 core 최적화가 실패했다고 전송 자체를 바로 포기하는 것은 너무 공격적입니다.
+
+그래서 wrapper는 WASM 우선 구조를 갖되, 실패 시 JS ReorderingBuffer 로 돌아갑니다. 이 fallback은 낡은 코드의 잔재라기보다 호환성 계약입니다. 사용자가 알아야 하는 것은 내부 구현체가 Rust인지 JS인지가 아니라, offset 순서가 보장되고 파일이 깨지지 않는다는 사실입니다.
+
+다만 fallback이 남아 있다는 사실은 글의 결론을 보수적으로 만듭니다. “모든 재정렬이 Rust에서만 일어난다”고 쓰면 틀립니다. 더 정확히는 “core 경계로 옮기는 방향을 택했고, 현재 wrapper는 WASM 우선과 JS fallback을 같은 인터페이스로 묶는다”입니다.
+
+🧱 결정성과 복잡도는 어떻게 달라졌나
+
+가장 큰 변화는 복잡도의 제거가 아니라 위치 조정입니다. JS는 여전히 브라우저 저장 API를 고르고, StreamSaver·OPFS·Blob fallback을 다루고, UI 상태와 resume hint를 관리합니다. 이 부분은 브라우저 현실과 붙어 있으므로 JS에 남는 편이 자연스럽습니다.
+
+[Determinism scope after moving reordering to WASM]
+
+WASM 이동은 복잡도 삭제가 아니라 결정적이어야 하는 바이트 순서 계약의 위치 조정이었습니다.
+
+반대로 offset 기반 push / drain , 중복 또는 과거 chunk 거부, 연속 범위만 배출하는 규칙은 같은 입력에서 같은 결과가 나와야 합니다. 이 규칙은 packet header, CRC32 검증, zero-copy pool, ZIP64 같은 core 책임과 더 가깝습니다. 그래서 pons-core-wasm 의 목록 안에 reordering buffer가 들어간 것은 “성능 최적화 목록”이라기보다 “결정적이어야 하는 바이트 계약 목록”에 가깝습니다.
+
+이동 후에도 전체 시스템이 단순해진 것은 아닙니다. 오히려 WASM 초기화, wrapper, fallback, status 통일이라는 새로운 복잡도가 생깁니다. 하지만 복잡도의 성격이 달라집니다. JS 한 파일 안에서 모든 예외를 직접 처리하는 대신, 결정적인 재정렬 규칙은 core로 내리고 브라우저 호환성은 wrapper가 맡습니다.
+
+🧭 지금 돌아보는 판단
+
+reordering buffer를 WASM으로 옮긴 이유는 “Rust가 멋져서”도 아니고 “JS가 무조건 느려서”도 아닙니다. PonsWarp가 파일 전송 제품으로 갈수록, 순서 보장은 UI 보조 기능이 아니라 파일 신뢰의 중심 계약이 되었습니다.
+
+JS는 여전히 필요한 층입니다. 브라우저 저장 API, fallback, 사용자 상태, 복구 힌트는 JS가 맡아야 합니다. 하지만 파일의 바이트 순서를 결정하는 작은 규칙은 반복 가능하고 검증 가능한 core에 더 가깝습니다.
+
+그래서 WASM reordering buffer는 성능 최적화라기보다 책임 재배치였습니다. “도착했다”와 “써도 된다”를 분리했던 post-20의 판단이, Season 3에서는 “브라우저 glue가 맡을 일”과 “core가 보증할 일”을 분리하는 판단으로 이어졌습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 검증 가능한 파일 계약을 세우는 방식을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp commit 4650d02 — 파일 깨짐 문제, 순차 쓰기, ReorderingBuffer 통합 흐름
+
+PonsWarp commit 58e6b89 — 수신측 패킷 재정렬 버퍼를 WASM으로 마이그레이션한 분기점
+
+PonsWarp/src/services/reorderingBuffer.ts:1-44 — 비순차 청크 정렬 목적과 push 기본 계약
+
+PonsWarp/src/services/reorderingBuffer.ts:53-118 — fast path, buffered path, drainBuffer 구조
+
+PonsWarp/src/services/reorderingBuffer.ts:25-35, 61-91, 125-143 — 128MB 상한, TTL, stale chunk 점검과 cleanup
+
+PonsWarp/src/services/wasmReorderingBuffer.ts:15-45, 54-86, 112-129 — WASM 우선 초기화, JS fallback, 동일한 status 표면
+
+PonsWarp/src/services/directFileWriter.ts:90-104, 704-706, 995-1084 — DirectFileWriter의 WASM 기반 재정렬 버퍼 사용 흐름
+
+content/ponswarp-retrospective/series-plan.md:273-280 — Season 3의 Rust/WASM 코어 분리 흐름과 post-28 위치
+
+content/ponswarp-retrospective/evidence-index.md:79-86, 163-167 — WASM 코어 분리 커밋과 reordering_buffer 코드 앵커

@@ -23,7 +23,7 @@ import { scoreKeyword, computeSelectionScore, freshnessFactor, normalizeGapScore
 import { recentGeneratedPosts, mixBucket } from './select-keywords.mjs';
 import { buildDuplicateGate, isAlreadyPublished } from '../lib/published-posts.mjs';
 import { readCache, applyMeasuredMetricsToCandidates } from './metrics-injector.mjs';
-import { isWeatherTriggered } from './seasonal-bridge.mjs';
+import { selectTemplate } from '../../src/core/templates/catalog.mjs';
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const GENERATED_DIR = path.join(PROJECT_ROOT, 'content', 'generated');
 // 서버는 /srv/publish-workbench/scheduled/queue, 로컬은 프로젝트 scheduled/queue
@@ -63,8 +63,8 @@ function parseArgs(argv) {
   return args;
 }
 
-function normalizeBodyFile(bodyFile = '') {
-  const raw = String(bodyFile || '');
+function normalizeProjectPath(filePath = '') {
+  const raw = String(filePath || '');
   if (!raw) return '';
   // 절대 경로면 프로젝트 루트 이후를 상대 경로로 변환 (서버 배포 호환)
   if (path.isAbsolute(raw)) {
@@ -515,11 +515,14 @@ async function main() {
         blogUrl: 'https://acstory.tistory.com',
         title: post.title || post.keyword,
         bodyHtml: '',
-        bodyFile: normalizeBodyFile(post.bodyFile),
+        bodyFile: normalizeProjectPath(post.bodyFile),
         description: post.description || '',
         category: post.category,
         tags: Array.isArray(post.tags) ? post.tags.join(',') : (post.tags || ''),
-        heroImage: post.thumbnail || '',
+        templateId: post.templateId || selectTemplate({ seed: post.id || post.keyword || post.title }).id,
+        heroImage: normalizeProjectPath(post.thumbnail),
+        image: post.image || null,
+        imageRequired: post.imageRequired === true,
         selectionScore: scored?.selectionScore ?? null,
         qaScore: scored?.qaScore ?? null,
         sourceBundle: Array.isArray(post.sourceBundle) ? [...post.sourceBundle] : (Array.isArray(post.qa?.provenance?.sources) ? [...post.qa.provenance.sources] : []),

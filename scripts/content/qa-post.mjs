@@ -16,6 +16,7 @@ import { researchKeywordMarket, evaluateAgainstMarket } from './market-research.
 import { notifyQaResult } from '../lib/discord-notify.mjs';
 import { YMYL_DENIED_PATTERNS, detectYmylRisk } from './keyword-score.mjs';
 import { inspectProvenance, hasSourceUrls, extractSourceUrls } from './provenance-gate.mjs';
+import { validateImageFile } from '../../src/core/media/image-acquisition.mjs';
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..');
 const SKILL_CANDIDATES = [
@@ -397,7 +398,7 @@ export async function qaMetaPost(meta, options = {}) {
     html = meta.bodyHtml;
   }
 
-  return qaHtmlPostWithMarket(html, {
+  const report = await qaHtmlPostWithMarket(html, {
     title: meta.title || '',
     keyword: meta.keyword || '',
     category: meta.category || '',
@@ -408,6 +409,36 @@ export async function qaMetaPost(meta, options = {}) {
     marketResearch: options.marketResearch !== false,
     ...options
   });
+
+  const imageRequired = meta.imageRequired === true;
+  const imagePath = String(meta.thumbnail || '').trim();
+  let imageCheck = null;
+  if (imagePath) {
+    const resolvedImagePath = path.isAbsolute(imagePath) ? imagePath : path.resolve(PROJECT_ROOT, imagePath);
+    imageCheck = await validateImageFile(resolvedImagePath);
+    if (!imageCheck.ok) {
+      report.failures.push({
+        code: 'image-invalid',
+        message: `대표 이미지가 유효하지 않다: ${imagePath} (${imageCheck.reason})`
+      });
+      report.ok = false;
+    }
+  } else if (imageRequired) {
+    report.failures.push({ code: 'image-missing', message: '대표 이미지가 없다. 이미지 검색 또는 Codex Imagen 생성이 필요하다.' });
+    report.ok = false;
+  }
+  const imageStatus = String(meta.image?.status || '').trim();
+  if (imageStatus === 'needs_review') {
+    report.failures.push({ code: 'image-needs-review', message: '대표 이미지가 emergency fallback이다. 자동 발행 전에 교체해야 한다.' });
+    report.ok = false;
+  } else if (imageStatus && imageStatus !== 'ready') {
+    report.failures.push({ code: 'image-not-ready', message: `대표 이미지 상태가 발행 가능하지 않다: ${imageStatus}` });
+    report.ok = false;
+  }
+  report.image = imageCheck
+    ? { path: imageCheck.path, ok: imageCheck.ok, format: imageCheck.format, width: imageCheck.width, height: imageCheck.height, bytes: imageCheck.bytes, reason: imageCheck.reason }
+    : null;
+  return report;
 }
 
 export async function writeQaReport(targetPath, report) {

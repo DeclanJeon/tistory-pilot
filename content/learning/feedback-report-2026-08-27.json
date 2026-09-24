@@ -1,0 +1,13 @@
+{
+  "date": "2026-08-27",
+  "generatedAt": "2026-08-27T11:48:03.301Z",
+  "evaluationsCount": 0,
+  "keywordCount": 0,
+  "readyCount": 0,
+  "notReadyCount": 0,
+  "minSample": 10,
+  "minObservationDays": 28,
+  "maxDelta": 0.1,
+  "note": "Shadow 리포트 — proposed-config 는 keywords.json 에 자동 반영되지 않는다. 승인 후 수동 적용.",
+  "proposals": []
+}

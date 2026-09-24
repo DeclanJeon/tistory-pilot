@@ -24,16 +24,21 @@ test('staged publish payload uses artifact references instead of inline env payl
     tags: 'a,b',
     category: 'IT·테크',
     heroImagePath: '/tmp/hero.png',
-    sourceBundle: { sourceCount: 1 }
+    templateId: 'tutorial-guide',
+    sourceBundle: { sourceCount: 1 },
+    imageProvenance: { method: 'google-images', status: 'ready', sourceUrl: 'https://unsplash.com/photos/abc' }
   });
 
   assert.match(staged.titleRef, /^job-42-title-/);
   assert.match(staged.bodyRef, /^job-42-body-/);
   assert.equal(typeof staged.sourceBundleRef, 'string');
-
+  assert.equal(typeof staged.imageProvenanceRef, 'string');
+  assert.equal(typeof staged.templateIdRef, 'string');
   const resolved = await resolveStagedPublishPayload({ artifactStore, payload: staged });
   assert.equal(resolved.title, '제목');
   assert.equal(resolved.body, '본문');
   assert.equal(resolved.category, 'IT·테크');
+  assert.equal(resolved.templateId, 'tutorial-guide');
   assert.deepEqual(resolved.sourceBundle, { sourceCount: 1 });
+  assert.deepEqual(resolved.imageProvenance, { method: 'google-images', status: 'ready', sourceUrl: 'https://unsplash.com/photos/abc' });
 });

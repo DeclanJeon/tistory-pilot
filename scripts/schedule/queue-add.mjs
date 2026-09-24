@@ -20,7 +20,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
-
+import { getTemplateById } from '../../src/core/templates/catalog.mjs';
 function parseArgs(argv) {
   const args = {
     date: '',
@@ -33,10 +33,11 @@ function parseArgs(argv) {
     tags: '',
     blogUrl: 'https://acstory.tistory.com',
     heroImage: '',
+    templateId: '',
     queueDir: '',
     id: ''
-  };
 
+  };
   for (let i = 2; i < argv.length; i++) {
     const arg = argv[i];
     const next = argv[i + 1];
@@ -50,6 +51,7 @@ function parseArgs(argv) {
     else if (arg === '--tags' && next) { args.tags = next; i++; }
     else if (arg === '--blog-url' && next) { args.blogUrl = next; i++; }
     else if (arg === '--hero-image' && next) { args.heroImage = next; i++; }
+    else if (arg === '--template-id' && next) { args.templateId = next; i++; }
     else if (arg === '--queue-dir' && next) { args.queueDir = next; i++; }
     else if (arg === '--id' && next) { args.id = next; i++; }
     else if (arg === '--help') {
@@ -66,6 +68,7 @@ function parseArgs(argv) {
   --tags TEXT          쉼표 구분 태그
   --blog-url URL       블로그 URL (기본: acstory.tistory.com)
   --hero-image PATH    대표 이미지 경로
+  --template-id ID     템플릿 ID (선택: tech-deep-dive 등)
   --queue-dir DIR      큐 디렉토리 (기본: ./scheduled/queue)
   --id TEXT            글 고유 ID (기본: 자동 생성)`);
       process.exit(0);
@@ -109,8 +112,11 @@ async function main() {
     console.error('--body 또는 --body-file 이 필요하다.');
     process.exit(1);
   }
-
   const postId = args.id || generateId(args.date, args.title);
+  if (args.templateId && !getTemplateById(args.templateId)) {
+    console.error(`지원하지 않는 템플릿 ID: ${args.templateId}`);
+    process.exit(1);
+  }
   const [hour, minute] = args.time.split(':').map(Number);
 
   const post = {
@@ -122,7 +128,8 @@ async function main() {
     description: args.description,
     tags: args.tags,
     category: args.category,
-    heroImage: args.heroImage
+    heroImage: args.heroImage,
+    templateId: args.templateId
   };
 
   // 큐 파일은 날짜별로 하나씩 (같은 날 발행 글은 하나의 파일에 묶음)

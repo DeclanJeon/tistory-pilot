@@ -1,0 +1,77 @@
+큰 파일을 브라우저로 옮기겠다고 말하면 보통은 네트워크를 먼저 떠올립니다.
+
+그런데 PonsWarp 초반에 더 먼저 얼굴을 들이민 건 메모리였습니다. 전송 자체는 되는 것처럼 보이는데, sender와 receiver 어딘가에서 버퍼가 불어나고, 저장은 늦고, 파일은 끝난 것처럼 보여도 실제로는 위험한 상태가 되는 일이 생겼습니다.
+
+[PonsWarp memory pressure map]
+
+브라우저 대용량 전송에서는 network보다 buffer pressure가 먼저 제품을 무너뜨리기도 합니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 성능 문제가 드러난 순간을 먼저 복원합니다.
+
+실패 지점 — 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 속도보다 먼저 닫아야 했던 제어 루프를 회고의 결론으로 둡니다.
+
+⚡ 메모리 문제는 생각보다 빨리 나타났습니다
+
+🎯 독자가 가져갈 질문
+
+이 글은 메모리 폭발을 처음 마주했을 때 라는 사건을 기능 소개로 소비하지 않습니다. 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 대용량 파일 전송은 생각보다 빨리 네트워크 문제가 아니라 버퍼 문제로 바뀝니다. 도착하는 속도와 써내는 속도가 다르면, 그 차이가 전부 메모리 안에서 부풀어 오르기 때문입니다.
+
+이 현실을 가장 먼저 드러내는 커밋이 2025-11-20 638bc83 입니다. 메시지는 아주 직설적입니다. 대용량 파일 다운로드 시 메모리 폭발 방지 기능 추가 . 프로젝트를 시작한 지 얼마 되지 않아 이미 메모리 폭발이라는 단어가 등장했다는 사실 자체가 중요합니다.
+
+PonsWarp는 처음부터 단순 업로드 폼이 아니었습니다. sender worker가 청크를 미리 준비하고, receiver는 들어오는 패킷을 검증하고, writer는 브라우저 제약에 맞게 저장을 이어 가야 했습니다. 이 중 어디 하나라도 속도 차이가 벌어지면 남는 데이터는 전부 메모리에 머무르게 됩니다.
+
+📦 구조를 보면 메모리가 쌓일 곳이 너무 많았습니다
+
+sender가 너무 빨리 읽어 오면 sender 메모리가 부풀고, receiver가 저장을 못 따라가면 receiver 메모리가 부풉니다. 결국 메모리 압력은 제품 전체의 제어 문제로 바뀝니다.
+
+지금 코드 기준으로 봐도 그 구조는 분명합니다. src/workers/file-sender.worker.ts 에는 DoubleBuffer , PREFETCH_BUFFER_SIZE , ZIP_QUEUE_HIGH_WATER_MARK 같은 이름이 처음부터 등장합니다. 이건 sender가 얼마만큼 데이터를 앞당겨 읽어 둘지, 언제 멈출지, 얼마나 쌓았는지를 계속 계산해야 한다는 뜻입니다.
+
+반대로 src/services/directFileWriter.ts 는 저장 계층이 단순 sink가 아니었다는 사실을 보여줍니다. 32MB 이상 쌓이면 pause, 16MB 아래로 떨어지면 resume이라는 워터마크가 있고, 8MB 배치 쓰기 기준도 있습니다. 이건 저장 속도가 네트워크 속도를 따라가지 못할 수 있다는 현실을 이미 전제로 깔고 있다는 뜻입니다.
+
+[PonsWarp buffering and batching flow]
+
+prefetch, packet encode, receiver queue, batch write가 서로 다른 속도로 움직이기 때문에 메모리 압력이 구조적으로 생깁니다.
+
+🛠️ 초반 최적화는 속도보다 버티는 쪽에 가까웠습니다
+
+638bc83 뒤에는 바로 2025-11-22 6fdd593 가 이어지고, 11월 27일에는 949d921 feat(perf): Phase 2 - 파이프라인 병렬화 + 이중 버퍼링 + 청크 풀링 이 붙습니다. 겉으로만 보면 모두 성능 최적화처럼 보입니다. 하지만 실제로는 더 빨리 보내기 위한 장치이기 전에, 더 빨리 무너지지 않게 하기 위한 장치라고 읽는 편이 맞습니다.
+
+prefetch를 과하게 당기면 sender 메모리가 부풀고, receiver가 저장을 못 따라가면 write buffer가 부풉니다. 이 상태에서 progress 숫자만 올라가면 사용자는 끝났다고 착각합니다. 그래서 PonsWarp는 청크 크기, 배치 크기, inactive buffer, chunk pool 같은 값을 단순 성능 파라미터로 다루지 못했습니다. 메모리 압력이 제품의 신뢰 문제로 번지는 걸 막는 안전장치로 다뤄야 했습니다.
+
+🔄 결국 백프레셔(backpressure)는 생존 기능이 됐습니다
+
+받는 쪽이 못 써내는 만큼 sender도 늦춰야 했습니다. 그렇지 않으면 빠른 전송은 그냥 빠른 메모리 누적으로 바뀝니다.
+
+이 흐름이 더 분명해지는 지점이 2025-12-03 54cf5f4 의 수신 측 역압(Backpressure) 제어 구현 입니다. 이름만 보면 성능 최적화처럼 보일 수 있지만, PonsWarp의 맥락에서는 거의 생존 기능에 가깝습니다.
+
+브라우저는 무한 버퍼가 아니고, 대용량 전송은 잠깐만 어긋나도 수십 MB가 순식간에 누적됩니다. 그래서 high watermark와 low watermark는 단순 수치가 아니라, sender와 receiver가 같은 현실을 보게 만드는 경계선입니다. 이 시점부터 PonsWarp는 더 이상 빨리 보내는 앱 이 아니라 무너지지 않게 보내는 앱 쪽으로 기울었다고 보는 편이 자연스럽습니다.
+
+[PonsWarp backpressure watermark control]
+
+high/low watermark는 속도 조절 장치이기 전에 메모리 생존 장치였습니다.
+
+📚 메모리 문제를 넘긴 뒤에야 다음 문제가 보였습니다
+
+💡 메모리 폭발은 보기 좋은 데모 주제가 아닙니다. 하지만 이런 문제를 지나가지 못하면, 그 뒤의 무결성이나 속도 논의도 실제 사용자 앞에서는 아무 힘을 쓰지 못합니다.
+
+PonsWarp가 이후에 저장 완료 semantics, corruption fix, reordering buffer, partial recovery 같은 쪽으로 더 깊게 가는 이유도 이 시기와 이어집니다. 메모리를 안전하게 다루지 못하면 네트워크가 멀쩡해도 제품은 오래 버티지 못합니다. 그걸 아주 빨리 배운 셈입니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 속도보다 먼저 닫아야 했던 제어 루프를 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp/src/workers/file-sender.worker.ts:31-32 — ZIP queue high/low watermark가 sender 쪽 메모리 압력을 직접 다루는 지점
+
+PonsWarp/src/workers/file-sender.worker.ts:40-110 — DoubleBuffer가 prefetch와 소비를 분리하는 구조
+
+PonsWarp/src/services/directFileWriter.ts:46-52 — receiver 저장 계층의 high/low watermark 정의
+
+PonsWarp/src/services/directFileWriter.ts:96-104 — batch write와 pendingBytesInBuffer 추적 지점

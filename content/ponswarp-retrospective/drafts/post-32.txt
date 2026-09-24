@@ -1,0 +1,107 @@
+PonsWarp를 처음 설명할 때 가장 매력적인 문장은 “서버 없이 브라우저끼리 파일을 보낸다”였습니다.
+
+제품적으로도 좋은 문장이었습니다. 사용자는 앱을 설치하지 않고, 계정을 만들지 않고, 링크나 QR로 상대를 만나 파일을 보냅니다. 파일 바이트가 서버를 거치지 않는다는 말은 신뢰와 비용 양쪽에서 강한 약속처럼 들립니다.
+
+하지만 그 문장은 절반만 맞았습니다. 파일 바이트는 WebRTC DataChannel로 브라우저 사이를 흐를 수 있어도, 두 브라우저가 서로를 찾고, 방 상태를 맞추고, ICE 후보를 교환하고, TURN 조건을 받아들이고, 죽은 방을 정리하는 일은 누군가 해야 했습니다. 그 누군가가 초기의 ponswarp-signal 이었고, 나중에는 ponswarp-signaling-rs 가 됐습니다.
+
+[ponswarp-signal to ponswarp-signaling-rs responsibility boundary]
+
+초기 시그널링 보조 서버는 운영 가능한 Rust 백엔드 경계로 확장되었습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 경계를 다시 나눈 순간을 먼저 복원합니다.
+
+실패 지점 — 브라우저와 코어, 서버가 각각 맡아야 하는 책임을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 언어 선택보다 책임 위치가 중요하다는 판단을 회고의 결론으로 둡니다.
+
+💡 이 글은 “Node에서 Rust로 바꿨다”는 언어 교체 이야기가 아닙니다. 서버 없는 전송이라는 표현 뒤에 숨어 있던 시그널링 책임을 어떻게 제품 백엔드로 다시 보게 되었는지 정리합니다.
+
+🧭 서버 없는 전송이라는 말의 빈칸
+
+🎯 독자가 가져갈 질문
+
+이 글은 ponswarp-signal에서 ponswarp-signaling-rs로 라는 사건을 기능 소개로 소비하지 않습니다. 브라우저와 코어, 서버가 각각 맡아야 하는 책임을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+P2P 파일 전송에서 서버가 완전히 사라지는 것은 아닙니다. 서버가 파일을 저장하지 않는 것과 서버가 제품 책임에서 빠지는 것은 다릅니다. PonsWarp의 직접 전송 플로우는 사용자가 파일을 고르고, 상대가 링크나 QR로 들어오고, 두 브라우저가 WebRTC 연결을 맺은 뒤 DataChannel로 패킷을 흘리는 구조입니다.
+
+이때 서버는 파일 바이트를 몰라도 됩니다. ZIP64, AES-256-GCM, packet encode/decode, reordering buffer, CRC32, file signature 같은 바이트 계약은 pons-core-wasm 과 worker 쪽의 일입니다. 하지만 서버는 연결이 시작될 수 있는 조건을 만들어야 합니다. 방을 만들고, 참가자를 매칭하고, offer/answer/ice 메시지를 전달하고, 연결이 실패했을 때 오래된 상태를 치워야 합니다.
+
+초기 ponswarp-signal 은 이 빈칸을 채우는 보조 장치에 가까웠습니다. 제품의 중심은 여전히 브라우저 앱과 전송 엔진에 있었고, 서버는 “WebRTC가 연결되도록 도와주는 얇은 중개자”로 보였습니다.
+
+그런데 모바일 연결, TURN/STUN, 방 정리, 대용량 전송의 긴 세션, Cloud Drop 같은 후속 기능이 붙으면 이야기가 달라집니다. 시그널링 서버는 더 이상 단순한 편의 장치가 아니라, 사용자가 “왜 연결이 안 되는지”, “서비스가 준비됐는지”, “죽은 세션이 남아 있지 않은지”를 간접적으로 체감하는 제품 계층이 됩니다.
+
+🧱 ponswarp-signaling-rs가 생긴 분기점
+
+증거 인덱스에서 ponswarp-signaling-rs 의 root는 2025-12-10 44fb5ad feat(server): Rust 기반 시그널링 서버 초기 구현 입니다. 그 직전까지 PonsWarp는 브라우저 전송 엔진과 Rust/WASM 코어 분리 쪽에서 큰 결정을 이어가고 있었습니다.
+
+ponswarp-signaling-rs 는 그 다음 단계의 대칭점처럼 보입니다. 파일 내부의 신뢰 조건은 WASM 코어로 내려갔고, 연결과 운영의 신뢰 조건은 별도 서버로 올라왔습니다. 즉 PonsWarp는 UI, 전송 엔진, 바이트 코어, 백엔드 운영 경계를 나누기 시작했습니다.
+
+현재 시리즈 계획 문서는 ponswarp-signaling-rs 를 admin , auth , billing , database , handlers , protocol , state , /health , /ready , /ws 같은 구성으로 설명합니다. /ws 만 있었다면 단순 시그널링 서버라고 부를 수 있습니다. 하지만 /health 와 /ready 가 들어오면 운영자가 배포 상태를 확인하는 서비스가 됩니다.
+
+이름의 변화도 단순하지 않습니다. ponswarp-signal은 기능 이름에 가깝고, ponswarp-signaling-rs는 제품 하위 시스템 이름에 가깝습니다.
+
+🔄 런타임 플로우에서 서버가 하는 일
+
+사용자 플로우만 보면 서버는 잘 보이지 않습니다. 송신자는 파일을 고르고 방을 만들며, 수신자는 링크나 QR로 들어옵니다. 두 사람이 같은 시간에 온라인이면 브라우저끼리 연결되고 파일이 흐릅니다. 이 경험에서 사용자는 서버를 만지지 않습니다.
+
+[PonsWarp signaling runtime flow]
+
+파일 바이트는 DataChannel로 흐르지만 방 생성, 참가, 상태 정리, readiness는 서버 책임입니다.
+
+시스템 플로우로 내려가면 서버의 존재감이 커집니다. sender는 방을 만들고 WebSocket으로 signaling 서버에 붙습니다. receiver는 같은 방에 참가합니다. 서버는 offer, answer, ICE candidate를 서로에게 전달합니다. 이 메시지 자체는 파일이 아니지만, 이 교환이 실패하면 파일 전송은 시작되지 않습니다.
+
+또 서버는 상태를 기억해야 합니다. 누가 방에 들어왔는지, 상대가 아직 살아 있는지, 연결이 끊겼을 때 방을 언제 치울지, 중복 참가나 오래된 참가자를 어떻게 볼지 같은 문제입니다. 증거 인덱스의 2026-05-17 f1c69cb fix: prevent signaling room cleanup deadlocks 는 시그널링 서버가 단순 relay가 아니라 동시성 있는 상태 관리 시스템이 됐음을 보여주는 커밋입니다.
+
+파일은 서버를 거치지 않는다는 문장을 유지하되, 연결 품질은 서버 책임이 아니라고 도망치면 안 됩니다. 사용자는 ICE 후보 교환이나 room cleanup을 구분하지 않고 그냥 연결 실패로 느낍니다.
+
+🧯 TURN, cleanup, readiness는 부가 기능이 아니었다
+
+초기에는 TURN/STUN도 연결 보조 설정처럼 보였습니다. 그러나 2025-11-21 2def330 feat: TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화 같은 커밋은 모바일 WebRTC에서 이 문제가 제품 필수 조건이었음을 보여줍니다.
+
+2025-12-11 b834716 feat: 시그널링 서버 안정성 향상 및 배포 자동화 추가 도 같은 방향입니다. 서버가 작더라도 배포 가능한 형태가 아니면 제품이 아닙니다. 연결을 열어주는 서버가 내려가 있거나 준비되지 않은 상태로 트래픽을 받으면, 브라우저 앱의 UI가 아무리 좋아도 사용자는 첫 단계에서 막힙니다.
+
+/health 와 /ready 의 차이도 여기서 의미가 생깁니다. 단순히 프로세스가 살아 있는지 보는 것과, 실제 요청을 받을 준비가 됐는지를 보는 것은 다릅니다. PonsWarp가 제품화 구간으로 넘어가며 readiness와 production env를 별도 주제로 잡은 이유는, 서버가 한 번 켜졌다는 사실보다 안정적으로 운영될 수 있다는 조건이 더 중요해졌기 때문입니다.
+
+cleanup은 더 까다롭습니다. 방과 참가자 상태를 너무 빨리 치우면 정상 사용자가 튕길 수 있고, 너무 늦게 치우면 죽은 상태가 남아 다음 연결을 방해할 수 있습니다. f1c69cb 의 deadlock 방지 커밋은 이 경계가 실제로 문제가 되었음을 말합니다.
+
+💳 서버가 제품 정책을 만나면 무거워진다
+
+ponswarp-signaling-rs 의 구성 목록에서 눈에 띄는 것은 auth , billing , database 입니다. 순수 P2P 파일 전송만 생각하면 낯선 단어입니다. 하지만 PonsWarp가 Cloud Drop, delayed download, pricing, entitlement를 실험하면서 서버는 자연스럽게 제품 정책의 장소가 됩니다.
+
+[PonsWarp backend productization layers]
+
+Rust signaling 서버는 protocol/state에서 operations, product policy, Cloud Drop으로 층이 두꺼워졌습니다.
+
+2026-05-12 4847872 Enable async cloud drops for delayed downloads 는 사용자가 동시에 온라인이 아니어도 파일을 받을 수 있는 방향을 열었습니다. 이 순간 P2P 직접 전송만으로는 설명할 수 없는 흐름이 생깁니다. 누가 업로드할 수 있는지, 언제까지 받을 수 있는지, 어떤 용량과 정책을 적용할지, 결제나 권한과 어떻게 연결할지 같은 질문이 생깁니다.
+
+이어지는 b6f3ea8 의 Cloud Drop pricing page, f8f2120 의 Stripe Checkout entitlement, 2e4593d 의 PayPal billing, 3628858 의 resumable multipart uploads, a004c91 의 Free plan cloud policy, 212d751 의 gated account/billing surface 비활성화는 모두 서버가 점점 제품 정책의 무게를 받게 된 기록입니다. 이 글에서 그 구현 세부를 새로 단정할 수는 없지만, 방향은 분명합니다.
+
+이 변화는 위험도 같이 가져옵니다. 서버가 무거워지면 “P2P라서 단순하다”는 장점이 줄어듭니다. 반대로 서버를 끝까지 얇게 유지하면 Cloud Drop 같은 제품 흐름을 정직하게 다루기 어렵습니다.
+
+⚖️ 지금 돌아보는 판단
+
+ponswarp-signal 에서 ponswarp-signaling-rs 로 간 결정은 “Rust가 좋아서 서버를 다시 썼다”가 아닙니다. 더 정확히 말하면, PonsWarp가 서버 없는 전송이라는 문장을 실제 제품 구조에 맞게 고쳐 읽기 시작한 순간입니다.
+
+파일 바이트는 가능한 한 브라우저끼리 직접 흘려야 합니다. 이 원칙은 여전히 중요합니다. 서버가 파일 내용을 알지 않는다는 점은 PonsWarp의 핵심 제품 감각입니다. 하지만 연결을 맺고, 방을 유지하고, TURN 조건을 제공하고, 준비 상태를 알리고, 죽은 상태를 치우고, Cloud Drop 정책과 권한을 다루는 일은 서버 책임입니다.
+
+좋은 P2P 제품은 서버를 없애는 제품이 아니라, 서버가 맡아야 할 것과 맡지 말아야 할 것을 정확히 나누는 제품에 가깝습니다. PonsWarp에서 ponswarp-signaling-rs 는 그 선을 다시 그은 결과였습니다. 파일 전송의 신뢰는 WASM 코어와 브라우저 저장 흐름이 받치고, 연결과 운영의 신뢰는 Rust signaling 서버가 받치는 구조입니다.
+
+서버는 파일을 운반하지 않아도 제품을 운반합니다. 그 사실을 받아들이는 순간, ponswarp-signaling-rs 는 작은 중개자가 아니라 PonsWarp의 운영 가능한 백엔드가 됩니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 언어 선택보다 책임 위치가 중요하다는 판단을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드와 근거
+
+ponswarp-signaling-rs commits 44fb5ad, b834716, f1c69cb — Rust signaling 서버 초기 구현, 안정성/배포 자동화, room cleanup deadlock 방지
+
+PonsWarp commit 2def330 — TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화
+
+PonsWarp commits 4847872, b6f3ea8, f8f2120, 2e4593d, 3628858, a004c91, 212d751 — Cloud Drop, pricing, entitlement, billing, resumable upload, free plan, gated surface 조정 흐름
+
+content/ponswarp-retrospective/series-plan.md — ponswarp-signaling-rs 구성: admin, auth, billing, database, handlers, protocol, state, /health, /ready, /ws
+
+content/ponswarp-retrospective/evidence-index.md — 시그널링 서버와 제품화 커밋 매핑

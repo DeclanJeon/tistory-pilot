@@ -1,0 +1,79 @@
+TURN, room cleanup, deadlock, protocol edge case
+
+PonsWarp를 처음 설명할 때는 “서버 없는 전송”이라는 말이 편했습니다. 실제 파일 바이트는 브라우저와 브라우저 사이의 WebRTC DataChannel을 지나가고, 서버는 상대를 찾게 해 주는 시그널링에 머문다는 설명이 가능했기 때문입니다. 하지만 post-31부터 다시 보게 된 것처럼 그 말은 절반만 맞았습니다.
+
+서버가 파일을 중계하지 않아도, 연결이 성립되는 순간까지는 서버가 제품 신뢰의 한가운데에 있습니다. 특히 TURN 설정, 방 정리, join/leave 브로드캐스트, 프로토콜의 작은 필드들은 사용자가 “왜 연결이 안 되지?”라고 느끼는 지점과 바로 붙어 있었습니다. post-34에서 다룰 `TURN, cleanup, deadlock, edge case`는 화려한 기능 추가가 아니라, 서버가 조용히 망가지면 P2P 제품 전체가 흔들린다는 사실을 보여준 구간입니다.
+
+💡 이 글은 TURN 서버를 붙였다는 단순한 이야기가 아닙니다. `ponswarp-signaling-rs`에서 TURN 자격증명 생성, fallback URL 처리, room cleanup deadlock 방지, 프로토콜 직렬화 edge case 확인이 어떤 제품 의미를 가졌는지 정리합니다.
+
+🧭 당시 제품 상태
+
+이 시점의 PonsWarp는 이미 브라우저 전송 엔진만 보던 단계를 지나 있었습니다. 앞선 글들에서 다룬 것처럼 전송 쪽에는 ACK, backpressure, RTT 적응, 재정렬 버퍼, WASM 코어, ZIP64, 암호화 경계가 붙어 있었습니다. 사용자가 보는 표면은 여전히 “링크를 열고 파일을 보낸다”였지만, 내부에는 여러 실패 방어선이 쌓여 있었습니다.
+
+그런데 전송 엔진이 아무리 단단해도 첫 연결이 흔들리면 사용자는 그 차이를 느끼지 못합니다. 모바일 NAT, 회사망, 가정용 공유기, 브라우저의 ICE 후보 수집 실패 앞에서는 “내 파일이 안전한가” 이전에 “상대와 붙는가”가 먼저입니다. 그래서 `2025-11-21 2def330 feat: TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화` 같은 초반 커밋은 단순 네트워크 옵션이 아니라 제품 진입 조건이었습니다.
+
+`ponswarp-signaling-rs`가 `2025-12-10 44fb5ad feat(server): Rust 기반 시그널링 서버 초기 구현`으로 따로 서고, `2025-12-11 b834716 feat: 시그널링 서버 안정성 향상 및 배포 자동화 추가`로 안정화 방향을 잡은 뒤에도 이 문제는 끝나지 않았습니다. 서버가 맡는 일이 적어 보일수록, 그 적은 일이 실패했을 때 전체 제품이 설명 불가능해졌습니다.
+
+🧱 TURN은 연결의 부속품이 아니었다
+
+WebRTC에서 TURN은 흔히 fallback으로 설명됩니다. 직접 P2P가 되면 쓰지 않고, NAT나 방화벽 때문에 직접 연결이 실패하면 relay를 쓰는 방식입니다. 하지만 제품 입장에서는 “fallback”이라는 단어가 위험합니다. fallback이 실패하면 사용자는 fallback을 모릅니다. 그냥 연결이 안 된다고 느낍니다.
+
+현재 `src/handlers/turn.rs`의 `handle_turn_config_request`는 서버 설정에 TURN URL이나 secret이 없으면 `success: false`와 `TURN server not configured`를 보냅니다. 설정이 있으면 HMAC-SHA1 기반 임시 username/password를 만들고, `ttl`, `timestamp`, `room_id`를 포함한 `TurnConfigData`를 내려보냅니다. 이 구조는 클라이언트가 무기한 자격증명을 들고 있는 것이 아니라, 특정 방과 특정 시점의 연결 시도에 맞춰 ICE 서버 목록을 받는 흐름입니다.
+
+중요한 것은 `build_ice_servers`의 세부입니다. TURN URL은 `turn:` 또는 `turns:` 후보로 만들어지고 username, credential, credential_type이 붙습니다. 반면 `stun:` fallback은 credential을 붙이지 않습니다. 그리고 `2026-05-17 3697ece fix: preserve explicit ICE fallback URLs`가 보여주듯, 이미 `stun:stun.l.google.com:19302`처럼 완성된 fallback URL을 `turn:stun:stun.l.google.com:19302:3478` 같은 잘못된 주소로 재조합하면 브라우저가 거부하는 ICE 서버 목록이 됩니다.
+
+이런 버그는 화면에서 잘 드러나지 않습니다. 사용자는 “서버가 응답했다”는 사실만으로 충분하지 않습니다. 서버가 브라우저가 받아들일 수 있는 ICE 후보 목록을 내려줘야 합니다. TURN 처리의 핵심은 네트워크 이론이 아니라, 실패해도 사용자가 이해하기 어려운 연결 전 단계를 서버가 최대한 정확하게 닫는 것입니다.
+
+🧹 방 정리는 운영 기능이었다
+
+방 관리는 시그널링 서버에서 가장 평범해 보이는 기능입니다. 누가 들어왔고, 누가 나갔고, 현재 방에 누가 있는지 알려 주면 됩니다. 하지만 오래 열린 서비스에서 평범한 기능은 자주 위험합니다. join/leave는 거의 모든 세션이 지나가는 경로이고, cleanup은 문제가 생겼을 때 누수를 막는 경로입니다.
+
+`src/handlers/room.rs`의 `handle_join_room`은 방을 가져오거나 만들고, 최대 인원 제한을 확인하고, 기존 사용자 목록을 새 사용자에게 보낸 뒤 기존 사용자들에게 `PeerJoined`를 알립니다. 그 뒤 업데이트된 `RoomUsers`를 브로드캐스트합니다. 여기서 눈에 띄는 주석은 “스코프 제한으로 Deadlock 방지”입니다. 방의 DashMap guard를 잡은 상태에서 같은 map을 다시 조회하는 async 작업으로 들어가면, 작은 join/leave가 서버 전체 정지처럼 보일 수 있습니다.
+
+`leave_room_internal`의 주석은 더 직접적입니다. DashMap room guard를 잡은 상태에서 `await` 또는 `broadcast_to_room`을 호출하면, `broadcast_to_room`이 같은 DashMap shard를 다시 조회하면서 런타임 전체가 멈출 수 있다고 적혀 있습니다. 그래서 현재 코드는 먼저 `remaining`, `updated_users`, `should_delete`만 복사하고 guard scope를 끝낸 뒤, 브로드캐스트와 방 삭제를 수행합니다.
+
+이 변화가 `2026-05-17 f1c69cb fix: prevent signaling room cleanup deadlocks`의 핵심입니다. stat만 보면 `src/handlers/room.rs`와 `src/handlers/turn.rs`를 고친 작은 안정화 커밋처럼 보입니다. 하지만 제품 의미는 작지 않습니다. 연결 방이 정리되지 않거나 leave가 멈추면 사용자는 상대가 나갔는지, 방이 꽉 찼는지, 다시 들어가도 되는지 알 수 없습니다. 파일을 중계하지 않는 서버라도 방 상태를 거짓으로 보여 주면 제품 신뢰는 깨집니다.
+
+🔁 프로토콜 edge case는 작은 JSON 문제가 아니었다
+
+`2026-05-11 df0a6dc Verify signaling protocol edge cases`는 이름 그대로 프로토콜의 모서리를 확인한 커밋입니다. `src/protocol/messages.rs`에는 `ClientMessage`와 `ServerMessage`가 serde tag/content 구조로 정의되어 있습니다. `JoinRoom`, `Offer`, `Answer`, `IceCandidate`, `Manifest`, `TransferReady`, `TransferComplete`, `RequestTurnConfig`, `RefreshTurnCredentials`, `CheckTurnServerStatus`가 같은 enum 안에서 움직입니다.
+
+여기서 edge case는 대단한 알고리즘이 아닙니다. `Manifest`가 `target`을 포함해 왕복 직렬화되는지, `ServerMessage::TurnConfig`에서 STUN 서버처럼 인증 정보가 없는 ICE 서버가 `username`, `credential`, `credential_type`을 아예 생략하는지 같은 문제입니다. 작아 보이지만, 이런 필드가 틀어지면 클라이언트는 실패 원인을 잘못 해석합니다.
+
+예를 들어 native QUIC 모드의 manifest가 특정 상대에게 가야 하는데 target이 빠지면, 서버는 메시지를 중계하더라도 의도한 수신자 계약을 잃습니다. STUN 서버에 credential 필드가 불필요하게 붙거나, 반대로 TURN 서버에 credential이 빠지면 브라우저 ICE 구성에서 실패할 수 있습니다. `room_id`, `ttl`, `timestamp`가 빠지면 클라이언트는 받은 TURN 설정이 어느 방과 어느 시점에 유효한지 판단하기 어렵습니다.
+
+이 지점에서 시그널링 서버는 단순 라우터가 아닙니다. WebRTC offer/answer/candidate를 전달하는 것뿐 아니라, 클라이언트가 실패를 분류할 수 있는 프로토콜 표면을 보존해야 합니다. 서버가 파일 바이트를 보지 않는다는 사실은 프로토콜 책임이 가볍다는 뜻이 아니었습니다.
+
+⚖️ deadlock 방지와 제품 UX의 거리
+
+deadlock은 보통 내부 구현 문제처럼 들립니다. 사용자는 lock, DashMap, async await를 보지 않습니다. 하지만 방 정리 deadlock은 사용자 경험과 멀리 떨어져 있지 않습니다.
+
+방에 들어갔는데 기존 사용자가 보이지 않거나, 상대가 나갔는데 계속 남아 보이거나, cleanup이 실패해서 오래된 방이 계속 살아 있거나, 방 인원 제한이 실제 상태와 다르게 동작하면 사용자는 네트워크 문제인지 제품 문제인지 구분하지 못합니다. P2P 서비스에서 이런 혼란은 더 치명적입니다. 이미 사용자는 “내 브라우저, 상대 브라우저, 공유기, 모바일망, 서버” 중 어디가 문제인지 알기 어렵습니다. 서버의 room 상태까지 불안정하면 실패 설명이 거의 불가능해집니다.
+
+그래서 `f1c69cb`의 lock scope 축소는 코드 품질 개선을 넘어 UX 방어입니다. 서버 내부에서 상태 변경과 네트워크/채널 작업을 분리하면, 적어도 방 상태를 고치는 경로가 자기 자신을 다시 막는 일은 줄어듭니다. 이것은 빠른 전송 기능은 아니지만, 사용자가 다시 시도할 수 있는 상태를 만드는 기능입니다.
+
+🧩 시스템 구조로 보면
+
+이 구간의 구조는 네 층으로 나눠 볼 수 있습니다. 첫째, 브라우저 UI는 사용자에게 방 입장, 상대 대기, 전송 준비, 오류를 보여줍니다. 둘째, WebRTC 계층은 offer/answer/candidate와 ICE 후보를 사용해 실제 연결을 시도합니다. 셋째, signaling backend는 방 상태와 메시지 라우팅, TURN 설정 제공, cleanup을 맡습니다. 넷째, TURN/STUN 인프라는 직접 연결이 안 되는 환경에서 ICE 후보를 보강합니다.
+
+이 구조에서 signaling backend는 데이터 경로의 밖에 있지만 제어 경로의 안에 있습니다. 파일 바이트는 지나가지 않지만, 연결 가능성, 상대 존재 여부, 방 상태, 자격증명, fallback URL은 모두 이 서버를 통과합니다. 그래서 서버 없는 전송이라는 표현은 제품 설명으로는 조심해야 했습니다. 데이터는 서버를 피할 수 있어도, 제품 신뢰는 서버를 피하지 못했습니다.
+
+🔍 지금 돌아보는 판단
+
+이 시기의 판단은 “서버를 크게 만들자”가 아니었습니다. 오히려 반대에 가깝습니다. 서버가 맡는 일을 좁게 유지하되, 그 좁은 경계 안에서는 거짓말하지 않게 만드는 것이었습니다.
+
+TURN 설정은 연결 실패를 줄이는 경계였습니다. room cleanup은 오래된 상태와 교착을 막는 경계였습니다. protocol edge case 검증은 클라이언트가 메시지를 오해하지 않게 하는 경계였습니다. 각각은 작아 보이지만 모두 사용자가 전송을 시작하기 전후에 만나는 신뢰 조건입니다.
+
+PonsWarp에서 배운 점은 P2P 제품의 서버가 “파일을 보지 않는다”는 이유로 가벼워지지 않는다는 것입니다. 서버가 보지 않는 것은 파일 내용이지, 제품 상태가 아닙니다. 방, 연결, TURN, 프로토콜, cleanup은 전송의 입구를 지키는 상태입니다. 그 입구가 막히면 아무리 전송 엔진이 좋아도 사용자는 제품을 신뢰할 수 없습니다.
+
+📚 읽은 코드
+
+- `ponswarp-signaling-rs/src/handlers/turn.rs` — TURN 자격증명 생성, HMAC-SHA1 password, `TurnConfigData`, fallback URL 보존, STUN credential 생략
+- `ponswarp-signaling-rs/src/handlers/room.rs` — `handle_join_room`, `leave_room_internal`, `broadcast_to_room`, `cleanup_old_rooms`, DashMap guard scope 축소
+- `ponswarp-signaling-rs/src/protocol/messages.rs` — `ClientMessage`, `ServerMessage`, `TurnConfigData`, `IceServer`, protocol serialization tests
+- `2025-11-21 2def330` — TURN 서버 설정을 동적으로 가져와 모바일 WebRTC 연결 안정화
+- `2025-12-10 44fb5ad` — Rust 기반 시그널링 서버 초기 구현
+- `2025-12-11 b834716` — 시그널링 서버 안정성 향상 및 배포 자동화 추가
+- `2026-05-11 df0a6dc` — signaling protocol edge cases 검증
+- `2026-05-17 3697ece` — explicit ICE fallback URL 보존
+- `2026-05-17 f1c69cb` — signaling room cleanup deadlock 방지

@@ -13,6 +13,7 @@ import {
   buildEditorUrl,
   buildManagePostUrl,
   collectBodyImageDataUrls,
+  inlineBodyImageSources,
   resolveOutputPath,
   toDataUrl,
   writeDataUrlFile
@@ -368,7 +369,6 @@ function sanitizeHtmlDocumentBody(input) {
     .replace(/\n\s*\n+/g, '\n')
     .trim();
 }
-
 function isReadyTistoryHtml(value) {
   const html = String(value || '');
   if (!looksLikeHtml(html)) return false;
@@ -379,22 +379,33 @@ function isReadyTistoryHtml(value) {
   return plain.length >= 800 && (pCount >= 4 || hCount >= 3 || /font-size\s*:\s*16px/i.test(html));
 }
 
+function withHeroImage(html, input) {
+  const heroImageDataUrl = String(input.heroImageDataUrl || '').trim();
+  if (!heroImageDataUrl || String(html || '').includes(heroImageDataUrl)) return String(html || '').trim();
+  const figure = `<figure data-tistory-hero="true" style="margin:1.5rem 0;text-align:center;"><img src="${heroImageDataUrl}" alt="${escapeHtml(input.heroImageAlt || input.title || 'hero image')}" style="width:100%;height:auto;border-radius:12px;" /><figcaption>${escapeHtml(input.heroImageCaption || input.title || '')}</figcaption></figure>`;
+  const rootOpen = String(html || '').match(/^\s*<div\b[^>]*>/i);
+  if (!rootOpen) return `${figure}${String(html || '').trim()}`;
+  return `${rootOpen[0]}${figure}${String(html || '').slice(rootOpen[0].length).trim()}`;
+}
+
 export function buildTistoryBodyHtml(input) {
   const rawBody = String(input.body || '');
+  const withLocalImages = value => inlineBodyImageSources(value, input.bodyImageDataUrls);
   // Full HTML posts from generate-post should pass through with light cleanup only.
   if (isReadyTistoryHtml(rawBody)) {
-    return rawBody
+    const normalized = withLocalImages(rawBody)
       .replace(/<!doctype html>/ig, '')
       .replace(/<\/?html[^>]*>/ig, '')
       .replace(/<\/?head[^>]*>[\s\S]*?<\/head>/ig, '')
       .replace(/<\/?body[^>]*>/ig, '')
       .trim();
+    return withHeroImage(normalized, input);
   }
   if (looksLikeHtml(rawBody)) {
-    const sanitized = sanitizeHtmlDocumentBody(input);
-    if (sanitized) return sanitized;
+    const sanitized = sanitizeHtmlDocumentBody({ ...input, body: withLocalImages(rawBody) });
+    if (sanitized) return withHeroImage(sanitized, input);
     if (rawBody.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length >= 400) {
-      return rawBody.trim();
+      return withHeroImage(withLocalImages(rawBody.trim()), input);
     }
     const fallback = [];
     if (input.heroImageDataUrl) fallback.push(`<p><img src="${input.heroImageDataUrl}" alt="${escapeHtml(input.heroImageAlt || input.title || 'hero image')}" style="max-width:100%;height:auto;" /></p>`);
@@ -411,8 +422,10 @@ export function buildTistoryBodyHtml(input) {
     const imageMatch = trimmed.match(/^!\[(.*?)\]\(([^\s)]+)\)$/i);
     if (imageMatch) {
       const [, alt, src] = imageMatch;
-      const resolvedSrc = /^https?:/i.test(src) || /^data:/i.test(src) ? src : (input.bodyImageDataUrls?.[src] || src);
-      blocks.push(`<p><img src="${escapeHtml(resolvedSrc)}" alt="${escapeHtml(alt || input.title || 'source image')}" style="max-width:100%;height:auto;" /></p>`);
+      const resolvedSrc = sanitizeResolvedSrc(src, input.bodyImageDataUrls);
+      if (resolvedSrc) {
+        blocks.push(`<p><img src="${escapeHtml(resolvedSrc)}" alt="${escapeHtml(alt || input.title || 'source image')}" style="max-width:100%;height:auto;" /></p>`);
+      }
       continue;
     }
     const headingMatch = trimmed.match(/^(#{2,3})\s+(.+)$/);
@@ -711,11 +724,70 @@ async function selectVisibilityOnPage(page, requestedVisibility) {
   }
   return { ok: true, requested, selectedText: selected };
 }
+async function representativeInputDescriptor(page) {
+  return page.evaluate(() => {
+    const modal = document.querySelector('.ReactModal__Content, [role="dialog"]');
+    const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
+    const scopedInputs = modal ? inputs.filter(input => modal.contains(input)) : inputs;
+    const candidates = scopedInputs.map(input => {
+      const index = inputs.indexOf(input);
+      const context = [
+        input.getAttribute('accept'),
+        input.getAttribute('name'),
+        input.getAttribute('id'),
+        input.closest('label')?.innerText,
+        input.parentElement?.innerText,
+        modal?.contains(input) ? modal.innerText : ''
+      ].join(' ').replace(/\s+/g, ' ').trim();
+      let score = 0;
+      if (/image|png|jpe?g|webp/i.test(input.getAttribute('accept') || '')) score += 4;
+      if (/대표\s*이미지|썸네일|thumbnail|cover/i.test(context)) score += 12;
+      if (modal?.contains(input)) score += 2;
+      return {
+        index,
+        score,
+        id: input.id || null,
+        name: input.getAttribute('name') || null,
+        accept: input.getAttribute('accept') || null,
+        context: context.slice(0, 180)
+      };
+    }).sort((left, right) => right.score - left.score);
+    return candidates[0] || null;
+  });
+}
+
+async function openRepresentativeImagePicker(page) {
+  return page.evaluate(() => {
+    const modal = document.querySelector('.ReactModal__Content, [role="dialog"]');
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    const candidates = Array.from((modal || document).querySelectorAll('button, label, [role="button"], a'))
+      .filter(element => /대표\s*이미지|썸네일|thumbnail|cover/i.test(normalize(element.innerText || element.textContent || element.getAttribute('aria-label') || '')));
+    const target = candidates.find(element => !/삭제|remove|cancel/i.test(normalize(element.innerText || element.textContent || '')));
+    if (!target) return { clicked: false };
+    target.click();
+    return { clicked: true, text: normalize(target.innerText || target.textContent || '') };
+  });
+}
+
+async function findRepresentativeImageInput(page) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const descriptor = await representativeInputDescriptor(page);
+    if (descriptor) return descriptor;
+    if (attempt === 0) {
+      const opened = await openRepresentativeImagePicker(page);
+      if (!opened?.clicked) break;
+      await page.waitForTimeout(400);
+    }
+  }
+  return null;
+}
+
 async function setRepresentativeImageOnPage(page, imagePath) {
   if (!imagePath) return { ok: true, skipped: true, imagePath: null };
-  const input = page.locator('input[type="file"]').first();
-  if (!await input.count()) return { ok: false, reason: 'representative-image-input-not-found', imagePath };
-await input.setInputFiles(imagePath);
+  const descriptor = await findRepresentativeImageInput(page);
+  if (!descriptor) return { ok: false, reason: 'representative-image-input-not-found', imagePath };
+  const input = page.locator('input[type="file"]').nth(descriptor.index);
+  await input.setInputFiles(imagePath);
   await page.waitForTimeout(1500);
   try {
     await page.waitForFunction(
@@ -725,15 +797,19 @@ await input.setInputFiles(imagePath);
     );
   } catch {}
   const state = await page.evaluate(() => {
-    const modalText = String(document.querySelector('.ReactModal__Content')?.innerText || '').replace(/\s+/g, ' ').trim();
+    const modal = document.querySelector('.ReactModal__Content, [role="dialog"]');
+    const modalText = String(modal?.innerText || '').replace(/\s+/g, ' ').trim();
+    const preview = modal?.querySelector('img[src^="blob:"], img[src^="data:"], img[src^="http"]');
     return {
-      hasDeleteAction: modalText.includes('삭제'),
+      hasDeleteAction: /삭제|제거|remove/i.test(modalText),
+      hasPreview: Boolean(preview),
       modalText: modalText.slice(0, 400)
     };
   });
   return {
-    ok: state.hasDeleteAction,
+    ok: state.hasDeleteAction || state.hasPreview,
     imagePath,
+    input: descriptor,
     ...state
   };
 }
@@ -1060,6 +1136,93 @@ async function attemptKakaoPasswordLoginOnPage(page, kakaoLogin) {
   return { attempted: true, ok: true, submitted: filled.submitted, state };
 }
 
+function createTistoryUploadTracker(page) {
+  const pendingRequests = new Set();
+  let started = 0;
+  let completed = 0;
+  let lastEventAt = 0;
+  const failures = [];
+  const isAttachmentRequest = request => request.url().includes('/manage/post/attach.json');
+  const markCompleted = request => {
+    if (!pendingRequests.delete(request)) return;
+    completed += 1;
+    lastEventAt = Date.now();
+  };
+  const onRequest = request => {
+    if (request.method() !== 'POST' || !isAttachmentRequest(request)) return;
+    pendingRequests.add(request);
+    started += 1;
+    lastEventAt = Date.now();
+  };
+  const onResponse = response => {
+    const request = response.request();
+    if (request.method() !== 'POST' || !isAttachmentRequest(request)) return;
+    if (response.status() >= 400) {
+      failures.push({ url: response.url(), status: response.status() });
+    }
+    markCompleted(request);
+  };
+  const onRequestFailed = request => {
+    if (!isAttachmentRequest(request)) return;
+    failures.push({ url: request.url(), error: request.failure()?.errorText || 'request-failed' });
+    markCompleted(request);
+  };
+  page.on('request', onRequest);
+  page.on('response', onResponse);
+  page.on('requestfailed', onRequestFailed);
+  return {
+    snapshot() {
+      return { pending: pendingRequests.size, started, completed, failures: [...failures], lastEventAt };
+    },
+    async waitForIdle({ timeoutMs = 120000, quietMs = 1500 } = {}) {
+      const deadline = Date.now() + timeoutMs;
+      while (Date.now() < deadline) {
+        if (pendingRequests.size === 0 && failures.length === 0 && (lastEventAt === 0 || Date.now() - lastEventAt >= quietMs)) {
+          return { ...this.snapshot(), ok: true };
+        }
+        await page.waitForTimeout(250);
+      }
+      return {
+        ...this.snapshot(),
+        ok: pendingRequests.size === 0 && failures.length === 0,
+        timedOut: true
+      };
+    },
+    dispose() {
+      page.off('request', onRequest);
+      page.off('response', onResponse);
+      page.off('requestfailed', onRequestFailed);
+    }
+  };
+}
+
+async function waitForTistoryUploads(page, uploadTracker) {
+  await page.waitForFunction(
+    () => !String(document.body?.innerText || '').includes('업로드 중입니다.'),
+    null,
+    { timeout: 120000 }
+  ).catch(() => {});
+  return uploadTracker ? uploadTracker.waitForIdle() : { ok: true, pending: 0, started: 0, completed: 0 };
+}
+
+async function inspectEditorImages(page) {
+  return page.evaluate(() => {
+    const html = String(window.tinymce?.activeEditor?.getContent?.() || '');
+    const sources = Array.from(document.querySelectorAll('img')).map(image => image.getAttribute('src') || '');
+    const editorImages = (html.match(/<img\b/gi) || []).length;
+    const dataImages = (html.match(/<img\b[^>]*\bsrc=["']data:image\//gi) || []).length;
+    const localImages = Array.from(html.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/gi))
+      .map(match => match[1])
+      .filter(src => !/^(?:https?:|data:|blob:)/i.test(src));
+    return {
+      editorImages,
+      dataImages,
+      localImages,
+      pageImageCount: sources.length
+    };
+  });
+}
+
 async function openEditorAndDetectOnPage(page, editorUrl) {
   await page.goto(editorUrl, { waitUntil: 'commit', timeout: 15000 });
   const deadline = Date.now() + 30000;
@@ -1085,10 +1248,12 @@ export function createAgbrowseAutomation({ qrEmailConfig = null, kakaoLoginConfi
       const kakaoLogin = options.kakaoLogin || kakaoLoginConfig || null;
       const editorUrl = buildEditorUrl(options.blogUrl);
       if (!editorUrl) throw new Error('blogUrl is required.');
-      const heroImageDataUrl = options.heroImagePath ? toDataUrl(options.heroImagePath) : '';
-      const bodyImageDataUrls = collectBodyImageDataUrls(options.body || '');
+      const heroImagePath = options.heroImagePath || options.representativeImagePath || '';
+      const heroImageDataUrl = heroImagePath ? toDataUrl(heroImagePath) : '';
+      const bodyImageDataUrls = collectBodyImageDataUrls(options.body || '', { baseDir: options.bodyBaseDir || '' });
       ensureBrowserStarted({ headed: options.headed });
       const { browser, page } = await connectManagedPage();
+      const uploadTracker = createTistoryUploadTracker(page);
       try {
         let state = await openEditorAndDetectOnPage(page, editorUrl);
         const deadline = Date.now() + options.waitForLoginMs;
@@ -1187,15 +1352,26 @@ if (!fillResult?.ok) throw new Error(`본문 채우기에 실패했다: ${JSON.s
 if (Number(fillResult.bodyTextLength || 0) < minimumFillChars) {
   throw new Error(`본문이 너무 짧게 입력되었다: ${JSON.stringify({ minimumFillChars, fillResult, bodyHtmlLength: String(bodyHtml || '').length })}`);
 }
+await page.waitForTimeout(500);
+let imageUploadResult = await waitForTistoryUploads(page, uploadTracker);
+let imageVerification = await inspectEditorImages(page);
+if (!imageUploadResult.ok) {
+  throw new Error(`본문 이미지 업로드가 끝나지 않았다: ${JSON.stringify({ imageUploadResult, imageVerification })}`);
+}
+if (imageVerification.localImages.length > 0) {
+  throw new Error(`로컬 이미지 경로가 본문에 남아 있다: ${JSON.stringify(imageVerification)}`);
+}
+if (heroImageDataUrl && imageVerification.editorImages < 1) {
+  throw new Error(`대표 이미지가 본문에 삽입되지 않았다: ${JSON.stringify(imageVerification)}`);
+}
 const categoryResult = await selectCategoryOnPage(page, options.category);
 if (!categoryResult?.ok) throw new Error(`카테고리를 선택하지 못했다: ${JSON.stringify(categoryResult)}`);
 const tagResult = await setTagsOnPage(page, options.tags);
 if (!tagResult?.ok) throw new Error(`태그를 입력하지 못했다: ${JSON.stringify(tagResult)}`);
-await page.waitForFunction(
-  () => !String(document.body?.innerText || '').includes('업로드 중입니다.'),
-  null,
-  { timeout: 120000 }
-).catch(() => {});
+imageUploadResult = await waitForTistoryUploads(page, uploadTracker);
+if (!imageUploadResult.ok) {
+  throw new Error(`메타데이터 처리 중 이미지 업로드가 끝나지 않았다: ${JSON.stringify(imageUploadResult)}`);
+}
 let publishResult = null;
 let scheduleResult = { ok: true, skipped: true };
 let homeTopicResult = { ok: true, skipped: true };
@@ -1228,15 +1404,17 @@ const requestedVisibility = String(options.visibility || 'public').trim();
     if (!homeTopicResult?.ok) {
       throw new Error(`홈주제 선택에 실패했다: ${JSON.stringify(homeTopicResult)}`);
     }
-    representativeImageResult = await setRepresentativeImageOnPage(page, options.representativeImagePath || '');
+    const representativeImagePath = options.representativeImagePath || options.heroImagePath || '';
+    representativeImageResult = await setRepresentativeImageOnPage(page, representativeImagePath);
     if (!representativeImageResult?.ok) {
       throw new Error(`대표이미지 설정에 실패했다: ${JSON.stringify(representativeImageResult)}`);
     }
-    await page.waitForFunction(
-      () => !String(document.body?.innerText || '').includes('업로드 중입니다.'),
-      null,
-      { timeout: 120000 }
-    ).catch(() => {});
+    await page.waitForTimeout(500);
+    imageUploadResult = await waitForTistoryUploads(page, uploadTracker);
+    if (!imageUploadResult.ok) {
+      throw new Error(`대표이미지 업로드가 끝나지 않았다: ${JSON.stringify(imageUploadResult)}`);
+    }
+    imageVerification = await inspectEditorImages(page);
   } else {
     scheduleResult = { ok: true, skipped: true, reason: 'private-visibility' };
     homeTopicResult = { ok: true, skipped: true, reason: 'private-visibility' };
@@ -1259,8 +1437,8 @@ const requestedVisibility = String(options.visibility || 'public').trim();
     if (!publishResult?.retry?.ok) {
       throw new Error(`발행 확인에 실패했다: ${JSON.stringify(publishResult)}`);
     }
+    }
   }
-}
 return {
   mode: options.publish === false ? 'draft' : 'publish',
   editorUrl,
@@ -1268,6 +1446,8 @@ return {
   fillResult,
   categoryResult,
   tagResult,
+  imageUploadResult,
+  imageVerification,
   publishResult,
   scheduleResult,
   homeTopicResult,
@@ -1276,6 +1456,7 @@ return {
   qrImagePath: resolveOutputPath(options.qrImagePath)
 };
       } finally {
+        uploadTracker.dispose();
         await page.close({ runBeforeUnload: false }).catch(() => {});
         await browser.close().catch(() => {});
       }
@@ -1289,7 +1470,7 @@ return {
       const editorUrl = buildManagePostUrl(options.blogUrl, postId);
       if (!editorUrl) throw new Error('blogUrl and postId are required.');
       const bodySource = String(options.body || '');
-      const bodyImageDataUrls = collectBodyImageDataUrls(bodySource);
+      const bodyImageDataUrls = collectBodyImageDataUrls(bodySource, { baseDir: options.bodyBaseDir || '' });
       ensureBrowserStarted({ headed: options.headed });
       const { browser, page } = await connectManagedPage();
       let postRequestCapture = null;
@@ -1429,7 +1610,7 @@ return {
         if (!state.ready) throw new Error(`수정 에디터를 찾지 못했다: ${JSON.stringify({ state, qrLogin: summarizeQrLogin(qrLogin) })}`);
 
 const bodyHtml = looksLikeHtml(bodySource)
-  ? bodySource
+  ? inlineBodyImageSources(bodySource, bodyImageDataUrls)
   : buildTistoryBodyHtml({
       title: options.title,
       body: bodySource,

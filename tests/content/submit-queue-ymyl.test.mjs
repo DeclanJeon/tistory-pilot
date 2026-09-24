@@ -58,6 +58,41 @@ test('발행 게이트: 안전 유형이 아닌 금융 키워드(추천·비교�
     `keyword-ymyl 미차단: ${report.failures.join(', ')}`
   );
 });
+test('발행 게이트: 필수 대표 이미지가 없으면 image-missing으로 차단', async () => {
+  const report = await qaQueuePost({
+    id: 'home-01',
+    title: '에어컨 청소 비용 정리',
+    bodyHtml: '<p>에어컨 청소 비용을 정리한다.</p>',
+    category: '이사·청소·주거',
+    imageRequired: true
+  });
+  assert.ok(report.failures.includes('image-missing'));
+});
+
+test('발행 게이트: 대표 이미지 파일 형식이 유효하지 않으면 image-invalid로 차단', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'submit-queue-image-'));
+  const imagePath = path.join(root, 'bad.png');
+  await fs.writeFile(imagePath, Buffer.from('not-an-image'));
+  const report = await qaQueuePost({
+    id: 'home-02',
+    title: '에어컨 청소 비용 정리',
+    bodyHtml: '<p>에어컨 청소 비용을 정리한다.</p>',
+    category: '이사·청소·주거',
+    heroImage: imagePath,
+    imageRequired: true
+  });
+  assert.ok(report.failures.some(f => f.startsWith('image-invalid:')));
+});
+
+test('발행 게이트: 준비되지 않은 대표 이미지 상태는 image-not-ready로 차단', async () => {
+  const report = await qaQueuePost({
+    title: '에어컨 청소 비용 정리',
+    bodyHtml: '<p>에어컨 청소 비용을 정리한다.</p>',
+    category: '이사·청소·주거',
+    image: { status: 'failed' }
+  });
+  assert.ok(report.failures.includes('image-not-ready:failed'));
+});
 
 test('queue bookkeeping moves one post and preserves remaining posts', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'submit-queue-move-'));

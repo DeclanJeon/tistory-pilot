@@ -1,0 +1,87 @@
+partial file recovery는 PonsWarp가 늦게 깨달은 기능이 아니라, 늦게 붙어야 했던 기능에 가깝습니다.
+
+끊긴 파일을 이어 받는다는 말은 쉬워 보입니다. 하지만 파일 전송 제품에서 “어디서부터 다시 받을 것인가”는 단순한 byte 숫자가 아닙니다. receiver가 실제로 디스크에 쓴 위치, reordering buffer가 기다리는 위치, sender worker가 다시 읽을 위치, UI가 사용자에게 설명할 상태가 모두 맞아야 합니다.
+
+[PonsWarp partial recovery preconditions ladder]
+
+partial recovery는 저장, 순서, 완료 의미, 재연결 경로가 먼저 안정된 뒤에야 제품 계약이 됩니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 성능 문제가 드러난 순간을 먼저 복원합니다.
+
+실패 지점 — 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 속도보다 먼저 닫아야 했던 제어 루프를 회고의 결론으로 둡니다.
+
+🧭 왜 초반 reliability 작업보다 늦었나
+
+🎯 독자가 가져갈 질문
+
+이 글은 partial file recovery를 왜 늦게 붙였나 라는 사건을 기능 소개로 소비하지 않습니다. 빠르게 보내는 일과 안전하게 저장하는 일이 충돌한 지점을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+💡 partial recovery는 실패를 덜 아프게 만드는 기능이 아니라, 시스템이 이미 “정확히 어디까지 안전한가”를 말할 수 있을 때만 가능한 기능입니다.
+
+PonsWarp의 초반 reliability 작업은 더 낮은 층의 문제를 먼저 막았습니다. 21dc9ba 의 save-complete handshake는 sender가 다 보냈다는 사실과 receiver가 저장을 끝냈다는 사실을 분리했습니다. db175bf , 8aff234 , 4650d02 같은 파일 손상 수정은 byteOffset, 패킷 크기, async write 완료 의미를 바로잡는 쪽이었습니다.
+
+이 상태에서 곧바로 partial file recovery를 붙이면 위험합니다. receiver가 실제 저장한 byte를 모르는데 offset resume을 말하면, 이미 깨진 파일 위에 남은 바이트를 이어 붙이는 기능이 됩니다. 순서 보장이 없는데 재개를 말하면, 빠진 조각과 늦게 도착한 조각을 구분하지 못합니다. 완료 의미가 흔들리는데 복구를 말하면, 사용자는 “이어 받았다”는 말을 믿고 깨진 파일을 열게 됩니다.
+
+🧱 먼저 필요했던 제품·시스템 전제
+
+첫 번째 전제는 저장 계층입니다. 현재 DirectFileWriter 는 단순 저장 헬퍼가 아니라 File System Access API, StreamSaver, Blob fallback, OPFS fallback을 고르고, write queue로 순차 실행을 보장하며, WRITE_BUFFER_HIGH_MARK 와 WRITE_BUFFER_LOW_MARK 로 sender에게 PAUSE/RESUME을 보냅니다. 이 계층이 없으면 partial state는 복구 근거가 아니라 브라우저 어딘가에 남은 불확실한 찌꺼기입니다.
+
+두 번째 전제는 offset 기반 순서 보장입니다. reorderingBuffer.ts 는 비순차 chunk를 offset 기준으로 정렬하고, 이미 처리된 offset보다 작은 중복 chunk를 버립니다. wasmReorderingBuffer.ts 도 시작 offset을 받아 WASM 또는 JS fallback으로 같은 경계를 유지합니다. 즉 recovery가 말하는 offset은 “마지막으로 네트워크에서 본 위치”가 아니라 “저장 계층이 다음에 기대하는 위치”여야 합니다.
+
+세 번째 전제는 재연결 경로입니다. webRTCService.ts 는 writer가 있는 receiver 세션만 재연결 대상으로 보고, page active나 data channel 복구 시 sendResumeHints() 와 writer의 requestResumeFromCurrentOffset() 를 호출합니다. mobileResumePolicy.ts 가 방, writer, 파일 수, retry 상태를 같이 보는 것도 같은 이유입니다. 복구는 저장 계층 혼자 하는 일이 아니라 연결 생명주기와 같이 움직입니다.
+
+[PonsWarp partial recovery resume handshake]
+
+receiver가 현재 저장 offset을 근거로 RESUME_REQUEST를 보내고, sender가 같은 offset부터 전송을 다시 시작합니다.
+
+🔁 실제 복구 흐름은 어떻게 생겼나
+
+현재 코드에서 복구의 중심은 DirectFileWriter.finalize() 에 있습니다. EOS가 왔더라도 reordering buffer에 기다리는 chunk가 남아 있으면, writer는 바로 실패로 닫지 않고 requestResume(stats.nextExpected, ...) 를 시도합니다. total size보다 적게 받았을 때도 requestResume(this.totalBytesWritten, ...) 로 현재 안전한 위치를 전달합니다.
+
+requestResume() 는 무한 재시도를 허용하지 않습니다. MAX_RESUME_ATTEMPTS = 3 이고, 이미 resume을 기다리는 중이면 중복 요청을 피합니다. 또한 canRequestResume() 은 callback이 있고, ZIP receiver mode이거나 size가 엄격한 단일 파일 조건일 때만 true가 됩니다. 이 보수성이 중요합니다. 모든 partial state를 복구 가능하다고 말하지 않는 것이 오히려 신뢰를 지킵니다.
+
+receiver의 요청은 webRTCService.setWriter() 에서 RESUME_REQUEST 메시지로 바뀝니다. sender 쪽 swarmManager.handleResumeRequest() 는 offset을 숫자로 검증하고, resume 가능한 transfer인지 확인한 뒤 runPartitionedTransfer(offset) 를 호출합니다. worker에는 resume-single-file 경로가 있고, resumeSingleFile(offset) 은 reader와 double buffer를 비우고 state.currentFileOffset , fallbackSequence , zero-copy pool의 total bytes를 offset에 맞춥니다.
+
+복구의 핵심은 “남은 파일을 다시 보내기”가 아닙니다. receiver가 안전하다고 확인한 offset을 sender와 worker의 읽기 상태까지 같은 좌표계로 맞추는 일입니다.
+
+📱 resume이 붙으면 사용자 기대도 달라집니다
+
+복구가 없을 때 중단은 실패입니다. 사용자는 다시 보내거나 포기합니다. 그런데 recovery와 mobile resume이 제품에 들어오면 기대가 바뀝니다. 사용자는 더 이상 “끊기면 처음부터 다시”를 당연하게 받아들이지 않습니다. 잠깐 background로 내려갔거나 네트워크가 흔들렸다면, 제품이 최소한 어디까지 받았는지 알고 이어 가기를 시도해 주리라고 기대합니다.
+
+이 변화는 UI에도 부담을 줍니다. 진행률 100%만 보여 주는 화면으로는 부족합니다. receiver가 처리 중인지, writer가 PAUSE를 걸었는지, reconnect를 기다리는지, resume request가 나갔는지, 결국 포기하고 incomplete transfer로 실패했는지를 구분해야 합니다. post-08의 REMOTE_PROCESSING 흐름과 post-09의 mobile resume은 그래서 partial recovery의 앞뒤에 있습니다.
+
+[PonsWarp user expectation shift after recovery]
+
+복구가 붙으면 partial state는 버릴 파일이 아니라 사용자에게 설명해야 하는 제품 상태가 됩니다.
+
+🧭 지금 돌아보는 판단
+
+partial file recovery가 늦게 붙은 것은 아쉬운 지연이지만, 순서 자체는 이해됩니다. PonsWarp는 먼저 “저장 완료가 무엇인가”, “순서가 틀렸을 때 어떻게 막는가”, “receiver가 못 쓰면 sender를 어떻게 늦추는가”, “모바일에서 돌아왔을 때 세션을 살릴 수 있는가”를 배워야 했습니다. 그 질문들이 정리되기 전의 recovery는 사용자에게 더 나쁜 약속이 됐을 가능성이 큽니다.
+
+다만 recovery가 들어온 순간부터 제품의 기준은 올라갑니다. 이제 partial file은 단순 실패 부산물이 아니라 시스템이 설명해야 하는 상태입니다. 그래서 b185563 Make P2P transfers recover instead of saving partial files 라는 커밋 문구는 중요합니다. PonsWarp는 partial file을 사용자에게 남기는 쪽보다, recover 가능한 전송 상태로 바꾸는 쪽을 택했습니다. 이 선택은 속도 최적화보다 조용하지만, 파일 전송 제품의 신뢰에는 더 직접적입니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 속도보다 먼저 닫아야 했던 제어 루프를 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+PonsWarp commit 21dc9ba — 파일 전송 완료 후 수신자 저장까지 대기하는 양방향 핸드셰이크
+
+PonsWarp commit 4650d02 — async write와 저장 완료 의미를 포함한 파일 깨짐 수정 흐름
+
+PonsWarp commit b185563 — partial file을 저장하는 대신 P2P transfer를 recover하는 방향으로 전환
+
+PonsWarp/src/services/directFileWriter.ts:128-133, 1297-1342, 1529-1566 — flow control callback, incomplete transfer 감지, resume request 제한
+
+PonsWarp/src/services/webRTCService.ts:316-335, 548-558 — writer resume request를 RESUME_REQUEST 메시지로 바꾸고 receiver reconnect 조건을 판단
+
+PonsWarp/src/services/swarmManager.ts:680-721 — sender가 resume offset을 검증하고 partitioned transfer를 재시작
+
+PonsWarp/src/workers/file-sender.worker.ts:319-368 — worker가 offset 기준으로 reader, buffer, sequence를 재설정
+
+PonsWarp/src/utils/mobileResumePolicy.ts:46-73 — resume offset을 file index, file offset, global offset, sequence로 매핑

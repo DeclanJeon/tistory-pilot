@@ -1,0 +1,57 @@
+{
+  "date": "2026-08-27",
+  "generatedAt": "2026-08-27T11:01:42.865Z",
+  "runs": {
+    "generate-2026-08-27": {
+      "runId": "generate-2026-08-27",
+      "posts": 0,
+      "qaPassed": 0,
+      "due": 0,
+      "qaPassedCount": 0,
+      "dueCount": 0,
+      "queued": 0,
+      "queuedTotal": 0,
+      "generatedTotal": 0,
+      "generated": {
+        "total": 0,
+        "qaPassed": 0,
+        "qaFailed": 0,
+        "draftOnly": 0
+      },
+      "queuedDetail": {
+        "total": 0,
+        "due": 0
+      },
+      "publish": {
+        "due": 0,
+        "total": 0
+      },
+      "totalPosts": 0,
+      "totalQaPassed": 0,
+      "totalDue": 0
+    }
+  },
+  "totals": {
+    "generated": {
+      "total": 0,
+      "qaPassed": 0,
+      "qaFailed": 0,
+      "draftOnly": 0
+    },
+    "queued": {
+      "total": 0,
+      "due": 0
+    },
+    "publish": {
+      "due": 0,
+      "total": 0
+    },
+    "posts": 0,
+    "qaPassed": 0,
+    "due": 0
+  },
+  "generatedCount": 0,
+  "qaPassedCount": 0,
+  "queuedCount": 0,
+  "dueCount": 0
+}

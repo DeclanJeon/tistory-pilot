@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "active": false,
+  "skill": "ultraqa",
+  "keyword": "",
+  "phase": "adversarial-e2e",
+  "activated_at": "2026-08-27T11:44:44.075Z",
+  "updated_at": "2026-08-27T11:48:36.273Z",
+  "source": "state-operations",
+  "active_skills": []
+}

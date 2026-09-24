@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 /**
- * sources/aggregator.mjs — 다중 소스 수집기 + Shadow 통합 (설계 §3.1)
- *
- * 각 adapter를 Promise.allSettled 로 병렬 실행하고 표준 contract로 검증한다.
- * 소스 실패는 '0건'으로 치환하지 않는다 — status 가 unavailable/rate_limited/error 로
- * snapshot 에 보존된다.
+ * Google Trends/KMA are collected first without a keyword seed. Naver
+ * DataLab then receives the fresh interests from that snapshot (or an
+ * explicit operator override). Source failures remain explicit.
  *
  * 통합 규칙:
  *  - normalizeTitle 로 같은 키워드를 소스 간 병합한다.
@@ -20,33 +18,75 @@ import { validateSourceResult } from './contract.mjs';
 import { fetchGoogleTrends } from './google-trends.mjs';
 import { fetchNaverDataLab } from './naver-datalab.mjs';
 import { fetchKmaWeather } from './kma-weather.mjs';
-
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..', '..', '..');
 const SHADOW_DIR = path.join(PROJECT_ROOT, 'content', 'learning');
 
 const ADAPTERS = [
   { label: 'google-trends', run: (env) => fetchGoogleTrends({ env }) },
-  { label: 'naver-datalab', run: (env) => fetchNaverDataLab({ env }) },
+  { label: 'naver-datalab', run: (env, keywords) => fetchNaverDataLab({ env, keywords }) },
   { label: 'kma-weather', run: (env) => fetchKmaWeather({ env }) }
 ];
-
-export function todayDate() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function parseKeywordList(value) {
+  return (Array.isArray(value) ? value : String(value || '').split(','))
+    .map((item) => String(item || '').replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .slice(0, 5);
 }
 
-export async function runAdapters({ env = process.env, skip = [] } = {}) {
-  const active = ADAPTERS.filter((a) => !skip.includes(a.label));
-  const settled = await Promise.allSettled(active.map((a) => a.run(env)));
-  const results = [];
+function cleanDynamicSeed(value) {
+  return String(value || '')
+    .replace(/^기상\s*:\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function deriveDynamicSeedKeywords(results, limit = 5) {
+  const priority = ['google-trends', 'kma-weather'];
+  const ordered = [
+    ...priority.map((source) => results.find((result) => result.source === source)).filter(Boolean),
+    ...results.filter((result) => !priority.includes(result.source))
+  ];
+  const seen = new Set();
+  const seeds = [];
+  for (const result of ordered) {
+    for (const item of result.items || []) {
+      const seed = cleanDynamicSeed(item.normalized || item.raw);
+      const key = seed.toLowerCase();
+      if (!seed || seed.length < 2 || seen.has(key)) continue;
+      seen.add(key);
+      seeds.push(seed);
+      if (seeds.length >= limit) return seeds;
+    }
+  }
+  return seeds;
+}
+
+function providerKeywords(env, dynamicSeeds) {
+  const specific = parseKeywordList(env.NAVER_DATALAB_KEYWORDS);
+  if (specific.length) return specific;
+  const operatorSeeds = parseKeywordList(env.MARKET_SEED_KEYWORDS);
+  return operatorSeeds.length ? operatorSeeds : dynamicSeeds;
+}
+
+function sourceGroup(adapter, seededLabels) {
+  return seededLabels.has(adapter.label) ? 'seeded' : 'seedless';
+}
+
+async function runAdapterGroup(active, env, bySource, { dynamicSeeds = [] } = {}) {
+  const settled = await Promise.allSettled(active.map((adapter) => {
+    const keywords = adapter.label === 'naver-datalab'
+      ? providerKeywords(env, dynamicSeeds)
+      : null;
+    return adapter.run(env, keywords);
+  }));
   for (let i = 0; i < active.length; i++) {
     const label = active[i].label;
     const outcome = settled[i];
     if (outcome.status === 'fulfilled') {
       try {
-        results.push(validateSourceResult(outcome.value));
+        bySource.set(label, validateSourceResult(outcome.value));
       } catch (error) {
-        results.push(validateSourceResult({
+        bySource.set(label, validateSourceResult({
           source: label,
           status: 'error',
           items: [],
@@ -54,7 +94,7 @@ export async function runAdapters({ env = process.env, skip = [] } = {}) {
         }));
       }
     } else {
-      results.push(validateSourceResult({
+      bySource.set(label, validateSourceResult({
         source: label,
         status: 'error',
         items: [],
@@ -62,8 +102,38 @@ export async function runAdapters({ env = process.env, skip = [] } = {}) {
       }));
     }
   }
-  return results;
 }
+
+export async function runAdapters({ env = process.env, skip = [], adapters = ADAPTERS } = {}) {
+  const skipped = new Set(skip);
+  const selected = adapters.filter((adapter) => !skipped.has(adapter.label));
+  const bySource = new Map();
+  const seededLabels = new Set(['naver-datalab']);
+
+  // Trend/interest sources do not need a static seed and run first.
+  await runAdapterGroup(
+    selected.filter((adapter) => sourceGroup(adapter, seededLabels) === 'seedless'),
+    env,
+    bySource
+  );
+  const dynamicSeeds = deriveDynamicSeedKeywords([...bySource.values()]);
+
+  // DataLab receives the interests observed in this same run.
+  await runAdapterGroup(
+    selected.filter((adapter) => sourceGroup(adapter, seededLabels) === 'seeded'),
+    env,
+    bySource,
+    { dynamicSeeds }
+  );
+
+  return selected.map((adapter) => bySource.get(adapter.label)).filter(Boolean);
+}
+
+export function todayDate() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 
 export function buildMerged(results) {
   const byKeyword = new Map();
@@ -84,6 +154,7 @@ export function buildMerged(results) {
         volumeKind: item.volumeKind,
         rank: item.rank,
         url: item.url,
+        ...(item.metrics ? { metrics: item.metrics } : {}),
         trigger: item.trigger === true
       });
       if (item.trigger === true) entry.trigger = true;

@@ -5,10 +5,10 @@
  * 모든 source adapter는 이 모양의 결과를 반환해야 한다.
  * 실패를 '0건'으로 치환하지 말고 status로 표현한다 (unavailable/rate_limited).
  *
- * producer: google-trends | naver-datalab | kma-weather | shopping(예약)
+ * producer: google-trends | naver-datalab | naver-search-ads | kma-weather | shopping(예약)
  */
 
-export const SOURCE_IDS = Object.freeze(['google-trends', 'naver-datalab', 'kma-weather', 'shopping']);
+export const SOURCE_IDS = Object.freeze(['google-trends', 'naver-datalab', 'naver-search-ads', 'kma-weather', 'shopping']);
 
 export const ADAPTER_STATUS = Object.freeze(['ok', 'partial', 'unavailable', 'rate_limited', 'error']);
 
@@ -33,6 +33,16 @@ export function validateSourceItem(item = {}) {
   if (!VOLUME_KIND.includes(volumeKind)) {
     throw new Error(`volumeKind must be one of: ${VOLUME_KIND.join(', ')}`);
   }
+  const sourceMetrics = item.metrics && typeof item.metrics === 'object' && !Array.isArray(item.metrics)
+    ? {
+      monthlySearch: Number.isFinite(Number(item.metrics.monthlySearch)) ? Number(item.metrics.monthlySearch) : null,
+      cpcKrw: Number.isFinite(Number(item.metrics.cpcKrw)) ? Number(item.metrics.cpcKrw) : null,
+      competition: item.metrics.competition == null ? null : String(item.metrics.competition),
+      provider: item.metrics.provider ? String(item.metrics.provider) : null,
+      checkedAt: item.metrics.checkedAt ? String(item.metrics.checkedAt) : null,
+      volumeKind: VOLUME_KIND.includes(item.metrics.volumeKind) ? item.metrics.volumeKind : volumeKind
+    }
+    : null;
   return {
     raw,
     normalized,
@@ -40,7 +50,8 @@ export function validateSourceItem(item = {}) {
     volume,
     volumeKind,
     url: item.url ? String(item.url) : null,
-    trigger: item.trigger === true
+    trigger: item.trigger === true,
+    ...(sourceMetrics ? { metrics: sourceMetrics } : {})
   };
 }
 

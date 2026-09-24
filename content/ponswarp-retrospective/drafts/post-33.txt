@@ -1,0 +1,113 @@
+PonsWarp를 설명할 때 가장 편한 문장은 “서버 없이 브라우저끼리 파일을 보낸다”입니다.
+
+그런데 이 문장은 중요한 절반을 숨깁니다. 브라우저끼리 직접 전송하려면 두 브라우저가 먼저 서로를 찾아야 하고, offer와 answer를 교환해야 하고, ICE candidate를 주고받아야 하고, 필요하면 TURN 설정을 받아야 합니다. 이 과정이 흔들리면 파일 전송 엔진이 아무리 좋아도 사용자는 “시작도 못 하는 서비스”를 만나게 됩니다.
+
+그래서 PonsWarp에는 Rust signaling 서버가 따로 필요했습니다. 이 서버는 파일을 운반하는 서버가 아니라, 전송이 시작될 수 있는 조건을 닫는 서버였습니다. 2025-12-10 44fb5ad feat(server): Rust 기반 시그널링 서버 초기 구현 은 단순한 백엔드 추가가 아니라, “P2P 서비스도 만남의 질서를 운영해야 한다”는 쪽으로 제품 판단이 바뀐 지점입니다.
+
+[Rust signaling server boundary between browsers and P2P data channel]
+
+파일 바이트는 브라우저 사이로 흐르지만, 두 브라우저가 만나는 조건은 Rust signaling 서버가 닫습니다.
+
+🧭 이 글의 흐름
+
+당시 장면 — 경계를 다시 나눈 순간을 먼저 복원합니다.
+
+실패 지점 — 브라우저와 코어, 서버가 각각 맡아야 하는 책임을 코드와 기록으로 확인합니다.
+
+지금의 판단 — 언어 선택보다 책임 위치가 중요하다는 판단을 회고의 결론으로 둡니다.
+
+💡 이 글은 Rust 서버가 파일 전송을 대신했다는 이야기가 아닙니다. 파일 바이트는 가능하면 브라우저 사이에 두고, 서버는 방, 피어, WebSocket 메시지, TURN 설정, health/readiness, cleanup 같은 연결 전후의 계약을 맡게 된 이유를 정리합니다.
+
+🧭 서버 없는 전송이라는 말의 빈칸
+
+🎯 독자가 가져갈 질문
+
+이 글은 Rust signaling 서버를 따로 세운 이유 라는 사건을 기능 소개로 소비하지 않습니다. 브라우저와 코어, 서버가 각각 맡아야 하는 책임을 따라가면서, 왜 그 선택이 코드 변경을 넘어 제품 신뢰의 문제였는지 확인합니다.
+
+초기 PonsWarp의 매력은 분명했습니다. 사용자가 계정을 만들거나 파일을 업로드하지 않아도, 브라우저 두 개가 직접 연결되어 큰 파일을 주고받는 경험입니다. post-31의 주제처럼 “서버 없는 전송”이라는 표현은 제품 포지셔닝으로 강합니다. 하지만 시스템 입장에서는 “파일 서버가 없다”와 “서버 책임이 없다”가 같은 말이 아닙니다.
+
+WebRTC는 연결 이후의 DataChannel에는 강하지만, 연결 이전에는 상대를 찾아주는 외부 통로가 필요합니다. sender가 만든 offer는 receiver에게 전달되어야 하고, receiver의 answer는 sender에게 돌아와야 합니다. ICE candidate도 양쪽으로 흘러야 합니다. 모바일·NAT·회사망처럼 네트워크가 복잡해지면 TURN 설정도 제품 흐름 안으로 들어옵니다.
+
+브라우저 앱 안에서 이 모든 것을 임시로 처리할 수는 없습니다. 사용자가 같은 방에 들어왔는지, 방이 꽉 찼는지, 누가 나갔는지, 어떤 peer에게 offer를 보내야 하는지, TURN credential이 아직 유효한지 같은 상태는 두 브라우저 중 한쪽만 알고 있어서는 안 됩니다. 그래서 별도의 signaling 서버는 선택지가 아니라 제품의 시작 조건이었습니다.
+
+🧱 Rust 서버가 실제로 맡은 것
+
+현재 ponswarp-signaling-rs/src/main.rs 는 Axum 기반 서버로 /ws , /health , /ready 를 열고, WebSocket upgrade 이후 JSON frame을 ClientMessage 와 ServerMessage 로 주고받습니다. 여기에 /api/cloud-share , billing, auth, admin 같은 라우트도 붙어 있습니다. 처음에는 signaling 서버였지만, 제품화가 진행되면서 운영 표면까지 같은 Rust 서버 안으로 들어온 셈입니다.
+
+핵심 메시지 프로토콜은 protocol/messages.rs 에 드러납니다. 클라이언트는 JoinRoom , LeaveRoom , Offer , Answer , IceCandidate , Manifest , TransferReady , TransferComplete , RequestTurnConfig , RefreshTurnCredentials 같은 메시지를 보냅니다. 서버는 Connected , JoinedRoom , RoomUsers , PeerJoined , UserLeft , RoomFull , Offer , Answer , IceCandidate , TurnConfig 등을 돌려줍니다.
+
+이 목록을 보면 서버의 성격이 분명해집니다. 서버는 파일 조각을 해석하지 않습니다. 대신 누가 어느 방에 있는지, 어떤 signaling 메시지를 누구에게 전달해야 하는지, 연결 보조 설정을 언제 내려줘야 하는지를 관리합니다. 파일의 무결성은 Rust/WASM 코어와 브라우저 worker가 맡고, 연결의 질서는 Rust signaling 서버가 맡는 분리입니다.
+
+state.rs 의 AppState 도 같은 경계를 보여줍니다. rooms 는 room_id에서 Room 으로 이어지고, peers 는 peer_id에서 PeerSession 으로 이어집니다. 각 Room 은 user set과 생성 시각을 가지고, PeerSession 은 현재 room_id와 outbound sender를 가집니다. 이것은 대단한 도메인 모델이 아니라, P2P 연결을 시작하기 위해 꼭 필요한 최소 상태입니다.
+
+[PonsWarp signaling protocol flow from join room to offer answer ice and TURN]
+
+join-room부터 offer/answer/ice/TURN까지는 파일 전송 전의 사용자 흐름을 닫는 프로토콜입니다.
+
+🔄 브라우저 어댑터가 보여주는 전환 비용
+
+Rust 서버를 따로 세운다고 해서 프론트엔드가 자동으로 깨끗해지는 것은 아닙니다. PonsWarp/src/services/signaling-adapter.ts 는 그 전환 비용을 잘 보여줍니다. 파일 주석부터 “Socket.io 이벤트를 JSON Frame으로 변환하여 기존 코드와 호환성 유지”라고 설명합니다. 즉, 서버를 Rust WebSocket 프로토콜로 바꾸면서도 기존 앱 코드가 기대하던 이벤트 모델을 한 번에 버릴 수는 없었습니다.
+
+어댑터는 Connected 를 받으면 socket id를 저장하고 connected 이벤트를 발생시킵니다. RoomUsers , PeerJoined , Offer , Answer , IceCandidate , TurnConfig 같은 Rust 메시지는 기존 이벤트명으로 매핑됩니다. payload의 snake_case는 camelCase로 바뀝니다. Rust 서버가 sdp 필드로 보내는 offer/answer를 프론트엔드가 찾는 offer / answer 필드로 복사하는 호환성 처리도 남아 있습니다.
+
+이 부분은 회고적으로 중요합니다. 서버를 분리하는 일은 “Rust로 다시 쓰면 끝”이 아니었습니다. 이미 브라우저 쪽에는 WebRTC 서비스, UI 상태, 재연결 처리, TURN 요청 흐름이 있었습니다. Rust 서버는 그 흐름을 깨지 않으면서 더 명시적인 JSON protocol과 운영 가능한 endpoint를 제공해야 했습니다.
+
+⚙️ 왜 Node가 아니라 Rust였나
+
+여기서 Rust를 고른 이유를 “빠르니까”로만 쓰면 또 반만 맞습니다. signaling은 파일 바이트를 처리하지 않기 때문에 CPU 성능이 병목이라는 증거를 새로 만들 수는 없습니다. 이 글에서 그런 벤치마크는 주장하지 않습니다.
+
+더 중요한 이유는 서버의 실패 모드였습니다. signaling 서버는 작아 보여도 연결 생명주기, room cleanup, TURN credential, WebSocket 송수신 task, readiness, Cloud Drop, billing 같은 비동기 상태를 계속 다룹니다. main.rs 는 tokio task로 방 정리 스케줄러와 R2 임시 공유 정리 스케줄러를 띄우고, handle_socket 에서는 WebSocket 송신 task와 수신 loop를 분리합니다. 연결이 끊기면 handle_disconnect 를 호출하고 송신 task를 abort합니다.
+
+Rust를 쓰면 이런 상태가 저절로 맞아지는 것은 아닙니다. 실제로 evidence index에는 2026-05-17 f1c69cb fix: prevent signaling room cleanup deadlocks 가 남아 있습니다. 하지만 이 커밋 제목이 보여주는 것은 서버가 이미 “간단한 relay” 수준을 넘어섰다는 사실입니다. 방 정리와 broadcast, lock scope 같은 문제가 제품 안정성의 일부가 되었고, 서버 구현은 그것을 정면으로 다뤄야 했습니다.
+
+room.rs 의 주석도 같은 흔적입니다. 방 참여 처리에서는 DashMap room guard를 잡은 범위를 제한하고, 방 나가기 내부 로직에서는 guard를 잡은 상태에서 await와 broadcast를 호출하면 같은 shard 재조회로 런타임 전체가 멈출 수 있다고 설명합니다. 그래서 필요한 상태를 복사하고 guard를 떨어뜨린 뒤 네트워크/채널 작업을 수행합니다. 이건 언어 자랑이 아니라, 운영 중 멈추면 사용자가 바로 실패로 느끼는 서버 경계입니다.
+
+[PonsWarp signaling server operational stack from matchmaking to readiness cleanup cloud drop billing]
+
+signaling 서버는 곧 cleanup, readiness, Cloud Drop, billing 같은 운영 표면과 맞닿았습니다.
+
+🧩 signaling 서버와 제품 구조
+
+제품 구조로 보면 PonsWarp는 네 층으로 나눠 읽는 편이 맞습니다. 첫째, React/Vite/Tailwind 기반 UI는 사용자가 파일을 고르고 상태를 이해하는 표면입니다. 둘째, WebRTC와 worker는 실제 전송과 backpressure, ACK, 저장 흐름을 닫습니다. 셋째, Rust/WASM 코어는 packet, crypto, ZIP64, reordering, checksum 같은 바이트 계약을 맡습니다. 넷째, Rust signaling 서버는 사용자가 전송을 시작할 수 있는 만남과 운영 조건을 맡습니다.
+
+이 네 번째 층은 눈에 잘 띄지 않습니다. 사용자는 /ws 나 /ready 를 보지 않습니다. 하지만 방 입장 실패, 상대 미표시, TURN 설정 지연, 연결 중 재접속 실패는 전부 제품 실패로 보입니다. 특히 PonsWarp처럼 “업로드하지 않고 직접 보낸다”는 약속을 앞세운 서비스에서는, 직접 전송이 시작되기 전 단계가 더 민감합니다. 시작조차 못 하면 P2P의 장점은 설명할 기회가 없습니다.
+
+그래서 signaling 서버는 매치메이커에 가깝지만, 제품 신뢰의 바닥에도 가깝습니다. 서버가 파일을 들고 있지 않다는 사실은 개인정보와 비용 면에서 장점이지만, 서버가 없어도 된다는 뜻은 아닙니다. 오히려 파일을 들고 있지 않기 때문에, 연결 전 상태와 실패 설명을 더 정확하게 닫아야 합니다.
+
+서버가 파일을 들고 있지 않다는 사실은 장점이지만, 서버가 없어도 된다는 뜻은 아닙니다. 직접 전송이 시작되기 전의 상태와 실패 설명은 더 정확해야 합니다.
+
+🚫 과장하지 말아야 할 것
+
+Rust signaling 서버가 있다고 해서 NAT 문제가 사라지는 것은 아닙니다. TURN이 필요할 때는 여전히 TURN이 필요합니다. WebRTC 연결 실패가 모두 서버 문제로 환원되는 것도 아닙니다. 브라우저 권한, 네트워크 정책, 모바일 백그라운딩, DataChannel 상태, receiver 저장 속도는 각자 다른 실패 모드를 갖습니다.
+
+또 signaling 서버가 파일 무결성을 보장하는 것도 아닙니다. 파일 조각의 순서, ZIP64 경계, 암호화, 체크섬, 저장 완료는 Rust/WASM 코어와 브라우저 worker, DirectFileWriter 쪽 책임입니다. signaling 서버의 책임은 그보다 앞선 단계입니다. 두 사용자가 같은 전송 세션에 들어왔고, 서로에게 필요한 연결 메시지가 전달되었고, 연결 보조 설정을 받을 수 있고, 서버 자체가 준비 상태인지 확인할 수 있어야 합니다.
+
+이 구분을 놓치면 서버를 과소평가하거나 과대평가하게 됩니다. “서버 없는 전송”이라고 말하면 운영 책임을 숨기게 되고, 반대로 서버를 크게 보면 파일 전송의 핵심이 중앙 서버로 옮겨간 것처럼 오해하게 됩니다. PonsWarp의 Rust signaling 서버는 그 사이에 있습니다. 파일은 직접 보내되, 직접 보내기 위한 조건은 서버가 닫습니다.
+
+파일은 직접 보내되, 직접 보내기 위한 조건은 서버가 닫습니다.
+
+🧭 지금 돌아보는 판단
+
+Rust signaling 서버를 따로 세운 이유는 PonsWarp가 브라우저 데모에서 서비스로 넘어가고 있었기 때문입니다. 데모에서는 두 브라우저가 운 좋게 붙는 장면이 중요합니다. 서비스에서는 붙지 않을 때 무엇이 실패했는지, 다시 시도할 수 있는지, 서버가 준비되어 있는지, 오래된 방이 정리되는지, TURN 설정을 받을 수 있는지가 중요해집니다.
+
+44fb5ad 의 Rust 기반 시그널링 서버 초기 구현, b834716 의 시그널링 서버 안정성 향상 및 배포 자동화, f1c69cb 의 room cleanup deadlock 방지는 같은 방향으로 읽힙니다. 서버는 파일을 대신 운반하기 위해 커진 것이 아니라, 직접 전송을 제품답게 시작하고 실패하게 만들기 위해 필요해졌습니다.
+
+지금 돌아보면 이 결정은 “P2P니까 서버가 작아도 된다”는 생각을 교정한 순간이었습니다. P2P 서비스에서도 서버는 있습니다. 다만 서버가 파일을 들고 있느냐, 아니면 사용자가 서로를 안전하게 만나도록 돕느냐가 다를 뿐입니다. PonsWarp에서 Rust signaling 서버는 후자의 역할을 맡기 위해 따로 세운 서버였습니다.
+
+📝 회고로 다시 쓴 기준
+
+이 포스팅의 중심은 “무엇을 구현했는가”가 아니라 “왜 그 구현이 필요해졌는가”입니다. 그래서 마지막 판단은 언어 선택보다 책임 위치가 중요하다는 판단을 둡니다. 독자가 세부 API를 몰라도, 당시 제품이 어떤 압력 때문에 그 구조로 이동했는지 따라올 수 있어야 합니다.
+
+📚 읽은 코드
+
+ponswarp-signaling-rs/src/main.rs — Axum router, /ws, /health, /ready, cleanup scheduler, WebSocket send/receive loop
+
+ponswarp-signaling-rs/src/protocol/messages.rs — ClientMessage/ServerMessage, room, WebRTC signaling, TURN 메시지 계약
+
+ponswarp-signaling-rs/src/state.rs — AppState, rooms, peers, Room, PeerSession, Cloud/R2 optional state
+
+ponswarp-signaling-rs/src/handlers/room.rs — room join/leave, broadcast, cleanup, DashMap guard scope와 deadlock 방지 주석
+
+PonsWarp/src/services/signaling-adapter.ts — Rust WebSocket JSON frame을 기존 이벤트 모델로 매핑하는 브라우저 어댑터
+
+evidence-index.md — 44fb5ad, b834716, f1c69cb의 Rust signaling 현실화 구간

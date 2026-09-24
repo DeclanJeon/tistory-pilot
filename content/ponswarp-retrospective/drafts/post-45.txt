@@ -1,0 +1,96 @@
+결제를 붙이는 순간 제품이 달라지는 방식
+
+PonsWarp에서 결제는 마지막에 붙이는 버튼처럼 보일 수 있었습니다. 파일 전송이 되고, Cloud Drop이 붙고, 무료/유료 구간을 나누면 그다음에 가격표와 결제창을 얹으면 된다고 생각하기 쉽습니다. 하지만 실제 기록을 따라가면 결제는 그런 주변 기능이 아니었습니다. 결제를 붙이는 순간 제품은 “파일을 보내는 도구”에서 “돈을 받고 특정한 전달 가능성을 약속하는 서비스”로 바뀌었습니다.
+
+그 차이는 작지 않습니다. 직접 전송에서는 실패가 대부분 네트워크, 브라우저, 저장 경계의 문제로 보입니다. Cloud Drop과 결제가 들어오면 실패는 곧 약속 불이행에 가까워집니다. 사용자는 돈을 냈고, 제품은 용량, 보관 시간, 권한, 재시도, 만료, 취소 상태를 설명해야 합니다. PonsWarp의 제품화 구간이 어려웠던 이유는 결제 API를 붙이는 난이도 때문만이 아니라, 결제가 제품의 책임 범위를 통째로 다시 썼기 때문입니다.
+
+💡 이 글은 결제 연동 방법론이 아닙니다. `b6f3ea8`의 Cloud Drop pricing page, `f8f2120`의 Stripe Checkout entitlement, `2e4593d`의 PayPal billing 라우팅, `a004c91`의 Free plan 정책, `212d751`의 gated account/billing surface 비활성화 기록을 기준으로, 돈을 받기 시작할 때 파일 전송 제품의 구조가 어떻게 달라지는지 정리합니다.
+
+🧭 당시 제품 상태: 이미 Cloud Drop이 제품의 두 번째 축이 되어 있었다
+
+PonsWarp의 시작점은 브라우저 간 직접 전송이었습니다. `simple-peer` 기반 WebRTC, sender/receiver worker, `DirectFileWriter`, `pons-core-wasm`, signaling backend가 맞물려 “둘이 동시에 접속해 있을 때 파일을 끝까지 안전하게 넘기는 것”을 목표로 했습니다. `638bc83`의 메모리 폭발 방지, `21dc9ba`의 저장 완료 핸드셰이크, `4650d02`의 파일 깨짐 해결은 모두 이 직접 전송의 신뢰를 높이기 위한 기록이었습니다.
+
+그런데 Cloud Drop이 들어오면서 제품의 문장이 달라졌습니다. `4847872`는 delayed downloads를 위한 async Cloud Drop을 가능하게 했고, `3628858`은 대용량 Cloud Drop upload를 resumable multipart 구조로 만들었습니다. 이제 PonsWarp는 상대가 동시에 온라인이 아니어도 파일을 맡겼다가 나중에 받을 수 있는 흐름을 설명해야 했습니다. 이것은 단순한 보조 기능이 아니라 사용자가 제품을 이해하는 방식 자체를 바꾸는 기능이었습니다.
+
+직접 전송의 핵심 질문은 “상대와 연결됐는가”였습니다. Cloud Drop의 핵심 질문은 “제품이 내 파일을 얼마 동안, 어느 용량까지, 어떤 권한으로 맡아줄 수 있는가”였습니다. 결제는 바로 이 두 번째 질문 위에 올라왔습니다. 그래서 결제는 전송 엔진 바깥에 붙는 부가 기능이 아니라, Cloud Drop의 사용 조건을 결정하는 제품 계층이 되었습니다.
+
+💳 결제는 버튼이 아니라 제품 계약이었다
+
+`b6f3ea8`이 Cloud Drop pricing page를 만들었다는 기록은 중요합니다. 가격표가 생겼다는 것은 사용자가 기능을 쓰기 전에 비교하고 기대할 수 있는 언어가 생겼다는 뜻입니다. 무료로 어디까지 가능한지, 유료에서는 무엇이 달라지는지, 제한은 용량인지 시간인지 횟수인지, 결제 후 언제 권한이 열리는지 같은 질문이 화면 앞쪽으로 나옵니다.
+
+`f8f2120`은 Stripe Checkout에서 Cloud Drop entitlement를 발급하는 흐름을 다뤘습니다. 여기서 핵심은 결제 성공 자체가 아니라 entitlement입니다. 파일 전송 제품에서 결제 성공은 끝이 아닙니다. 결제 후 사용자가 실제로 더 큰 Cloud Drop을 만들 수 있어야 하고, 서버는 그 사용자가 어떤 정책을 갖는지 알아야 하며, UI는 그 상태를 믿고 다음 행동을 안내해야 합니다.
+
+곧이어 `2e4593d`가 Cloud Drop billing을 PayPal로 라우팅한 것도 같은 맥락에서 봐야 합니다. 결제 사업자가 바뀌면 버튼만 바뀌는 것이 아닙니다. 승인/취소/실패 콜백, entitlement 발급 타이밍, 사용자에게 보여줄 대기 상태, 운영자가 추적할 수 있는 기록이 모두 영향을 받습니다. PonsWarp가 이 구간에서 만난 문제는 “어떤 결제사를 쓸 것인가”보다 “돈을 받았다는 사실을 제품의 사용 권한으로 어떻게 안전하게 번역할 것인가”였습니다.
+
+🏗️ 시스템 구조: 가격표 뒤에 숨어 있는 네 층
+
+이 시점의 PonsWarp를 네 층으로 보면 결제가 왜 무거운 변화였는지 더 잘 보입니다.
+
+첫 번째 층은 Product and UI입니다. `src/App.tsx`, `SenderView.tsx`, `ReceiverView.tsx`, `CloudSenderView.tsx`는 사용자가 파일을 보내고 받는 표면입니다. 결제가 붙으면 이 층은 단순히 진행률을 보여주는 곳이 아니라 무료/유료 경계, Cloud Drop 가능 여부, 권한 없음, 만료, 업그레이드 유도, 실패 복구를 설명해야 하는 곳이 됩니다.
+
+두 번째 층은 Browser transfer engine입니다. WebRTC, worker, adaptive chunk/batch, AES-256-GCM, ZIP64, backpressure는 직접 전송의 품질을 담당했습니다. 결제가 들어와도 이 층이 사라지지 않습니다. 오히려 사용자는 “유료라면 더 믿을 수 있겠지”라고 기대하기 때문에 기존 전송 신뢰는 더 높은 기준으로 읽힙니다.
+
+세 번째 층은 Storage and recovery입니다. `DirectFileWriter`, StreamSaver, File System Access API, partial recovery는 저장 완료를 다룹니다. Cloud Drop에서는 여기에 서버 쪽 저장, resumable multipart upload, 만료 정책, cleanup이 더해집니다. 돈을 받는 순간 저장 실패와 복구 실패는 단순 버그가 아니라 상품 약속의 균열이 됩니다.
+
+네 번째 층은 Core and backend입니다. `pons-core-wasm`은 packet, reordering buffer, ZIP64, crypto, file signature, merkle tree 같은 바이트 계약을 맡았고, `ponswarp-signaling-rs`는 auth, billing, database, handlers, protocol, state, `/health`, `/ready`, `/ws` 같은 운영 경계를 맡았습니다. 결제는 이 backend 층을 갑자기 제품의 중심으로 끌어올렸습니다. 이제 서버는 연결 중개자가 아니라 사용 권한과 상품 정책을 판단하는 권위자가 됩니다.
+
+⚠️ 실제 실패 지점: 무료/유료 경계는 기술보다 제품 언어가 더 어려웠다
+
+`a004c91`은 Free plan을 first-class cloud policy로 노출한 기록입니다. 이 커밋은 무료 정책이 임시 예외가 아니라 제품 안에서 정식 정책으로 다뤄져야 했음을 보여줍니다. 무료 10GB / 24시간 같은 타협은 화면에 쓰기 쉬운 문구처럼 보이지만, 실제로는 저장 비용, cleanup 주기, 남용 가능성, 사용자 기대, 결제 전환의 경계를 모두 건드립니다.
+
+무료 정책이 흐릿하면 유료 정책도 흐릿해집니다. 사용자는 “무료로도 충분한데 왜 결제해야 하지?”라고 묻고, 운영자는 “무료 사용량이 커져도 감당 가능한가?”를 묻습니다. 개발자는 “이 사용자가 지금 업로드할 수 있는가?”를 코드로 답해야 합니다. 이 세 질문이 같은 화면에서 만나는 순간, 가격표는 마케팅 페이지가 아니라 시스템 계약서가 됩니다.
+
+`212d751`이 gated account and billing surfaces를 비활성화한 기록도 중요합니다. 결제와 계정 게이트를 붙였다고 해서 곧바로 제품이 좋아지는 것은 아닙니다. 오히려 아직 검증되지 않은 게이트는 사용자가 파일을 보내기 전에 마찰을 만들 수 있습니다. PonsWarp의 강점이 링크 기반의 빠른 진입이었다면, 계정과 결제 표면은 그 강점을 약하게 만들 위험도 있었습니다.
+
+이 지점에서 제품 판단은 어려워집니다. Cloud Drop을 제대로 운영하려면 정책과 권한이 필요합니다. 그러나 정책과 권한을 앞세우면 사용자는 PonsWarp를 가벼운 전송 도구가 아니라 또 하나의 가입형 저장 서비스처럼 느낄 수 있습니다. 결제는 수익화를 가능하게 하지만, 동시에 제품의 첫인상을 바꿉니다.
+
+🔄 사용자 플로우가 바뀌는 방식
+
+결제 전의 대표 흐름은 비교적 직선적이었습니다. 보내는 사람이 파일을 고르고, 링크를 만들고, 받는 사람이 들어오고, 연결이 성립되면 전송과 저장 완료를 기다립니다. 이 흐름에서도 내부는 복잡했지만 사용자의 생각은 단순했습니다. “상대가 들어오면 파일이 간다”였습니다.
+
+Cloud Drop과 결제가 들어오면 흐름이 갈라집니다. 사용자는 직접 전송을 할지, Cloud Drop을 쓸지 먼저 고릅니다. Cloud Drop을 고르면 무료 정책 안에 들어오는지 확인합니다. 넘으면 가격표를 봅니다. 결제 화면으로 나갑니다. 돌아온 뒤 entitlement가 발급되어야 합니다. 그다음에야 업로드가 시작되고, 업로드는 multipart로 재시도 가능해야 하며, 받는 사람은 만료 시간 안에 다운로드해야 합니다.
+
+이 흐름은 제품적으로 나쁜 흐름이 아닙니다. 비동기 전달이라는 가치를 주기 때문입니다. 문제는 이 흐름을 설명하는 비용입니다. 직접 전송의 실패는 “연결이 안 됐다”로 설명할 수 있습니다. 결제 후 Cloud Drop의 실패는 훨씬 더 복잡합니다. 결제는 됐는데 권한이 늦게 열렸는지, 업로드가 실패했는지, 만료됐는지, 무료 제한에 걸렸는지, 서버 cleanup이 먼저 돌았는지 구분해야 합니다.
+
+그래서 결제를 붙인 제품은 오류 문장도 달라져야 합니다. “다시 시도하세요”만으로는 부족합니다. 사용자가 돈을 냈다면 제품은 지금 어느 단계에서 막혔는지, 사용 권한은 살아 있는지, 파일은 서버에 남아 있는지, 다시 업로드해야 하는지, 받을 사람이 무엇을 해야 하는지 말해야 합니다. PonsWarp가 다뤄야 할 상태 공간은 여기서 크게 늘어났습니다.
+
+🧱 설계 변경: 서버가 보조자에서 판정자로 바뀌었다
+
+초기 signaling 서버는 사용자를 연결해주는 보조자에 가까웠습니다. 물론 현실에서는 `ponswarp-signaling-rs`가 auth, billing, database, handlers, protocol, state, readiness까지 맡게 되면서 이미 무거워졌습니다. 그래도 직접 전송의 세계에서 서버는 파일 자체를 반드시 오래 책임지는 존재는 아니었습니다.
+
+Cloud Drop과 결제가 들어오면 서버의 의미가 달라집니다. 서버는 사용자가 어떤 plan인지, 지금 Cloud Drop을 만들 수 있는지, 업로드가 어떤 상태인지, 만료 시간이 지났는지, cleanup 대상인지 판단해야 합니다. 결제사가 “성공”을 말해도 서버가 entitlement를 반영하지 못하면 사용자는 상품을 받지 못한 셈입니다.
+
+이 변화는 아키텍처의 무게중심을 바꿉니다. 브라우저 전송 엔진이 아무리 좋아도, 결제 후 권한 부여가 불안정하면 제품 신뢰는 무너집니다. 반대로 entitlement가 정확해도 upload resume, storage cleanup, download link 만료가 약하면 돈을 받은 기능으로 보기 어렵습니다. 결제는 UI, backend, storage, 운영을 하나의 약속으로 묶어버립니다.
+
+📉 운영 관점: 가격은 비용 구조를 공개적으로 고정한다
+
+가격표를 올리는 순간 운영자는 자기 비용 구조를 어느 정도 공개적으로 고정합니다. 무료 10GB / 24시간은 사용자가 보기에는 관대한 제한입니다. 운영자 입장에서는 저장소 비용, 대역폭, cleanup 실패, 남용, support 대응을 모두 감안해야 하는 숫자입니다. 이 숫자를 자주 바꾸면 신뢰가 흔들리고, 너무 넓게 잡으면 비용이 새고, 너무 좁게 잡으면 Cloud Drop의 가치가 약해집니다.
+
+PonsWarp의 기록에서 `3628858`의 resumable multipart upload는 이 운영 압력을 잘 보여줍니다. 대용량 업로드를 받으려면 중간 실패를 전제로 설계해야 합니다. 네트워크가 끊겨도 다시 이어야 하고, 이미 올라간 part와 아직 남은 part를 구분해야 하며, 실패한 업로드의 찌꺼기도 언젠가 치워야 합니다. 무료/유료 정책은 이런 기술 구조 위에서만 실제 상품이 됩니다.
+
+`d88a625`의 GA4 production measurement도 같은 방향의 기록입니다. 결제가 붙으면 감으로 제품을 운영하기 어렵습니다. 사용자가 pricing page에서 나가는지, checkout에서 멈추는지, entitlement 이후 업로드에서 실패하는지, 다운로드 단계에서 이탈하는지 알아야 합니다. 분석은 장식이 아니라 가격과 정책을 고칠 수 있게 해주는 계측 장치가 됩니다.
+
+🧭 지금 돌아보는 판단
+
+지금 돌아보면 PonsWarp에서 결제를 붙이려 한 시도는 성급한 욕심만은 아니었습니다. Cloud Drop이 들어온 이상 비용과 정책을 다루지 않을 수 없었습니다. 비동기 전달은 직접 전송보다 운영 비용이 분명했고, 무료로만 열어두기에는 abuse와 비용의 문제가 따라왔습니다. 가격표와 entitlement는 언젠가 필요했습니다.
+
+다만 결제는 너무 늦게 붙여도 어렵고, 너무 이르게 붙여도 어렵습니다. PonsWarp의 경우 직접 전송, Cloud Drop, 데스크톱 분기, signaling hardening, WASM 코어, 모바일 복구, analytics가 모두 동시에 굴러가던 상태에서 결제가 들어왔습니다. 그러자 결제는 단순한 수익화가 아니라 “이 제품이 정확히 무엇을 파는가”라는 질문을 다시 열었습니다.
+
+파일 전송 제품이 파는 것은 속도만이 아닙니다. 깨지지 않는다는 믿음, 나중에 받을 수 있다는 시간, 큰 파일도 감당한다는 용량, 실패했을 때 다시 이어진다는 복구 가능성, 돈을 낸 뒤 권한이 정확히 열린다는 운영 신뢰를 함께 팝니다. PonsWarp는 이 요소들을 하나씩 실제로 구현하려고 했지만, 그것들을 하나의 단순한 상품 문장으로 묶는 데에는 충분히 좁혀지지 못했습니다.
+
+그래서 이 구간의 교훈은 “결제를 붙이면 복잡해진다” 정도가 아닙니다. 더 정확히는, 결제는 이미 숨어 있던 제품의 약속을 강제로 문장화합니다. 무료일 때는 애매하게 넘어갈 수 있던 제한, 실패, 만료, 권한, 비용이 유료 앞에서는 모두 명시되어야 합니다. PonsWarp가 결제를 붙이는 순간 달라진 것은 매출 가능성이 아니라 제품의 책임 언어였습니다.
+
+📚 읽은 코드와 기록
+
+- `content/ponswarp-retrospective/series-plan.md` — post-45 주제, 제품화 구간, 4층 구조, Cloud Drop/free/paid 흐름
+- `content/ponswarp-retrospective/evidence-index.md` — 제품화와 수익화 커밋 묶음 및 코드 앵커
+- `PonsWarp commit 4847872` — delayed downloads를 위한 async Cloud Drop
+- `PonsWarp commit b6f3ea8` — Cloud Drop pricing page
+- `PonsWarp commit f8f2120` — Stripe Checkout에서 Cloud Drop entitlement 발급
+- `PonsWarp commit 2e4593d` — Cloud Drop billing을 PayPal로 라우팅
+- `PonsWarp commit 3628858` — 대용량 Cloud Drop upload resumable multipart 구조
+- `PonsWarp commit a004c91` — Free plan을 first-class cloud policy로 노출
+- `PonsWarp commit 212d751` — gated account and billing surfaces 비활성화
+- `PonsWarp commit d88a625` — GA4 production measurement
+- `PonsWarp/src/App.tsx`, `SenderView.tsx`, `ReceiverView.tsx`, `CloudSenderView.tsx` — 사용자 표면과 Cloud Drop 진입점
+- `ponswarp-signaling-rs`의 auth, billing, database, handlers, protocol, state, `/health`, `/ready`, `/ws` 범위 — 결제 이후 서버 책임 경계

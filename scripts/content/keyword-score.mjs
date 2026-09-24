@@ -262,10 +262,12 @@ export function scoreKeyword(keywordObj = {}, options = {}) {
 
   const metrics = keywordObj.metrics || options.metrics || {};
   const measured = metrics.source && metrics.source !== 'estimate' && metrics.checkedAt;
+  const volumeMeasured = measured && (!metrics.volumeKind || metrics.volumeKind === 'absolute');
 
   const intent = scoreCommercialIntent(keyword);
   const bid = measured ? scoreBid(metrics.cpcKrw) : 0;          // I2: 실측만 배점
-  const volume = measured ? scoreVolume(metrics.monthlySearch) : 0;
+  // relative/range trend signals are not monthly-search measurements.
+  const volume = volumeMeasured ? scoreVolume(metrics.monthlySearch) : 0;
   const gap = normalizeGapScore(options.serpGap || keywordObj.gap);
   const source = scoreSourceAvailability(keyword, category, options.sourceAvailable);
   const durability = scoreDurability(keyword, contentType);
