@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.2",
+  "skill_frontmatter_validation": "passed",
+  "spatial_unit_tests": {
+    "tests": 6,
+    "status": "passed"
+  },
+  "numerical_examples": {
+    "spatial-scene": "passed",
+    "vertical-product": "passed"
+  },
+  "numerical_preview": "generated and visually inspected; not a Blender render",
+  "python_syntax": "passed",
+  "blender_runtime": "unavailable",
+  "blender_render_validation": "unverified",
+  "sources": "selective review of attached sources; no full-book claim"
+}

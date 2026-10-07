@@ -1,0 +1,257 @@
+#!/usr/bin/env node
+/**
+ * public-site-qa.mjs — 공개 티스토리 표면 점검
+ *
+ * 로그인·발행·수정 없이 RSS, robots.txt, sitemap.xml, ads.txt와 공개 글만
+ * 읽어 자동 발행/애드센스 운영에서 놓치기 쉬운 차단 항목을 보고한다.
+ */
+import { parseHTML } from 'linkedom';
+
+const DEFAULT_BLOG_URL = 'https://acstory.tistory.com';
+const USER_AGENT = 'ponslink-public-site-qa/1.0';
+
+function normalizeUrl(url) {
+  return String(url || '').trim().replace(/\/+$/, '');
+}
+
+function decodeXml(text) {
+  return String(text || '')
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .trim();
+}
+
+export function extractFeedUrls(xml, limit = 10) {
+  const urls = [];
+  const seen = new Set();
+  const items = [...String(xml || '').matchAll(/<item\b[\s\S]*?<\/item>/gi)];
+  for (const match of items) {
+    const linkMatch = match[0].match(/<link\b[^>]*>([\s\S]*?)<\/link>/i);
+    const url = decodeXml(linkMatch?.[1] || '').trim();
+    if (!/^https?:\/\//i.test(url) || seen.has(url)) continue;
+    seen.add(url);
+    urls.push(url);
+    if (urls.length >= limit) break;
+  }
+  return urls;
+}
+
+export function extractSitemapUrls(xml, limit = 50) {
+  const urls = [];
+  const seen = new Set();
+  for (const match of String(xml || '').matchAll(/<loc\b[^>]*>([\s\S]*?)<\/loc>/gi)) {
+    const url = decodeXml(match[1]).trim();
+    if (!/^https?:\/\//i.test(url) || seen.has(url)) continue;
+    seen.add(url);
+    urls.push(url);
+    if (urls.length >= limit) break;
+  }
+  return urls;
+}
+
+function metaContent(document, name, attr = 'name') {
+  const wanted = String(name).toLowerCase();
+  for (const meta of document.querySelectorAll('meta')) {
+    if (String(meta.getAttribute(attr) || '').toLowerCase() === wanted) {
+      return String(meta.getAttribute('content') || '').trim();
+    }
+  }
+  return '';
+}
+
+function countMatches(text, pattern) {
+  return (String(text || '').match(pattern) || []).length;
+}
+
+export function inspectArticleHtml(html, url = '') {
+  const { document } = parseHTML(String(html || ''));
+  const content = document.querySelector('.contents_style')
+    || document.querySelector('.article-view')
+    || document.querySelector('article')
+    || document.body;
+  const articleHtml = content?.toString?.() || '';
+  const headHtml = document.querySelector('head')?.toString?.() || '';
+  const text = String(content?.textContent || '').replace(/\s+/g, ' ').trim();
+  const metas = [...document.querySelectorAll('meta')];
+  const refresh = metas.find((meta) => {
+    const name = String(meta.getAttribute('name') || '').toLowerCase();
+    const equiv = String(meta.getAttribute('http-equiv') || '').toLowerCase();
+    return name === 'refresh' || equiv === 'refresh';
+  });
+  const canonical = [...document.querySelectorAll('link')].find((link) =>
+    String(link.getAttribute('rel') || '').toLowerCase().split(/\s+/).includes('canonical')
+  )?.getAttribute('href') || '';
+  const description = metaContent(document, 'description');
+  const ogDescription = metaContent(document, 'og:description', 'property');
+  const refreshValue = String(refresh?.getAttribute('content') || '').trim();
+  const skinSourceMarkerCount = countMatches(headHtml, /출처\s*:\s*https?:\/\//gi);
+  const mixedScript = /[\u3040-\u30ff]/u.test(text)
+    || (/[가-힣]/u.test(text) && /[\u3400-\u4dbf\u4e00-\u9fff]{2,}/u.test(text));
+  const markdownLeak = /!?\[[^\]\n]+\]\(https?:\/\/[^\s)]+\)/i.test(text);
+  const blockerCodes = [];
+  const warningCodes = [];
+  if (refresh) blockerCodes.push('auto-refresh');
+  if (skinSourceMarkerCount >= 2 || /webclub\.tistory\.com\/354/i.test(headHtml)) blockerCodes.push('skin-source-marker');
+  if (text.length < 1800) blockerCodes.push('thin-body');
+  if (mixedScript) blockerCodes.push('mixed-script');
+  if (markdownLeak) blockerCodes.push('markdown-leak');
+  if (!canonical) blockerCodes.push('missing-canonical');
+  if (!description) warningCodes.push('missing-description');
+  if (description && description === ogDescription && description.length < 120) warningCodes.push('short-description');
+  if (!document.querySelector('script[type="application/ld+json"]')) warningCodes.push('missing-structured-data');
+  if (metaContent(document, 'page-enter')) warningCodes.push('legacy-page-transition');
+  if (!content?.querySelector('h1')) warningCodes.push('missing-h1');
+  if (!content?.querySelector('figure img, img')) warningCodes.push('missing-image');
+  if (countMatches(articleHtml, /data:image\/[^;]+;base64,/gi)) warningCodes.push('inline-base64-image');
+  return {
+    url,
+    ok: blockerCodes.length === 0,
+    title: String(document.querySelector('title')?.textContent || '').trim(),
+    canonical: String(canonical).trim(),
+    descriptionLength: [...description].length,
+    ogDescriptionLength: [...ogDescription].length,
+    bodyChars: text.length,
+    paragraphs: content?.querySelectorAll('p').length || 0,
+    headings: content?.querySelectorAll('h1,h2,h3').length || 0,
+    tables: content?.querySelectorAll('table').length || 0,
+    figures: content?.querySelectorAll('figure').length || 0,
+    images: content?.querySelectorAll('img').length || 0,
+    adScripts: countMatches(String(document), /adsbygoogle|googlesyndication/gi),
+    refresh: refreshValue || null,
+    skinSourceMarkerCount,
+    blockerCodes,
+    warningCodes
+  };
+}
+
+export function evaluateSiteSurface({ blogUrl, rootStatus, robotsStatus, sitemapStatus, adsStatus, articles = [] } = {}) {
+  const blockers = [];
+  const warnings = [];
+  const normalizedBlog = normalizeUrl(blogUrl || DEFAULT_BLOG_URL);
+  const hostedByTistory = /^https?:\/\/[^/]+\.tistory\.com$/i.test(normalizedBlog);
+  if (rootStatus !== 200) blockers.push({ code: 'blog-unreachable', status: rootStatus });
+  if (robotsStatus !== 200) warnings.push({ code: 'robots-unavailable', status: robotsStatus });
+  if (sitemapStatus !== 200) warnings.push({ code: 'sitemap-unavailable', status: sitemapStatus });
+  if (adsStatus !== 200) {
+    if (hostedByTistory) {
+      warnings.push({ code: 'ads-txt-platform-managed', status: adsStatus });
+    } else {
+      blockers.push({ code: 'ads-txt-unavailable', status: adsStatus });
+    }
+  }
+  for (const article of articles) {
+    for (const code of article.blockerCodes || []) blockers.push({ code, url: article.url });
+    for (const code of article.warningCodes || []) warnings.push({ code, url: article.url });
+  }
+  return {
+    blogUrl: normalizedBlog,
+    ok: blockers.length === 0,
+    blockers,
+    warnings,
+    articlesChecked: articles.length
+  };
+}
+
+async function fetchText(url) {
+  try {
+    const response = await fetch(url, { headers: { 'user-agent': USER_AGENT }, redirect: 'follow' });
+    return { status: response.status, text: await response.text() };
+  } catch (error) {
+    return { status: 0, text: '', error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+export async function runPublicSiteQa({ blogUrl = DEFAULT_BLOG_URL, limit = 10 } = {}) {
+  const base = normalizeUrl(blogUrl);
+  const [root, robots, sitemap, ads, feed] = await Promise.all([
+    fetchText(`${base}/`),
+    fetchText(`${base}/robots.txt`),
+    fetchText(`${base}/sitemap.xml`),
+    fetchText(`${base}/ads.txt`),
+    fetchText(`${base}/rss`)
+  ]);
+  let urls = extractFeedUrls(feed.text, limit);
+  if (!urls.length) urls = extractSitemapUrls(sitemap.text, limit).filter((url) => url !== base);
+  const articles = [];
+  for (const url of urls) {
+    const page = await fetchText(url);
+    const article = inspectArticleHtml(page.text, url);
+    articles.push({ status: page.status, ...article });
+  }
+  const surface = evaluateSiteSurface({
+    blogUrl: base,
+    rootStatus: root.status,
+    robotsStatus: robots.status,
+    sitemapStatus: sitemap.status,
+    adsStatus: ads.status,
+    articles
+  });
+  return {
+    checkedAt: new Date().toISOString(),
+    surface,
+    endpoints: {
+      root: root.status,
+      robots: robots.status,
+      sitemap: sitemap.status,
+      ads: ads.status,
+      feed: feed.status,
+      feedUrls: urls.length
+    },
+    articles
+  };
+}
+
+export async function assertPublicSiteReady({
+  blogUrl = DEFAULT_BLOG_URL,
+  limit = 10,
+  run = runPublicSiteQa
+} = {}) {
+  const report = await run({ blogUrl, limit });
+  if (report?.surface?.ok) return report;
+  const codes = [...new Set((report?.surface?.blockers || []).map((item) => item.code).filter(Boolean))];
+  const error = new Error(`공개 사이트 QA 차단: ${codes.join(', ') || 'unknown'}`);
+  error.code = 'public-site-qa-blocked';
+  error.report = report;
+  throw error;
+}
+
+function parseArgs(argv) {
+  const args = { blogUrl: DEFAULT_BLOG_URL, limit: 10, json: false, failOnBlockers: false };
+  for (let i = 2; i < argv.length; i += 1) {
+    if (argv[i] === '--blog-url' && argv[i + 1]) args.blogUrl = argv[++i];
+    else if (argv[i] === '--limit' && argv[i + 1]) args.limit = Math.max(1, Number(argv[++i]) || 10);
+    else if (argv[i] === '--json') args.json = true;
+    else if (argv[i] === '--fail-on-blockers') args.failOnBlockers = true;
+    else if (argv[i] === '--help') {
+      console.log('사용법: node public-site-qa.mjs [--blog-url URL] [--limit N] [--json] [--fail-on-blockers]');
+      process.exit(0);
+    }
+  }
+  return args;
+}
+
+async function main() {
+  const args = parseArgs(process.argv);
+  const report = await runPublicSiteQa(args);
+  if (args.json) {
+    console.log(JSON.stringify(report, null, 2));
+  } else {
+    console.log(`공개 사이트 QA: ${report.surface.ok ? 'PASS' : 'BLOCKED'} ${report.surface.blogUrl}`);
+    console.log(`endpoint root=${report.endpoints.root} robots=${report.endpoints.robots} sitemap=${report.endpoints.sitemap} ads.txt=${report.endpoints.ads} feed=${report.endpoints.feed}`);
+    console.log(`articles=${report.articles.length} blockers=${report.surface.blockers.length} warnings=${report.surface.warnings.length}`);
+    for (const item of report.surface.blockers) console.log(`  BLOCK ${item.code}${item.url ? `: ${item.url}` : ''}`);
+    for (const item of report.surface.warnings.slice(0, 20)) console.log(`  WARN ${item.code}${item.url ? `: ${item.url}` : ''}`);
+  }
+  if (args.failOnBlockers && !report.surface.ok) process.exit(2);
+}
+
+if (process.argv[1]?.endsWith('public-site-qa.mjs')) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
+}

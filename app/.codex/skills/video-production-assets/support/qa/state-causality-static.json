@@ -1,0 +1,338 @@
+{
+  "markdown_file_target_checks": [
+    {
+      "source": "video-production-assets/references/11-ai-handoff.md",
+      "target": "26-state-causality-continuity.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/11-ai-handoff.md",
+      "target": "24-production-execution.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/11-ai-handoff.md",
+      "target": "20-visual-mode-ssot.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/11-ai-handoff.md",
+      "target": "21-generated-video-qa-retry.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/11-ai-handoff.md",
+      "target": "26-state-causality-continuity.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/21-generated-video-qa-retry.md",
+      "target": "24-production-execution.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/21-generated-video-qa-retry.md",
+      "target": "26-state-causality-continuity.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/09-edit.md",
+      "target": "26-state-causality-continuity.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/09-edit.md",
+      "target": "16-concept-emotion-retention.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/09-edit.md",
+      "target": "23-finishing-platform.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/references/25-reference-video-analysis.md",
+      "target": "26-state-causality-continuity.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/contract.md#worker-handoff-and-single-writer",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/24-production-execution.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/preproduction-review.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/24-production-execution.md#2-이미지-생성-경로-정지-에셋",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/storyboard-contract.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/01-brief.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/01-brief-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/02-story.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/02-story-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/03-screenplay.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/03-screenplay-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/04-performance.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/04-performance-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/05-visual.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/05-visual-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/06-shots.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/06-shots-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/07-lighting.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/07-lighting-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/08-animation.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/08-animation-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/09-edit.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/09-edit-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/10-evidence.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/10-evidence-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/11-ai-handoff.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/11-ai-handoff-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/12-qa.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/12-qa-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/13-ideation-brand.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/13-ideation-brand-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/14-production-ops.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/14-production-ops-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/15-delivery.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/15-delivery-template.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/16-concept-emotion-retention.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/17-genre-comedy.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/18-episodic-series.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/19-brand-product-integration.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/20-visual-mode-ssot.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/21-generated-video-qa-retry.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/22-dialogue-lipsync.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/23-finishing-platform.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/24-production-execution.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/25-reference-video-analysis.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/preproduction-review.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/storyboard-contract.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/preproduction-review.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/contract.md#worker-handoff-and-single-writer",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "references/26-state-causality-continuity.md",
+      "exists": true
+    },
+    {
+      "source": "video-production-assets/SKILL.md",
+      "target": "assets/state-transition-template.md",
+      "exists": true
+    }
+  ],
+  "installed_roots": [
+    {
+      "root": "C:\\Users\\Declan\\.codex\\skills",
+      "resolved": "C:\\Users\\Declan\\Documents\\Projects\\contents-production-skills\\video-production-assets",
+      "same_source": true,
+      "guide_exists": true,
+      "sha256": "0bd85f9b75f800acc7cfe1bd31e9f8fe6c8b2c759d1e2a4961c770070702adec"
+    },
+    {
+      "root": "C:\\Users\\Declan\\.claude\\skills",
+      "resolved": "C:\\Users\\Declan\\Documents\\Projects\\contents-production-skills\\video-production-assets",
+      "same_source": true,
+      "guide_exists": true,
+      "sha256": "0bd85f9b75f800acc7cfe1bd31e9f8fe6c8b2c759d1e2a4961c770070702adec"
+    },
+    {
+      "root": "C:\\Users\\Declan\\.agents\\skills",
+      "resolved": "C:\\Users\\Declan\\Documents\\Projects\\contents-production-skills\\video-production-assets",
+      "same_source": true,
+      "guide_exists": true,
+      "sha256": "0bd85f9b75f800acc7cfe1bd31e9f8fe6c8b2c759d1e2a4961c770070702adec"
+    }
+  ],
+  "scope": "Targets only; anchors and media quality are not inferred"
+}

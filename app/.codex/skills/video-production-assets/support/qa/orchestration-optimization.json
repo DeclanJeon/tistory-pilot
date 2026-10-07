@@ -1,0 +1,575 @@
+{
+  "package_version": "2.4",
+  "skill_coverage": {
+    "inspected": 17,
+    "installed_skill_count": 17,
+    "architecture": "Instruction modules with one coordinator; not an autonomous scheduler."
+  },
+  "readiness": {
+    "criteria": [
+      {
+        "id": "single_owner",
+        "before": "pass",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "direct_delegated_boundary",
+        "before": "pass",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "compact_stage_packet",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "stage_local_loading",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "reuse_approved_choices",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "worker_return_ids_versions",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "stable_synopsis_beats",
+        "before": "pass",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "consistent_storyboard_default",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "full_storyboard_coverage",
+        "before": "pass",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "typed_semantic_references",
+        "before": "fail",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "provenance_references",
+        "before": "fail",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "exact_dependency_versions",
+        "before": "fail",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "focused_index_lookup",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "camera_project_reconciliation",
+        "before": "fail",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "previs_panel_version_join",
+        "before": "fail",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "bounded_previs_smoke",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "canonical_ledger_authority",
+        "before": "pass",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "single_writer_guarded_persistence",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "provider_namespace_join",
+        "before": "partial",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "consistent_execution_policy",
+        "before": "fail",
+        "after": "pass",
+        "evidence_kind": "source_contract/local_code"
+      },
+      {
+        "id": "actual_provider_runtime",
+        "before": "unverified",
+        "after": "unverified",
+        "evidence_kind": "not_exercised"
+      },
+      {
+        "id": "actual_clean_image_story_review",
+        "before": "unverified",
+        "after": "unverified",
+        "evidence_kind": "not_exercised"
+      },
+      {
+        "id": "actual_audio_listening",
+        "before": "unverified",
+        "after": "unverified",
+        "evidence_kind": "not_exercised"
+      },
+      {
+        "id": "actual_blender_render",
+        "before": "unverified",
+        "after": "unverified",
+        "evidence_kind": "not_exercised"
+      }
+    ],
+    "pass": 20,
+    "unverified": 4,
+    "checklist_readiness_percent": 83.3,
+    "limits": "Equal-weight checklist readiness, not media quality, business completion, model latency or runtime success. Source contracts and local code do not establish provider enforcement."
+  },
+  "main_instruction_character_metrics": [
+    {
+      "skill": "creative-production",
+      "before_characters": 12405,
+      "after_characters": 6525
+    },
+    {
+      "skill": "video-production-assets",
+      "before_characters": 8408,
+      "after_characters": 9045
+    },
+    {
+      "skill": "camera-spatial-design",
+      "before_characters": 2517,
+      "after_characters": 2899
+    },
+    {
+      "skill": "blender-previsualization",
+      "before_characters": 2820,
+      "after_characters": 3245
+    },
+    {
+      "skill": "orchestrating-video-preproduction",
+      "before_characters": 12869,
+      "after_characters": 5921
+    },
+    {
+      "skill": "developing-video-synopses",
+      "before_characters": 8607,
+      "after_characters": 5043
+    },
+    {
+      "skill": "designing-video-character-sheets",
+      "before_characters": 10380,
+      "after_characters": 4941
+    },
+    {
+      "skill": "storyboarding-video",
+      "before_characters": 8439,
+      "after_characters": 4601
+    },
+    {
+      "skill": "higgsfield-brandkit",
+      "before_characters": 12653,
+      "after_characters": 14871
+    },
+    {
+      "skill": "higgsfield-generate",
+      "before_characters": 25610,
+      "after_characters": 18367
+    },
+    {
+      "skill": "higgsfield-marketplace-cards",
+      "before_characters": 4157,
+      "after_characters": 5953
+    },
+    {
+      "skill": "higgsfield-product-photoshoot",
+      "before_characters": 9835,
+      "after_characters": 7363
+    },
+    {
+      "skill": "higgsfield-soul-id",
+      "before_characters": 3595,
+      "after_characters": 4974
+    },
+    {
+      "skill": "higgsfield-video-explainer",
+      "before_characters": 13903,
+      "after_characters": 17036
+    },
+    {
+      "skill": "higgsfield-video-replicate",
+      "before_characters": 11931,
+      "after_characters": 14371
+    },
+    {
+      "skill": "higgsfield-websites",
+      "before_characters": 14781,
+      "after_characters": 16747
+    },
+    {
+      "skill": "higgsfield-youtube-thumbnail",
+      "before_characters": 12559,
+      "after_characters": 9376
+    }
+  ],
+  "metric_limits": "Python Unicode characters of SKILL.md only. Detailed guides preserved; complete per-task reads and model token/latency/quality are not measured. Some runtime mains grew to carry eligibility/handoff safeguards.",
+  "baseline_evidence": "orchestration-baseline.json",
+  "additional_before_failures": [
+    {
+      "name": "synopsis pointer accepts voice profile",
+      "accepted": true,
+      "errors": []
+    },
+    {
+      "name": "voice pointer accepts synopsis",
+      "accepted": true,
+      "errors": []
+    },
+    {
+      "name": "numeric spatial pointer accepts generic plan",
+      "accepted": true,
+      "errors": []
+    },
+    {
+      "name": "shot claim pointer accepts unknown claim",
+      "accepted": true,
+      "errors": []
+    },
+    {
+      "name": "approved execution plan accepts no approved review",
+      "accepted": true,
+      "errors": []
+    }
+  ],
+  "after_reference_rejections": [
+    {
+      "name": "synopsis pointer accepts voice profile",
+      "errors": [
+        "storyboard: synopsis_artifact_id must reference a synopsis/script/beat_map artifact"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "voice pointer accepts synopsis",
+      "errors": [
+        "SP01: voice_artifact_id must reference a voice artifact"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "numeric spatial pointer accepts generic plan",
+      "errors": [
+        "SH01: spatial artifact must have type camera_spec or spatial_spec"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "shot claim pointer accepts unknown claim",
+      "errors": [
+        "SH01: unknown claims reference MISSING"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "approved execution plan accepts no approved review",
+      "errors": [
+        "A01: approved execution plan needs an approved preproduction_review dependency"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "dangling_source_assets",
+      "errors": [
+        "AS01: unknown asset_registry reference MISSING"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "dangling_character",
+      "errors": [
+        "AS01: unknown characters reference CH99"
+      ],
+      "rejected": true
+    },
+    {
+      "name": "undeclared_dependency_version",
+      "errors": [
+        "A01: dependency version UNKNOWN is not a declared dependency"
+      ],
+      "rejected": true
+    }
+  ],
+  "verification": {
+    "full_suite": {
+      "command": "python -m pytest -q",
+      "tests_passed": 118,
+      "subtests_passed": 156,
+      "warnings": 2,
+      "warning_limit": "Existing Windows junction subprocess UTF-8 reader errors; not fixed/suppressed."
+    },
+    "after_final_blender_change": {
+      "command": "python -m pytest -q blender-previsualization/scripts/test_build_previs.py",
+      "tests_passed": 9,
+      "subtests_passed": 4
+    },
+    "cli_smokes": [
+      {
+        "script": "video-production-assets/scripts/project_index.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--shot",
+          "SH01"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"project\": {\n    \"project_id\": \"test\",\n    \"version\": \"1\",\n    \"schema_version\": \"1.1\",\n    \"target_duration_s\": 2,\n    \"fps\": 24,\n    \"aspect_ratio\": \"16:9\",\n    \"audio_mode\": \"no_audio\"\n  },\n  \"focus\": {\n    \"shot_ids\": [\n      \"SH01\"\n    ],\n    \"artifact_ids\": []\n  },\n  \"input_versions\": {},\n  \"scenes\": [\n    {\n      \"id\": \"S01\",\n      \"purpose\": \"show sum\"\n    }\n  ],\n  \"characters\": [],\n  \"shots\": [\n    {\n      \"id\": \"SH01\",\n      \"scene_id\": \"S01\",\n      \"character_ids\": [],\n      \"start_s\": 0,\n      \"end_s\": 2,\n      \"source_duration_s\": 2,\n      \"source_duration_status\": \"estimated\",\n      \"purpose\": \"show\",\n      \"start_state\": \"2 + 3\",\n      \"end_state\": \"5\"\n    }\n  ],\n  \"claims\": [],\n  \"artifacts\": [],\n  \"asset_registry\": [],\n  \"audio_cues\": [],\n  \"captions\": [],\n  \"generation_attempts\": [],\n  \"storyboard\": {\n    \"beats\": [],\n    \"panels\": []\n  },\n  \"limits\": \"Derived read-only context; not an execution grant, full brief, automatic stage selection or media inspection.\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/project_index.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--shot",
+          "SH99"
+        ],
+        "returncode": 1,
+        "stdout": "{\"error\": \"unknown shots: SH99\"}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/update_project.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--update",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\update.json"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"project_id\": \"test\",\n  \"version\": \"2\",\n  \"updated_ids\": {\n    \"artifacts\": [\n      \"A01\"\n    ]\n  },\n  \"stale_artifact_ids\": [\n    \"A02\",\n    \"A03\",\n    \"A04\"\n  ],\n  \"path\": \"C:\\\\Users\\\\Declan\\\\AppData\\\\Local\\\\Temp\\\\orchestration-smoke-7qqvhryh\\\\project.json\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/update_project.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--update",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\update.json"
+        ],
+        "returncode": 1,
+        "stdout": "{\"error\": \"project identity/base version changed; re-read before integrating\"}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/validate_storyboard.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh",
+          "--require-images"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"errors\": [],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "camera-spatial-design/scripts/spatial_spec.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\camera.json",
+          "--reconcile",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--artifact",
+          "CAM01"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"errors\": [],\n  \"scope\": \"registered camera spec attachment; standalone geometry checked by analyze/validate only\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/validate_storyboard.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh",
+          "--require-images"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"CAM01: fps mismatch: spec 30 != project 24\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/validate_project.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\inside\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\inside"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"profile\": \"plan\",\n  \"errors\": [\n    \"AS01: local asset path escapes --base-dir\"\n  ],\n  \"scope\": \"contract, timing, references and declared inspection records; no media decoding or artistic verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/validate_project.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\orchestration-smoke-7qqvhryh\\inside\\project.json"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"profile\": \"plan\",\n  \"errors\": [\n    \"target duration is not frame aligned\",\n    \"SH01: timeline boundaries are not frame aligned\"\n  ],\n  \"scope\": \"contract, timing, references and declared inspection records; no media decoding or artistic verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/update_project.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\stale-transition-smoke-226njxk3\\project.json",
+          "--update",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\stale-transition-smoke-226njxk3\\update.json"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"project_id\": \"test\",\n  \"version\": \"2\",\n  \"updated_ids\": {\n    \"artifacts\": [\n      \"A01\",\n      \"A02\",\n      \"A03\"\n    ]\n  },\n  \"stale_artifact_ids\": [\n    \"A02\",\n    \"A03\",\n    \"A04\"\n  ],\n  \"path\": \"C:\\\\Users\\\\Declan\\\\AppData\\\\Local\\\\Temp\\\\stale-transition-smoke-226njxk3\\\\project.json\"\n}",
+        "stderr": ""
+      },
+      {
+        "script": "video-production-assets/scripts/project_index.py",
+        "args": [
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\artifact-index-smoke-yump9vt6\\project.json",
+          "--artifact",
+          "A03"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"project\": {\n    \"project_id\": \"test\",\n    \"version\": \"1\",\n    \"schema_version\": \"1.1\",\n    \"target_duration_s\": 2,\n    \"fps\": 24,\n    \"aspect_ratio\": \"16:9\",\n    \"audio_mode\": \"no_audio\"\n  },\n  \"focus\": {\n    \"shot_ids\": [],\n    \"artifact_ids\": [\n      \"A03\"\n    ]\n  },\n  \"input_versions\": {\n    \"A01\": \"1\",\n    \"A02\": \"1\",\n    \"A03\": \"1\"\n  },\n  \"scenes\": [],\n  \"characters\": [],\n  \"shots\": [],\n  \"claims\": [],\n  \"artifacts\": [\n    {\n      \"id\": \"A01\",\n      \"type\": \"plan\",\n      \"version\": \"1\",\n      \"status\": \"draft\",\n      \"dependencies\": [],\n      \"dependency_versions\": {}\n    },\n    {\n      \"id\": \"A02\",\n      \"type\": \"storyboard\",\n      \"version\": \"1\",\n      \"status\": \"approved\",\n      \"approval\": {\n        \"by\": \"fixture user\",\n        \"at\": \"2026-10-18\",\n        \"evidence\": \"synthetic approval fixture\"\n      },\n      \"dependencies\": [\n        \"A01\"\n      ],\n      \"dependency_versions\": {\n        \"A01\": \"1\"\n      }\n    },\n    {\n      \"id\": \"A03\",\n      \"type\": \"preproduction_review\",\n      \"version\": \"1\",\n      \"status\": \"approved\",\n      \"approval\": {\n        \"by\": \"fixture user\",\n        \"at\": \"2026-10-18\",\n        \"evidence\": \"synthetic approval fixture\"\n      },\n      \"dependencies\": [\n        \"A02\"\n      ],\n      \"dependency_versions\": {\n        \"A02\": \"1\"\n      }\n    }\n  ],\n  \"asset_registry\": [],\n  \"audio_cues\": [],\n  \"captions\": [],\n  \"generation_attempts\": [],\n  \"storyboard\": {\n    \"beats\": [],\n    \"panels\": []\n  },\n  \"limits\": \"Derived read-only context; not an execution grant, full brief, automatic stage selection or media inspection.\"\n}",
+        "stderr": ""
+      }
+    ],
+    "pure_previs_helper_smoke": {
+      "render_map": {
+        "SH01": [
+          {
+            "frame": 17,
+            "label": "P04",
+            "panels": [
+              "P04"
+            ]
+          }
+        ]
+      },
+      "peak_plan": {
+        "SH01": [
+          {
+            "frame": 17,
+            "label": "P04",
+            "panels": [
+              "P04"
+            ]
+          }
+        ]
+      },
+      "smoke_plan": {
+        "SH01": [
+          {
+            "frame": 0,
+            "label": "smoke_first_frame",
+            "panels": []
+          }
+        ]
+      },
+      "portrait_resolution": [
+        180,
+        320
+      ],
+      "huge_resolution": [
+        320,
+        1
+      ],
+      "cli_help_exit": 0,
+      "limits": "Pure helpers/argument surface exercised. No bpy rendering, scene reopening, proxy PNG inspection or actual artistic quality proof."
+    },
+    "tool_free_instruction_scenarios": [
+      {
+        "name": "focused_storyboard_resume",
+        "prompt": "기존 제작 프로젝트를 재개한다. 승인된 시놉 SYN-v3, 캐릭터 CH01/CH02와 보드 SB-v2가 있다. 현재 할 일은 SH06의 P12/P13/P14 장갑 전달만 보완하는 텍스트 작업이다. 정상 컷과 승인 이야기를 보존하고 생성·저장·지출은 하지 마. 작업 시작에 필요한 라우팅·로드 문서·워커 인계·원장 반영 절차만 짧게 설계해줘. 다른 작업 단계는 열지 마.",
+        "response": "### SH06 장갑 전달 보완 — 착수 절차\n\n**범위 고정:** SH06의 P12/P13/P14만 텍스트로 보완한다. 승인된 SYN-v3, CH01/CH02, SB-v2의 이야기·연속성과 정상 컷은 보존한다. 미디어 생성·파일 저장·지출 및 다른 제작 단계는 열지 않는다.\n\n1. **라우팅**\n   - 총괄: `creative-production`\n   - 담당 워커: `storyboarding-video`\n   - 배정 작업은 **기존 보드의 지정 패널 부분 수정**이며, 시놉시스·캐릭터·전체 보드를 재개발하지 않는다.\n\n2. **최소 문서·자료 로드**\n   - 현재 단계 라우팅과 `storyboarding-video` 지침.\n   - `storyboard-contract.md`의 해당 기술 슬롯·인덱스 수정 규칙.\n   - `contract.md#worker-handoff-and-single-writer`.\n   - 선택된 프로젝트의 `project.json`에서 **SH06 중심 읽기 전용 조회**를 수행하고, P12/P13/P14 및 직접 연결된 승인·연속성·입력 버전만 확인한다.\n   - SYN-v3와 CH01/CH02, SB-v2는 필요한 구간만 읽는다. 제공된 명칭을 원장상의 artifact ID·버전으로 임의 해석하지 않는다. **프로젝트 루트나 원본이 없으면 해당 자료 확보가 착수 전제**다.\n\n3. **워커 인계 패킷**\n   - 실제 프로젝트 루트/ID/버전, 기존 보드 artifact ID·버전.\n   - 수정 범위: `SH06 → P12/P13/P14 → 장갑 전달`.\n   - 관련 원문과 입력 artifact별 버전, 승인 근거.\n   - 잠금 조건: 승인 이야기·캐릭터 정체성·정상 컷·범위 밖 기록 유지.\n   - 기존 카메라/공간·손동작·장갑 상태·대사/음향 명세 중 해당 구간에 필요한 정보만 포함.\n   - 부족한 정보는 워커가 **패널별 요구사항 패킷 하나**로 반환한다. 임의 설정이나 별도 단계 착수로 메우지 않는다.\n\n4. **워커 반환**\n   - P12/P13/P14의 수정 문안과 변경 전후 차이.\n   - 사용한 입력 버전, 연속성 점검 결과, 가정·미해결 사항.\n   - 기존 보드 artifact의 버전 변경 및 레코드 변경은 **제안으로만** 반환한다. 워커는 원장을 쓰지 않는다.\n\n5. **원장 처리**\n   - **이번 요청에서는 반영하지 않는다.** 총괄은 반환 시 현재 입력 버전을 읽기 전용으로 재확인하고, 오래된 입력에 기반한 수정안은 채택하지 않는다.\n   - 향후 별도 저장 허가가 있을 때만 총괄이 지정 패널과 소유 보드 artifact 버전을 반영한다. 영향받는 종속 승인만 stale 처리하고, 무관한 정상 컷·승인은 보존한 뒤 재조회·검증한다.\n\n현재 산출물은 위 절차 설계뿐이며, 자료 로드·수정·저장은 수행하지 않았다."
+      },
+      {
+        "name": "locked_factual_synopsis",
+        "prompt": "배정 단계는 시놉시스만. 사실 근거: 출처 M1 v1에서 2+3=5를 확인했다. 15초 인물 없는 교육 영상으로, 이미지·파일·지출 없이 한국어 시놉 3문장과 B01/B02/B03 비트 연결을 써라. artifact SYN02 v2와 입력 M1 v1은 배정된 ID다. 원장 기록은 총괄의 제안으로 반환하고 캐릭터·콘티·추가 후보 인터뷰를 열지 마.",
+        "response": "### 시놉시스 — SYN02 v2\n① 두 개와 세 개의 수량을 제시하고, 둘을 합치면 모두 몇 개인지 묻는다.  \n② 두 수량을 하나로 모아 차례대로 세며, 전체가 다섯 개임을 확인한다.  \n③ ‘2+3=5’를 제시해 앞서 확인한 수량과 덧셈식을 연결하며 마무리한다.\n\n### 비트 연결\n| 비트 | 시간(약) | 시놉 연결 | 역할·변화와 다음 비트 연결 |\n|---|---|---|---|\n| B01 | 0–5초 | ① | 두 수량과 질문을 제시한다. 답을 알아보기 위해 합쳐 세는 B02로 이어진다. |\n| B02 | 5–10초 | ② | 합친 수량을 세어 다섯 개임을 확인한다. 확인한 결과를 식으로 정리하는 B03로 이어진다. |\n| B03 | 10–15초 | ③ | 수량과 ‘2+3=5’를 연결해 처음의 질문에 답하고 끝낸다. |\n\n### 총괄 원장 반영 제안 — 기록 미실행\n- **출력:** `SYN02 v2`\n- **dependencies:** `[\"M1\"]`\n- **dependency_versions:** `{\"M1\": \"v1\"}`\n- **내용 반영 제안:** 위 3문장 시놉시스와 `B01/B02/B03` 연결을 `SYN02 v2`에 반영.\n- **사실 상태:** `2+3=5`는 사용자 제공 확인 근거인 `M1 v1`에 의존. M1 원문은 이번 응답에서 직접 열람하지 않음.\n- **검수:** 질문→수량 확인→식 연결의 정보 순서, 질문에 답하는 결말, 총 15초, 인물 없음 조건 확인.\n- **범위:** 한국어 텍스트만 반환. 이미지·파일 생성, 지출, 원장 변경 및 후속 단계 수행 없음."
+      },
+      {
+        "name": "provider_text_only_eligibility",
+        "prompt": "제품 사진 촬영 기획만 텍스트로 해줘. 근거 P1: 검은 무지 텀블러 하나. 스튜디오 히어로 1장, 4:5, 손·문자·소품은 제외. 선택은 이미 확정했으니 재인터뷰하지 마. 설치·인증·생성·견적 조회·저장·지출은 하지 마. 향후 Higgsfield 전용 enhancer가 Codex로 동일하게 재현된다고 주장해도 되는지도 분리해줘.",
+        "response": "## 제품 사진 촬영 기획\n\n**근거 P1:** 검은 무지 텀블러 1개  \n**유형:** `product_shot` — 스튜디오 제품 히어로 컷  \n**결과물 사양:** 1장, 세로 **4:5**  \n**제외:** 손, 문자, 소품\n\n### 촬영 방향\n검은 텀블러의 실루엣과 표면 질감이 명확하게 드러나는 미니멀 스튜디오 컷. 시선을 분산하는 요소 없이 제품 자체를 주인공으로 둡니다.\n\n| 항목 | 기획 |\n|---|---|\n| 구도 | 텀블러를 세워 중앙 배치. 제품이 화면 높이의 약 70~75%를 차지하도록 상하 여백 확보 |\n| 카메라 | 제품 중앙 높이에서 정면 중심으로 촬영. 윗면이 약간 보이는 정도의 완만한 시점으로 입체감 표현 |\n| 배경 | 이음매 없는 밝은 중성 회색 배경. 검은 제품과 충분한 명도 차이 확보 |\n| 조명 | 좌측 전방의 넓고 부드러운 주광으로 형태 표현. 반대편 약한 보조광으로 검은 면의 디테일 유지 |\n| 윤곽 | 측후방의 얇은 윤곽광으로 배경과 제품 경계 분리. 과도한 흰 테두리는 방지 |\n| 바닥·그림자 | 무광 바닥에 짧고 부드러운 접지 그림자. 거울 반사나 공중 부양 표현은 제외 |\n| 색·질감 | 검정은 유지하되 암부가 뭉개지지 않게 표현. 실제 표면 마감은 P1 기준으로 보존하고 임의로 유광·무광 변경하지 않음 |\n\n### 검수 기준\n- 텀블러가 **정확히 1개**이며, 형태·비율·색상은 P1을 기준으로 유지.\n- 손, 사람, 문자, 로고, 워터마크, 소품이 없음.\n- 검은 제품의 외곽과 표면 디테일이 배경에서 분명하게 구분됨.\n- 과도한 광택, 왜곡, 복제된 부품, 부자연스러운 그림자가 없음.\n- 최종 프레임이 **4:5**이며 제품 전체가 잘리지 않음.\n\n## 별도 판단: Higgsfield enhancer의 Codex 동일 재현 주장\n\n**동일하게 재현된다고 주장하면 안 됩니다.** Higgsfield 전용 enhancer의 비공개 프롬프트 구성과 촬영 템플릿을 Codex가 동일하게 구현한다는 근거가 없습니다.\n\n가능한 표현은 다음과 같습니다.\n\n> “Codex로 동일한 촬영 의도와 공개된 모드 분류를 참고한 별도 기획을 작성할 수 있지만, Higgsfield 전용 enhancer나 그 결과의 동일 재현을 의미하지는 않습니다.”\n\n위 내용은 **텍스트 촬영 기획만**이며, 백엔드가 조립한 생성 프롬프트가 아닙니다. 설치·인증·생성·견적 조회·저장·지출은 수행하지 않았습니다."
+      }
+    ],
+    "scenario_limits": "No tools/media/provider execution. Factual scenario dependency proposal still needs registry confirmation; contract explicitly distinguishes source IDs from registered artifacts. No causal speed/quality benchmark.",
+    "initial_full_suite": {
+      "command": "python -m pytest -q",
+      "tests_passed": 116,
+      "subtests_passed": 150,
+      "warnings": 2,
+      "warning_limit": "Existing Windows junction subprocess UTF-8 reader errors; not fixed/suppressed."
+    },
+    "same_batch_stale_before": {
+      "states": {
+        "A01": "draft",
+        "A02": "stale",
+        "A03": "draft",
+        "A04": "stale",
+        "A05": "approved"
+      },
+      "stale_ids": [
+        "A02",
+        "A04"
+      ]
+    },
+    "final_release_checks": {
+      "package_version": "2.4",
+      "skill_versions_consistent": 17,
+      "python_syntax_files": 6,
+      "main_skill_relative_links_checked": 131,
+      "missing_main_links": 0
+    }
+  },
+  "ledger_location": "<selected-user-project-root>/project.json",
+  "repository_ledgers": [
+    "examples/20-second-animation/project.json",
+    "examples/15-second-education/project.json"
+  ],
+  "runtime_limits": [
+    "No live user production root selected/modified. No machine-wide absence claim.",
+    "Provider auth/live schema/cost/free allowance and actual terminal outputs unverified.",
+    "Complete clean-image story readability/user acceptance unverified.",
+    "Actual voice/audio listening/sync unverified.",
+    "Actual bpy render/scene reopen/generated proxy PNGs unverified.",
+    "update_project supports validated existing plans/upserts; not initial empty templates, deletion, consent authentication or autonomous execution.",
+    "Lock applies cooperative writers; final noncooperating race/power-loss durability not a database guarantee."
+  ]
+}

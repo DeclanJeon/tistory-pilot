@@ -1,0 +1,61 @@
+{
+  "checked_at": "2026-10-03T15:56:16.419Z",
+  "skill_version": "1.4.1",
+  "scope": "read-only, stateless model decision probes against current coordinator and image routing instructions; no media tools or generations",
+  "cases": [
+    {
+      "id": "DefaultReady",
+      "prompt": "Read-only execution decision. User requests one original review still in an exact selected project folder. No provider named. codex-imagen helper is installed, authenticated, supports the required format and exact output path; current usage is confirmed included and one still is explicitly authorized. Higgsfield has many credits. Decide the image route and next actions, do not execute.",
+      "output": {
+        "route": "codex-imagen",
+        "actions": [
+          "Select codex-imagen for the explicitly authorized single review still; its helper, authentication, format, exact output path and included usage are confirmed.",
+          "Reuse the exact selected project folder; preserve the active brief and existing version-bound approvals, and apply the preproduction-review contract before any future write or media call.",
+          "On execution, limit generation to one still at the confirmed output path, then register the actual artifact, inspect it and present it for user review; do not infer retries or further execution approval.",
+          "Do not use Higgsfield for image generation or fallback, regardless of its credits.",
+          "Read-only decision only: do not execute, write files or generate media."
+        ]
+      },
+      "expected_route": "codex-imagen",
+      "pass": true
+    },
+    {
+      "id": "NoFallback",
+      "prompt": "검토 정지 이미지 1장 절차만 설명해줘. 경로와 범위는 확정. codex-imagen helper와 인증이 없고 Higgsfield 이미지 도구만 인증·크레딧·지원 규격이 준비됐어. 이미지 생성은 하지 마. 실행 경로와 다음 행동을 결정해.",
+      "output": {
+        "route": "blocked",
+        "actions": [
+          "검토 정지 이미지 1장의 기본 실행 경로는 codex-imagen으로 유지한다. 현재 helper와 인증이 없어 이미지 실행 단계는 차단한다.",
+          "Higgsfield 이미지 생성은 금지된 경로이므로 인증·크레딧·지원 규격이 준비되어 있어도 대체 실행자로 사용하지 않는다.",
+          "확정된 경로와 범위를 다시 묻거나 확장하지 않는다. 이미지 생성 및 유료 호출은 수행하지 않는다.",
+          "다음 행동은 기존 브리프에 맞춰 1장용 프롬프트·참조 입력 명세·출력 규격·검토 기준을 비렌더링 방식으로 준비하는 것이다.",
+          "향후 생성 요청이 있을 때 codex-imagen helper·인증·참조 지원·출력 경로·사용량 및 비용 조건을 확인하고, 해당 실행 범위의 승인을 확인한 뒤에만 생성한다. 실제 출력이 생긴 후 검사와 사용자 검토를 진행한다."
+        ]
+      },
+      "expected_route": "blocked",
+      "pass": true
+    },
+    {
+      "id": "TextOnly",
+      "prompt": "기존 시놉시스를 한국어 한 문장으로 줄이는 텍스트 작업만 해. 파일, 이미지, 영상은 요청하지 않는다. codex-imagen 인증은 없어. 실행 경로와 다음 행동을 결정해.",
+      "output": {
+        "route": "text-only",
+        "actions": [
+          "기존 시놉시스 원문을 요청한다. 현재 대화에는 요약할 원문이 없다.",
+          "원문을 받으면 핵심 내용을 보존해 한국어 한 문장으로 줄이고 채팅으로만 반환한다.",
+          "파일·이미지·영상 생성이나 인증 확인은 하지 않는다. codex-imagen 인증 부재는 이 텍스트 작업의 차단 사유가 아니다."
+        ]
+      },
+      "expected_route": "text-only",
+      "pass": true
+    }
+  ],
+  "codex_helper_smoke": {
+    "exercised": true,
+    "mode": "existing_chatgpt_oauth",
+    "credentials_exposed": false,
+    "image_generated": false,
+    "cost_verified": false
+  },
+  "higgsfield_image_submissions": 0
+}

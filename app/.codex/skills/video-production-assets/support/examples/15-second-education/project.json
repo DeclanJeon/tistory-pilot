@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.1",
+  "project_id": "ADD-2-3-KO",
+  "version": "0.1",
+  "target_duration_s": 15,
+  "fps": 30,
+  "aspect_ratio": "16:9",
+  "audio_mode": "dialogue",
+  "scenes": [
+    {
+      "id": "S01",
+      "purpose": "두 개와 세 개를 합쳐 다섯 개가 됨을 관찰한다."
+    }
+  ],
+  "characters": [],
+  "shots": [
+    {
+      "id": "SH01",
+      "scene_id": "S01",
+      "beat_id": "B01",
+      "character_ids": [],
+      "asset_ids": [
+        "AS01"
+      ],
+      "start_s": 0,
+      "end_s": 5,
+      "source_duration_s": 5,
+      "source_duration_status": "estimated",
+      "source_in_s": 0,
+      "playback_rate": 1,
+      "purpose": "두 집합 소개",
+      "start_state": "빈 배경",
+      "end_state": "왼쪽 두 원, 오른쪽 세 원, 2+3 표시",
+      "claim_ids": [
+        "CL01"
+      ]
+    },
+    {
+      "id": "SH02",
+      "scene_id": "S01",
+      "beat_id": "B02",
+      "character_ids": [],
+      "asset_ids": [
+        "AS01"
+      ],
+      "start_s": 5,
+      "end_s": 10,
+      "source_duration_s": 5,
+      "source_duration_status": "estimated",
+      "source_in_s": 0,
+      "playback_rate": 1,
+      "purpose": "합치고 세기",
+      "start_state": "두 원과 세 원이 분리됨",
+      "end_state": "다섯 원이 한 줄로 정렬되고 1~5 번호 표시",
+      "claim_ids": [
+        "CL01"
+      ]
+    },
+    {
+      "id": "SH03",
+      "scene_id": "S01",
+      "beat_id": "B03",
+      "character_ids": [],
+      "asset_ids": [
+        "AS01"
+      ],
+      "start_s": 10,
+      "end_s": 15,
+      "source_duration_s": 5,
+      "source_duration_status": "estimated",
+      "source_in_s": 0,
+      "playback_rate": 1,
+      "purpose": "식으로 정리",
+      "start_state": "번호가 붙은 다섯 원",
+      "end_state": "다섯 원 아래 2+3=5 유지",
+      "claim_ids": [
+        "CL01"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "CL01",
+      "statement": "2+3=5",
+      "kind": "fact",
+      "source": "plan-ko.md#산술-근거",
+      "status": "verified",
+      "shot_ids": [
+        "SH01",
+        "SH02",
+        "SH03"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "A01",
+      "type": "brief_and_script",
+      "version": "0.1",
+      "status": "reviewed",
+      "dependencies": [],
+      "dependency_versions": {},
+      "evidence": "plan-ko.md: 브리프, 각본 및 산술 근거"
+    },
+    {
+      "id": "A02",
+      "type": "shots_animation_edit_delivery_plan",
+      "version": "0.1",
+      "status": "reviewed",
+      "dependencies": [
+        "A01"
+      ],
+      "dependency_versions": {
+        "A01": "0.1"
+      },
+      "evidence": "plan-ko.md: 샷, 타이밍 및 납품 계획"
+    },
+    {
+      "id": "A03",
+      "type": "plan_manifest",
+      "version": "0.1",
+      "status": "reviewed",
+      "dependencies": [
+        "A01",
+        "A02"
+      ],
+      "dependency_versions": {
+        "A01": "0.1",
+        "A02": "0.1"
+      },
+      "evidence": "project.json 및 bundled plan validator"
+    }
+  ],
+  "asset_registry": [
+    {
+      "id": "AS01",
+      "kind": "vector_graphics",
+      "version": "0.1",
+      "path": null,
+      "status": "planned",
+      "sha256": null
+    },
+    {
+      "id": "AS02",
+      "kind": "korean_voiceover",
+      "version": "0.1",
+      "path": null,
+      "status": "planned",
+      "sha256": null
+    },
+    {
+      "id": "AS03",
+      "kind": "final_video",
+      "version": "0.1",
+      "path": null,
+      "status": "planned",
+      "sha256": null
+    },
+    {
+      "id": "AS04",
+      "kind": "korean_srt",
+      "version": "0.1",
+      "path": null,
+      "status": "planned",
+      "sha256": null
+    }
+  ],
+  "audio_cues": [
+    {
+      "id": "AU01",
+      "start_s": 0.5,
+      "end_s": 4.5,
+      "layer": "voiceover",
+      "shot_id": "SH01",
+      "asset_id": "AS02",
+      "text": "여기 두 개가 있어요. 세 개를 더해 볼까요?",
+      "timing_status": "estimated"
+    },
+    {
+      "id": "AU02",
+      "start_s": 5.3,
+      "end_s": 9.7,
+      "layer": "voiceover",
+      "shot_id": "SH02",
+      "asset_id": "AS02",
+      "text": "함께 세어 봐요. 하나, 둘, 셋, 넷, 다섯.",
+      "timing_status": "estimated"
+    },
+    {
+      "id": "AU03",
+      "start_s": 10.5,
+      "end_s": 14.5,
+      "layer": "voiceover",
+      "shot_id": "SH03",
+      "asset_id": "AS02",
+      "text": "두 개에 세 개를 더하면, 모두 다섯 개예요.",
+      "timing_status": "estimated"
+    }
+  ],
+  "captions": [
+    {
+      "id": "CP01",
+      "start_s": 0.5,
+      "end_s": 4.5,
+      "text": "여기 두 개가 있어요. 세 개를 더해 볼까요?",
+      "shot_id": "SH01",
+      "timing_status": "estimated",
+      "claim_ids": [
+        "CL01"
+      ]
+    },
+    {
+      "id": "CP02",
+      "start_s": 5.3,
+      "end_s": 9.7,
+      "text": "함께 세어 봐요. 하나, 둘, 셋, 넷, 다섯.",
+      "shot_id": "SH02",
+      "timing_status": "estimated",
+      "claim_ids": [
+        "CL01"
+      ]
+    },
+    {
+      "id": "CP03",
+      "start_s": 10.5,
+      "end_s": 14.5,
+      "text": "두 개에 세 개를 더하면, 모두 다섯 개예요.",
+      "shot_id": "SH03",
+      "timing_status": "estimated",
+      "claim_ids": [
+        "CL01"
+      ]
+    }
+  ],
+  "issues": [],
+  "delivery_spec": {
+    "destination": "미정; 후속 제작용 제안 규격",
+    "width": 1920,
+    "height": 1080,
+    "container": "mp4",
+    "video_codec": "h264",
+    "caption_mode": "sidecar",
+    "final_asset_id": "AS03",
+    "caption_asset_id": "AS04"
+  },
+  "delivery_checks": [
+    {
+      "id": "DC01",
+      "category": "playback",
+      "status": "unverified",
+      "reason": "계획만 작성; 실제 미디어 재생·측정은 후속 제작 단계"
+    },
+    {
+      "id": "DC02",
+      "category": "timing",
+      "status": "unverified",
+      "reason": "계획만 작성; 실제 미디어 재생·측정은 후속 제작 단계"
+    },
+    {
+      "id": "DC03",
+      "category": "visual",
+      "status": "unverified",
+      "reason": "계획만 작성; 실제 미디어 재생·측정은 후속 제작 단계"
+    },
+    {
+      "id": "DC04",
+      "category": "audio",
+      "status": "unverified",
+      "reason": "계획만 작성; 실제 미디어 재생·측정은 후속 제작 단계"
+    },
+    {
+      "id": "DC05",
+      "category": "captions",
+      "status": "unverified",
+      "reason": "계획만 작성; 실제 미디어 재생·측정은 후속 제작 단계"
+    },
+    {
+      "id": "DC06",
+      "category": "continuity",
+      "status": "unverified",
+      "reason": "계획만 작성; 실제 미디어 재생·측정은 후속 제작 단계"
+    },
+    {
+      "id": "DC07",
+      "category": "claims",
+      "status": "pass",
+      "evidence": "plan-ko.md#산술-근거: 2+3 및 원소 수 직접 계산"
+    }
+  ]
+}

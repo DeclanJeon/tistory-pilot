@@ -1,0 +1,3 @@
+shot_id,candidate_id,purpose,shot_size,camera_position_m,target_m,height_m,subject_distance_m,sensor_width_mm,lens_mm,fov_x_deg,movement,composition,axis_side,reason,limitations
+SH01,A,제품 전체 형태,full product,"[-0.06, -0.55, 0.32]","[0,0,0.15]",0.32,0.5788,36,50,39.598,smoothstep truck X -0.06 to +0.06 m,제품 중심을 화면 중앙에 고정,n/a,선택: 미세 시차로 제품의 두께를 보여주며 전체를 유지,실제 렌더 미검증
+SH01,B,제품 전체 형태,full product,"[0, -0.7, 0.32]","[0,0,0.15]",0.32,0.7203,36,65,30.957,static,제품 중심을 화면 중앙에 고정,n/a,정지 대안: 전체 제품 가독성은 유지하지만 요청한 좌우 이동이 없음,실제 렌더 미검증

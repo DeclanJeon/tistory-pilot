@@ -1,0 +1,12 @@
+interface:
+  display_name: 영상 시놉시스 개발
+  short_description: 영상 아이디어를 콘셉트, 로그라인, 시놉시스, 비트 맵으로 작성하는 스킬
+  default_prompt: $developing-video-synopses를 사용해 이 영상 아이디어의 콘셉트, 로그라인,
+    시놉시스, 비트를 작성해줘.
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

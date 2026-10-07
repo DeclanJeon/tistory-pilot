@@ -1,0 +1,4825 @@
+{
+  "valid": true,
+  "schema_version": "camera-spatial-1.0",
+  "project_id": "dialogue-distance-previs",
+  "scope": "ideal pinhole, all integer frames, box proxies; no rendered or artistic validation",
+  "total_duration_s": 4.0,
+  "shots": [
+    {
+      "shot_id": "SH01",
+      "duration_s": 2.0,
+      "max_camera_speed_m_s": 0.0,
+      "warnings": [],
+      "samples": [
+        {
+          "frame": 0,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0,
+          "look_angular_speed_deg_s": 0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 1,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 2,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 3,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 4,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 5,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 6,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 7,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 8,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 9,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 10,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 11,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 12,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 13,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 14,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 15,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 16,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 17,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 18,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 19,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 20,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 21,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 22,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 23,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 24,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 25,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 26,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 27,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 28,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 29,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 30,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 31,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 32,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 33,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 34,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 35,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 36,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 37,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 38,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 39,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 40,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 41,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 42,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 43,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 44,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 45,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 46,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 47,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0.0,
+          "look_angular_speed_deg_s": 0.0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH02",
+      "duration_s": 2.0,
+      "max_camera_speed_m_s": 0.9190102385791192,
+      "warnings": [],
+      "samples": [
+        {
+          "frame": 0,
+          "camera_position_m": [
+            0.0,
+            -5.0,
+            1.6
+          ],
+          "target_m": [
+            0.0,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.0,
+          "camera_acceleration_m_s2": 0,
+          "look_angular_speed_deg_s": 0,
+          "camera_height_m": 1.6,
+          "yaw_deg": 90.0,
+          "pitch_deg": -8.530765609948135,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.28539421509189244,
+                0.20098594810671144,
+                0.40014692802631163,
+                0.7960011293344627
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.118837758710467,
+              "optical_depth_m": 5.05593710403917,
+              "bbox_ndc": [
+                0.5998530719736884,
+                0.20098594810671144,
+                0.7146057849081076,
+                0.7960011293344627
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.6
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 1,
+          "camera_position_m": [
+            0.0,
+            -4.998393419569845,
+            1.6
+          ],
+          "target_m": [
+            0.00020082255376939598,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.03855793032372645,
+          "camera_acceleration_m_s2": 0.9253903277694349,
+          "look_angular_speed_deg_s": 0.08478863632406461,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.9976980033803,
+          "pitch_deg": -8.53346719377856,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.1171847944638476,
+              "optical_depth_m": 5.054316535050474,
+              "bbox_ndc": [
+                0.2853887651902831,
+                0.20088809876679758,
+                0.4001771100692957,
+                0.7960976154443804
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.117268487855521,
+              "optical_depth_m": 5.054380085981397,
+              "bbox_ndc": [
+                0.5998438349692216,
+                0.20089518628603875,
+                0.7146377178208907,
+                0.7960971242291537
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5994644731899483
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 2,
+          "camera_position_m": [
+            0.0,
+            -4.993666143340108,
+            1.6
+          ],
+          "target_m": [
+            0.0007917320824865395,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.1134546295136829,
+          "camera_acceleration_m_s2": 1.7975207805589548,
+          "look_angular_speed_deg_s": 0.2497954538172943,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.99091591124649,
+          "pitch_deg": -8.541426239853273,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.112321190201441,
+              "optical_depth_m": 5.049548248288721,
+              "bbox_ndc": [
+                0.2853727134276186,
+                0.2005998307054339,
+                0.4002660241465431,
+                0.7963818843906121
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.112651127462275,
+              "optical_depth_m": 5.049798779291643,
+              "bbox_ndc": [
+                0.5998166149219157,
+                0.2006278229885472,
+                0.7147318039822786,
+                0.7963799439479667
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5978887144467027
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 3,
+          "camera_position_m": [
+            0.0,
+            -4.985956868901881,
+            1.6
+          ],
+          "target_m": [
+            0.0017553913872648639,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.18502258651744796,
+          "camera_acceleration_m_s2": 1.7176309680903614,
+          "look_angular_speed_deg_s": 0.4083617655984231,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.97982804176353,
+          "pitch_deg": -8.554437311927025,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.104390085093514,
+              "optical_depth_m": 5.041772575401044,
+              "bbox_ndc": [
+                0.28534648567024945,
+                0.20012859226473173,
+                0.4004113630183566,
+                0.7968466402745598
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.105121536119375,
+              "optical_depth_m": 5.0423279862186705,
+              "bbox_ndc": [
+                0.599772093684165,
+                0.20019083729137482,
+                0.714885642694267,
+                0.7968423240290112
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5953189563006271
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 4,
+          "camera_position_m": [
+            0.0,
+            -4.975404293846258,
+            1.6
+          ],
+          "target_m": [
+            0.0030744632692178034,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.2532618013349577,
+          "camera_acceleration_m_s2": 1.6377411556202333,
+          "look_angular_speed_deg_s": 0.5609780238476678,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.96459508880692,
+          "pitch_deg": -8.572310472226249,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.093534862333244,
+              "optical_depth_m": 5.03113008597098,
+              "bbox_ndc": [
+                0.2853104830349713,
+                0.19948127517730346,
+                0.4006109855884516,
+                0.7974851642209648
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.094815785406159,
+              "optical_depth_m": 5.032102722843127,
+              "bbox_ndc": [
+                0.5997108884953105,
+                0.19959073177300618,
+                0.7150970321150647,
+                0.7974775708482162
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5918014312820858
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 5,
+          "camera_position_m": [
+            0.0,
+            -4.9621471157643295,
+            1.6
+          ],
+          "target_m": [
+            0.004731610529458789,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.318172273966276,
+          "camera_acceleration_m_s2": 1.5578513431516399,
+          "look_angular_speed_deg_s": 0.7080615251551079,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.94536614389949,
+          "pitch_deg": -8.594868965440844,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.079899112984518,
+              "optical_depth_m": 5.017761552192609,
+              "bbox_ndc": [
+                0.2852650857816962,
+                0.19866429845818334,
+                0.4008628917155319,
+                0.7982912289145145
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.081870128061937,
+              "optical_depth_m": 5.0192581871631194,
+              "bbox_ndc": [
+                0.5996335614108943,
+                0.19883360527049537,
+                0.7153639399525492,
+                0.7982794769830819
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5873823719214433
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 6,
+          "camera_position_m": [
+            0.0,
+            -4.9463240322471895,
+            1.6
+          ],
+          "target_m": [
+            0.006709495969101258,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.3797540044113603,
+          "camera_acceleration_m_s2": 1.4779615306820233,
+          "look_angular_speed_deg_s": 0.8499622741549893,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.9222805535173,
+          "pitch_deg": -8.621947087179159,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.063626602788159,
+              "optical_depth_m": 5.001807916416481,
+              "bbox_ndc": [
+                0.2852106569456946,
+                0.19768368580725637,
+                0.4011651989370981,
+                0.7992590201388536
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.066420968690432,
+              "optical_depth_m": 5.00392972973209,
+              "bbox_ndc": [
+                0.599540627925561,
+                0.19792522023902293,
+                0.7156844765948168,
+                0.7992422434882387
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5821080107490633
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 7,
+          "camera_position_m": [
+            0.0,
+            -4.928073740885931,
+            1.6
+          ],
+          "target_m": [
+            0.00899078238925864,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.4380069926702106,
+          "camera_acceleration_m_s2": 1.3980717182124067,
+          "look_angular_speed_deg_s": 0.9869677904678075,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.8954696416935,
+          "pitch_deg": -8.65338820395759,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.044861241385333,
+              "optical_depth_m": 4.983410261045119,
+              "bbox_ndc": [
+                0.2851475457482735,
+                0.19654513766038273,
+                0.4015161207768707,
+                0.8003830640383103
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.048604836547366,
+              "optical_depth_m": 4.9862528263920805,
+              "bbox_ndc": [
+                0.5994325649444354,
+                0.19687106561699685,
+                0.7160568702253098,
+                0.8003604078231994
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5760245802953103
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 8,
+          "camera_position_m": [
+            0.0,
+            -4.907534939271645,
+            1.6
+          ],
+          "target_m": [
+            0.011558132591044374,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.49293123874284817,
+          "camera_acceleration_m_s2": 1.3181819057433017,
+          "look_angular_speed_deg_s": 1.1193070195998014,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.86505832352127,
+          "pitch_deg": -8.68904289654636,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.023747053495107,
+              "optical_depth_m": 4.962709780331392,
+              "bbox_ndc": [
+                0.28507609081927743,
+                0.1952540988641417,
+                0.401913946354325,
+                0.8016581590077436
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.0285583600244665,
+              "optical_depth_m": 4.9663630527114595,
+              "bbox_ndc": [
+                0.599309818235451,
+                0.19567641597054786,
+                0.7164794435354457,
+                0.8016287763548425
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5691783130905486
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 9,
+          "camera_position_m": [
+            0.0,
+            -4.884846324995425,
+            1.6
+          ],
+          "target_m": [
+            0.014394209375571886,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.5445267426292943,
+          "camera_acceleration_m_s2": 1.2382920932747083,
+          "look_angular_speed_deg_s": 1.2471534732703242,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.83116663151058,
+          "pitch_deg": -8.728767202523342,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 5.000428151649026,
+              "optical_depth_m": 4.939847753696664,
+              "bbox_ndc": [
+                0.28499662325983605,
+                0.1938158228088942,
+                0.402357021055514,
+                0.8030793112716894
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 5.006418242498454,
+              "optical_depth_m": 4.944396059792056,
+              "bbox_ndc": [
+                0.5991728094763923,
+                0.19434638757885292,
+                0.716950591702592,
+                0.8030423605105673
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5616154416651418
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 10,
+          "camera_position_m": [
+            0.0,
+            -4.860146595648363,
+            1.6
+          ],
+          "target_m": [
+            0.017481675543954613,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.5927935043294852,
+          "camera_acceleration_m_s2": 1.1584022808045802,
+          "look_angular_speed_deg_s": 1.3706277047869717,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.79391117363956,
+          "pitch_deg": -8.772420937352567,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.9750487101418,
+              "optical_depth_m": 4.914965520240053,
+              "bbox_ndc": [
+                0.2849094695692232,
+                0.19223543273273697,
+                0.4028437280599655,
+                0.8046416733467185
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.982321239261111,
+              "optical_depth_m": 4.920487551158576,
+              "bbox_ndc": [
+                0.5990219429945367,
+                0.19288599202269474,
+                0.7174687613479205,
+                0.804596315788932
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5533821985494545
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 11,
+          "camera_position_m": [
+            0.0,
+            -4.833574448821552,
+            1.6
+          ],
+          "target_m": [
+            0.02080319389730599,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.6377315238434633,
+          "camera_acceleration_m_s2": 1.0785124683354752,
+          "look_angular_speed_deg_s": 1.4897992248228344,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.75340653923854,
+          "pitch_deg": -8.819866076332202,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.947752939905971,
+              "optical_depth_m": 4.88820445415738,
+              "bbox_ndc": [
+                0.284814954455453,
+                0.19051798080078425,
+                0.40337247055012176,
+                0.8063404846959217
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.956404135288059,
+              "optical_depth_m": 4.894773260485039,
+              "bbox_ndc": [
+                0.5988576122830866,
+                0.19130018775004026,
+                0.718032430229023,
+                0.8062858829480553
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5445248162738507
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 12,
+          "camera_position_m": [
+            0.0,
+            -4.805268582106084,
+            1.6
+          ],
+          "target_m": [
+            0.024341427236739446,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.6793408011712287,
+          "camera_acceleration_m_s2": 0.9986226558663702,
+          "look_angular_speed_deg_s": 1.6046879341194273,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.70976666645365,
+          "pitch_deg": -8.870965182455205,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.918685064061629,
+              "optical_depth_m": 4.859705940830347,
+              "bbox_ndc": [
+                0.28471340354525393,
+                0.1886685054665952,
+                0.40394165445851593,
+                0.8081710139860389
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.928803723640841,
+              "optical_depth_m": 4.867388929950224,
+              "bbox_ndc": [
+                0.5986802063665073,
+                0.18959393001167374,
+                0.718640087457753,
+                0.8081063307924155
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5350895273686949
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 13,
+          "camera_position_m": [
+            0.0,
+            -4.775367693093052,
+            1.6
+          ],
+          "target_m": [
+            0.028079038363368426,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.7176213363127601,
+          "camera_acceleration_m_s2": 0.9187328433967537,
+          "look_angular_speed_deg_s": 1.7152651575182458,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.6631061828676,
+          "pitch_deg": -8.925579867686547,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.887989293931319,
+              "optical_depth_m": 4.829611353384477,
+              "bbox_ndc": [
+                0.28460514600523634,
+                0.18669208753248134,
+                0.4045496716344583,
+                0.810128502449708
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.899656784330599,
+              "optical_depth_m": 4.8384702890480105,
+              "bbox_ndc": [
+                0.598490116075979,
+                0.18777221948487788,
+                0.7192902140659063,
+                0.8100529000695738
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.525122564364351
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 14,
+          "camera_position_m": [
+            0.0,
+            -4.744010479373549,
+            1.6
+          ],
+          "target_m": [
+            0.031998690078306344,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.7525731292680788,
+          "camera_acceleration_m_s2": 0.8388430309276487,
+          "look_angular_speed_deg_s": 1.8214543471389644,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.6135417288386,
+          "pitch_deg": -8.983569277461847,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.855809805346788,
+              "optical_depth_m": 4.798062029549769,
+              "bbox_ndc": [
+                0.28449051708238127,
+                0.1845939052403724,
+                0.405194883337159,
+                0.8122081079407759
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.869100063503116,
+              "optical_depth_m": 4.808153033710095,
+              "bbox_ndc": [
+                0.5982877402860141,
+                0.18584014983200603,
+                0.7199812637712326,
+                0.8121207480728896
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5146701597911831
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 15,
+          "camera_position_m": [
+            0.0,
+            -4.711335638538666,
+            1.6
+          ],
+          "target_m": [
+            0.03608304518266666,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.7841961800371848,
+          "camera_acceleration_m_s2": 0.7589532184585437,
+          "look_angular_speed_deg_s": 1.9231315297060048,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.56119327118421,
+          "pitch_deg": -9.044788590421987,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.82229071510907,
+              "optical_depth_m": 4.7651992486920784,
+              "bbox_ndc": [
+                0.28436986056835034,
+                0.18237928864268232,
+                0.4058756039865219,
+                0.8144048493524508
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.837270252835223,
+              "optical_depth_m": 4.776572805629075,
+              "bbox_ndc": [
+                0.5980734921535316,
+                0.18380295437195543,
+                0.72071164382489,
+                0.8143048936272606
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.5037785461795556
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 16,
+          "camera_position_m": [
+            0.0,
+            -4.677481868179497,
+            1.6
+          ],
+          "target_m": [
+            0.04031476647756277,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8124904886200568,
+          "camera_acceleration_m_s2": 0.6790634059889271,
+          "look_angular_speed_deg_s": 2.0201255630185257,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.50618541293265,
+          "pitch_deg": -9.109087527576714,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.787576057497923,
+              "optical_depth_m": 4.7311642089166694,
+              "bbox_ndc": [
+                0.28424353118854595,
+                0.18005377342135342,
+                0.40659008512683403,
+                0.8167135511487105
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.80430396906232,
+              "optical_depth_m": 4.743865171699724,
+              "bbox_ndc": [
+                0.5978478053910089,
+                0.1816660519747451,
+                0.7214796958497036,
+                0.8166001622147038
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4924939560598327
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 17,
+          "camera_position_m": [
+            0.0,
+            -4.642587865887135,
+            1.6
+          ],
+          "target_m": [
+            0.04467651676410815,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8374560550166947,
+          "camera_acceleration_m_s2": 0.5991735935193105,
+          "look_angular_speed_deg_s": 2.1122182697861875,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.44864870293544,
+          "pitch_deg": -9.176308867289631,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.751809760761467,
+              "optical_depth_m": 4.69609800417934,
+              "bbox_ndc": [
+                0.28411189691329064,
+                0.17762315424136327,
+                0.4073364995826578,
+                0.8191287878410654
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.770337733586843,
+              "optical_depth_m": 4.710165603526557,
+              "bbox_ndc": [
+                0.5976111405954585,
+                0.17943509222153575,
+                0.7222836766072915,
+                0.8190011310773897
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4808626219623784
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 18,
+          "camera_position_m": [
+            0.0,
+            -4.60679232925267,
+            1.6
+          ],
+          "target_m": [
+            0.0491509588434162,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8590928792271626,
+          "camera_acceleration_m_s2": 0.5192837810512287,
+          "look_angular_speed_deg_s": 2.19914452766337,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.38872094713818,
+          "pitch_deg": -9.246286964743646,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.715135623553138,
+              "optical_depth_m": 4.660141601375643,
+              "bbox_ndc": [
+                0.2839753411849629,
+                0.17509353764117153,
+                0.4081129258107634,
+                0.8216448283274913
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.7355079521484535,
+              "optical_depth_m": 4.675609456976998,
+              "bbox_ndc": [
+                0.5973639916446606,
+                0.1771159998036807,
+                0.7231217386619829,
+                0.8215020742194608
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4689307764175568
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 19,
+          "camera_position_m": [
+            0.0,
+            -4.570233955867197,
+            1.6
+          ],
+          "target_m": [
+            0.05372075551660036,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8774009612513538,
+          "camera_acceleration_m_s2": 0.439393968580589,
+          "look_angular_speed_deg_s": 2.2805923826342775,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.32654852120048,
+          "pitch_deg": -9.318846276918933,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.677697291321231,
+              "optical_depth_m": 4.623435817415757,
+              "bbox_ndc": [
+                0.2838342650514195,
+                0.17247139437581688,
+                0.40891733247717477,
+                0.8242555800998399
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.699950894569168,
+              "optical_depth_m": 4.640331951792181,
+              "bbox_ndc": [
+                0.5971068921610894,
+                0.1747150180641574,
+                0.7239919109411247,
+                0.8240969073173366
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4567446519557326
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 20,
+          "camera_position_m": [
+            0.0,
+            -4.533051443321807,
+            1.6
+          ],
+          "target_m": [
+            0.05836856958477408,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8923803010893536,
+          "camera_acceleration_m_s2": 0.3595041561119956,
+          "look_angular_speed_deg_s": 2.3562032703908296,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.26228768190681,
+          "pitch_deg": -9.39379989662775,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.639638232697145,
+              "optical_depth_m": 4.586121296331936,
+              "bbox_ndc": [
+                0.28368908919257896,
+                0.16976361103792975,
+                0.40974756331451134,
+                0.826954533421861
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.663802674620992,
+              "optical_depth_m": 4.6044681513020125,
+              "bbox_ndc": [
+                0.5968404220321264,
+                0.17223875151262646,
+                0.7248920792254174,
+                0.8267791326427059
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4443504811072692
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 21,
+          "camera_position_m": [
+            0.0,
+            -4.495383489207594,
+            1.6
+          ],
+          "target_m": [
+            0.06307706384905079,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9040308987411194,
+          "camera_acceleration_m_s2": 0.279614343642379,
+          "look_angular_speed_deg_s": 2.4255724293589846,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.19610587238913,
+          "pitch_deg": -9.470948101826384,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.601101715972466,
+              "optical_depth_m": 4.548338486508002,
+              "bbox_ndc": [
+                0.2835402558236963,
+                0.16697754068742793,
+                0.4106013223418805,
+                0.8297347056833726
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.6271992301002385,
+              "optical_depth_m": 4.568152942328314,
+              "bbox_ndc": [
+                0.5965652139622829,
+                0.1696942070713695,
+                0.7258199666397885,
+                0.8295417842042321
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4317944964025313
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 22,
+          "camera_position_m": [
+            0.0,
+            -4.457368791115648,
+            1.6
+          ],
+          "target_m": [
+            0.0678289011105439,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9123527542066938,
+          "camera_acceleration_m_s2": 0.19972453117378564,
+          "look_angular_speed_deg_s": 2.488249597960176,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.12818301356891,
+          "pitch_deg": -9.55007692928067,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.562230785802494,
+              "optical_depth_m": 4.510227618165892,
+              "bbox_ndc": [
+                0.2833882304556659,
+                0.16412105212203582,
+                0.41147615955757133,
+                0.8325885862480521
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.590276303231841,
+              "optical_depth_m": 4.5315210153993455,
+              "bbox_ndc": [
+                0.596281960019174,
+                0.16708883373359612,
+                0.7267731142553667,
+                0.832377373424082
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4191229303718829
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 23,
+          "camera_position_m": [
+            0.0,
+            -4.419146046637065,
+            1.6
+          ],
+          "target_m": [
+            0.07260674417036687,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9173458674859916,
+          "camera_acceleration_m_s2": 0.11983471870314588,
+          "look_angular_speed_deg_s": 2.5437400914786092,
+          "camera_height_m": 1.6,
+          "yaw_deg": 89.05871277141048,
+          "pitch_deg": -9.630956784702798,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.523168240325055,
+              "optical_depth_m": 4.471928681293491,
+              "bbox_ndc": [
+                0.28323350348975523,
+                0.1612025773184701,
+                0.41236945724358676,
+                0.8355080822333403
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.553169421568673,
+              "optical_depth_m": 4.494706845441488,
+              "bbox_ndc": [
+                0.5959914181198138,
+                0.164430560238695,
+                0.7277488619565431,
+                0.8352778357841972
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.4063820155456885
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 24,
+          "camera_position_m": [
+            0.0,
+            -4.380853953362935,
+            1.6
+          ],
+          "target_m": [
+            0.07739325582963312,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9190102385791192,
+          "camera_acceleration_m_s2": 0.03994490623506408,
+          "look_angular_speed_deg_s": 2.5915063654848622,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.98790378655603,
+          "pitch_deg": -9.713341104696733,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.484056608938301,
+              "optical_depth_m": 4.433581404250391,
+              "bbox_ndc": [
+                0.2830765916215666,
+                0.1582311564689387,
+                0.4132784170503484,
+                0.8384844657911508
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.516013879595108,
+              "optical_depth_m": 4.457844673158687,
+              "bbox_ndc": [
+                0.5956944183874648,
+                0.1617278302917185,
+                0.7287443297739546,
+                0.8382344790048591
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3936179844543117
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 25,
+          "camera_position_m": [
+            0.0,
+            -4.3426312088843515,
+            1.6
+          ],
+          "target_m": [
+            0.08217109888945609,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9173458674860129,
+          "camera_acceleration_m_s2": 0.03994490623455249,
+          "look_angular_speed_deg_s": 2.6309701717198513,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.91598084970377,
+          "pitch_deg": -9.79696508922524,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.4450381310396105,
+              "optical_depth_m": 4.395325233343992,
+              "bbox_ndc": [
+                0.2829180390269037,
+                0.15521647993094506,
+                0.41420004805931687,
+                0.841508323596885
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.478944721290537,
+              "optical_depth_m": 4.421068487357715,
+              "bbox_ndc": [
+                0.5953918692918507,
+                0.1589896347780309,
+                0.7297563999342622,
+                0.8412379334539366
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3808770696281172
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 26,
+          "camera_position_m": [
+            0.0,
+            -4.304616510792406,
+            1.6
+          ],
+          "target_m": [
+            0.08692293615094922,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9123527542066938,
+          "camera_acceleration_m_s2": 0.11983471870365747,
+          "look_angular_speed_deg_s": 2.6615154226520343,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.84318600272015,
+          "pitch_deg": -9.88154452680385,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.4062547360888065,
+              "optical_depth_m": 4.35729931372646,
+              "bbox_ndc": [
+                0.28275841830065873,
+                0.15216892630211742,
+                0.4151311560502235,
+                0.8445695094005086
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.442096723956671,
+              "optical_depth_m": 4.384512008526328,
+              "bbox_ndc": [
+                0.5950847634672223,
+                0.15622554035014696,
+                0.730781699930415,
+                0.8442781056280722
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3682055035974687
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 27,
+          "camera_position_m": [
+            0.0,
+            -4.266948556678193,
+            1.6
+          ],
+          "target_m": [
+            0.09163143041522591,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.9040308987411194,
+          "camera_acceleration_m_s2": 0.19972453117378564,
+          "look_angular_speed_deg_s": 2.6824918775381397,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.76977954199859,
+          "pitch_deg": -9.96677473817657,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.367848025422111,
+              "optical_depth_m": 4.31964247202305,
+              "bbox_ndc": [
+                0.2825983311190179,
+                0.1490995957284636,
+                0.4160683342274081,
+                0.847657100644968
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.4056043836615775,
+              "optical_depth_m": 4.348308674021634,
+              "bbox_ndc": [
+                0.5947741830838353,
+                0.15344571369435467,
+                0.7318165869708675,
+                0.8473441356948137
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.355649518892731
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 28,
+          "camera_position_m": [
+            0.0,
+            -4.229766044132803,
+            1.6
+          ],
+          "target_m": [
+            0.09627924448339963,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8923803010893536,
+          "camera_acceleration_m_s2": 0.279614343642379,
+          "look_angular_speed_deg_s": 2.6932197694745854,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.69604089706054,
+          "pitch_deg": -10.052329667752606,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.329959256306872,
+              "optical_depth_m": 4.282493201162463,
+              "bbox_ndc": [
+                0.282438408595302,
+                0.14602033745712467,
+                0.417007955685535,
+                0.850759360310974
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.36960190270222,
+              "optical_depth_m": 4.3125916252760135,
+              "bbox_ndc": [
+                0.5944613046292881,
+                0.15066094072204828,
+                0.7328571342218531,
+                0.8504243602343071
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3432553480442677
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 29,
+          "camera_position_m": [
+            0.0,
+            -4.19320767074733,
+            1.6
+          ],
+          "target_m": [
+            0.1008490411565838,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8774009612513538,
+          "camera_acceleration_m_s2": 0.3595041561119956,
+          "look_angular_speed_deg_s": 2.6929954808349574,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.62226935394207,
+          "pitch_deg": -10.13786115547609,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.292729328789634,
+              "optical_depth_m": 4.24598964793892,
+              "bbox_ndc": [
+                0.2822793113007469,
+                0.1429437705570969,
+                0.4179461679177136,
+                0.8538637052988949
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.334223179534511,
+              "optical_depth_m": 4.277493697476437,
+              "bbox_ndc": [
+                0.5941474029374232,
+                0.1478826398774324,
+                0.733899119311721,
+                0.8535062814664585
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3310692235824433
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 30,
+          "camera_position_m": [
+            0.0,
+            -4.157412134112865,
+            1.6
+          ],
+          "target_m": [
+            0.10532348323589186,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8590928792271626,
+          "camera_acceleration_m_s2": 0.439393968580589,
+          "look_angular_speed_deg_s": 2.681098375070198,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.54878458964342,
+          "pitch_deg": -10.222998424928463,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.256298775948966,
+              "optical_depth_m": 4.21026960389082,
+              "bbox_ndc": [
+                0.2821217289235682,
+                0.13988329665770055,
+                0.4188788896876419,
+                0.856956682802698
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.299601801663601,
+              "optical_depth_m": 4.243147412218015,
+              "bbox_ndc": [
+                0.5938338542848502,
+                0.14512286871229246,
+                0.7349380156185387,
+                0.8565765443890876
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3191373780376217
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 31,
+          "camera_position_m": [
+            0.0,
+            -4.122518131820502,
+            1.6
+          ],
+          "target_m": [
+            0.10968523352243721,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8374560550166947,
+          "camera_acceleration_m_s2": 0.5192837810512287,
+          "look_angular_speed_deg_s": 2.6567988736914656,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.47592698100071,
+          "pitch_deg": -10.307347826165959,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.220807758216975,
+              "optical_depth_m": 4.175470500130039,
+              "bbox_ndc": [
+                0.28196637954280085,
+                0.1368531034995326,
+                0.41980181060058414,
+                0.8600239562607298
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.265871042025157,
+              "optical_depth_m": 4.20968497367199,
+              "bbox_ndc": [
+                0.5935221383594471,
+                0.14239432285293407,
+                0.7359689869091302,
+                0.8596209233778676
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.3075060439401676
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 32,
+          "camera_position_m": [
+            0.0,
+            -4.088664361461333,
+            1.6
+          ],
+          "target_m": [
+            0.11391695481733334,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.8124904886200568,
+          "camera_acceleration_m_s2": 0.5991735935193105,
+          "look_angular_speed_deg_s": 2.619367849464705,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.40405764895175,
+          "pitch_deg": -10.390492873886359,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.186396062476135,
+              "optical_depth_m": 4.1417294067954025,
+              "bbox_ndc": [
+                0.2818140084976356,
+                0.1338681580612321,
+                0.42071039371446745,
+                0.8630503025754708
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.2331638594181555,
+              "optical_depth_m": 4.177238268839296,
+              "bbox_ndc": [
+                0.5932138388924796,
+                0.13971032647728931,
+                0.7369868859365104,
+                0.8626243199018284
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2962214538204444
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 33,
+          "camera_position_m": [
+            0.0,
+            -4.055989520626451,
+            1.6
+          ],
+          "target_m": [
+            0.11800130992169365,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.7841961800371848,
+          "camera_acceleration_m_s2": 0.6790634059889271,
+          "look_angular_speed_deg_s": 2.5680873827757553,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.33355819752902,
+          "pitch_deg": -10.47199462279002,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.153203106667034,
+              "optical_depth_m": 4.109183037830357,
+              "bbox_ndc": [
+                0.2816653868382185,
+                0.1309441880228851,
+                0.4215998815308103,
+                0.8660196223697401
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.201612903568294,
+              "optical_depth_m": 4.145938872480468,
+              "bbox_ndc": [
+                0.5929106427374,
+                0.13708481343466877,
+                0.7379862576298409,
+                0.8655707730797164
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.285329840208817
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 34,
+          "camera_position_m": [
+            0.0,
+            -4.024632306906947,
+            1.6
+          ],
+          "target_m": [
+            0.12192096163663158,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.7525731292680788,
+          "camera_acceleration_m_s2": 0.7589532184585437,
+          "look_angular_speed_deg_s": 2.5022628916149605,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.26483010626158,
+          "pitch_deg": -10.551392422222232,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.121367950653645,
+              "optical_depth_m": 4.077967761794124,
+              "bbox_ndc": [
+                0.28152130934995934,
+                0.1280976503584194,
+                0.42246530569425855,
+                0.8689149650795861
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.171350525405308,
+              "optical_depth_m": 4.115918057317656,
+              "bbox_ndc": [
+                0.5926143371752265,
+                0.13453229817952345,
+                0.7389613475227521,
+                0.868443484832258
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2748774356356491
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 35,
+          "camera_position_m": [
+            0.0,
+            -3.9947314178939157,
+            1.6
+          ],
+          "target_m": [
+            0.12565857276326053,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.7176213363127601,
+          "camera_acceleration_m_s2": 0.8388430309276487,
+          "look_angular_speed_deg_s": 2.4212366055502215,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.19829373526088,
+          "pitch_deg": -10.62820509111724,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.091029314081115,
+              "optical_depth_m": 4.0482196194033,
+              "bbox_ndc": [
+                0.28138259215005107,
+                0.1253456859198625,
+                0.4233015007079963,
+                0.8717185706628106
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.142508793123889,
+              "optical_depth_m": 4.087306810091244,
+              "bbox_ndc": [
+                0.5923268052300105,
+                0.13206783575639813,
+                0.7399061160580597,
+                0.8712248613623691
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2649104726313052
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 36,
+          "camera_position_m": [
+            0.0,
+            -3.966425551178448,
+            1.6
+          ],
+          "target_m": [
+            0.129196806102694,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.6793408011712287,
+          "camera_acceleration_m_s2": 0.9187328433967537,
+          "look_angular_speed_deg_s": 2.324402301154125,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.13438690436793,
+          "pitch_deg": -10.701932551668211,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.062325601922084,
+              "optical_depth_m": 4.020074348462791,
+              "bbox_ndc": [
+                0.28125006986177625,
+                0.12270605899015896,
+                0.4241031219391611,
+                0.8744119296149657
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.115219514563136,
+              "optical_depth_m": 4.060235854018878,
+              "bbox_ndc": [
+                0.5920500187896435,
+                0.12970697016792454,
+                0.7408142593753161,
+                0.8738965726081876
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2554751837261495
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 37,
+          "camera_position_m": [
+            0.0,
+            -3.939853404351637,
+            1.6
+          ],
+          "target_m": [
+            0.1325183244560454,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.6377315238434633,
+          "camera_acceleration_m_s2": 0.9986226558663702,
+          "look_angular_speed_deg_s": 2.2112211639240185,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.07356301160975,
+          "pitch_deg": -10.772057955794125,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.03539493833673,
+              "optical_depth_m": 3.993667416776546,
+              "bbox_ndc": [
+                0.28112459237882403,
+                0.12019708094194698,
+                0.42486466814280127,
+                0.8769758628201434
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.089614266380288,
+              "optical_depth_m": 4.0348356781447015,
+              "bbox_ndc": [
+                0.5917860293484367,
+                0.12746567058254654,
+                0.7416792371282104,
+                0.8764396311513927
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2466178014505456
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 38,
+          "camera_position_m": [
+            0.0,
+            -3.915153675004575,
+            1.6
+          ],
+          "target_m": [
+            0.1356057906244281,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.5927935043294852,
+          "camera_acceleration_m_s2": 1.0785124683354752,
+          "look_angular_speed_deg_s": 2.081238572218601,
+          "camera_height_m": 1.6,
+          "yaw_deg": 88.0162886620803,
+          "pitch_deg": -10.838050332164427,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 4.010375209364865,
+              "optical_depth_m": 3.9691340635262864,
+              "bbox_ndc": [
+                0.2810070212377713,
+                0.11783751734963871,
+                0.4255805086743438,
+                0.8793906225114905
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.065824430407913,
+              "optical_depth_m": 4.011236573978766,
+              "bbox_ndc": [
+                0.5915369562196763,
+                0.12536025499415976,
+                0.742494307787862,
+                0.8788344918155789
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2383845583348585
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 39,
+          "camera_position_m": [
+            0.0,
+            -3.892465060728355,
+            1.6
+          ],
+          "target_m": [
+            0.13844186740895562,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.5445267426292837,
+          "camera_acceleration_m_s2": 1.158402280804836,
+          "look_angular_speed_deg_s": 1.934101530056543,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.9630407864156,
+          "pitch_deg": -10.899367773123759,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.9874041148223864,
+              "optical_depth_m": 3.946609349467164,
+              "bbox_ndc": [
+                0.2808982256215704,
+                0.11564647816239298,
+                0.42624491548882176,
+                0.8816360152676623
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.043981237467725,
+              "optical_depth_m": 3.9895686797083507,
+              "bbox_ndc": [
+                0.5913049721096034,
+                0.12340730113165699,
+                0.7432525717626254,
+                0.8810611728484133
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2308216869094517
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 40,
+          "camera_position_m": [
+            0.0,
+            -3.871926259114069,
+            1.6
+          ],
+          "target_m": [
+            0.14100921761074134,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.4929312387428588,
+          "camera_acceleration_m_s2": 1.2382920932741968,
+          "look_angular_speed_deg_s": 1.769576403437134,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.91430323838266,
+          "pitch_deg": -10.95546117024965,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.9666192295871854,
+              "optical_depth_m": 3.9262282161112756,
+              "bbox_ndc": [
+                0.28079907801985504,
+                0.11364329085548974,
+                0.4268520999404792,
+                0.8836915475210874
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.0242158187673125,
+              "optical_depth_m": 3.9699620321129894,
+              "bbox_ndc": [
+                0.5910922859994908,
+                0.1216235446312075,
+                0.7439470225033544,
+                0.8830993991419371
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.22397541970469
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 41,
+          "camera_position_m": [
+            0.0,
+            -3.85367596775281,
+            1.6
+          ],
+          "target_m": [
+            0.14329050403089874,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.43800699267022125,
+          "camera_acceleration_m_s2": 1.3181819057433017,
+          "look_angular_speed_deg_s": 1.587566542129919,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.87056287376834,
+          "pitch_deg": -11.005778494483112,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.9481580742310283,
+              "optical_depth_m": 3.9081255538530755,
+              "bbox_ndc": [
+                0.2807104495727676,
+                0.11184735683483821,
+                0.42739625429950945,
+                0.8855365935010291
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 4.006659264828437,
+              "optical_depth_m": 3.952546626133488,
+              "bbox_ndc": [
+                0.5909011233496725,
+                0.12002576472583726,
+                0.7445706055649334,
+                0.8849287674068864
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2178919892509368
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 42,
+          "camera_position_m": [
+            0.0,
+            -3.8378528842356703,
+            1.6
+          ],
+          "target_m": [
+            0.1452683894705412,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.37975400441134965,
+          "camera_acceleration_m_s2": 1.3980717182129183,
+          "look_angular_speed_deg_s": 1.3881292998076864,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.83230512762486,
+          "pitch_deg": -11.049769601915301,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.9321581946861226,
+              "optical_depth_m": 3.8924362787369597,
+              "bbox_ndc": [
+                0.2806332051236203,
+                0.11027799176958597,
+                0.42787159779472334,
+                0.8871505848835994
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 3.9914426916888153,
+              "optical_depth_m": 3.9374524818336316,
+              "bbox_ndc": [
+                0.5907337037178935,
+                0.11863065797255973,
+                0.745116285362023,
+                0.8865289325838379
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.212617628078557
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 43,
+          "camera_position_m": [
+            0.0,
+            -3.824595706153742,
+            1.6
+          ],
+          "target_m": [
+            0.14692553673078218,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.318172273966276,
+          "camera_acceleration_m_s2": 1.4779615306817675,
+          "look_angular_speed_deg_s": 1.1714919005867785,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.80000912375192,
+          "pitch_deg": -11.086891529642044,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.918757250332431,
+              "optical_depth_m": 3.8792954172808254,
+              "bbox_ndc": [
+                0.28056819800213456,
+                0.10895425096475336,
+                0.42827242687350164,
+                0.8885132206833021
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 3.9786973138867503,
+              "optical_depth_m": 3.9248097182552293,
+              "bbox_ndc": [
+                0.5905922159728001,
+                0.11745470082319154,
+                0.7455771190934573,
+                0.8878798140572215
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2081985687179142
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 44,
+          "camera_position_m": [
+            0.0,
+            -3.814043131098119,
+            1.6
+          ],
+          "target_m": [
+            0.1482446086127351,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.2532618013349577,
+          "camera_acceleration_m_s2": 1.5578513431516399,
+          "look_angular_speed_deg_s": 0.9380655595746201,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.77414236864817,
+          "pitch_deg": -11.11661422800494,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.908093109562048,
+              "optical_depth_m": 3.868838198457478,
+              "bbox_ndc": [
+                0.2805162645546464,
+                0.10789474135129201,
+                0.4285931692455312,
+                0.8896046951150449
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 3.9685545234854396,
+              "optical_depth_m": 3.914748633408411,
+              "bbox_ndc": [
+                0.5904787913795926,
+                0.11651400214675228,
+                0.7459463370222348,
+                0.8889618194557904
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2046810436993731
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 45,
+          "camera_position_m": [
+            0.0,
+            -3.806333856659892,
+            1.6
+          ],
+          "target_m": [
+            0.14920826791751346,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.18502258651744796,
+          "camera_acceleration_m_s2": 1.6377411556202333,
+          "look_angular_speed_deg_s": 0.688457230094603,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.75515510145661,
+          "pitch_deg": -11.138426656566532,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.900303951530533,
+              "optical_depth_m": 3.8612001516081143,
+              "bbox_ndc": [
+                0.28047821843130993,
+                0.10711742215474851,
+                0.428828441147081,
+                0.8904059403082949
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 3.9611459741286192,
+              "optical_depth_m": 3.9073997893675023,
+              "bbox_ndc": [
+                0.5903954749357564,
+                0.11582414712402961,
+                0.746217427995977,
+                0.8897560830005116
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2021112855532974
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 46,
+          "camera_position_m": [
+            0.0,
+            -3.801606580430155,
+            1.6
+          ],
+          "target_m": [
+            0.1497991774462306,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.1134546295136829,
+          "camera_acceleration_m_s2": 1.7176309680903614,
+          "look_angular_speed_deg_s": 0.4234783432729472,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.74347439089165,
+          "pitch_deg": -11.151843152007267,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.895528372455637,
+              "optical_depth_m": 3.8565172087315234,
+              "bbox_ndc": [
+                0.2804548446341188,
+                0.10663939679373818,
+                0.42897310713092596,
+                0.8908988799003396
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 3.9566036688515895,
+              "optical_depth_m": 3.902894101168615,
+              "bbox_ndc": [
+                0.5903441954364993,
+                0.11540003425295331,
+                0.7463842287881565,
+                0.8902447145308863
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2005355268100517
+          },
+          "axis_side": "negative"
+        },
+        {
+          "frame": 47,
+          "camera_position_m": [
+            0.0,
+            -3.8,
+            1.6
+          ],
+          "target_m": [
+            0.15,
+            0.0,
+            0.85
+          ],
+          "lens_mm": 35.0,
+          "fov_x_deg": 54.43222311461495,
+          "camera_speed_m_s": 0.03855793032372645,
+          "camera_acceleration_m_s2": 1.7975207805589548,
+          "look_angular_speed_deg_s": 0.14414993228355158,
+          "camera_height_m": 1.6,
+          "yaw_deg": 87.73949808885872,
+          "pitch_deg": -11.156409957606803,
+          "roll_deg": 0,
+          "subjects": {
+            "CH01": {
+              "camera_to_center_m": 3.8939054944875076,
+              "optical_depth_m": 3.8549258092741967,
+              "bbox_ndc": [
+                0.2804468933249368,
+                0.10647669904178902,
+                0.4290223415568795,
+                0.8910666887144629
+              ],
+              "warnings": []
+            },
+            "CH02": {
+              "camera_to_center_m": 3.9550600501130195,
+              "optical_depth_m": 3.901362927940374,
+              "bbox_ndc": [
+                0.5903267348474164,
+                0.11525570752070496,
+                0.7464410155477811,
+                0.8904110545428827
+              ],
+              "warnings": []
+            }
+          },
+          "pair_distances_m": {
+            "CH01/CH02": 1.2000000000000002
+          },
+          "axis_side": "negative"
+        }
+      ]
+    }
+  ]
+}

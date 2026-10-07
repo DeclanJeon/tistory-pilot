@@ -1,0 +1,82 @@
+{
+  "schema_version": "camera-spatial-1.0",
+  "project_id": "product-box-camera-trial",
+  "fps": 24,
+  "resolution": [
+    540,
+    960
+  ],
+  "subjects": [
+    {
+      "id": "BOX01",
+      "size_m": [
+        0.2,
+        0.2,
+        0.3
+      ],
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "color_rgba": [
+        0.65,
+        0.4,
+        0.2,
+        1
+      ]
+    }
+  ],
+  "obstacles": [],
+  "shots": [
+    {
+      "id": "SH01",
+      "scene_id": "S01",
+      "purpose": "제품 전체 윤곽과 앞면·측면의 입체감을 3초 동안 보여준다",
+      "duration_frames": 72,
+      "subject_ids": [
+        "BOX01"
+      ],
+      "motion_reason": "좌우 12cm 트럭으로 작은 시차를 만들고 제품 중심을 유지한다",
+      "camera": {
+        "sensor_width_mm": 36,
+        "lens_mm": 50,
+        "clip_start_m": 0.01,
+        "clip_end_m": 10,
+        "roll_deg": 0,
+        "clearance_radius_m": 0.03,
+        "interpolation": "smoothstep",
+        "keyframes": [
+          {
+            "frame": 0,
+            "position": [
+              -0.06,
+              -0.55,
+              0.32
+            ],
+            "target": [
+              0,
+              0,
+              0.15
+            ]
+          },
+          {
+            "frame": 71,
+            "position": [
+              0.06,
+              -0.55,
+              0.32
+            ],
+            "target": [
+              0,
+              0,
+              0.15
+            ]
+          }
+        ]
+      },
+      "subject_tracks": [],
+      "axis": null
+    }
+  ]
+}

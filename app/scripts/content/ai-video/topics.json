@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "contentTrack": "ai-video",
+  "languages": ["ko", "en", "ja", "zh", "es"],
+  "topics": [
+    {
+      "id": "cat-buddy-comedy",
+      "name": "두 고양이 버디 코미디",
+      "keyword": "고양이 AI 영상 제작",
+      "label": "두 고양이 버디 코미디 만들기",
+      "description": "기존 작품이 아닌 완전히 새로운 두 고양이 캐릭터가 펼치는 버디 코미디를 2개의 10초 씬으로 설계한다.",
+      "queries": {
+        "ko": "AI 영상 생성 고양이 캐릭터 프롬프트 튜토리얼",
+        "en": "AI video generation consistent character prompts tutorial",
+        "ja": "AI動画生成 キャラクター プロンプト 作り方",
+        "zh": "AI视频生成 角色一致性 提示词 教程",
+        "es": "tutorial generación de video IA personajes consistentes"
+      },
+      "seeds": [
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    },
+    {
+      "id": "absurd-drama",
+      "name": "병맛 숏드라마",
+      "keyword": "AI 숏드라마 제작",
+      "label": "병맛 숏드라마 만들기",
+      "description": "비현실적 설정과 진지한 톤이 충돌하는 병맛 단편을 1~3개의 10초 씬으로 설계한다.",
+      "queries": {
+        "ko": "AI 영상 제작 스토리보드 튜토리얼 숏폼",
+        "en": "AI storyboard workflow short film tutorial",
+        "ja": "AI ストーリーボード 短編動画 チュートリアル",
+        "zh": "AI 分镜 故事板 短视频 教程",
+        "es": "guion técnico storyboard video corto con IA"
+      },
+      "seeds": [
+        "https://www.adobe.com/es/creativecloud/video/discover/storyboarding.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    },
+    {
+      "id": "fictional-ad",
+      "name": "가상 브랜드 AI 광고",
+      "keyword": "AI 광고 영상 제작",
+      "label": "존재하지 않는 브랜드의 AI 광고 만들기",
+      "description": "실존 브랜드가 아닌 가상 제품·브랜드의 10초 광고 시퀀스를 설계한다. 실존인물·브랜드 허위 광고는 금지다.",
+      "queries": {
+        "ko": "AI 영상 광고 제작 브랜드 무드보드 튜토리얼",
+        "en": "AI generated commercial video production tutorial",
+        "ja": "AI CM広告動画 制作 チュートリアル",
+        "zh": "AI 广告视频 制作 教程 品牌",
+        "es": "anuncio de video generado con IA tutorial"
+      },
+      "seeds": [
+        "https://helpx.adobe.com/cn/firefly/web/create-mood-boards/firefly-boards/use-quick-guides.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    },
+    {
+      "id": "character-sheet",
+      "name": "AI 캐릭터 시트",
+      "keyword": "AI 캐릭터 시트 만들기",
+      "label": "영상용 캐릭터 시트 만들기",
+      "description": "전신 정면·3/4·측면·후면 4컷과 얼굴 클로즈업 3컷, 총 7개 시각 앵커를 가진 오리지널 캐릭터의 참조 시트를 만들고 영상 캐스팅에 연결한다.",
+      "queries": {
+        "ko": "AI 캐릭터 시트 일관된 캐릭터 생성 방법",
+        "en": "character sheet reference AI consistent character tutorial",
+        "ja": "キャラクターシート 一貫したキャラクター 生成 方法",
+        "zh": "角色参考图 一致角色 生成 教程",
+        "es": "hoja de personaje referencia IA personaje consistente"
+      },
+      "seeds": [
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://helpx.adobe.com/in/firefly/web/unified-generation-and-editing-experience/create-an-element.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    },
+    {
+      "id": "storyboard-sheet",
+      "name": "AI 스토리보드 시트",
+      "keyword": "AI 스토리보드 제작",
+      "label": "씬별 스토리보드 시트 만들기",
+      "description": "씬별 시작·끝 상태와 카메라 계획을 패널로 정리한 스토리보드 시트를 실제로 조립한다.",
+      "queries": {
+        "ko": "스토리보드 작성법 영상 기획 튜토리얼",
+        "en": "how to create a storyboard video production tutorial",
+        "ja": "ストーリーボードの作り方 動画制作",
+        "zh": "故事板 制作教程 视频策划",
+        "es": "cómo crear un storyboard para video tutorial"
+      },
+      "seeds": [
+        "https://www.adobe.com/es/creativecloud/video/discover/storyboarding.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    },
+    {
+      "id": "prompt-variations",
+      "name": "영상 프롬프트 변형 실험",
+      "keyword": "AI 영상 프롬프트 작성법",
+      "label": "한 씬, 여러 프롬프트 변형 실험",
+      "description": "같은 씬에 대해 카메라·톤·행동을 바꾼 프롬프트 변형을 실험하고 차이를 기록한다.",
+      "queries": {
+        "ko": "영상 생성 프롬프트 작성 팁 카메라",
+        "en": "writing effective text prompts for AI video generation",
+        "ja": "動画生成 プロンプト 書き方 コツ",
+        "zh": "视频生成 提示词 编写技巧",
+        "es": "prompts para generación de video con IA consejos"
+      },
+      "seeds": [
+        "https://helpx.adobe.com/cn/firefly/web/work-with-audio-and-video/work-with-video/writing-effective-text-prompts-for-video-generation.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    },
+    {
+      "id": "ten-second-scene",
+      "name": "10초 씬 콘티",
+      "keyword": "10초 AI 영상 씬 만들기",
+      "label": "시작·끝 프레임이 있는 10초 씬 콘티",
+      "description": "시작/끝 keyframe과 0~3/3~7/7~10초 행동 계획을 갖춘 10초 씬 설계를 실습한다.",
+      "queries": {
+        "ko": "영상 제작 전 프리프로덕션 계획 가이드",
+        "en": "video pre-production shot planning guide tutorial",
+        "ja": "動画制作 プリプロダクション 絵コンテ ガイド",
+        "zh": "视频前期制作 镜头规划 指南",
+        "es": "preproducción de video planificación de planos"
+      },
+      "seeds": [
+        "https://www.adobe.com/es/creativecloud/video/discover/storyboarding.html",
+        "https://helpx.adobe.com/jp/firefly/how-to/create-commercial-storyboard-firefly-boards.html",
+        "https://helpx.adobe.com/kr/firefly/how-to/create-cinematic-posters-consistent-characters.html",
+        "https://support.google.com/flow/answer/16352836?hl=en"
+      ]
+    }
+  ]
+}

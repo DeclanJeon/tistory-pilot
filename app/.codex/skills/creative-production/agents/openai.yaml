@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creative Production"
+  short_description: "Coordinate scoped content, video and hybrid media production"
+  default_prompt: "Use $creative-production as the single coordinator. Produce only the requested artifact with the needed specialists, reuse the brief and version-bound approvals, and verify actual outputs. Text-only work needs no media runtime or special framework. Bundled references cover marketing adaptation and AI-video prompt/model routing/critique; provider availability and prices are always verified live."

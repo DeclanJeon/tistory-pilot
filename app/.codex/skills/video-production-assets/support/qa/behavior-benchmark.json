@@ -1,0 +1,397 @@
+{
+  "metadata": {
+    "skill_name": "creative-production 2.0 consolidation",
+    "executor_model": "gpt-6.1-sol",
+    "analyzer_model": "openrouter/typesafe/jev-1.13-20260917",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "runs_per_configuration": 1,
+    "baseline": "Previous coordinator snapshot, not absent instructions; common core craft references are shared",
+    "judge_job": "jdgb-15966e2435e963ae",
+    "confidence_threshold": 0.8
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "source-content",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "pass_rate": 0.6666666666666666
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": false,
+          "evidence": "Automatic classifier probability 0.51; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.80; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.90; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "source-content",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "pass_rate": 0.6666666666666666
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": false,
+          "evidence": "Automatic classifier probability 0.62; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.83; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.90; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "factual-video",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "pass_rate": 0.6666666666666666
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.80; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": false,
+          "evidence": "Automatic classifier probability 0.61; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.86; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "factual-video",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "pass_rate": 0.3333333333333333
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": false,
+          "evidence": "Automatic classifier probability 0.79; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": false,
+          "evidence": "Automatic classifier probability 0.48; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.85; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "series-identity",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.94; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.92; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.83; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "series-identity",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.93; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.93; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.85; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "single-prompt",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.93; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.96; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.90; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "single-prompt",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.92; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.91; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.87; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "contact-critique",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.93; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.92; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.91; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "contact-critique",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.94; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.93; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.91; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "approval-invalidation",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "pass_rate": 0.6666666666666666
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.82; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": false,
+          "evidence": "Automatic classifier probability 0.79; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.95; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "approval-invalidation",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "Requested actual artifacts and counts",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.81; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Requested scope and output shape",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.87; threshold 0.80; review the actual artifact, not a binary defect finding."
+        },
+        {
+          "text": "Facts, continuity, dependencies and authorization",
+          "passed": true,
+          "evidence": "Automatic classifier probability 0.95; threshold 0.80; review the actual artifact, not a binary defect finding."
+        }
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.8333333333333333,
+        "stddev": 0.16666666666666669,
+        "min": 0.6666666666666666,
+        "max": 1.0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.8333333333333334,
+        "stddev": 0.2545875386086578,
+        "min": 0.3333333333333333,
+        "max": 1.0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.00"
+    }
+  },
+  "notes": [
+    "Six text-only cases per configuration; no provider or media execution.",
+    "without_skill means the previous coordinator snapshot, not a no-skill control.",
+    "Conservative automatic-classifier threshold 0.8. Below-threshold results are uncertainty flags, not confirmed production defects. Both configurations meet 15/18 classifier thresholds; no measured improvement is claimed.",
+    "Primary-assistant review of current artifacts confirmed the six scenario-specific constraints; source blog length is checked separately.",
+    "Runtime latency and token usage were not recorded and are omitted."
+  ]
+}

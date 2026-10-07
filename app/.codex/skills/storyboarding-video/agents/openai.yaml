@@ -1,0 +1,12 @@
+interface:
+  display_name: 영상 스토리보드
+  short_description: 시놉시스를 패널별 비트와 재사용 이미지 프롬프트로 변환하는 스킬
+  default_prompt: $storyboarding-video를 사용해 이 시놉시스를 패널별 스토리보드와 이미지
+    프롬프트로 만들어줘.
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

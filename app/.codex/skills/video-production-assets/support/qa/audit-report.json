@@ -1,0 +1,80 @@
+{
+  "scope": "Installed video-production-assets skill and its downloadable package",
+  "verdict": "pass_with_notes",
+  "issues": [
+    {
+      "id": "Q01",
+      "severity": "major",
+      "finding": "Invalid aspect ratio passed old validator",
+      "evidence": "aspect_ratio=wrong returned valid before fix",
+      "resolution": "Positive integer ratio syntax and delivery resolution match enforced",
+      "status": "resolved"
+    },
+    {
+      "id": "Q02",
+      "severity": "major",
+      "finding": "Missing scene purpose, character traits and artifact entries passed",
+      "resolution": "Required content and nonempty scenes/shots/artifacts checks added",
+      "status": "resolved"
+    },
+    {
+      "id": "Q03",
+      "severity": "major",
+      "finding": "Approval and input version records incomplete",
+      "resolution": "Approval by/at/evidence and dependency_versions checks added",
+      "status": "resolved"
+    },
+    {
+      "id": "Q04",
+      "severity": "major",
+      "finding": "No plan versus delivery validation profile",
+      "resolution": "Separate profiles with measured timing, actual files, hashes, issue and inspection records",
+      "status": "resolved"
+    },
+    {
+      "id": "Q05",
+      "severity": "major",
+      "finding": "Production operations, asset registry and caption delivery under-specified",
+      "resolution": "Modules 14 and 15 plus operational templates added",
+      "status": "resolved"
+    },
+    {
+      "id": "Q06",
+      "severity": "major",
+      "finding": "Educational explanation could be forced into dramatic conflict",
+      "resolution": "Explicit explanatory structure and direct teaching wording allowed",
+      "status": "resolved"
+    },
+    {
+      "id": "Q07",
+      "severity": "minor",
+      "finding": "New attached sources 37–40 were not mapped",
+      "resolution": "Relevant body passages reviewed and module 13 added",
+      "status": "resolved"
+    },
+    {
+      "id": "Q08",
+      "severity": "minor",
+      "finding": "Board and continuity registries lacked usable schemas",
+      "resolution": "Storyboard panel and continuity CSV assets added",
+      "status": "resolved"
+    }
+  ],
+  "tests": {
+    "regression": "8 unittest methods including 25 malformed-contract subcases passed",
+    "resource_links": "passed",
+    "skill_frontmatter": "passed",
+    "production_trials": [
+      "20-second silent animation: plan valid",
+      "15-second narrated characterless education: plan valid"
+    ]
+  },
+  "remaining_limits": [
+    "Source 01 contains no body text and is excluded",
+    "OCR issues remain in some supplied source files",
+    "Book review is selective and not exhaustive all-chapter extraction",
+    "Validator checks records and files, not media decoding, listening, aesthetics, truth or authenticity",
+    "This is one installed skill with 15 modules, not 15 independently installed skills",
+    "Actual provider capabilities and destination requirements must be confirmed when executing"
+  ]
+}

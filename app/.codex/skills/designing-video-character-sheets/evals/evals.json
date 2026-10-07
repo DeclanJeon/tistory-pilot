@@ -1,0 +1,41 @@
+{
+  "skill_name": "designing-video-character-sheets",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "늦은 밤 공영주차장 관리인 준호는 폐쇄 전에 차에 두고 내린 낡은 필름 카메라를 주인에게 돌려주려 합니다. 남에게 부탁하는 것을 극도로 꺼리고, 순찰 중인 경비원만 지하 2층 출입 카드를 가지고 있습니다. 두 인물의 캐릭터 시트를 작성해 주세요.",
+      "expected_output": "A Korean character-sheet package distinguishing the two roles, translating the attendant's reluctance into observable behavior, with stable visual anchors and a reusable image-sheet prompt.",
+      "expectations": [
+        "The attendant and the guard have distinct goals, roles, and relationship context.",
+        "The reluctance to ask for help appears as observable actions or posture, not a diagnosis or invented backstory.",
+        "Each character carries stable visual anchors — silhouette, clothing, props, restrained palette — with invented choices labeled as design proposals rather than supplied facts.",
+        "The guard's keycard access is treated as a stated ability only; it does not become an invented claim about exclusivity or authority beyond the brief.",
+        "A reusable turnaround/expression-sheet image prompt preserves character continuity without claiming an image was generated, and the output is in Korean."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "텃밭 대신 처음으로 실내 허브를 키우는 사람이 씨앗 정기배송 서비스를 이용하는 짧은 영상을 기획합니다. 시청자가 주인공이고 서비스는 안내자 역할입니다. 캐릭터 역할을 설계해 주세요.",
+      "expected_output": "A role-aware Korean character design where the customer stays protagonist and the service acts as guide, with assumptions separated from brief facts and no invented service details.",
+      "expectations": [
+        "The first-time herb grower is the protagonist and the subscription service is the guide, not the emotional hero or a mascot.",
+        "Invented customer motives or circumstances are labeled as assumptions or left open.",
+        "The service is not given packaging, delivery cadence, instruction cards, guarantees, or results beyond what the brief states.",
+        "The design communicates the roles without shame, coercion, or stereotypes; an image prompt depicts the customer and guide role without personifying the product and without claiming image generation.",
+        "The output is in Korean."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "소심하지만 호기심 많은 도시 야생동물 관찰자의 시각 시트를 만들어 주세요. 과거사는 아직 없으니 트라우마나 진단을 덧붙이지 말고 한국어로 답해 주세요.",
+      "expected_output": "A Korean visual character sheet that leaves the past unspecified, renders timidity and curiosity through visible choices, and avoids diagnosis or stereotype.",
+      "expectations": [
+        "Backstory remains unspecified; no trauma or clinical diagnosis is invented.",
+        "Timidity and curiosity are expressed through observable posture, gesture, expression, or design details rather than abstract labels alone.",
+        "The design avoids stereotyped assumptions about a wildlife observer and includes only details serving the sheet.",
+        "The image prompt carries the stable visual anchors without asserting unspecified demographics or claiming an image was generated.",
+        "The output is in Korean."
+      ]
+    }
+  ]
+}

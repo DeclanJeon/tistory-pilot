@@ -1,0 +1,18 @@
+{
+  "installedAt": "2026-10-06",
+  "scope": "project",
+  "adapter": "tistory-ai-video-production",
+  "missingGenericDependency": "recording-production-history",
+  "skills": {
+    "creative-production": "7a05f3458c159b5871fb53ac8e9d765cbfd7aa4079d92c5ea69ed6ab955ae189",
+    "orchestrating-video-preproduction": "a9ee00be29d88e7946311913a1dbd1e814db99a97254d644ca8d593ee1a9a197",
+    "developing-video-synopses": "d91e083dfbebcc17821428cb215fe95450d1718204edd7efca7444f2f801e80b",
+    "designing-video-character-sheets": "a6aac2bbc7a52314162b52b756bf90850f5257c84a82080ecc48ea3bff693968",
+    "storyboarding-video": "5d73a85ff25d6538a78a5b8a494e38404d819897e61f2fa0d5ef8c02514b3816",
+    "video-production-assets": "8ae4efa99d1af1938450af2970f5c162618e7daeb4728c3dc2a02c85d60ca096",
+    "codex-imagen": "77fbb17ebd574f6f866923ec51a2bd5e7d5ead61d65df43d03efd9b1cefa0fba",
+    "tistory-blog": "f0229db05fda8a98ce1a5d15fd2fabe20be3e95345cbea282858e328520e2cd0",
+    "video-prompt": "c3c61bd04f255f52eaae697998daed166c7a0e2adab9a8ae5e7d580546ba22b9",
+    "video-model-router": "f7d6280780e111e88e516bf1be77e04c52ed02ad8d7c7015573bb058674908ec"
+  }
+}

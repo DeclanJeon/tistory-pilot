@@ -1,0 +1,326 @@
+{
+  "package": "contents-production-skills",
+  "work_order": "docs/superpowers/plans/2026-10-03-provider-neutral-production-improvements.md",
+  "verification_type": "Tool-free fresh-context scenario outputs with probabilistic rubric judgment; regression CLIs, two plan validations, disposable package install and relative-link scan; no actual media/provider/license verification.",
+  "scenario_model": "smol",
+  "baseline": {
+    "attempted": 2,
+    "retained": false,
+    "note": "Initial pre-change scenario collection exceeded the eval cell deadline and reset the VM; no comparative score claimed."
+  },
+  "regression_suites": [
+    {
+      "command": "python -B scripts/test_install_package.py",
+      "passed": 21
+    },
+    {
+      "command": "python -B video-production-assets/scripts/test_validate_project.py",
+      "passed": 15
+    },
+    {
+      "command": "python -B camera-spatial-design/scripts/test_spatial_spec.py",
+      "passed": 7
+    }
+  ],
+  "plan_validation": [
+    {
+      "example": "examples/15-second-education/project.json",
+      "valid": true
+    },
+    {
+      "example": "examples/20-second-animation/project.json",
+      "valid": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "prompt": "내가 고른 모델의 확인된 입력은 prompt 문자열, duration_seconds=8, aspect_ratio=9:16이고 audio와 negative_prompt는 지원하지 않아. 고정 카메라로 꽃잎이 천천히 열리는 영상용 한국어 prompt 문자열 하나만 써줘. 생성·가격 비교·추가 필드 없이.",
+      "expected_output": "One actual Korean scene/motion prompt preserving the fixed camera and verified input constraints; no unsupported fields or generation.",
+      "expectations": [
+        "Only the requested prompt is delivered.",
+        "The camera stays fixed and the flower visibly changes from closed toward open.",
+        "No unsupported audio/negative fields, static model-capability claims, media generation or spend are introduced."
+      ],
+      "observed_output": "고정 카메라, 세로 구도. 한 송이 꽃을 화면 중앙에 담는다. 꽃잎이 천천히 부드럽게 열리며 꽃의 형태가 드러난다. 배경은 차분하고 단순하게 유지하고, 카메라와 꽃의 위치는 움직이지 않는다."
+    },
+    {
+      "id": 2,
+      "prompt": "제품 사진 1장 기반 i2v, 9:16, 8초 영상의 실행 계획을 세워줘. 로고 텍스트는 정확해야 해. 현재 카탈로그·스키마·가격은 제공하지 않았으니 실제 조회할 수 없는 값은 미확인으로 남겨. 생성은 하지 마.",
+      "expected_output": "Requirements-first plan with exact text handled by deterministic composition, live verification needs and bounded execution scope; no invented availability or price.",
+      "expectations": [
+        "Hard requirements and exact-logo risk are identified.",
+        "Unverified provider capabilities and prices remain unverified.",
+        "No job submission, unsupported fallback substitution or spend is claimed."
+      ],
+      "observed_output": "# i2v 실행 계획 초안\n\n**상태:** 계획만 작성 — 모델·엔드포인트·가격 미확인, 영상 생성 안 함  \n**입력:** 제품 사진 1장(i2v) · 세로 9:16 · 목표 길이 8초  \n**핵심 제약:** 로고 텍스트는 정확해야 함. 실제 모델의 텍스트 재현 능력은 미확인.\n\n## 샷 계획\n\n| 샷 | 길이 | 구성·동작 | 입력 및 연속성 |\n|---|---:|---|---|\n| SH01 | 8초 | 제품 사진의 구도와 제품 형태를 유지한다. 제품은 안정적으로 보이고, 카메라는 느리고 미세하게 전진한다. 반사광이나 배경 분위기 변화는 절제해 제품을 가리지 않는다. 시작과 끝에서 제품 및 로고가 프레임 안에 선명하게 남도록 한다. | 제공된 제품 사진 1장을 유일한 시각 참조로 사용. 제품의 형태·색·배치·로고를 바꾸거나 가리지 않는다. |\n\n**종횡비·길이:** 9:16, 8초는 요청값이다. 이를 지원하는지는 선택할 엔드포인트에서 확인해야 한다.  \n**오디오:** 요청되지 않아 계획에서 제외; 무음 출력 지원 여부는 미확인.\n\n## 프롬프트 초안\n\n> 입력 이미지의 제품과 구도를 기준으로 세로형 제품 영상을 만든다. 제품의 형태, 색상, 재질, 위치와 인쇄 요소를 유지한다. 카메라는 제품을 향해 매우 천천히 전진하고, 조명 변화는 은은하게 적용한다. 제품과 로고는 처음부터 끝까지 프레임 안에서 선명하고 가려지지 않게 유지한다. 로고를 새로 그리거나 재해석하거나 글자를 바꾸지 않는다. 배경이나 효과가 제품을 압도하지 않게 한다.\n\n**중요 한계:** 생성 모델이 로고를 정확히 보존한다는 보장은 할 수 없다. 로고의 정확성이 필수라면, 생성 결과의 로고를 신뢰하지 말고 원본 제품 사진의 로고 영역을 유지하는 합성·후반 작업 경로를 별도 검토해야 한다. 해당 경로의 실행 도구와 작업 방식은 미확인이다.\n\n## 실행 전 확인할 항목\n\n- 현재 카탈로그에서 9:16, 8초, 단일 이미지 입력을 지원하는 후보와 정확한 엔드포인트\n- 해당 엔드포인트의 입력 스키마, 참조 이미지 역할, 길이·화면비 설정 방식 및 한도\n- 가격·과금 단위와 총비용\n- 로고·제품 텍스트 보존 관련 기능 또는 한계\n- 이미지 사용 권리, 입력·출력 처리 조건, 결과 저장 방식\n- 실제 이미지 파일 접근 및 선택 실행자의 준비 상태\n\n**현재 미확인:** 위 항목 전부. 실시간 카탈로그 조회와 가격 확인 결과가 없으므로 모델을 선택하거나 비용을 추정하지 않았다.\n\n## 게이트와 미실행 범위\n\n이 문서는 생성 프롬프트와 샷 계획 초안이며 제출 승인이 아니다. 실제 실행에는 선택한 엔드포인트와 스키마·가격 확인, 입력 이미지 확인, 정확한 실행 범위 및 지출 상한 설정, 사용자의 명시적 실행·과금 승인이 필요하다. **생성, 제출, 비용 발생, 결과 검수는 수행하지 않았다.**"
+    },
+    {
+      "id": 3,
+      "prompt": "노트 앱의 프로 전환 기능 출시 홍보 문구를 한국어로 정확히 3개 써줘. 20% 할인은 이번 주까지만. 경쟁사 가격 비교나 첨부하지 않은 기능은 넣지 마. 포스팅은 내가 할게.",
+      "expected_output": "Three actual copy variants with the supplied promotion and no invented claims or publication.",
+      "expectations": [
+        "Exactly three requested copy variants are produced.",
+        "The discount and time window remain accurate; no competitor price, unsupported feature/benefit, invented launch-discount rationale, or posting instruction is added to audience-facing copy.",
+        "No unrequested video, project folder, publishing or scheduling is introduced."
+      ],
+      "observed_output": "1. 노트 앱 Pro 전환 기능, 이번 주까지 20% 할인.\n\n2. 이번 주까지만 노트 앱 Pro 전환 기능을 20% 할인된 가격으로 만나보세요.\n\n3. 노트 앱 Pro 전환 기능 출시. 20% 할인 혜택은 이번 주까지입니다."
+    },
+    {
+      "id": 4,
+      "prompt": "한국어 하드 자막이 있는 인터뷰를 9:16 쇼츠로 바꿀 때 자막 처리 방안과 검수 체크리스트만 줘. 자막의 가독성·싱크는 아직 검사하지 않았어. CTA는 제외하고 실제 편집도 하지 마.",
+      "expected_output": "Conditional caption/framing choices and actual inspection checklist; readability/sync remain unverified and no CTA/editing is added.",
+      "expectations": [
+        "Preserve/replace/translate choices depend on inspected readability and sync, not invented observation.",
+        "Subtitle stacking and crop clipping are addressed, with contain-blur as a conditional alternative.",
+        "No CTA, actual edit, output-file claim or publishing occurs."
+      ],
+      "observed_output": "## 자막 처리 방안\n\n자막의 실제 문구·가독성·타이밍을 아직 확인하지 않았으므로, **보존·가림·대체 방식을 확정할 수 없습니다.** 먼저 원본 프레임에서 자막이 화면 어디에 있고, 세로 크롭에서 잘리는지 확인하세요.\n\n- **원본 하드 자막이 세로 화면에서도 온전히 읽히고 음성과 맞으면:** 원본 자막을 보존하고 생성 자막 레이어는 끕니다.\n- **자막이 9:16 크롭에서 잘리거나 화면 밖으로 나가면:** 후보 구간을 다시 고르거나, 원본 프레임을 유지하는 *contain-blur* 구성을 우선 검토합니다. 자막을 가리는 마스크는 정렬과 모양을 확인하기 전에는 선택하지 않습니다.\n- **번역·수정 자막이 필요하면:** 원본 자막의 추출 가능 여부와 문구를 먼저 확인하고, 원본 자막이 남는 구간에 새 자막이 겹치지 않도록 처리 방식을 정합니다. 번역·수정 자막은 최종 음성에 맞춰 타이밍을 검수합니다.\n\n## 검수 체크리스트\n\n- [ ] 원본 자막의 정확한 문구, 위치, 가독성, 음성과의 싱크를 실제 영상에서 확인\n- [ ] 9:16 대표 프레임에서 크롭·재배치 후 자막이 잘리거나 가려지지 않는지 확인\n- [ ] 보존·가림·대체 중 선택한 방식과 근거 기록\n- [ ] 원본 자막을 보존하는 경우 생성 자막 레이어가 꺼져 있는지 확인\n- [ ] 번역·수정 자막을 쓰는 경우 원문 의미, 화자, 고유명사와 최종 음성의 타이밍을 대조\n- [ ] 실제 렌더에서 자막 겹침, 읽기 편의, 작은 화면에서의 가독성을 확인\n- [ ] 최종 음성이 준비되지 않았으면 타이밍을 **임시(provisional)**로 표시하고 싱크는 **미검증**으로 기록\n- [ ] 확인하지 못한 항목은 통과로 처리하지 않고 **미검증**으로 남김"
+    },
+    {
+      "id": 5,
+      "prompt": "내 관찰 기록: 느린 달리 인이어야 하는데 카메라가 흔들리고 후반에 얼굴이 바뀌었어. 기존 인물 참조를 유지하는 수정 프롬프트 하나만 줘. 너는 클립을 보지 않았고 아직 재생성 승인도 없어.",
+      "expected_output": "One corrected prompt based on supplied observations and approved identity reference; no unsupported direct inspection or regeneration claim.",
+      "expectations": [
+        "One corrected prompt addresses steady dolly-in and supplied identity continuity without inventing a new identity.",
+        "Supplied observations are not represented as the agent's own viewing or QA pass.",
+        "No regeneration, model switch or spend is performed."
+      ],
+      "observed_output": "**수정 프롬프트:** 기존 승인 인물 참조를 유지하고, 인물의 얼굴·체형·의상·정체성을 처음부터 끝까지 동일하게 고정한다. 인물은 일정하고 느린 속도로 달린다. 카메라는 흔들림 없이 안정적으로 고정해 달리기를 담는다. 달리는 동안 얼굴이 바뀌거나 변형되지 않게 한다."
+    },
+    {
+      "id": 6,
+      "prompt": "기존 project.json에서 A01 각본 v1에 A02 스토리보드 v1, A02에 A03 검토 v1, A03에 A04 실행계획 v1이 의존해. A05 독립 음원은 승인됨. A01이 v2로 바뀌었고 새 검토·실행 범위는 미승인이야. 이전엔 좋았으니 무료 샘플을 돌리면 되는지 상태 처리 계획만 설명해. 파일 변경·생성 없이.",
+      "expected_output": "Affected A02/A03/A04 approvals become stale, independent A05 remains valid, and free sample waits for the current-version review and bounded execution approval.",
+      "expectations": [
+        "Affected downstream artifact approvals are invalidated transitively.",
+        "Independent A05 is not reopened.",
+        "Free/local sample execution does not bypass current-version review and bounded execution approval.",
+        "No rival global state store, file modification or generation occurs."
+      ],
+      "observed_output": "아니요. 이전 결과가 좋았다는 사실이나 “무료 샘플”이라는 표현만으로 실행할 수는 없습니다. 파일은 변경하거나 생성하지 않습니다.\n\n- **버전 영향:** A01을 v2로 바꾸면 A01 v1에 의존하는 A02 스토리보드 v1은 재검토 대상이며, A02에 연결된 A03 검토 v1과 A04 실행계획 v1도 영향받은 종속 산출물로 **stale** 처리해야 합니다. 각 산출물의 기존 내용과 승인 근거는 이력으로 보존하되, 이전 승인·검토를 새 버전에 재사용하지 않습니다.\n- **새 검토:** A02를 A01 v2 기준으로 갱신한 뒤, 새 검토 산출물을 해당 입력 버전에 연결합니다. 사용자 수락 전까지 새 검토는 **approved가 아닙니다**.\n- **새 실행계획:** 현재 A04 실행 범위도 미승인이므로 제출은 차단됩니다. 새 계획은 수락된 검토 버전에 의존하고, 샷 범위·실행자·출력 수·재시도·비용 상한을 명시해야 합니다. 실행은 그 범위에 대한 별도 사용자 승인 후에만 가능합니다.\n- **무료 샘플:** 실제 이용 가능한 비용 상태와 조건을 확인해야 합니다. `included` 또는 현재 확인된 `free_allowance`여도 실행 승인 게이트는 그대로 적용됩니다. 비용이 불명확하면 차단하고, 유료 전환·구매가 필요하면 실행하지 않습니다. 샘플이 영상 프리뷰라면 프리뷰 범위의 실행 승인도 필요하며, 프리뷰 수락은 최종 제작 승인이 아닙니다.\n- **독립 음원 A05:** A01 변경의 영향이 없다는 전제에서 기존 승인 상태를 유지합니다. 다만 승인 범위를 다른 에셋이나 실행으로 확장하지 않습니다."
+    },
+    {
+      "id": 7,
+      "prompt": "15초 화장품 광고를 레퍼런스의 빠르고 세련된 리듬에 맞추고 싶어. 레퍼런스 영상과 11개 생성 클립이 있지만, 일부 클립은 거의 정지 화면이야. 음악은 레퍼런스에서 추출한 단일 혼합 오디오뿐이야. 생성 없이 먼저 컷·사운드 수정안을 내고, 확인하지 않은 싱크·청취 품질이나 음원 권리를 통과 처리하지 마.",
+      "expected_output": "A conditional beat/edit proposal grounded only in available assets and reference observations. Without actual media access or a requested hypothetical allocation, it avoids per-shot numeric cut points and invented IDs, treats one soundtrack as mixed, and leaves listening, sync, rights and generation approval pending.",
+      "expectations": [
+        "Precise per-shot timings and source ranges appear only when supported by accessible media or an explicitly requested, clearly non-executable hypothetical schedule.",
+        "No invented shot_id/sound_id or unsupported JSON/project schema is introduced.",
+        "Observed subject/camera movement and product/action peaks inform cuts and audio anchors; duration or dissolves alone do not prove dynamism.",
+        "Near-static clips are flagged for review and are not assigned a filler/end-card role by default; preserve a hold only when its actual content, readability and timing support the brief, and make replacement conditional.",
+        "The reference audio is one mixed track, not isolated BGM/SFX; subjective listening, sync and rights remain pending unless actually checked/evidenced.",
+        "No generation, spend, publication or final approval is claimed."
+      ],
+      "observed_output": "# 편집·리듬·사운드 수정안\n\n**project_id:** 미제공  \n**version:** draft  \n**status:** 설계안 / 비실행용  \n**목표 길이:** 15초  \n**가정:** 레퍼런스 영상과 11개 생성 클립, 레퍼런스에서 추출한 단일 혼합 오디오가 있다고 전달받음. 실제 재생·측정은 하지 않았으므로 클립별 움직임, 타임코드, 컷 길이, 싱크는 미확인이다.  \n**오디오 의도:** `audio_mode` 미확정. 제공 오디오는 분리 stem이 아닌 `mixed_reference`로만 취급한다. 대사·음악·효과음의 개별 조정이나 제거는 보장하지 않는다.\n\n## 컷·리듬 제안\n\n15초 전체를 짧은 컷으로 일괄 분할하기보다, 제품·사용 동작의 변화와 감정 전환에 맞춰 컷의 진입·이탈 시점과 반응 위치를 조정한다. 아래는 순서와 역할 제안이며, 실제 클립 ID·타임코드는 확인 후 배정한다.\n\n| 순서 | 비트 역할 | 편집 수정안 | 검수 메모 |\n|---|---|---|---|\n| 1 | 첫 시선 유도 | 가장 명확한 제품 또는 사용 장면으로 시작. 첫 프레임의 정보가 바로 읽히도록 불필요한 정지 도입은 덜어낼 후보로 둔다. | 실제 첫 프레임과 제품 가시성 확인 |\n| 2 | 사용 맥락 | 사용 동작이 있는 클립을 우선 배치하고 동작이 시작되기 직전부터 들어가 동작의 결과까지 보여준다. | 동작·연속성 미확인 |\n| 3 | 질감·효능 인상 | 질감이나 피부 표현이 보이는 클립을 짧은 대비 비트로 배치하되, 정보가 읽히기 전에 자르지 않는다. | 화면 정보와 주장 근거 확인 |\n| 4 | 정지 클립 처리 | 거의 정지한 클립은 움직임이 있는 클립 사이의 강조 프레임이나 짧은 홀드 후보로 검토한다. 임의의 디지털 움직임을 실제 동작처럼 전제하지 않는다. | 클립별 실제 움직임 확인 전 확정 금지 |\n| 5 | 제품 공개·마무리 | 가장 명확한 제품 공개를 엔딩 후보로 두고, 음악 기준점과의 싱크는 실제 파형·프레임을 확인한 뒤 조정한다. | 기준점·오프셋 미측정 |\n\n각 컷은 감정이나 정보를 바꾸는 경우에만 유지한다. 11개 클립을 모두 사용하거나 균등한 길이로 나누는 것은 전제하지 않는다. 실제 소스 구간과 최종 구간은 클립을 확인한 후 별도로 기록하며, 확인 전 정밀한 타임코드나 배속을 만들지 않는다.\n\n## 사운드 제안\n\n- 레퍼런스 추출 오디오는 한 개의 `mixed_reference` 큐로만 취급한다. 대사·음악·효과음 분리 stem은 있다고 가정하지 않는다.\n- 후보 음원의 실제 청취·길이·동기점·권리 근거는 미확인이다. 따라서 청취 품질, 싱크, 게시 가능성을 통과 처리하지 않는다.\n- 제품 공개나 동작 피크를 음악에 맞추는 편집은 기준점과 오프셋을 실제로 측정한 뒤 결정한다. 현재 큐 추가·음원 변형·별도 효과음 작업은 제안하지 않는다.\n- 추출 음원의 사용 권리와 게시 제한을 확인하기 전에는 검토용 참고로만 취급하고, 게시 가능으로 판단하지 않는다.\n\n## 미확인 사항 및 인계\n\n- 11개 클립의 ID, 실제 움직임, 소스 구간, 적합한 컷 순서 및 연속성\n- 레퍼런스 오디오의 파일 ID·버전, 실제 청취 결과, 동기 기준점·오프셋, 권리 근거\n- 목적지 규격과 `audio_mode`, 자막·CTA 필요 여부\n- 다음 단계: 실제 에셋 원장과 클립·오디오를 확인한 뒤 타임코드 및 큐 표를 작성한다. 확인 전에는 생성·편집 실행 또는 검수 통과를 주장하지 않는다."
+    },
+    {
+      "id": 8,
+      "prompt": "15초 컷의 프레임을 8개 시점에서 확인했고 파일 전체 디코드는 통과했어. BGM 파형을 보면 제품 충격음 근처에 피크가 있어. 실제 영상은 끝까지 재생하지 않았고 오디오도 듣지 않았어. 현재 확인 결과와 추가 QA만 써줘.",
+      "expected_output": "A bounded QA report that separates reported decode/sample facts from direct inspection, and full-file decoding and sparse frame samples from full-sequence playback, audio audition and subjective sync judgment; it lists missing checks without declaring a pass.",
+      "expectations": [
+        "The report attributes frame samples, decode and waveform facts to the user's supplied record unless the responder actually inspected them.",
+        "A waveform peak is not treated as proof of audible sync or listening quality.",
+        "Full-speed playback with final audio and a targeted action/audio anchor check are named as pending.",
+        "No user acceptance, rights clearance, publication permission or final pass is inferred."
+      ],
+      "observed_output": "### 현재 확인 결과\n- 15초 컷의 프레임을 8개 시점에서 확인함.\n- 파일 전체 디코드 통과.\n- BGM 파형에서 제품 충격음 근처의 피크를 확인함. 파형만으로 실제 충격음과의 동기화나 청취 결과는 확인되지 않음.\n- 영상 전체 재생과 오디오 청취는 미실시. 리듬·연속성·청취 품질은 미검증.\n\n### 추가 QA\n- 전체 15초를 소리와 함께 재생해 컷 흐름, 제품 충격음과 BGM 피크의 실제 동기화, 대사 명료도를 확인.\n- 무음 재생으로 화면·연속성을 확인하고, 오디오 단독 청취로 음향 결함을 확인.\n- 충격음 기준점과 BGM 피크의 시각·오프셋을 실제 재생에서 측정하고, 브리프의 허용 오차와 대조. 기준이나 측정값이 없으면 미검증으로 기록."
+    },
+    {
+      "id": 9,
+      "prompt": "검토용 실제 정지 이미지를 만드는 절차만 설명해줘. 공급자는 지정하지 않았어. 현재 도구는 인증되고 사용량이 포함된 이미지 실행자 하나이며 참조 입력·PNG 출력·지정 경로 저장을 지원해. 다른 특정 이미지 helper는 없어. 이미지 생성 자체는 하지 마.",
+      "expected_output": "Provider-neutral still-review procedure using the supplied available executor, bounded image usage, real output inspection and project registration; no mandatory absent helper or invented generation.",
+      "expectations": [
+        "The available image executor is eligible; an absent named helper does not become a mandatory blocker.",
+        "Applicable usage authorization, explicit output scope/path, reference mapping and real output inspection remain required.",
+        "No image generation or user acceptance is claimed."
+      ],
+      "observed_output": "실제 이미지를 생성하지 않고, 검토용 정지 이미지를 만들 때의 절차만 설명합니다.\n\n1. **프로젝트 폴더를 확정합니다.** 정확한 저장 경로를 확인합니다. 새 경로에 파일이 있으면 다른 경로나 명시적 재개를 선택받고, 쓰기 권한도 확인합니다. 이미 이 프로젝트의 정확한 경로가 정해져 있다면 재질문하지 않습니다.\n\n2. **창작 방향과 이미지 범위를 정합니다.** 주제·목적·형식·제약을 정리하고, 중요한 창작 방향은 사용자에게 선택받거나 명시적으로 위임받습니다. 방향이 아직 수락·위임되지 않았다면 대표 이미지 한 장으로 확인하고, 위임받았다면 요청된 이미지 세트를 정합니다. 이미지 수, 버전 경로, 재시도 범위도 실제 제출 전에 확정합니다.\n\n3. **실행자를 평가하고 선택합니다.** 현재 주어진 정보상 특정 이미지 helper는 없고, 인증 상태와 사용량 포함 여부가 확인된 이미지 실행자가 하나 있습니다. 참조 입력, PNG 출력, 지정 경로 저장 지원도 확인되어 있어 이 경로를 후보로 삼을 수 있습니다. 다만 실행자 선택은 생성 허가가 아니므로, 사용자가 공급자를 지정하지 않았다는 이유만으로 자동 제출하지 않습니다.\n\n4. **제출 전 확인을 마칩니다.** 선택한 실행자의 실제 준비 점검 방법으로 준비 상태를 확인하고, 포함 사용량이 이번 요청에 적용되며 추가 과금 없이 가능한지 확인합니다. 인증 성공만으로 비용 증거를 대신하지 않습니다. 비용·권리 조건 등이 불명확하거나 유료 제출이 필요하면 멈춰 blocker로 보고합니다. 자격 증명은 문서나 로그에 남기지 않습니다.\n\n5. **프롬프트와 참조를 준비합니다.** 프로젝트 브리프·비주얼 기준·샷 계획에 맞춰 프롬프트와 호출 설정을 작성합니다. 참조 이미지는 명시적으로 연결하고, 정확한 로고·텍스트처럼 생성 모델의 재현을 신뢰할 수 없는 항목은 적절한 경우 합성으로 분리합니다. 프롬프트와 설정은 프로젝트 루트의 `prompts/`에 보존합니다.\n\n6. **승인된 범위만 생성합니다.** 선택 실행자의 실제 입력·출력 방식과 최신 제한을 따릅니다. 단일 이미지라면 루트 아래 버전이 붙은 경로(예: `images/review-v01.png`)를 지정하고, 기존 파일 경로를 재사용하지 않습니다. 부분 생성이면 실제 반환된 파일만 기록합니다.\n\n7. **파일을 직접 검사하고 기록합니다.** 반환된 PNG를 열어 의도, 구도, 인물·소품, 연속성을 확인합니다. `project.json`의 원장에 에셋 ID, 사용 샷, 버전, 실제 파일 경로, 해시와 확인된 실행 메타데이터를 기록하고 `review.md`에 검사 결과와 미정 사항을 남깁니다. 생성되지 않았거나 검사하지 않은 결과를 생성·검증된 것으로 기록하지 않습니다.\n\n정지 이미지 검토는 영상 실행 승인을 뜻하지 않습니다. 영상은 별도의 사용자 실행 승인 전에는 생성하지 않습니다."
+    },
+    {
+      "id": 10,
+      "prompt": "승인된 인물·물체 참조 v1로 손이 물체를 잡는 동작만 저비용 프리뷰 계획을 세워줘. 확인된 endpoint는 720p/6초와 1080p/6초만 지원해. 공급자 화면에서 방금 확인한 견적은 설정 각각 1회당 0.25 credits야. 프리뷰 1개/최초 1회만 실행 승인되었고 최종 제작은 미승인이야. 계획과 통과/승격 기준만 줘. 실행하지 마.",
+      "expected_output": "Minimal-sufficient preview using supported settings and the supplied current per-generation quote, approved reference versions, visible contact criteria and capped calls; final path remains proposed and requires its own authorized scope.",
+      "expectations": [
+        "Only verified supported settings are considered; no universal 480p/5s or arbitrary final resolution is imposed.",
+        "The supplied current quote of 0.25 credits per generation is recorded as given without inventing additional billing terms or calling the known quote unknown.",
+        "The preview plan covers actual grip/contact and identity, not a still-image proxy for motion.",
+        "One initial preview and no retries are preserved; preview pass alone does not authorize final production.",
+        "If same-seed/shared-reference reuse is proposed for promotion, it is not described as guaranteeing identical final motion; the actual final output still requires inspection."
+      ],
+      "observed_output": "## 저비용 프리뷰 계획 — 실행하지 않음\n\n- **범위:** 승인된 인물·물체 참조 **v1**을 입력으로 사용해, **손이 물체를 잡는 동작만** 판단한다. 다른 동작·샷·출력은 포함하지 않는다.\n- **설정:** 확인된 endpoint의 최소 해상도인 **720p, 6초**. 1080p는 이번 프리뷰에 불필요하므로 선택하지 않는다.\n- **프리뷰 수·재시도:** 프리뷰 **1개**, 최초 생성 **1회만**. 재시도 예산은 0회.\n- **비용:** 공급자 화면에서 확인된 견적 기준 **0.25 credits**. 승인된 프리뷰 1회 범위에서만 사용한다. 추가 제출·재시도·구매는 하지 않는다.\n- **판단 범위:** 6초 안에 보이는 손의 접근, 물체와의 접촉, 잡은 뒤의 유지 상태. 6초 밖의 동작이나 결과는 이 프리뷰로 판정하지 않는다.\n- **입력 버전:** 인물 참조 v1, 물체 참조 v1. 실제 실행 시 해당 승인 입력과 버전이 일치하는지 확인한다.\n\n## 통과 기준\n\n실제 출력물을 확인한 뒤 아래 항목을 모두 만족할 때만 **프리뷰 수락**으로 판정한다.\n\n1. 인물과 물체가 각각 승인된 참조 v1과 일치한다.\n2. 손이 의도한 물체에 닿고 잡는 동작이 화면에서 식별된다.\n3. 접촉 중 손·물체의 형태가 무너지거나 서로 관통하지 않고, 물체가 순간이동하거나 사라지지 않는다.\n4. 잡는 동안 물체가 손에서 미끄러지거나 떠 보이지 않으며, 끝에서 잡은 상태가 유지된다.\n5. 판정 대상 동작이 6초 안에 실제로 나타난다.\n\n파일·출력을 검사하기 전에는 통과를 기록하지 않는다. 실패 또는 미검증이면 승인된 단 1회로 범위를 닫고, 추가 생성 없이 결과와 관찰된 문제를 보고한다.\n\n## 최종 제작 승격 기준\n\n프리뷰 수락은 **최종 제작 승인이 아니다**. 최종 제작으로 넘어가려면 실제 프리뷰 결과와 검수 근거를 연결하고, 최종 설정·샷 수·재시도·비용 상한을 포함한 별도 실행 범위와 명시적 승인을 받아야 한다. 프리뷰에서 확인하지 못한 동작은 통과로 간주하지 않는다."
+    },
+    {
+      "id": 11,
+      "prompt": "승인된 실행 계획은 현재 참조 v1과 endpoint 설정을 사용해 프리뷰 1개를 검수한 후 통과하면 최종본 1개로 진행하도록 명시돼 있어. 각각 최초 1회, 전체 비용 상한 5이며 현재 견적과 설정은 승인 때와 같아. 실제 프리뷰 전체 재생에서 계획의 접촉·정체성·구도 기준을 통과했고 사용자가 이 프리뷰 버전도 수락했어. 다음 행동과 검사 기준만 정리해. 생성하지 마.",
+      "expected_output": "The already approved conditional final phase remains eligible within unchanged versions/settings/caps; actual final output must still be inspected. No gratuitous duplicate approval or unbounded jobs.",
+      "expectations": [
+        "The existing explicit final-phase authorization is reused rather than requiring duplicate approval solely because it is a final phase.",
+        "Final output still needs actual motion/identity/composition/technical inspection; preview acceptance is not final-media QA.",
+        "Changed inputs, changed quote, extra outputs or retries would require updating the affected authorized scope."
+      ],
+      "observed_output": "## 다음 행동\n\n- 승인된 실행 계획의 **현재 참조 v1 및 동일 endpoint 설정**을 유지한다. 별도 계획 범위를 추가하거나 변경하지 않는다.\n- 프리뷰는 이미 승인 범위에서 **1개, 최초 1회** 생성·검수되었고, 실제 전체 재생 검사에서 계획된 접촉·정체성·구도 기준을 통과했으며 사용자가 해당 프리뷰 버전을 수락했다.\n- 계획에 명시된 조건이 충족됐으므로, **최종본 1개를 최초 1회 생성하는 단계로 진행 가능**하다. 전체 비용 상한 5와 승인 당시와 동일한 견적·설정을 지키고, 재시도·추가 지출·범위 변경은 하지 않는다.\n- **이 응답에서는 생성하지 않는다.** 최종 실행 전에는 현재 참조 v1과 설정이 승인 계획과 여전히 일치하는지 확인한다.\n\n## 최종본 검사 기준\n\n실제 최종 파일을 받은 뒤에만 결과를 판정하고, 확인하지 못한 항목은 미검증으로 기록한다.\n\n- 계획의 접촉·정체성·구도 기준 충족 여부\n- 전체 재생에서의 동작 안정성과 시간적 일관성\n- 샷 및 참조 v1과의 연속성\n- 승인된 설정에 맞는 길이·화면비·해상도 등 기술 규격\n- 실제 검사 파일·버전·범위·결과와 관찰된 이슈 기록\n\n프리뷰 수락은 최종본의 품질 검사나 별도 게시 승인을 대신하지 않는다."
+    },
+    {
+      "id": 12,
+      "prompt": "대화형 영상 도구에 SH01 생성 요청을 제출해 job-7을 받았지만 상태 조회가 끊겼어. 결과 파일은 아직 없어. 사용자는 '2초쯤 손이 물체를 관통했으니 얼굴·구도는 유지하고 접촉만 고쳐줘'라고 알려줬어. 남은 재시도 예산은 0이고 기존 입력은 v1이야. 지금 할 일과 수정안만 설명해. 호출은 하지 마.",
+      "expected_output": "Reconcile the existing job before any new submission; report the user's observation as supplied, propose one targeted contact correction preserving identity/composition, and keep retries blocked by zero remaining scope.",
+      "expectations": [
+        "Unknown job status is reconciled using its existing ID rather than creating a duplicate request or assuming failure/success.",
+        "The 2-second contact defect is attributed to user observation, not direct viewing.",
+        "A targeted contact change and preserved identity/composition are described with reinspection criteria.",
+        "Zero remaining retries blocks regeneration; the correction alone is not new execution authorization."
+      ],
+      "observed_output": "- **지금 할 일:** 상태가 불명인 `job-7`을 재제출하지 말고, 연결된 도구의 상태 조회로 먼저 해결합니다. 결과 파일이 없으므로 생성 성공이나 실제 관통 결함은 검증되지 않았으며, 결함 정보는 사용자 관찰로 기록합니다. 새 호출·수정 생성은 하지 않습니다.\n- **수정안:** SH01의 실제 실패가 확인되면, 기존 v1 입력과 성공 속성인 **얼굴·구도**를 보존하고 접촉 동작만 단순화·명확화합니다. 시작 상태, 손과 물체의 접촉 지점·경로, 접촉 후 끝 상태를 지정해 관통을 방지하고, 재검수 기준은 손이 물체를 통과하지 않으며 얼굴과 구도가 유지되는 것입니다.\n- 재시도 예산이 0이므로 **추가 생성은 승인된 범위에 포함되지 않습니다.** 수정안은 계획으로만 남기고, 실행하려면 별도 승인과 예산 갱신이 필요합니다."
+    },
+    {
+      "id": 13,
+      "prompt": "이 영상은 발걸음 효과음만 필요하고 대사·BGM은 제외해. 확인된 영상 endpoint는 prompt와 duration만 받고 오디오 제어는 없어. 가지고 있는 참조 오디오는 음악과 효과음이 섞인 파일 하나야. 생성·오디오 분리·편집은 아직 승인하지 않았어. 가능한 경로와 QA 기준만 줘.",
+      "expected_output": "Separate intent from unsupported controls; propose separately authorized sound/assembly using actual sources, preserve the mixed reference identity, and require listening for unintended speech/music.",
+      "expectations": [
+        "No unsupported audio/negative/no_music API fields or guaranteed music removal are invented.",
+        "SFX-only is distinguished from no_dialogue and no_audio; no speech or BGM is added.",
+        "The mixed file is not represented as available isolated music/effects stems.",
+        "Separate sound creation/extraction/editing remains a proposal requiring applicable approval; actual listening is needed for QA."
+      ],
+      "observed_output": "## 가능한 경로와 QA 기준\n\n**오디오 의도:** `no_dialogue` — 발걸음 효과음만 허용하고 대사·음악은 제외. `no_audio`로 해석하지 않음.  \n**확인된 endpoint:** `prompt`, `duration`만 지원하며 오디오 제어 없음. 해당 endpoint에 음악·대사 제외 파라미터를 꾸며 넣지 않음.  \n**참조 오디오:** 음악과 효과음이 섞인 단일 파일. `mixed_reference`로만 취급하며, 발걸음만 분리된 소스나 개별 stem이 있다고 가정하지 않음. 권리 상태도 확인 전까지 미확인.\n\n### 경로\n\n1. **권장 제안 — 생성과 음향을 분리**\n   영상은 확인된 endpoint로 별도 생성하고, 승인 후 편집 단계에서 발걸음만 별도 소싱·생성·녹음해 조립합니다. 대사와 음악은 추가하지 않습니다. 발걸음 음원의 출처·권리와 endpoint·실행자 지원을 먼저 확인해야 합니다.\n2. **참조 파일 사용**\n   혼합 참조 파일은 음악과 효과음을 분리하지 않는 `mixed_reference`입니다. 요청한 SFX-only 구성을 보장하지 못하므로 발걸음 효과음으로 바로 사용하거나 게시 가능한 소스로 간주하지 않습니다. 분리 작업은 별도 승인과 지원 경로 확인이 필요합니다.\n3. **현재 가능한 조치**\n   제작·분리·편집·과금은 시작하지 않습니다. 실행 경로와 비용·승인 범위를 제안하고 승인 대기 상태로 둡니다.\n\n### QA 기준\n\n- 실제 청취로 대사·음악 포함 여부와 발걸음 효과음의 존재·명료도를 확인합니다. 듣지 않은 구간은 **미검증**으로 기록합니다.\n- 발걸음의 화면 동작과 동기, 컷 경계의 연속성, 효과음의 시작·끝 및 믹스 레벨을 실제 영상·오디오 재생으로 확인합니다.\n- 영상은 소리 포함 재생과 무음 재생으로 검수하고, 필요 시 오디오 단독으로도 확인합니다. 검사 전에는 통과로 판정하지 않습니다.\n- 사용 음원의 출처·파일 버전·권리 근거를 확인합니다. 권리 미확인은 게시 가능으로 주장하지 않습니다.\n- 위 검수와 별도 실행 승인이 있기 전까지 결과물 생성·편집 완료 또는 납품 완료를 주장하지 않습니다."
+    },
+    {
+      "id": 14,
+      "prompt": "승인된 영어 운문 내레이션을 한국어로 옮기고 같은 목소리 정체성으로 낭독해 SRT를 납품할 절차를 써줘. 원문에는 고유명사 Luma와 단위 3 km가 있어. 음성 도구·보이스 목록·가격과 최종 음성 파일은 아직 없어. 한국어 원고는 번역/각색 승인 전이야. 파일 생성·음성 합성 없이.",
+      "expected_output": "Meaning/name/unit fidelity and explicit poetic adaptations, live voice discovery and identity/version linkage, listening checks and final-audio alignment before validated SRT delivery.",
+      "expectations": [
+        "Voice tool/catalog/language/settings/cost/consent requirements remain live checks, not a mandatory named vendor or invented voice ID.",
+        "Poetic line/rhythm choices do not silently change Luma or 3 km; material adaptations require review.",
+        "No measured SRT timings, final sync pass or synthesized voice are invented before final audio exists.",
+        "Voice/text version changes affect dependent subtitle/lipsync work and actual final listening/readability/timing checks are required."
+      ],
+      "observed_output": "## 번역·낭독·SRT 납품 절차 — 계획 단계\n\n**현재 상태:** 원문 운문 내레이션은 승인됨. 한국어 번역·각색은 미승인. 음성 도구·보이스 목록·가격 및 최종 음성 파일은 미확인·미정. 파일 생성, 음성 합성, 유료 실행은 하지 않는다. 따라서 음성 청취와 자막 동기화도 아직 검증할 수 없다.\n\n1. **원문 의미와 운문 구조를 보존해 한국어 초안을 작성한다.** Luma는 고유명사로 그대로 유지하고, `3 km`는 단위 의미와 표기를 원문과 대조해 보존한다. 운문의 행 구분·리듬과 승인된 각색은 구분해 기록하며, 원문 의미를 지우는 윤문은 하지 않는다.\n2. **번역·각색 승인을 받는다.** 초안과 함께 행 구분, 리듬, Luma·3 km 처리 및 각색 사항을 검토받는다. 승인 전 원고는 미승인 초안으로 표시하고 음성 제작에 넘기지 않는다.\n3. **음성 실행 가능성을 실제로 확인한다.** 실행 직전에 사용 가능한 음성 도구와 보이스 목록, 한국어 지원·발음 지시 방법, 속도·톤·감정 제어, 권리·동의 요건, 가격을 확인해 시점과 근거를 기록한다. 확인되지 않은 제공자·보이스·제어·비용은 가정하지 않는다.\n4. **목소리 정체성을 유지할 방법을 승인받는다.** 사용자가 지정한 정체성이 있다면 조용히 대체하지 않는다. 동일 정체성의 한국어 낭독 가능성을 확인하고, 불가능하거나 권리 근거가 없으면 진행을 멈춰 대안을 승인받는다. 샘플 청취가 필요한 선택은 범위가 한정된 오디션 승인을 먼저 받는다. 복제·커스텀 보이스는 요청 및 실제 권리·동의 근거가 있을 때만 다룬다.\n5. **승인된 음성 작업만 별도 승인 범위에서 실행한다.** 한국어 원고 승인과 음성 실행 승인을 구분한다. 실행 시 사용한 voice ID·타입·모델/버전·설정, 정체성·권리 근거를 버전이 있는 연결 산출물에 기록한다. 이 계획에서는 실행하지 않는다.\n6. **실제 생성 음성을 전부 듣고 검수한다.** 텍스트 정확성, Luma와 3 km 발음, 운문 행의 리듬, 숨·속도·톤 및 목소리 정체성 일관성을 확인한다. 듣지 않은 음성은 미검증으로 인계한다.\n7. **최종 음성에 맞춰 SRT를 작성한다.** 시작·끝 시간은 최종 음성/파일에서 실제 측정하고, 시간 순서·유효한 구간·겹침·줄 나눔·읽기 편의와 화자 표기를 검수한다. 번역 자막의 Luma·3 km·행 구분은 승인 원고와 대조한다. 최종 음성이 없으면 원고 기반 타이밍은 임시(provisional)이며 동기화 미검증으로 표시한다. 프레임 정확 동기인 것처럼 시간을 추정하지 않는다.\n8. **납품 전 실제 검사 후 상태를 기록한다.** 승인된 납품 목적지 규격과 자막 형식·caption mode를 확인해 delivery_spec에 적는다. 최종 음성 변경 시 종속 SRT 타이밍만 stale로 표시하고 재동기화한다. 실제 검사 전에는 통과로 보고하지 않으며, 미확인 항목은 unverified로 남긴다.\n\n**현재 미해결:** 한국어 번역·각색 승인, 음성 도구·보이스·가격·권리 확인, 동일 목소리 정체성의 한국어 사용 가능성, 음성 실행 승인, 최종 음성 파일 및 실제 청취, SRT 타이밍과 납품 목적지 규격."
+    },
+    {
+      "id": 15,
+      "prompt": "최종 광고에는 접촉 효과음과 음악이 필요해. 후보 음악 A는 내 구독으로 다운로드했지만 라이선스 문서가 없고, 후보 B는 기록된 라이선스가 개인 비상업 채널만 허용해. 효과음 파일은 출처 URL만 있어. 실제 음원을 아직 듣지 않았고 광고 게시 권한도 미확인이야. 소싱·편집 인계와 차단 조건만 정리해.",
+      "expected_output": "Track/file-level provenance and license evidence, unknown/restricted rights separated from audition/edit preparation, no automatic commercial clearance, purchase, publication or listening pass.",
+      "expectations": [
+        "Subscription/download/source URL alone do not prove commercial rights; A and effects remain unverified, and B's noncommercial limit blocks ad use.",
+        "Track/file/version, license evidence/date and applicable project/channel/period/territory conditions are requested or recorded without invented permission.",
+        "Source/final ranges, fades/gain and contact/music sync are tied to actual assets and audition, not fabricated measured timing.",
+        "No automatic purchase/publication or subjective listening/sync pass is claimed."
+      ],
+      "observed_output": "## 소싱·편집 인계 — 광고용 음악 및 접촉 효과음\n\n**상태:** 비실행용 인계안. 음원을 듣거나 타임라인에서 측정하지 않았으므로 후보 적합성, 구간, 페이드, 싱크는 미검증입니다. 광고 게시 권한도 확인되지 않았습니다.\n\n### 소싱 판단\n\n| 항목 | 현재 근거 | 권리 상태 | 인계 |\n|---|---|---|---|\n| 음악 A | 구독으로 다운로드함. 라이선스 문서 없음 | `unknown` | 실제 트랙·파일 ID와 버전을 기록하고, 해당 구독 플랜 및 광고·채널·지역·기간에 적용되는 라이선스를 확인합니다. 다운로드 가능 사실만으로 게시 허가를 판단하지 않습니다. |\n| 음악 B | 기록된 라이선스는 개인 비상업 채널만 허용 | `restricted` | 상업 광고 게시용으로 사용하지 않습니다. 상업 이용 범위를 허용하는 별도 권리가 확인되지 않으면 제외합니다. |\n| 접촉 효과음 | 출처 URL만 있음 | `unknown` | 실제 파일·버전과 라이선스 근거를 확인합니다. URL만으로 게시 허가를 판단하지 않습니다. |\n\n### 편집 인계\n\n최종 타임라인과 에셋 원장이 제공되면 기존 ID를 이어받아 큐를 등록합니다. 현재는 샷·큐 ID, 파일 구간, 최종 타임코드를 만들지 않습니다.\n\n- 접촉 효과음: **핵심 효과음**으로 계획하고, 화면의 접촉 동작을 기준점으로 삼습니다. 실제 음원을 듣고 동작 시각과 효과음의 오프셋을 측정하기 전에는 싱크 판정을 하지 않습니다.\n- 선택할 음악: 감정·리듬 기능과 접촉 순간의 음악 기준점을 실제로 듣고 비교한 뒤 결정합니다. 음악은 접촉 효과음을 가리거나 연기의 부족을 덮지 않도록 검수합니다.\n- 확정 후 각 큐에 레이어, 실제 파일·버전, source in/out, gain, fade, 믹스 자동화, sync anchor/offset, 권리 상태 및 근거 위치를 기록합니다. 음악이 시퀀스 전체에 걸치면 샷 ID는 비워 둡니다.\n\n### 차단 조건\n\n1. 음악 A의 광고 게시 권리와 효과음의 이용 권리가 실제 근거로 확인되기 전에는 게시용으로 사용하지 않습니다.\n2. 음악 B는 현재 기록된 개인 비상업 제한 때문에 광고용에서 차단합니다.\n3. 모든 후보를 실제로 청취하고 광고 맥락에 맞는지 확인하기 전에는 후보 선택·편집 적합성 검수를 완료 처리하지 않습니다.\n4. 권리 확인이나 대체 음원 구매·구독이 필요하면 별도 사용자 승인 전에는 진행하지 않습니다. 승인 전까지 게시 가능하다고 표시하지 않습니다."
+    },
+    {
+      "id": 16,
+      "prompt": "도서관 안내 영상의 콘셉트 후보를 한국어로 정확히 두 개만 써줘. 가상의 시민·성공 사례·CTA 없이, 인물 없는 정보형이야. 각 후보의 차별점과 제작 제약을 적어. 시각 스타일은 아직 선택하지 않았고 이미지/영상 테스트는 하지 마.",
+      "expected_output": "Exactly two distinct informational concepts with constraints and unresolved visual direction; no fixed idea/angle counts, invented people, forced narrative or media batch.",
+      "expectations": [
+        "Exactly two requested text concepts are returned without universal idea/angle counts or manufactured citizen/testimony/CTA.",
+        "Unselected style remains a proposal or unresolved choice, not an implicitly locked identity.",
+        "Text candidate count is not media-output authorization; no images/video/project folder or generation is introduced."
+      ],
+      "observed_output": "### 후보 1 — 책이 아니라 질문에서 시작하는 도서관\n- **한 문장 약속:** 이용자가 가진 질문을 도서관 안에서 찾을 수 있는 자료와 서비스의 종류로 연결해 안내한다.\n- **대표 장면:** 질문 문구가 화면에 나타나고, 그에 맞는 자료 위치·검색 방법·이용 서비스를 차례로 보여준다.\n- **차별점:** 공간이나 시설을 순서대로 소개하기보다, 이용자의 목적을 정보 탐색의 출발점으로 삼는다.\n- **제작 제약:** 실제 자료 분류·검색 화면·서비스 정보를 확인해야 한다. 제공되지 않은 서비스나 이용 절차는 가정하지 않는다. 인물 없이 문구, 화면 캡처, 공간 촬영으로 구성한다.\n\n### 후보 2 — 한 번의 방문을 따라가는 도서관 이용 지도\n- **한 문장 약속:** 도서관에 들어와 자료를 찾고 이용하기까지 필요한 정보를 공간과 절차의 흐름으로 안내한다.\n- **대표 장면:** 입구에서 시작한 시선이 안내 표지, 검색 지점, 자료 공간, 이용 시설을 차례로 짚는다.\n- **차별점:** 후보 1이 질문별 정보 연결에 초점을 둔다면, 이 후보는 장소와 이용 단계의 순서를 보여준다.\n- **제작 제약:** 실제 동선·운영 시간·이용 규칙을 확인해야 한다. 촬영 가능한 공간과 표지 상태에 따라 구성이 달라질 수 있으며, 인물 없이 공간·표지·그래픽으로 전달한다.\n\n**제작 메모:** 두 후보 모두 가상 시민·성공 사례·후기와 CTA를 사용하지 않는다. 시각 스타일은 미정으로 두며 이미지·영상 테스트는 진행하지 않는다."
+    },
+    {
+      "id": 17,
+      "prompt": "내가 지정한 Provider-Q로만 실제 검토 이미지를 만들 계획이야. 현재 Provider-Q 인증이 없고 참조 입력 지원·가격도 확인 못 했어. 다른 인증된 이미지 도구는 있어. 모델 이름만 알면 되는 것 아니야? 제출 없이 가능한 준비와 차단 조건만 줘.",
+      "expected_output": "Preserve the explicit provider; complete reachable prompt/reference/output planning while blocking submission on missing auth/schema/price, and offer other routes only as proposals requiring a changed choice.",
+      "expectations": [
+        "The explicitly selected Provider-Q is not silently replaced by an available alternative.",
+        "Model name alone is insufficient; authentication, required reference/schema support and current price need verification before submission.",
+        "Reachable planning is delivered without inventing execution/availability or a permanent required provider."
+      ],
+      "observed_output": "아니요. 모델 이름만으로는 충분하지 않습니다. Provider-Q의 현재 가용성·참조 이미지 입력 지원·실제 출력 방식·인증 및 비용/과금 상태를 확인해야 합니다. 사용자가 Provider-Q만 지정했으므로 다른 이미지 도구로 자동 전환할 수 없습니다.\n\n**제출 없이 준비 가능**\n- 검토 이미지의 목적·필요 수·구도와 참조 입력 요구를 명세합니다.\n- Provider-Q용 프롬프트와 호출 설정 초안을 준비하고, 출력 위치를 프로젝트 루트 아래 `images/`의 새 버전 경로로 지정합니다.\n- 프롬프트·설정 저장 위치(`prompts/`)와 이미지 검수 기준을 정리합니다.\n- 프로젝트 경로가 아직 지정되지 않았다면 정확한 저장 디렉터리를 먼저 확인합니다.\n- 비용 모드는 기본값인 `free_or_included_only`로 둡니다. 유료 사용은 기본 허용되지 않습니다.\n\n**차단 조건**\n- 인증이 없으므로 실행자 준비 상태 확인과 실제 제출은 차단됩니다. 인증 성공 확인 전에는 호출하지 않습니다.\n- 참조 입력 지원이 미확인이므로 요구 충족 여부를 판단할 수 없습니다.\n- 가격·과금 경로가 미확인이므로 `unknown_cost`로 분류해 차단합니다. 사용자 지정 Provider-Q라는 사실은 비용 승인으로 간주하지 않습니다.\n- 선택한 실행자의 인증·지원 기능·출력 및 비용 계약이 확인되고, 적용되는 이미지 생성/과금 승인이 충족되기 전까지 이미지를 만들거나 다른 도구로 대체하지 않습니다."
+    }
+  ],
+  "behavior_judgment": {
+    "type": "probabilistic rubric, not a binary test",
+    "model": "openrouter/typesafe/jev-1.13-20260917",
+    "scenarios_judged": 17,
+    "records": {
+      "1": {
+        "meets_expectations_probability": 0.91,
+        "scope_violation_probability": 0.04
+      },
+      "2": {
+        "meets_expectations_probability": 0.92,
+        "scope_violation_probability": 0.04
+      },
+      "3": {
+        "meets_expectations_probability": 0.95,
+        "scope_violation_probability": 0.03
+      },
+      "4": {
+        "meets_expectations_probability": 0.92,
+        "scope_violation_probability": 0.04
+      },
+      "5": {
+        "meets_expectations_probability": 0.76,
+        "scope_violation_probability": 0.1
+      },
+      "6": {
+        "meets_expectations_probability": 0.82,
+        "scope_violation_probability": 0.06
+      },
+      "7": {
+        "meets_expectations_probability": 0.86,
+        "scope_violation_probability": 0.06
+      },
+      "8": {
+        "meets_expectations_probability": 0.92,
+        "scope_violation_probability": 0.04
+      },
+      "9": {
+        "meets_expectations_probability": 0.56,
+        "scope_violation_probability": 0.16
+      },
+      "10": {
+        "meets_expectations_probability": 0.92,
+        "scope_violation_probability": 0.06
+      },
+      "11": {
+        "meets_expectations_probability": 0.89,
+        "scope_violation_probability": 0.07
+      },
+      "12": {
+        "meets_expectations_probability": 0.78,
+        "scope_violation_probability": 0.08
+      },
+      "13": {
+        "meets_expectations_probability": 0.88,
+        "scope_violation_probability": 0.08
+      },
+      "14": {
+        "meets_expectations_probability": 0.91,
+        "scope_violation_probability": 0.05
+      },
+      "15": {
+        "meets_expectations_probability": 0.94,
+        "scope_violation_probability": 0.04
+      },
+      "16": {
+        "meets_expectations_probability": 0.96,
+        "scope_violation_probability": 0.04
+      },
+      "17": {
+        "meets_expectations_probability": 0.7,
+        "scope_violation_probability": 0.28
+      }
+    },
+    "manual_readback": "All 17 actual response texts were read. IDs 9, 10 and 17 were manually checked for preserving the selected/available executor, supplied current quote, approved request limits, and no unauthorized generation; rubric scores are probabilistic signals, not binary proof."
+  },
+  "documentation_link_check": {
+    "changed_markdown_files_checked": 28,
+    "relative_markdown_targets_checked": 161,
+    "missing_targets": 0,
+    "method": "Inline Markdown relative-link path existence scan; fragments/external URLs excluded."
+  },
+  "disposable_install_smoke": {
+    "command": "python -B scripts/install_package.py --skills-root <unique temporary directory>",
+    "installed_skills": 8,
+    "selected_references_verified": [
+      "video-production-assets/references/preproduction-review.md",
+      "video-production-assets/references/24-production-execution.md"
+    ],
+    "destination_removed_after_smoke": true
+  }
+}

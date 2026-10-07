@@ -1,0 +1,12 @@
+[Unit]
+Description=Tistory AI·P2P Content Generation (뉴스5 + 가이드10 → 큐)
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=declan
+WorkingDirectory=/srv/publish-workbench/app
+EnvironmentFile=/srv/publish-workbench/config/publish-workbench.env
+Environment=HOME=/home/declan
+ExecStart=/bin/bash /srv/publish-workbench/app/scripts/schedule/generate-ai-p2p.sh
+TimeoutStartSec=14400

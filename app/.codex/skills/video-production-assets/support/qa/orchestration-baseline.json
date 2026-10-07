@@ -1,0 +1,152 @@
+{
+  "package_version": "2.3",
+  "skill_metrics": [
+    {
+      "skill": "creative-production",
+      "lines": 72,
+      "characters": 12405,
+      "words": 1505,
+      "relative_link_count": 20
+    },
+    {
+      "skill": "video-production-assets",
+      "lines": 84,
+      "characters": 8408,
+      "words": 1202,
+      "relative_link_count": 47
+    },
+    {
+      "skill": "camera-spatial-design",
+      "lines": 27,
+      "characters": 2517,
+      "words": 403,
+      "relative_link_count": 4
+    },
+    {
+      "skill": "blender-previsualization",
+      "lines": 24,
+      "characters": 2820,
+      "words": 420,
+      "relative_link_count": 5
+    },
+    {
+      "skill": "orchestrating-video-preproduction",
+      "lines": 93,
+      "characters": 12869,
+      "words": 1756,
+      "relative_link_count": 3
+    },
+    {
+      "skill": "developing-video-synopses",
+      "lines": 79,
+      "characters": 8607,
+      "words": 1248,
+      "relative_link_count": 0
+    },
+    {
+      "skill": "designing-video-character-sheets",
+      "lines": 95,
+      "characters": 10380,
+      "words": 1492,
+      "relative_link_count": 1
+    },
+    {
+      "skill": "storyboarding-video",
+      "lines": 76,
+      "characters": 8439,
+      "words": 1186,
+      "relative_link_count": 2
+    },
+    {
+      "skill": "higgsfield-brandkit",
+      "lines": 202,
+      "characters": 12653,
+      "words": 1512,
+      "relative_link_count": 49
+    },
+    {
+      "skill": "higgsfield-generate",
+      "lines": 328,
+      "characters": 25610,
+      "words": 3404,
+      "relative_link_count": 0
+    },
+    {
+      "skill": "higgsfield-marketplace-cards",
+      "lines": 90,
+      "characters": 4157,
+      "words": 540,
+      "relative_link_count": 0
+    },
+    {
+      "skill": "higgsfield-product-photoshoot",
+      "lines": 217,
+      "characters": 9835,
+      "words": 1419,
+      "relative_link_count": 0
+    },
+    {
+      "skill": "higgsfield-soul-id",
+      "lines": 85,
+      "characters": 3595,
+      "words": 502,
+      "relative_link_count": 0
+    },
+    {
+      "skill": "higgsfield-video-explainer",
+      "lines": 289,
+      "characters": 13903,
+      "words": 2065,
+      "relative_link_count": 1
+    },
+    {
+      "skill": "higgsfield-video-replicate",
+      "lines": 177,
+      "characters": 11931,
+      "words": 1748,
+      "relative_link_count": 1
+    },
+    {
+      "skill": "higgsfield-websites",
+      "lines": 254,
+      "characters": 14781,
+      "words": 2144,
+      "relative_link_count": 0
+    },
+    {
+      "skill": "higgsfield-youtube-thumbnail",
+      "lines": 184,
+      "characters": 12559,
+      "words": 1823,
+      "relative_link_count": 0
+    }
+  ],
+  "validator_probes": [
+    {
+      "case": "unknown source_asset_ids",
+      "errors": [],
+      "accepted": true
+    },
+    {
+      "case": "unknown character provenance",
+      "errors": [],
+      "accepted": true
+    },
+    {
+      "case": "undeclared dependency_version entry",
+      "errors": [],
+      "accepted": true
+    },
+    {
+      "case": "overflowing fps",
+      "crash": "OverflowError: cannot convert float infinity to integer"
+    },
+    {
+      "case": "existing file outside project root",
+      "errors": [],
+      "accepted": true
+    }
+  ],
+  "current_project_location": "Production data belongs to the selected user project root. Repository contains example ledgers, not a live user project.",
+  "routing_prompt": "기존 제작 프로젝트를 재개한다. 승인된 시놉 SYN-v3, 캐릭터 CH01/CH02와 보드 SB-v2가 있다. 현재 할 일은 SH06의 P12/P13/P14 장갑 전달만 보완하는 텍스트 작업이다. 정상 컷과 승인 이야기를 보존하고 생성·저장·지출은 하지 마. 작업 시작에 필요한 라우팅·로드 문서·워커 인계·원장 반영 절차만 짧게 설계해줘. 다른 작업 단계는 열지 마."
+}

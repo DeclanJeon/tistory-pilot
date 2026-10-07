@@ -1,0 +1,61 @@
+{
+  "skill_name": "orchestrating-video-preproduction",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "60초 무대사 단편의 프리프로덕션 패키지를 중간 질문 없이 한 번에 작성해 주세요. 창작 판단은 맡기겠습니다. 새벽 시장이 열리기 전에 잘못 배달된 꽃다발을 주인에게 돌려주려는 야간 꽃집 배달원이 있고, 시장 상인의 도움이 필요합니다. 관객은 가족, 분위기는 조용하고 따뜻하게 해 주세요.",
+      "expected_output": "A complete Korean preproduction package — shared story spine, synopsis, character sheets, storyboard panels, and generic image prompts — produced in one pass without claiming rendered images.",
+      "expectations": [
+        "The output contains the shared spine plus the requested synopsis, character sheets, and storyboard panels with reusable image prompts.",
+        "The night-shift florist, market vendor, misdelivered bouquet, family audience, quiet-but-warm tone, and 60-second/no-dialogue constraints stay consistent across every artifact.",
+        "The courier's decision to accept the vendor's help is visible in the character and panel progression; no advertising CTA or melodramatic twist is added.",
+        "The storyboard is the complete production plan by default: indexed beats/scenes/shots/panels with camera, spatial, VFX, speech, and audio slots filled, reasoned N/A, or carried as indexed unresolved owner gaps — without model-specific clip splits or prompt dialect and without claiming executed media.",
+        "The output is in Korean and never claims an image or video was generated."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "아직 제품 성능 자료가 없는 새 보습 제품 영상을 기획하고 싶어. 어떤 방향으로 갈지 같이 정하고 싶은데 아직 아무것도 정하지 않았어.",
+      "expected_output": "A Korean direction checkpoint offering two or three genre/purpose/method combinations with trade-offs, pausing for selection instead of drafting artifacts.",
+      "expectations": [
+        "The response presents selectable directions that keep genre, purpose, and production method visibly separate, then asks the user to choose.",
+        "It stops before any synopsis, character sheet, or storyboard and treats no direction as already approved.",
+        "No efficacy, ingredient, or testimonial claim is invented for the product.",
+        "No model choice, price, folder, file write, or media call is implied."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "총괄 스킬이 이미 확정한 브리프를 이어받았어: 제품 광고 × 인지도 × 실물 소품 촬영, '정적 속의 움직임' 콘셉트 승인됨. 흰색 세라믹 머그, 손잡이 오른쪽, 로고 없음. 20초, 1:1, 사람·대사·CTA 없음. 캐릭터 시트 없이 스토리보드와 비주얼 바이블까지만 만들고 검토받을게. 유료 실행은 승인하지 않았어.",
+      "expected_output": "The requested storyboard and visual bible only, reusing the approved direction and concept without re-asking, ending at a review pause before downstream work.",
+      "expectations": [
+        "The response produces the storyboard and Visual Bible without re-asking the approved direction, concept, format, or constraints.",
+        "It preserves the white ceramic mug, right-side handle, no logo, 20 seconds, 1:1, and no people/dialogue/CTA throughout.",
+        "It omits character sheets and returns the storyboard as the complete production plan — indexed beats/scenes/shots/panels with technical slots filled, reasoned N/A, or explicitly unresolved — not reduced to rough beat thumbnails.",
+        "It pauses for review after the requested artifacts and treats planning approval as no authority for generation or spend."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "도서관 지하 서고를 배회하는 가상의 사서 캐릭터 시트만 만들어 주세요. 시놉시스나 스토리보드는 만들지 마세요.",
+      "expected_output": "Only a Korean character sheet and its reusable image prompt — no synopsis, storyboard, or request for permission to omit them.",
+      "expectations": [
+        "The output contains only the requested character sheet and one reusable image prompt.",
+        "It does not produce a synopsis, panels, or a full package, and does not ask whether unrequested artifacts may be skipped.",
+        "The fictional librarian is treated as fictional; no real-world facts about libraries or archival practice are asserted.",
+        "The output is in Korean with no image-generation claim."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "인물 없는 15초 정보 그래픽의 콘셉트, 정보형 시놉시스, 러프 서사 패널 3개(제작 사양 없이 패널 연습만)를 한 번에 작성해 주세요. 창작 선택은 맡깁니다. 고정 정보: 파란 토큰 2개와 초록 토큰 3개를 합치면 총 5개입니다. 단순 그래픽 방식이며 허구 인물, 갈등, 원인 추정, CTA, 파일, 이미지나 영상 생성은 없습니다.",
+      "expected_output": "All three explicitly requested artifacts, including a concept and informational synopsis despite the absence of characters, plus exactly three panels.",
+      "expectations": [
+        "The response includes a concrete concept, informational synopsis and exactly three panels; character-free mode does not drop concept/synopsis stages.",
+        "Two blue and three green tokens remain distinct, with a total of five and no invented causal claim.",
+        "No characters, fictional conflict, CTA, files or actual media generation are added.",
+        "Delegated creative choices permit one-pass drafting without a new direction interview."
+      ]
+    }
+  ]
+}

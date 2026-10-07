@@ -1,0 +1,12 @@
+interface:
+  display_name: 영상 프리프로덕션 기획
+  short_description: 콘셉트·시놉시스·캐릭터 시트·스토리보드를 한 브리프로 이어가는 텍스트 기획 스킬
+  default_prompt: $orchestrating-video-preproduction을 사용해 내 영상 아이디어를 콘셉트, 시놉시스,
+    캐릭터 시트, 스토리보드로 기획해줘.
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

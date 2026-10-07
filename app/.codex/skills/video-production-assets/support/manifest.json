@@ -1,0 +1,178 @@
+{
+  "name": "contents-production-skills",
+  "version": "2.4",
+  "entry_skill": "creative-production",
+  "support_skill": "video-production-assets",
+  "skills": [
+    "creative-production",
+    "video-production-assets",
+    "camera-spatial-design",
+    "blender-previsualization",
+    "orchestrating-video-preproduction",
+    "developing-video-synopses",
+    "designing-video-character-sheets",
+    "storyboarding-video",
+    "higgsfield-brandkit",
+    "higgsfield-generate",
+    "higgsfield-marketplace-cards",
+    "higgsfield-product-photoshoot",
+    "higgsfield-soul-id",
+    "higgsfield-video-explainer",
+    "higgsfield-video-replicate",
+    "higgsfield-websites",
+    "higgsfield-youtube-thumbnail"
+  ],
+  "source_books_included": false,
+  "blender_render_included": false,
+  "examples": 4,
+  "external_dependencies": [
+    {
+      "lane": "marketing and source-derived conversion",
+      "skills": [
+        "content-production-marketing",
+        "youtube-content",
+        "youtube",
+        "podcast"
+      ],
+      "required_when": "actual source inspection needs youtube/podcast or the selected source-transformation specialist; content-production-marketing is optional for deeper channel workflows, not required for bundled campaign/copy planning",
+      "runtime": null,
+      "auth": null,
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    },
+    {
+      "lane": "platform writing and operation",
+      "skills": [
+        "tistory-blog",
+        "wordpress-blog"
+      ],
+      "required_when": "a selected platform's format or explicit live work is requested",
+      "runtime": null,
+      "auth": "platform credentials/API access for live publish or DB changes, when that branch is chosen",
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    },
+    {
+      "lane": "story-commerce and screenplay",
+      "skills": [
+        "story-pipeline",
+        "sw-workflow",
+        "synopsis-craft",
+        "script-craft",
+        "char-design",
+        "storyboard-craft",
+        "sw-premise-theme",
+        "sw-scene-craft",
+        "sw-dialogue",
+        "sw-story-structure",
+        "sw-format-adaptation",
+        "sw-character-conflict"
+      ],
+      "required_when": "the named format or specialist stage is explicitly requested",
+      "runtime": null,
+      "auth": null,
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    },
+    {
+      "lane": "image review and content images",
+      "skills": [
+        "codex-imagen"
+      ],
+      "required_when": "actual content or review images are requested without another explicitly selected eligible executor; codex-imagen is the default and missing readiness blocks automatic substitution; Higgsfield image generation is excluded",
+      "runtime": "the current codex-imagen helper contract (not bundled)",
+      "auth": "codex-imagen's required authentication and applicable usage/spend approval",
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "license": "MIT on the inspected local copy; its notice must be preserved. This does not grant rights to other skills.",
+      "auto_install": false
+    },
+    {
+      "lane": "selected static-image craft",
+      "skills": [
+        "baoyu-article-illustrator",
+        "baoyu-comic",
+        "banner-design",
+        "canvas-design",
+        "pons-blog-story-image",
+        "book-longform-thumbnail"
+      ],
+      "required_when": "that specific illustration, comic, banner, product-card or thumbnail workflow is selected; not required for generic drafting",
+      "runtime": "the selected actual image executor; craft instructions alone do not generate an image",
+      "auth": "only the selected executor's required authorization",
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    },
+    {
+      "lane": "execution and assembly",
+      "skills": [
+        "fal-video-production",
+        "higgsfield-generate",
+        "comfyui",
+        "remotion-render",
+        "remotion-create",
+        "remotion-docs",
+        "remotion-markup",
+        "remotion-interactivity",
+        "remotion-captions",
+        "remotion-maps",
+        "remotion-multimedia",
+        "remotion-studio",
+        "remotion-saas",
+        "manim-video",
+        "p5js",
+        "ascii-video"
+      ],
+      "required_when": "the chosen video/audio provider or actual assembly/animation surface is used; image execution follows the codex-imagen default lane and excludes Higgsfield images",
+      "runtime": "the selected provider runtime or CLI (e.g. fal/higgsfield/comfyui/remotion, FFmpeg); nothing is installed automatically",
+      "auth": "the selected provider's own API key or account authorization, when required",
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    },
+    {
+      "lane": "audio",
+      "skills": [
+        "songwriting-and-ai-music",
+        "heartmula",
+        "audiocraft-audio-generation",
+        "songsee"
+      ],
+      "required_when": "specialist lyric/music design, actual audio generation or requested audio analysis is selected",
+      "runtime": "the selected audio tool or model runtime, when that branch is chosen",
+      "auth": null,
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    },
+    {
+      "lane": "host integration",
+      "skills": [
+        "deep-interview",
+        "interactive-collaboration",
+        "plan",
+        "ultragoal",
+        "team",
+        "orchestration"
+      ],
+      "required_when": "the host's matching capability is used and needed for the current work; never a baseline requirement",
+      "runtime": "the host's own dialogue/tooling runtime (e.g. OMX); no runtime is installed by this package",
+      "auth": null,
+      "upstream": null,
+      "upstream_version": null,
+      "verified": false,
+      "auto_install": false
+    }
+  ]
+}

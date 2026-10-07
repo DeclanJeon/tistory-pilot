@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily tested AI-video tutorial production (18:30 Asia/Seoul)
+
+[Timer]
+OnCalendar=*-*-* 18:30:00 Asia/Seoul
+Persistent=true
+Unit=tistory-generate-video.service
+
+[Install]
+WantedBy=timers.target

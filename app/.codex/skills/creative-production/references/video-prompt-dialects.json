@@ -1,0 +1,31 @@
+{
+  "_meta": {
+    "purpose": "Provider-independent prompt serialization patterns; not a model catalog or capability table.",
+    "verification": "Choose a pattern and exact markers only after inspecting the selected endpoint's current documented syntax or user-supplied verified input contract.",
+    "language": "Preserve the requested prompt language; propose translation only when a verified tool constraint requires it.",
+    "slot_order_default": ["shot_type", "subject", "start_state", "action", "end_state", "setting", "camera", "lighting", "style", "audio", "dialogue"],
+    "parameters": "Put duration, aspect, resolution, seed, negative_prompt and camera controls in API fields only when those exact fields are supported. Do not invent unsupported fields or assume audio/reference/edit support."
+  },
+  "genres": {
+    "narrative": {
+      "structure": "A concise paragraph describing subject, visible state change, setting, camera and look.",
+      "example": "A close-up of a white flower bud in soft side light. The petals open slowly from a closed bud to a half-open bloom while the camera remains fixed.",
+      "condition": "The selected input accepts natural-language scene descriptions."
+    },
+    "production-spec": {
+      "structure": "Separate subject anchors, scene/look, ordered action beats and supported references. Use timestamps or marker syntax only when documented for the endpoint.",
+      "example": "Subject: supplied character identity. Start: cup on table. Action: fingers close around handle, then lift. End: cup held steadily above table. Camera: fixed medium shot.",
+      "condition": "The selected input documents structured blocks, reference slots or time-addressed beats."
+    },
+    "edit-command": {
+      "structure": "Name the requested edit, its target, and the properties to preserve; reference the confirmed source-media input separately.",
+      "example": "Replace only the background with a sunset sky; preserve the subject, foreground geometry and original motion.",
+      "condition": "The endpoint supports the exact requested edit and confirmed source input type."
+    },
+    "interactive": {
+      "structure": "Describe the current scene state and one bounded steering change at a time.",
+      "example": "Continue forward along the path with a level horizon; stop before the gate.",
+      "condition": "The selected runtime explicitly supports interactive steering; this is not a batch clip-generation instruction."
+    }
+  }
+}

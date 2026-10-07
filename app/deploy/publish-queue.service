@@ -1,0 +1,15 @@
+[Unit]
+Description=Tistory Publish Queue Processor
+After=network-online.target publish-workbench.web.service publish-workbench.worker.service
+Wants=network-online.target
+Requires=publish-workbench.web.service publish-workbench.worker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/publish-workbench/app
+EnvironmentFile=/srv/publish-workbench/config/publish-workbench.env
+Environment=HOME=/home/declan
+Environment=TZ=Asia/Seoul
+ExecStart=/bin/bash /srv/publish-workbench/app/scripts/schedule/publish-queue.sh
+User=declan
+Group=declan

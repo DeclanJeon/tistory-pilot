@@ -1,0 +1,40 @@
+{
+  "skill_name": "developing-video-synopses",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "90초짜리 대사 있는 실사 단편을 기획해 주세요. 은퇴를 앞둔 지하철 안내 방송원이 폐역이 되는 역에서 마지막 방송을 녹음하려 하지만, 녹음 장비가 고장 나고 후배 직원에게 도움을 청하기 망설입니다. 콘셉트, 로그라인, 시놉시스, 비트를 작성해 주세요. 광고 CTA는 넣지 말고 한국어로 답해 주세요.",
+      "expected_output": "A Korean fictional-video concept with logline, synopsis, and causal beat progression preserving the premise and the no-CTA constraint.",
+      "expectations": [
+        "The output is in Korean and provides a logline, synopsis, and ordered beats.",
+        "The announcer's goal plus both obstacles — the broken recorder and the reluctance to ask the junior colleague — drive the story's choices.",
+        "Beat transitions are causal or motivated rather than a list of unrelated events.",
+        "No advertising CTA is added, and the 90-second runtime is respected as approximate structure rather than invented frame timing.",
+        "The emotional decision produces a visible consequence for the final announcement or the closing station."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "다음 테스트 수치만 사용해 주민 대상 짧은 공익 영상 콘셉트를 만들어 주세요. 첫 시즌: 도시 양봉장 8곳 중 3곳이 겨울을 넘겼습니다. 둘째 시즌: 14곳 중 6곳이 겨울을 넘겼습니다. 외부 사실을 더하지 말고, 제공된 숫자와 해석을 구분해 한국어로 설명해 주세요.",
+      "expected_output": "An evidence-led Korean video concept that reports the supplied survival counts and derived rates accurately while keeping the cause of the change unknown.",
+      "expectations": [
+        "The counts are preserved exactly (3 of 8, then 6 of 14) and any derived comparison such as survival rate or percentage-point change is labeled as arithmetic.",
+        "No cause, source, outside statistic, or environmental effect is invented for the change.",
+        "The concept is organized around an audience question or takeaway rather than merely restating the numbers.",
+        "Interpretation, proposed action, and unknowns are distinguished from supplied facts.",
+        "The output is in Korean and adds no CTA unless warranted by the stated purpose."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "새벽 안개가 걷히는 항구와 라디오 잡음을 반복 요소로 삼아 기다림을 다루는 15초 비서사적 영상을 구성해 주세요. 전통적 주인공·플롯·CTA·해피엔딩은 넣지 말고 한국어로 답해 주세요.",
+      "expected_output": "A Korean non-narrative concept that develops the fog and radio-static motifs into an intentional progression without imposing plot or resolution.",
+      "expectations": [
+        "The output stays non-narrative: no invented protagonist, conflict, plot resolution, or backstory.",
+        "The harbor fog and radio static remain the central repeated elements throughout.",
+        "The progression develops mood or meaning without an advertising CTA or forced happy ending.",
+        "The output is in Korean and makes no claim that images or video were produced."
+      ]
+    }
+  ]
+}

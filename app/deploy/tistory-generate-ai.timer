@@ -1,0 +1,8 @@
+[Unit]
+Description=Tistory AI·P2P Content Generation Timer (매일 04:30 서버 로컬 = 11:30 KST, legacy 런 종료 후)
+[Timer]
+OnCalendar=*-*-* 04:30:00
+Persistent=true
+Unit=tistory-generate-ai.service
+[Install]
+WantedBy=timers.target

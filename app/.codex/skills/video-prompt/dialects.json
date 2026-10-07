@@ -1,0 +1,143 @@
+{
+  "_meta": {
+    "purpose": "Per-model serialization rules for the video-prompt slot schema. Derived from 1,155-entry corpus analysis (2026-09).",
+    "slot_order_default": ["shot_type", "subject", "action", "setting", "camera_move", "lens", "lighting", "style", "audio", "dialogue", "duration", "aspect", "negative"],
+    "shared_params": {
+      "_note": "API-level controls separate from prompt text. Availability varies per provider/endpoint — verify in current docs before relying on them.",
+      "negative_prompt": "separate field on most APIs (fal.ai, Replicate, ComfyUI nodes); in consumer UIs fold into prompt as 'no X' clauses",
+      "seed": "supported on most APIs for reproducibility; consumer UIs often hide it",
+      "aspect_ratio": "usually a parameter, not prompt text — but corpus shows in-prompt '9:16'/'vertical' also works as a hint",
+      "duration_seconds": "parameter on most APIs; in-prompt timestamps ([0s]-[5s]) are for beat structure, not length",
+      "motion_strength": "Pika/Kling expose motion/cfg sliders; higher = more motion, more artifacts",
+      "camera_control": "Hailuo/Runway expose structured camera params; prefer them over prompt text when available"
+    },
+    "language_notes": "Kling/Seedance/Wan/Hailuo are Chinese-native models — English prompts work but Chinese can yield tighter adherence for culturally specific content. All corpus prompts are English; keep prompts English unless targeting CJK-specific scenes.",
+    "prompt_length": "Consumer UIs cap ~500-2000 chars; API/production-spec models (Hailuo H3, Seedance 2.5) accept ~5000+ char structured blocks. Narrative models degrade past ~500 chars of dense prose."
+  },
+  "models": {
+    "veo-3.1": {
+      "family": "Google Veo",
+      "genre": "narrative",
+      "notes": "Audio: label for sound. Dialogue as quoted speech inline. Cinematic prose; camera terms sparse (12% of corpus). Supports ingredients-to-video, first/last frame, extension.",
+      "audio_syntax": "Audio: <description>",
+      "dialogue_syntax": "\"<line>\" attributed inline",
+      "structure_markers": ["first frame", "last frame", "extend"],
+      "max_seconds": 8,
+      "resolutions": ["720p", "1080p", "4K"]
+    },
+    "sora-2": {
+      "family": "OpenAI Sora",
+      "genre": "narrative",
+      "notes": "Physics/texture-forward single-paragraph prose. Strong instruction following; multi-shot concepts OK. API deprecated 2026-09-24 — legacy only.",
+      "audio_syntax": "describe sound in prose",
+      "dialogue_syntax": "\"<line>\" inline",
+      "max_seconds": 20
+    },
+    "kling-3.0": {
+      "family": "Kling AI",
+      "genre": "multi-shot",
+      "notes": "Explicit 'shot 1… shot 2…' sequences. Highest dialogue rate (32%). Storyboard controls, native audio, up to 15s.",
+      "structure_markers": ["shot 1", "shot 2", "storyboard"],
+      "dialogue_syntax": "\"<line>\" inline",
+      "max_seconds": 15
+    },
+    "seedance-2.5": {
+      "family": "ByteDance Seedance",
+      "genre": "production-spec",
+      "notes": "Reference grammar: @Image N, @Video N, @Audio N. <sfx> tags. Shot N blocks. Edit verbs: extend, edit, replace. Up to 30s single take.",
+      "ref_syntax": "@Image 1, @Video 1, @Audio 1",
+      "structure_markers": ["Shot 1", "[0s]-[5s]", "<sfx>"],
+      "edit_verbs": ["extend", "edit", "replace", "restyle"],
+      "max_seconds": 30
+    },
+    "hailuo-3.0": {
+      "family": "MiniMax Hailuo",
+      "genre": "production-spec",
+      "notes": "Camera commands capitalized (Push In, Orbit, Tracking Shot) — 72% of corpus. H3 Max uses subject_definitions: + [Shot N] long-form spec blocks up to ~5000 chars.",
+      "camera_command_style": "capitalized verbs",
+      "structure_markers": ["subject_definitions:", "[Shot 1]", "[Product]", "[First frame A]"],
+      "max_seconds": 10
+    },
+    "runway-gen-4.5": {
+      "family": "Runway",
+      "genre": "narrative",
+      "notes": "Camera-term dictionary style (macro, aerial, POV, dolly). Short descriptive prompts. Aleph = video editing model (edit verbs).",
+      "edit_verbs": ["restyle", "replace", "remove", "relight"],
+      "max_seconds": 10
+    },
+    "luma-ray-3": {
+      "family": "Luma Dream Machine",
+      "genre": "narrative",
+      "notes": "Concise prose + camera motion. HDR output. Keyframes supported.",
+      "structure_markers": ["keyframe"]
+    },
+    "gemini-omni-flash-1.1": {
+      "family": "Google Gemini Omni",
+      "genre": "production-spec",
+      "notes": "Conversational generation+editing. timecode markers, IMAGE_REF, extension commands. 360p-4K.",
+      "ref_syntax": "IMAGE_REF",
+      "structure_markers": ["timecode", "extend"],
+      "edit_verbs": ["extend", "edit"]
+    },
+    "wan-3.0": {
+      "family": "Alibaba Wan",
+      "genre": "production-spec",
+      "notes": "Omni-Reference (multi image/video/audio refs), doc-to-video, edit mode. 480p/720p/1080p.",
+      "ref_syntax": "Omni-Reference",
+      "edit_verbs": ["edit"]
+    },
+    "grok-imagine-1.5": {
+      "family": "xAI Grok",
+      "genre": "narrative",
+      "notes": "T2V+I2V, native audio, 1-15s up to 1080p. Plain descriptive prompts.",
+      "max_seconds": 15
+    },
+    "vidu-s2": {
+      "family": "Vidu (ShengShu)",
+      "genre": "production-spec",
+      "notes": "S2-Avatar (interactive characters), S2-Editing (reference-driven real-time edit). Template-style prompts.",
+      "edit_verbs": ["edit", "restyle"]
+    },
+    "pixverse-r2": {
+      "family": "PixVerse",
+      "genre": "interactive",
+      "notes": "Real-time world model; prompts are live-steering instructions, not one-shot scene descriptions.",
+      "prompt_mode": "streaming instructions"
+    },
+    "runway-solaris-gwm": {
+      "family": "Runway world models",
+      "genre": "interactive",
+      "notes": "Solaris (interface world model), GWM Worlds 2 (720p/24fps continuous world). WorldPrompt genesis prompts + text-controlled camera/dialogue.",
+      "prompt_mode": "world genesis + steering"
+    },
+    "pika-2.5": {
+      "family": "Pika",
+      "genre": "narrative",
+      "notes": "Short style-forward prompts. Pikaframes keyframe transitions.",
+      "structure_markers": ["keyframe"]
+    },
+    "ltx-video-2.5": {
+      "family": "LTX",
+      "genre": "narrative",
+      "notes": "Open model; ComfyUI-native. Prompt + node params (duration, resolution) separate.",
+      "pipeline": "ComfyUI"
+    },
+    "hunyuanvideo-1.5": {
+      "family": "Tencent HunyuanVideo",
+      "genre": "narrative",
+      "notes": "Open model; official Prompt Handbook. Descriptive prose, camera terms supported.",
+      "pipeline": "ComfyUI"
+    },
+    "mochi-1": {
+      "family": "Genmo Mochi",
+      "genre": "narrative",
+      "notes": "Open model; short descriptive prompts."
+    }
+  },
+  "genres": {
+    "narrative": "Single flowing paragraph: shot_type + subject + action + setting + camera_move + lighting + style. Optional Audio:/dialogue.",
+    "production-spec": "Structured blocks: [Style]/[Scene]/[Shot N]/subject_definitions:/@refs/<sfx>/timestamps. Use for Seedance 2.x, Hailuo 3, Omni Flash, Kling 3, Wan 3.",
+    "edit-command": "Imperative verb + target: 'Extend the video…', 'Make it a sunset', 'Replace the background with…'. For V2V/edit models.",
+    "interactive": "Streaming steering instructions for real-time world models (PixVerse R2, Solaris, GWM)."
+  }
+}

@@ -1,0 +1,520 @@
+{
+  "project_id": "glove-return-20s",
+  "version": "0.2",
+  "target_duration_s": 20,
+  "fps": 24,
+  "aspect_ratio": "9:16",
+  "title": "작은 배달",
+  "format": {
+    "delivery_resolution": [
+      1080,
+      1920
+    ],
+    "sound": "완전 무음: 대사·효과음·음악·환경음 없음",
+    "render_status": "not_started",
+    "location_count": 1,
+    "character_count": 2
+  },
+  "assumptions": [
+    "소셜 세로 화면용; 목적지 플랫폼 미지정",
+    "24fps와 1080x1920은 제작 제안값",
+    "스타일은 오리지널 3D 애니메이션; 실제 모델·참조 이미지는 아직 없음",
+    "통근자는 버스를 타는 대신 정류장 오른쪽 대기 위치로 서둘러 이동한다. 버스·기사·군중은 등장하지 않음"
+  ],
+  "scenes": [
+    {
+      "id": "S01",
+      "location_id": "LOC01",
+      "purpose": "떨어진 장갑을 돌려주는 작은 행동으로 급한 관계가 잠깐의 배려로 바뀐다.",
+      "location": "아침의 소형 버스 정류장 한 곳; 벤치와 기둥, 무문자 표지",
+      "time_of_day": "부드러운 아침광"
+    }
+  ],
+  "characters": [
+    {
+      "id": "CH01",
+      "name": "모루",
+      "locked_traits": "오리지널 작은 로봇, 높이 55cm; 아이보리 둥근 사각 몸체, 청록 관절, 검은 얼굴판에 두 개의 흰 점 눈; 두 팔·두 다리; 둥근 집게손; 로고 없음. 오른손으로 장갑을 집고 건넨다.",
+      "objective": "주인에게 장갑을 돌려준다.",
+      "need": "큰 소리 대신 상대의 시선을 얻는 방법을 찾는다."
+    },
+    {
+      "id": "CH02",
+      "name": "통근자",
+      "locked_traits": "성인 한 명, 키 170cm; 짙은 남색 코트, 회색 바지, 검은 신발, 짧은 검은 머리; 장갑은 산호색 왼손용 한 짝. 얼굴과 의상 고정; 가방·휴대전화 없음.",
+      "objective": "정류장 오른쪽 대기 지점에 빨리 도착한다.",
+      "need": "주변의 작은 도움을 알아차린다."
+    }
+  ],
+  "props": [
+    {
+      "id": "PR01",
+      "locked_traits": "산호색 니트 왼손 장갑 한 짝, 다섯 손가락; 처음 CH02 왼손→바닥→CH01 오른손→CH02 왼손. 복제·변형 금지"
+    }
+  ],
+  "look": {
+    "id": "LOOK01",
+    "style": "오리지널 3D 단순화 캐릭터, 무광 재질, 담백한 배경",
+    "light": "프레임 왼쪽 위에서 부드러운 중성 아침광; 그림자는 오른쪽 뒤; 얼굴판과 장갑 가독성 유지",
+    "axis": "정류장에 평행한 좌우 이동; 모든 카메라는 보도 쪽 같은 축; 추격은 왼쪽→오른쪽"
+  },
+  "shots": [
+    {
+      "id": "SH01",
+      "scene_id": "S01",
+      "beat_id": "B01",
+      "character_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "start_s": 0,
+      "end_s": 3,
+      "source_duration_s": 4,
+      "purpose": "통근자가 오른쪽으로 빠르게 이동하며 왼손 장갑을 떨어뜨리고 로봇이 발견한다.",
+      "start_state": "CH01 화면 왼쪽, CH02 중앙; 장갑 CH02 왼손.",
+      "end_state": "CH01 왼쪽에서 장갑을 봄; CH02 오른쪽; 장갑 바닥 중앙.",
+      "camera": "전신 투샷; 정류장 정면에서 약 3m, 수평 화각 40도",
+      "camera_movement": "고정",
+      "source_in_s": 0.5,
+      "source_out_s": 3.5,
+      "handles_s": {
+        "head": 0.5,
+        "tail": 0.5
+      },
+      "start_frame": 0,
+      "end_frame": 72,
+      "sound_id": "AU01",
+      "prompt": "모루 CH01과 통근자 CH02, LOC01 정류장, LOOK01 단순한 무광 3D 룩. 초기 상태: CH01 화면 왼쪽, CH02 중앙; 장갑 CH02 왼손. 주 행동: 통근자가 오른쪽으로 빠르게 이동하며 왼손 장갑을 떨어뜨리고 로봇이 발견한다. 카메라: 전신 투샷; 정류장 정면에서 약 3m, 수평 화각 40도, 고정. 프레임 왼쪽 위의 부드러운 중성 아침광과 오른쪽 뒤 그림자. 끝 상태: CH01 왼쪽에서 장갑을 봄; CH02 오른쪽; 장갑 바닥 중앙. 인물 두 명만, 같은 비율·의상·장갑 한 짝; 새 인물·버스·로고·문자·음성 금지.",
+      "source_duration_status": "estimated"
+    },
+    {
+      "id": "SH02",
+      "scene_id": "S01",
+      "beat_id": "B02",
+      "character_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "start_s": 3,
+      "end_s": 6,
+      "source_duration_s": 4,
+      "purpose": "로봇이 떨어진 장갑을 집어 통근자 쪽으로 내민다.",
+      "start_state": "장갑 바닥 중앙; CH01 시선 아래; CH02 우측 프레임 밖.",
+      "end_state": "장갑 CH01 오른손, 가슴 높이; CH01 시선 오른쪽; CH02 계속 오른쪽.",
+      "camera": "로봇 미디엄; 약 1m, 수평 화각 45도",
+      "camera_movement": "고정",
+      "source_in_s": 0.5,
+      "source_out_s": 3.5,
+      "handles_s": {
+        "head": 0.5,
+        "tail": 0.5
+      },
+      "start_frame": 72,
+      "end_frame": 144,
+      "sound_id": "AU01",
+      "prompt": "모루 CH01과 통근자 CH02, LOC01 정류장, LOOK01 단순한 무광 3D 룩. 초기 상태: 장갑 바닥 중앙; CH01 시선 아래; CH02 우측 프레임 밖. 주 행동: 로봇이 떨어진 장갑을 집어 통근자 쪽으로 내민다. 카메라: 로봇 미디엄; 약 1m, 수평 화각 45도, 고정. 프레임 왼쪽 위의 부드러운 중성 아침광과 오른쪽 뒤 그림자. 끝 상태: 장갑 CH01 오른손, 가슴 높이; CH01 시선 오른쪽; CH02 계속 오른쪽. 인물 두 명만, 같은 비율·의상·장갑 한 짝; 새 인물·버스·로고·문자·음성 금지.",
+      "source_duration_status": "estimated"
+    },
+    {
+      "id": "SH03",
+      "scene_id": "S01",
+      "beat_id": "B03",
+      "character_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "start_s": 6,
+      "end_s": 10,
+      "source_duration_s": 5,
+      "purpose": "로봇이 짧은 걸음으로 따라가 내밀지만 통근자는 알아채지 못한다.",
+      "start_state": "CH01 중앙 왼쪽, 장갑 오른손; CH02 우측을 향해 이동.",
+      "end_state": "CH02 우측 정류장 기둥 앞 정지; CH01 중앙, 장갑 오른손.",
+      "camera": "전신 투샷; 약 3m, 수평 화각 40도",
+      "camera_movement": "고정",
+      "source_in_s": 0.5,
+      "source_out_s": 4.5,
+      "handles_s": {
+        "head": 0.5,
+        "tail": 0.5
+      },
+      "start_frame": 144,
+      "end_frame": 240,
+      "sound_id": "AU01",
+      "prompt": "모루 CH01과 통근자 CH02, LOC01 정류장, LOOK01 단순한 무광 3D 룩. 초기 상태: CH01 중앙 왼쪽, 장갑 오른손; CH02 우측을 향해 이동. 주 행동: 로봇이 짧은 걸음으로 따라가 내밀지만 통근자는 알아채지 못한다. 카메라: 전신 투샷; 약 3m, 수평 화각 40도, 고정. 프레임 왼쪽 위의 부드러운 중성 아침광과 오른쪽 뒤 그림자. 끝 상태: CH02 우측 정류장 기둥 앞 정지; CH01 중앙, 장갑 오른손. 인물 두 명만, 같은 비율·의상·장갑 한 짝; 새 인물·버스·로고·문자·음성 금지.",
+      "source_duration_status": "estimated"
+    },
+    {
+      "id": "SH04",
+      "scene_id": "S01",
+      "beat_id": "B04",
+      "character_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "start_s": 10,
+      "end_s": 14,
+      "source_duration_s": 5,
+      "purpose": "로봇이 통근자 시선 아래에서 장갑을 한 번 높이 들어 올려 눈길을 얻는다.",
+      "start_state": "CH02 정지, 시선 오른쪽; CH01 뒤 왼쪽, 장갑 오른손 가슴 높이.",
+      "end_state": "CH02 몸과 시선 왼쪽 아래; CH01 장갑을 머리 위에서 가슴 높이로 내림.",
+      "camera": "무릎 위 투샷; 약 2m, 수평 화각 45도",
+      "camera_movement": "고정",
+      "source_in_s": 0.5,
+      "source_out_s": 4.5,
+      "handles_s": {
+        "head": 0.5,
+        "tail": 0.5
+      },
+      "start_frame": 240,
+      "end_frame": 336,
+      "sound_id": "AU01",
+      "prompt": "모루 CH01과 통근자 CH02, LOC01 정류장, LOOK01 단순한 무광 3D 룩. 초기 상태: CH02 정지, 시선 오른쪽; CH01 뒤 왼쪽, 장갑 오른손 가슴 높이. 주 행동: 로봇이 통근자 시선 아래에서 장갑을 한 번 높이 들어 올려 눈길을 얻는다. 카메라: 무릎 위 투샷; 약 2m, 수평 화각 45도, 고정. 프레임 왼쪽 위의 부드러운 중성 아침광과 오른쪽 뒤 그림자. 끝 상태: CH02 몸과 시선 왼쪽 아래; CH01 장갑을 머리 위에서 가슴 높이로 내림. 인물 두 명만, 같은 비율·의상·장갑 한 짝; 새 인물·버스·로고·문자·음성 금지.",
+      "source_duration_status": "estimated"
+    },
+    {
+      "id": "SH05",
+      "scene_id": "S01",
+      "beat_id": "B05",
+      "character_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "start_s": 14,
+      "end_s": 18,
+      "source_duration_s": 5,
+      "purpose": "통근자가 몸을 낮춰 왼손으로 장갑을 받아 로봇에게 고개를 끄덕인다.",
+      "start_state": "CH01 오른손에 장갑; CH02 왼손 비어 있고 로봇을 봄.",
+      "end_state": "CH02 왼손에 장갑, 몸 낮춘 채 미소와 끄덕임; CH01 오른손 비어 있음.",
+      "camera": "손과 얼굴을 함께 담는 미디엄 투샷; 약 1.5m, 수평 화각 45도",
+      "camera_movement": "고정",
+      "source_in_s": 0.5,
+      "source_out_s": 4.5,
+      "handles_s": {
+        "head": 0.5,
+        "tail": 0.5
+      },
+      "start_frame": 336,
+      "end_frame": 432,
+      "sound_id": "AU01",
+      "prompt": "모루 CH01과 통근자 CH02, LOC01 정류장, LOOK01 단순한 무광 3D 룩. 초기 상태: CH01 오른손에 장갑; CH02 왼손 비어 있고 로봇을 봄. 주 행동: 통근자가 몸을 낮춰 왼손으로 장갑을 받아 로봇에게 고개를 끄덕인다. 카메라: 손과 얼굴을 함께 담는 미디엄 투샷; 약 1.5m, 수평 화각 45도, 고정. 프레임 왼쪽 위의 부드러운 중성 아침광과 오른쪽 뒤 그림자. 끝 상태: CH02 왼손에 장갑, 몸 낮춘 채 미소와 끄덕임; CH01 오른손 비어 있음. 인물 두 명만, 같은 비율·의상·장갑 한 짝; 새 인물·버스·로고·문자·음성 금지.",
+      "source_duration_status": "estimated"
+    },
+    {
+      "id": "SH06",
+      "scene_id": "S01",
+      "beat_id": "B06",
+      "character_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "start_s": 18,
+      "end_s": 20,
+      "source_duration_s": 3,
+      "purpose": "통근자는 정류장 오른쪽에서 기다리고 로봇은 빈 오른손을 흔들며 마무리한다.",
+      "start_state": "CH02 몸을 일으킴, 장갑 왼손; CH01 빈 오른손.",
+      "end_state": "CH02 우측 정류장 안에서 미소; CH01 왼쪽에서 작게 손 흔든 뒤 정착.",
+      "camera": "전신 투샷; SH01과 같은 위치·화각",
+      "camera_movement": "고정",
+      "source_in_s": 0.5,
+      "source_out_s": 2.5,
+      "handles_s": {
+        "head": 0.5,
+        "tail": 0.5
+      },
+      "start_frame": 432,
+      "end_frame": 480,
+      "sound_id": "AU01",
+      "prompt": "모루 CH01과 통근자 CH02, LOC01 정류장, LOOK01 단순한 무광 3D 룩. 초기 상태: CH02 몸을 일으킴, 장갑 왼손; CH01 빈 오른손. 주 행동: 통근자는 정류장 오른쪽에서 기다리고 로봇은 빈 오른손을 흔들며 마무리한다. 카메라: 전신 투샷; SH01과 같은 위치·화각, 고정. 프레임 왼쪽 위의 부드러운 중성 아침광과 오른쪽 뒤 그림자. 끝 상태: CH02 우측 정류장 안에서 미소; CH01 왼쪽에서 작게 손 흔든 뒤 정착. 인물 두 명만, 같은 비율·의상·장갑 한 짝; 새 인물·버스·로고·문자·음성 금지.",
+      "source_duration_status": "estimated"
+    }
+  ],
+  "claims": [
+    {
+      "id": "CL01",
+      "statement": "로봇과 통근자의 장갑 반환 사건은 오리지널 창작이다.",
+      "kind": "fiction",
+      "source": "production-plan.ko.md: 서사·각본",
+      "status": "fiction"
+    }
+  ],
+  "sounds": [
+    {
+      "id": "AU01",
+      "start_s": 0,
+      "end_s": 20,
+      "type": "silence",
+      "description": "전 구간 오디오 트랙 없음"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "A01",
+      "type": "brief",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [],
+      "file": "production-plan.ko.md",
+      "section": "brief",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {}
+    },
+    {
+      "id": "A02",
+      "type": "story",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A01"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "story",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A01": "0.1"
+      }
+    },
+    {
+      "id": "A03",
+      "type": "screenplay",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A02"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "screenplay",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A02": "0.1"
+      }
+    },
+    {
+      "id": "A04",
+      "type": "performance",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A03"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "performance",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A03": "0.1"
+      }
+    },
+    {
+      "id": "A05",
+      "type": "visual",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A02"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "visual",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A02": "0.1"
+      }
+    },
+    {
+      "id": "A06",
+      "type": "shots",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A03",
+        "A04",
+        "A05"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "shots",
+      "input_version": "0.1",
+      "generated_ids": [
+        "SH01",
+        "SH02",
+        "SH03",
+        "SH04",
+        "SH05",
+        "SH06"
+      ],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A03": "0.1",
+        "A04": "0.1",
+        "A05": "0.1"
+      }
+    },
+    {
+      "id": "A07",
+      "type": "lighting",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A05",
+        "A06"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "lighting",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A05": "0.1",
+        "A06": "0.1"
+      }
+    },
+    {
+      "id": "A08",
+      "type": "animation",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A04",
+        "A06"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "animation",
+      "input_version": "0.1",
+      "generated_ids": [
+        "SH01",
+        "SH02",
+        "SH03",
+        "SH04",
+        "SH05",
+        "SH06"
+      ],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A04": "0.1",
+        "A06": "0.1"
+      }
+    },
+    {
+      "id": "A09",
+      "type": "edit",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A06",
+        "A08"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "edit",
+      "input_version": "0.1",
+      "generated_ids": [
+        "SH01",
+        "SH02",
+        "SH03",
+        "SH04",
+        "SH05",
+        "SH06"
+      ],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A06": "0.1",
+        "A08": "0.1"
+      }
+    },
+    {
+      "id": "A10",
+      "type": "ai-handoff",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A05",
+        "A06",
+        "A07",
+        "A08"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "ai-handoff",
+      "input_version": "0.1",
+      "generated_ids": [
+        "SH01",
+        "SH02",
+        "SH03",
+        "SH04",
+        "SH05",
+        "SH06"
+      ],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A05": "0.1",
+        "A06": "0.1",
+        "A07": "0.1",
+        "A08": "0.1"
+      }
+    },
+    {
+      "id": "A11",
+      "type": "qa",
+      "version": "0.1",
+      "status": "draft",
+      "dependencies": [
+        "A01",
+        "A03",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "file": "production-plan.ko.md",
+      "section": "qa",
+      "input_version": "0.1",
+      "generated_ids": [],
+      "assumptions_ref": "project.json: assumptions",
+      "validation": "문서 설계 검토; 실제 영상 검증 없음",
+      "next_step": "아래 제작 계획의 미해결 사항 참조",
+      "dependency_versions": {
+        "A01": "0.1",
+        "A03": "0.1",
+        "A06": "0.1",
+        "A07": "0.1",
+        "A08": "0.1",
+        "A09": "0.1",
+        "A10": "0.1"
+      }
+    }
+  ],
+  "schema_version": "1.1",
+  "audio_mode": "no_audio",
+  "asset_registry": [],
+  "audio_cues": [],
+  "captions": [],
+  "issues": [],
+  "delivery_spec": {},
+  "delivery_checks": []
+}

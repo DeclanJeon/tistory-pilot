@@ -1,0 +1,175 @@
+{
+  "package_version": "2.3",
+  "schema_version_preserved": "1.1",
+  "runtime_verification": {
+    "pytest_command": "python -m pytest -q",
+    "tests_passed": 86,
+    "subtests_passed": 136,
+    "warnings": 2,
+    "warning_scope": "Existing Windows junction tests: UTF-8 decoding errors in subprocess reader threads. New image tests have no Pillow deprecation warnings.",
+    "cli_smokes": [
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\project.json"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"errors\": [],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v",
+          "--require-images"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"P01: image asset IM01 is not an available/verified file\",\n    \"P02: image asset IM02 is not an available/verified file\",\n    \"P03: image asset IM03 is not an available/verified file\",\n    \"P04: image asset IM04 is not an available/verified file\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "split_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v",
+          "--output",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\cuts"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"ok\": true,\n  \"files\": 5,\n  \"manifest\": \"C:\\\\Users\\\\Declan\\\\AppData\\\\Local\\\\Temp\\\\storyboard-smoke-nl4oxy1v\\\\cuts\\\\split-manifest.json\"\n}",
+        "stderr": ""
+      },
+      {
+        "check": "actual PNG pixels, source JPEG decoded pixels, ordered panel/scene/beat/character/audio IDs and file hashes",
+        "passed": true,
+        "panels": 5
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v",
+          "--require-images"
+        ],
+        "returncode": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"errors\": [],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\invalid.json"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"B04: beat not covered by any shot\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\invalid.json"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"SH01: hold panel requires identical start_state and end_state\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "split_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\project.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v",
+          "--output",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\cuts"
+        ],
+        "returncode": 2,
+        "stdout": "{\"ok\": false, \"errors\": [\"output directory already exists: C:\\\\Users\\\\Declan\\\\AppData\\\\Local\\\\Temp\\\\storyboard-smoke-nl4oxy1v\\\\cuts\"]}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "split_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\invalid.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v",
+          "--output",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\bad-cuts"
+        ],
+        "returncode": 2,
+        "stdout": "{\"ok\": false, \"errors\": [\"split preflight failed: P01: crop_box (0, 0, 33, 8) outside image 32x8; P01: crop overlaps panel P02 on sheet SHEET; P01: crop overlaps panel P03 on sheet SHEET; P01: crop overlaps panel P04 on sheet SHEET\"]}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "split_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\invalid.json",
+          "--base-dir",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v",
+          "--output",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-smoke-nl4oxy1v\\escape-cuts"
+        ],
+        "returncode": 2,
+        "stdout": "{\"ok\": false, \"errors\": [\"split preflight failed: P05: image IM05: path escapes the project base\"]}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-invalid-smoke-t1elme3n\\project.json"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"fps: positive finite number required\",\n    \"project: fps must be a positive finite number\",\n    \"P01: frame_time_s is not frame aligned\",\n    \"P02: frame_time_s is not frame aligned\",\n    \"P03: frame_time_s is not frame aligned\",\n    \"P04: frame_time_s is not frame aligned\",\n    \"P05: frame_time_s is not frame aligned\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-invalid-smoke-t1elme3n\\project.json"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"project: malformed data crashed plan validation: cannot convert float infinity to integer\",\n    \"P02: frame_time_s is not frame aligned\",\n    \"P03: frame_time_s is not frame aligned\",\n    \"P04: frame_time_s is not frame aligned\",\n    \"P05: frame_time_s is not frame aligned\",\n    \"SH01: last panel must be at the shot last frame\",\n    \"SH02: last panel must be at the shot last frame\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "validate_storyboard.py",
+          "C:\\Users\\Declan\\AppData\\Local\\Temp\\storyboard-invalid-smoke-t1elme3n\\project.json",
+          "--require-images"
+        ],
+        "returncode": 1,
+        "stdout": "{\n  \"valid\": false,\n  \"errors\": [\n    \"require_images needs --base-dir to confine and read real image files\"\n  ],\n  \"scope\": \"storyboard coverage, references and timing; no media decoding, artistic or approval verification\"\n}",
+        "stderr": ""
+      }
+    ],
+    "image_smoke_scope": "Synthetic sheet cells plus clean JPEG; all five actual PNG outputs checked for pixels, dimensions, format, chronological IDs, cue/character associations and SHA-256. No artistic storyboard or Blender render.",
+    "temporary_files_removed": true
+  },
+  "text_behavior_evidence": {
+    "baseline": "qa/storyboard-baseline.json",
+    "updated_five_fresh_context_traces": "qa/storyboard-updated.json",
+    "uploaded_repair_factual_and_unqualified_default": "qa/storyboard-edge-cases.json",
+    "observations": [
+      "The existing plan validator accepted an uncovered synopsis beat; the new selective validator rejects it. Existing plan behavior is intentionally preserved.",
+      "Five updated full-board application traces show integrated beat/shot/panel/technical/count/review views and explicitly unverified actual imagery. Labor times remain unknown without measurements.",
+      "Uploaded repair preserves normal P01 and stable IDs, adding transfer states before the existing relief panel. No images or Blender output are claimed.",
+      "Silent factual trace preserves only 40/52 and introduces no cast, audio or causal explanation.",
+      "An unqualified storyboard trace routed to the full production contract; initial hold at a representative midpoint was a FIX. Explicit hold=start_s and separate SFX occurrence guidance were added; the followup uses canonical endpoint/action_peak roles and distinct cues.",
+      "Text traces are application aids, not perfect JSON or image approval. Cross-view inconsistency, invented mapping and actual visual causality still require the mandatory reviews; no numerical model pass rate is asserted."
+    ]
+  },
+  "release_verification": {
+    "version_checker": "version check OK: package 2.3, 17 skill(s) consistent",
+    "managed_sync_dry_run": "created=0 repointed=0 skipped=51 backed_up=0; nothing written",
+    "managed_sync_actual": "created=0 repointed=0 skipped=51 backed_up=0; support payload refreshed; restart/refresh agents to rescan"
+  },
+  "limits": [
+    "Blender executable unavailable in the prior runtime probe; not rerun to confirm.",
+    "No actual production art, voice, video generation, provider call, paid operation or publication requested or executed.",
+    "Structural coverage and synthetic pixel extraction cannot prove that artwork evokes the approved synopsis. Actual all-cut image-only review remains a blocking gate.",
+    "No git commit or push."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "archive": "test-archive",
+  "createdAt": "2026-08-20",
+  "totalFiles": 1,
+  "files": [
+    {
+      "file": "쿠팡-위탁판매-테스트.md",
+      "videoUrl": "https://www.youtube.com/watch?v=testvideo123",
+      "channel": "테스트채널",
+      "title": "쿠팡 위탁판매 실전 가이드 (테스트 픽스처)",
+      "chars": 0
+    }
+  ]
+}

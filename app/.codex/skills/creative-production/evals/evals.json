@@ -1,0 +1,183 @@
+{
+  "skill_name": "creative-production",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "내가 고른 모델의 확인된 입력은 prompt 문자열, duration_seconds=8, aspect_ratio=9:16이고 audio와 negative_prompt는 지원하지 않아. 고정 카메라로 꽃잎이 천천히 열리는 영상용 한국어 prompt 문자열 하나만 써줘. 생성·가격 비교·추가 필드 없이.",
+      "expected_output": "One actual Korean scene/motion prompt preserving the fixed camera and verified input constraints; no unsupported fields or generation.",
+      "expectations": ["Only the requested prompt is delivered.", "The camera stays fixed and the flower visibly changes from closed toward open.", "No unsupported audio/negative fields, static model-capability claims, media generation or spend are introduced."]
+    },
+    {
+      "id": 2,
+      "prompt": "제품 사진 1장 기반 i2v, 9:16, 8초 영상의 실행 계획을 세워줘. 로고 텍스트는 정확해야 해. 현재 카탈로그·스키마·가격은 제공하지 않았으니 실제 조회할 수 없는 값은 미확인으로 남겨. 생성은 하지 마.",
+      "expected_output": "Requirements-first plan with exact text handled by deterministic composition, live verification needs and bounded execution scope; no invented availability or price.",
+      "expectations": ["Hard requirements and exact-logo risk are identified.", "Unverified provider capabilities and prices remain unverified.", "No job submission, unsupported fallback substitution or spend is claimed."]
+    },
+    {
+      "id": 3,
+      "prompt": "노트 앱의 프로 전환 기능 출시 홍보 문구를 한국어로 정확히 3개 써줘. 20% 할인은 이번 주까지만. 경쟁사 가격 비교나 첨부하지 않은 기능은 넣지 마. 포스팅은 내가 할게.",
+      "expected_output": "Three actual copy variants with the supplied promotion and no invented claims or publication.",
+      "expectations": ["Exactly three requested copy variants are produced.", "The discount and time window remain accurate; no competitor price, unsupported feature/benefit, invented launch-discount rationale, or posting instruction is added to audience-facing copy.", "No unrequested video, project folder, publishing or scheduling is introduced."]
+    },
+    {
+      "id": 4,
+      "prompt": "한국어 하드 자막이 있는 인터뷰를 9:16 쇼츠로 바꿀 때 자막 처리 방안과 검수 체크리스트만 줘. 자막의 가독성·싱크는 아직 검사하지 않았어. CTA는 제외하고 실제 편집도 하지 마.",
+      "expected_output": "Conditional caption/framing choices and actual inspection checklist; readability/sync remain unverified and no CTA/editing is added.",
+      "expectations": ["Preserve/replace/translate choices depend on inspected readability and sync, not invented observation.", "Subtitle stacking and crop clipping are addressed, with contain-blur as a conditional alternative.", "No CTA, actual edit, output-file claim or publishing occurs."]
+    },
+    {
+      "id": 5,
+      "prompt": "내 관찰 기록: 느린 달리 인이어야 하는데 카메라가 흔들리고 후반에 얼굴이 바뀌었어. 기존 인물 참조를 유지하는 수정 프롬프트 하나만 줘. 너는 클립을 보지 않았고 아직 재생성 승인도 없어.",
+      "expected_output": "One corrected prompt based on supplied observations and approved identity reference; no unsupported direct inspection or regeneration claim.",
+      "expectations": ["One corrected prompt addresses steady dolly-in and supplied identity continuity without inventing a new identity.", "Supplied observations are not represented as the agent's own viewing or QA pass.", "No regeneration, model switch or spend is performed."]
+    },
+    {
+      "id": 6,
+      "prompt": "기존 project.json에서 A01 각본 v1에 A02 스토리보드 v1, A02에 A03 검토 v1, A03에 A04 실행계획 v1이 의존해. A05 독립 음원은 승인됨. A01이 v2로 바뀌었고 새 검토·실행 범위는 미승인이야. 이전엔 좋았으니 무료 샘플을 돌리면 되는지 상태 처리 계획만 설명해. 파일 변경·생성 없이.",
+      "expected_output": "Affected A02/A03/A04 approvals become stale, independent A05 remains valid, and free sample waits for the current-version review and bounded execution approval.",
+      "expectations": ["Affected downstream artifact approvals are invalidated transitively.", "Independent A05 is not reopened.", "Free/local sample execution does not bypass current-version review and bounded execution approval.", "No rival global state store, file modification or generation occurs."]
+    },
+    {
+      "id": 7,
+      "prompt": "15초 화장품 광고를 레퍼런스의 빠르고 세련된 리듬에 맞추고 싶어. 레퍼런스 영상과 11개 생성 클립이 있지만, 일부 클립은 거의 정지 화면이야. 음악은 레퍼런스에서 추출한 단일 혼합 오디오뿐이야. 생성 없이 먼저 컷·사운드 수정안을 내고, 확인하지 않은 싱크·청취 품질이나 음원 권리를 통과 처리하지 마.",
+      "expected_output": "A conditional beat/edit proposal grounded only in available assets and reference observations. Without actual media access or a requested hypothetical allocation, it avoids per-shot numeric cut points and invented IDs, treats one soundtrack as mixed, and leaves listening, sync, rights and generation approval pending.",
+      "expectations": [
+        "Precise per-shot timings and source ranges appear only when supported by accessible media or an explicitly requested, clearly non-executable hypothetical schedule.",
+        "No invented shot_id/sound_id or unsupported JSON/project schema is introduced.",
+        "Observed subject/camera movement and product/action peaks inform cuts and audio anchors; duration or dissolves alone do not prove dynamism.",
+        "Near-static clips are flagged for review and are not assigned a filler/end-card role by default; preserve a hold only when its actual content, readability and timing support the brief, and make replacement conditional.",
+        "The reference audio is one mixed track, not isolated BGM/SFX; subjective listening, sync and rights remain pending unless actually checked/evidenced.",
+        "No generation, spend, publication or final approval is claimed."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "15초 컷의 프레임을 8개 시점에서 확인했고 파일 전체 디코드는 통과했어. BGM 파형을 보면 제품 충격음 근처에 피크가 있어. 실제 영상은 끝까지 재생하지 않았고 오디오도 듣지 않았어. 현재 확인 결과와 추가 QA만 써줘.",
+      "expected_output": "A bounded QA report that separates reported decode/sample facts from direct inspection, and full-file decoding and sparse frame samples from full-sequence playback, audio audition and subjective sync judgment; it lists missing checks without declaring a pass.",
+      "expectations": ["The report attributes frame samples, decode and waveform facts to the user's supplied record unless the responder actually inspected them.", "A waveform peak is not treated as proof of audible sync or listening quality.", "Full-speed playback with final audio and a targeted action/audio anchor check are named as pending.", "No user acceptance, rights clearance, publication permission or final pass is inferred."]
+    },
+    {
+      "id": 9,
+      "prompt": "검토용 실제 정지 이미지를 만드는 절차만 설명해줘. 공급자는 지정하지 않았어. 현재 Higgsfield 이미지 도구만 인증되고 사용량이 포함돼 있어. codex-imagen helper와 인증은 없어. 이미지 생성 자체는 하지 마.",
+      "expected_output": "Codex Imagen is the default image executor; its missing helper/auth blocks that step. The available Higgsfield image tool is not a fallback. Explain reachable non-rendering preparation without submission or invented output.",
+      "expectations": ["Codex Imagen helper/auth are named as missing prerequisites for the default route.", "No Higgsfield image generation, catalog/cost exploration or automatic provider substitution is proposed.", "Output scope/path, applicable usage approval and real output inspection remain required; no generated image or user acceptance is claimed."]
+    },
+    {
+      "id": 10,
+      "prompt": "승인된 인물·물체 참조 v1로 손이 물체를 잡는 동작만 저비용 프리뷰 계획을 세워줘. 확인된 endpoint는 720p/6초와 1080p/6초만 지원해. 공급자 화면에서 방금 확인한 견적은 설정 각각 1회당 0.25 credits야. 프리뷰 1개/최초 1회만 실행 승인되었고 최종 제작은 미승인이야. 계획과 통과/승격 기준만 줘. 실행하지 마.",
+      "expected_output": "Minimal-sufficient preview using supported settings and the supplied current per-generation quote, approved reference versions, visible contact criteria and capped calls; final path remains proposed and requires its own authorized scope.",
+      "expectations": ["Only verified supported settings are considered; no universal 480p/5s or arbitrary final resolution is imposed.", "The supplied current quote of 0.25 credits per generation is recorded as given without inventing additional billing terms or calling the known quote unknown.", "The preview plan covers actual grip/contact and identity, not a still-image proxy for motion.", "One initial preview and no retries are preserved; preview pass alone does not authorize final production.", "If same-seed/shared-reference reuse is proposed for promotion, it is not described as guaranteeing identical final motion; the actual final output still requires inspection."]
+    },
+    {
+      "id": 11,
+      "prompt": "승인된 실행 계획은 현재 참조 v1과 endpoint 설정을 사용해 프리뷰 1개를 검수한 후 통과하면 최종본 1개로 진행하도록 명시돼 있어. 각각 최초 1회, 전체 비용 상한 5이며 현재 견적과 설정은 승인 때와 같아. 실제 프리뷰 전체 재생에서 계획의 접촉·정체성·구도 기준을 통과했고 사용자가 이 프리뷰 버전도 수락했어. 다음 행동과 검사 기준만 정리해. 생성하지 마.",
+      "expected_output": "The already approved conditional final phase remains eligible within unchanged versions/settings/caps; actual final output must still be inspected. No gratuitous duplicate approval or unbounded jobs.",
+      "expectations": ["The existing explicit final-phase authorization is reused rather than requiring duplicate approval solely because it is a final phase.", "Final output still needs actual motion/identity/composition/technical inspection; preview acceptance is not final-media QA.", "Changed inputs, changed quote, extra outputs or retries would require updating the affected authorized scope."]
+    },
+    {
+      "id": 12,
+      "prompt": "대화형 영상 도구에 SH01 생성 요청을 제출해 job-7을 받았지만 상태 조회가 끊겼어. 결과 파일은 아직 없어. 사용자는 '2초쯤 손이 물체를 관통했으니 얼굴·구도는 유지하고 접촉만 고쳐줘'라고 알려줬어. 남은 재시도 예산은 0이고 기존 입력은 v1이야. 지금 할 일과 수정안만 설명해. 호출은 하지 마.",
+      "expected_output": "Reconcile the existing job before any new submission; report the user's observation as supplied, propose one targeted contact correction preserving identity/composition, and keep retries blocked by zero remaining scope.",
+      "expectations": ["Unknown job status is reconciled using its existing ID rather than creating a duplicate request or assuming failure/success.", "The 2-second contact defect is attributed to user observation, not direct viewing.", "A targeted contact change and preserved identity/composition are described with reinspection criteria.", "Zero remaining retries blocks regeneration; the correction alone is not new execution authorization."]
+    },
+    {
+      "id": 13,
+      "prompt": "이 영상은 발걸음 효과음만 필요하고 대사·BGM은 제외해. 확인된 영상 endpoint는 prompt와 duration만 받고 오디오 제어는 없어. 가지고 있는 참조 오디오는 음악과 효과음이 섞인 파일 하나야. 생성·오디오 분리·편집은 아직 승인하지 않았어. 가능한 경로와 QA 기준만 줘.",
+      "expected_output": "Separate intent from unsupported controls; propose separately authorized sound/assembly using actual sources, preserve the mixed reference identity, and require listening for unintended speech/music.",
+      "expectations": ["No unsupported audio/negative/no_music API fields or guaranteed music removal are invented.", "SFX-only is distinguished from no_dialogue and no_audio; no speech or BGM is added.", "The mixed file is not represented as available isolated music/effects stems.", "Separate sound creation/extraction/editing remains a proposal requiring applicable approval; actual listening is needed for QA."]
+    },
+    {
+      "id": 14,
+      "prompt": "승인된 영어 운문 내레이션을 한국어로 옮기고 같은 목소리 정체성으로 낭독해 SRT를 납품할 절차를 써줘. 원문에는 고유명사 Luma와 단위 3 km가 있어. 음성 도구·보이스 목록·가격과 최종 음성 파일은 아직 없어. 한국어 원고는 번역/각색 승인 전이야. 파일 생성·음성 합성 없이.",
+      "expected_output": "Meaning/name/unit fidelity and explicit poetic adaptations, live voice discovery and identity/version linkage, listening checks and final-audio alignment before validated SRT delivery.",
+      "expectations": ["Voice tool/catalog/language/settings/cost/consent requirements remain live checks, not a mandatory named vendor or invented voice ID.", "Poetic line/rhythm choices do not silently change Luma or 3 km; material adaptations require review.", "No measured SRT timings, final sync pass or synthesized voice are invented before final audio exists.", "Voice/text version changes affect dependent subtitle/lipsync work and actual final listening/readability/timing checks are required."]
+    },
+    {
+      "id": 15,
+      "prompt": "최종 광고에는 접촉 효과음과 음악이 필요해. 후보 음악 A는 내 구독으로 다운로드했지만 라이선스 문서가 없고, 후보 B는 기록된 라이선스가 개인 비상업 채널만 허용해. 효과음 파일은 출처 URL만 있어. 실제 음원을 아직 듣지 않았고 광고 게시 권한도 미확인이야. 소싱·편집 인계와 차단 조건만 정리해.",
+      "expected_output": "Track/file-level provenance and license evidence, unknown/restricted rights separated from audition/edit preparation, no automatic commercial clearance, purchase, publication or listening pass.",
+      "expectations": ["Subscription/download/source URL alone do not prove commercial rights; A and effects remain unverified, and B's noncommercial limit blocks ad use.", "Track/file/version, license evidence/date and applicable project/channel/period/territory conditions are requested or recorded without invented permission.", "Source/final ranges, fades/gain and contact/music sync are tied to actual assets and audition, not fabricated measured timing.", "No automatic purchase/publication or subjective listening/sync pass is claimed."]
+    },
+    {
+      "id": 16,
+      "prompt": "도서관 안내 영상의 콘셉트 후보를 한국어로 정확히 두 개만 써줘. 가상의 시민·성공 사례·CTA 없이, 인물 없는 정보형이야. 각 후보의 차별점과 제작 제약을 적어. 시각 스타일은 아직 선택하지 않았고 이미지/영상 테스트는 하지 마.",
+      "expected_output": "Exactly two distinct informational concepts with constraints and unresolved visual direction; no fixed idea/angle counts, invented people, forced narrative or media batch.",
+      "expectations": ["Exactly two requested text concepts are returned without universal idea/angle counts or manufactured citizen/testimony/CTA.", "Unselected style remains a proposal or unresolved choice, not an implicitly locked identity.", "Text candidate count is not media-output authorization; no images/video/project folder or generation is introduced."]
+    },
+    {
+      "id": 17,
+      "prompt": "내가 지정한 Provider-Q로만 실제 검토 이미지를 만들 계획이야. 현재 Provider-Q 인증이 없고 참조 입력 지원·가격도 확인 못 했어. 다른 인증된 이미지 도구는 있어. 모델 이름만 알면 되는 것 아니야? 제출 없이 가능한 준비와 차단 조건만 줘.",
+      "expected_output": "Preserve the explicit provider; complete reachable prompt/reference/output planning while blocking submission on missing auth/schema/price, and offer other routes only as proposals requiring a changed choice.",
+      "expectations": ["The explicitly selected Provider-Q is not silently replaced by an available alternative.", "Model name alone is insufficient; authentication, required reference/schema support and current price need verification before submission.", "Reachable planning is delivered without inventing execution/availability or a permanent required provider."]
+    },
+    {
+      "id": 18,
+      "prompt": "세 영상짜리 아카이브에서 콘텐츠 제작 스킬 갭을 찾아줘. A `Dcf7C1uDwjx.mp4`: 59.8초 가로 1280x720. 게시 캡션은 'AI 로판 EP1, 대사가 많아 힘들다'. 표본 프레임은 시대극 의상·타이틀/캐스트 삽입·안경 쓴 현대적으로 보이는 인물이며 20초와 50초 자막만 확인했어. 전체 재생·오디오 청취는 안 했어. B `DbxQtaHE4us.mp4`: 4초 세로 720x1080. 표본에 바구니 든 의상 입은 고양이 한 상황이 반복돼. 읽을 수 있는 텍스트는 없고 오디오 트랙은 메타데이터에 보고되지 않았어. C `DbqaoN2k_lB.mp4`: 44.7초 가로 1280x720. 게시 캡션은 좀비 포트폴리오라고 하지만 표본에서는 사막 군중, 큰 'Dopamine' 오브젝트, 책상 고양이만 보였고 좀비는 없었어. 다른 구간은 미검사야. 각 영상의 관찰과 캡션/추론을 분리하고 기존 스킬에 이미 있는 것과 새 갭을 표로 정리해. 영상을 전부 봤다고 하지 말고 실제 파일·스킬을 수정하지 마.",
+      "expected_output": "An archive-level audit with exactly three per-video rows, explicit sample limits, supplied caption versus visible-evidence separation, existing module coverage versus genuine process gaps, and no overclaim about unsampled footage/audio.",
+      "expectations": ["All three named files receive distinct rows with supplied duration/format and directly observed content; none is omitted or merged.", "Caption metadata, sampled-frame observations, and inference remain distinct; the zombie caption is not called false because unsampled intervals may contain zombies.", "No full-video review, exact cut timeline, audio content, performance result, or rights conclusion is invented; absent reported audio metadata is not described as a listening result.", "Existing coverage such as reference decomposition, episodic dialogue, comedy and product/story design is mapped to the relevant current module; only archive-wide inventory/cross-video synthesis is proposed as an uncovered process when supported.", "No archive file is modified, no media is uploaded, and no generation is started."]
+    },
+    {
+      "id": 19,
+      "prompt": "나는 1인 AI 영상 제작자야. 로판 시리즈를 매달 8분짜리 4편씩 만들고 싶고, 기존 대본은 대사 약 65줄, 장소 3곳, 고정 보이스를 쓰는 반복 캐릭터 2명이야. 생성 없이 텍스트로 제작 계획을 짜고 일정이 가능한지 판단해줘. 제작자 가용 시간이나 과거 회차 소요시간은 아직 제공하지 않았고 도구 처리량도 확인하지 않았어. 기존 스킬 절차를 이용해 필요한 작업량·확인 근거·미결정을 적고, 목표를 임의로 줄이지 마.",
+      "expected_output": "A text-only per-episode and monthly workload breakdown spanning writing/revision, voice generation/listening, shots/assets and generation/review, lip-sync/audio/captions/editing, continuity/QA/delivery and shared setup; feasibility remains unresolved without supplied creator capacity and measured workflow data, with provider throughput explicitly unverified.",
+      "expectations": ["Uses the existing episode, screenplay, AI handoff, dialogue/lip-sync, production-ops and live execution guidance rather than inventing a parallel creative coordinator or duplicated voice workflow.", "Includes the supplied 65 dialogue lines, 2 recurring fixed-voice characters and 3 locations as workload drivers without treating those counts or 8-minute runtime as sufficient effort estimates.", "Does not invent creator hours, per-line processing times, generation throughput, costs, retries or a claim of feasibility; distinguishes historical measurements, user estimates and unknowns.", "Keeps the requested monthly cadence and episode scope intact; any shorter episodes, fewer lines/locations/shots or cadence changes are options requiring user approval.", "Does not upload media or start generation, editing or publishing."]
+    },
+    {
+      "id": 20,
+      "prompt": "채널은 직장인 대상의 짧은 관찰형 생활 정보 영상이고 과장·판매 유도·등장인물은 제외해. 30초 세로 영상의 주제부터 함께 골라보자. 주제는 미정이고 방향과 형식은 위 내용으로 확정했어. 작은 팀이 실내 소품으로 만들 수 있어야 해. 트렌드 자료는 없어. 주제 후보와 추천 이유까지만 줘. 생성·저장 없이.",
+      "expected_output": "Five fit-first topic candidates, grounded in supplied channel/audience/purpose and production limits; pause for topic choice.",
+      "expectations": [
+        "Exactly five distinct topic candidates fit the supplied channel, audience, format and production limits; recommendation explains fit rather than invented trends.",
+        "Stops at topic selection; no synopsis batch, invented metrics, people, CTA, folders or media."
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "주제는 이미 선택했어: 직장인이 책상 위 물건을 용도별로 정리하는 30초 정보 영상. 인물 없이 소품과 실제 확인 가능한 정리 방법만, 과장·CTA 없이. 주제를 다시 고르지 말고 시놉시스 방향을 함께 탐색하자. 형식·대상은 확정이고 스타일은 미정이야. 후보와 추천 이유만 텍스트로 줘.",
+      "expected_output": "Five distinct synopsis approaches for the selected topic, with a choice checkpoint and no repeated topic discovery.",
+      "expectations": [
+        "Exactly five genuinely different synopsis approaches for the supplied topic, with no repeated topic discovery.",
+        "Pauses for synopsis choice and preserves unresolved style; no full package, cast, CTA, folders or media."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "참고 영상 후보 A와 B가 있어. 메타데이터만 알고 있어: A는 45초 제품 광고, 설명은 빠른 공개와 강한 효과음. B는 20초 소품 정보 영상, 설명은 고정 카메라와 단계적 정보 공개. 우리 목표는 직장인 대상 30초 책상 정리 정보 영상이고 판매 유도는 없어. 어느 후보를 참고할지 제안하고 다음 절차를 알려줘. 아직 선택하지 않았고 영상 파일·프레임·오디오는 제공하지 않았어. 전체 분석·외부 업로드·유료 호출·생성은 하지 마.",
+      "expected_output": "Metadata-grounded fit recommendation; wait for reference selection and keep actual media analysis, rights and paid execution unverified.",
+      "expectations": [
+        "Recommendation prioritizes channel/purpose fit and distinguishes supplied metadata from media observations.",
+        "Waits for selection before detailed analysis; no fabricated viewing/timing/audio/rights or paid/upload/generation actions."
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "사용자가 선택한 레퍼런스 R1 v1의 관찰 기록만 사용할 수 있어: 0–2초 손잡이 클로즈업, 2초에 넓은 화면으로 전환해 전체 구조 공개, 무채색 배경과 따뜻한 단일 제품색. 전체 재생·오디오 청취는 미실시야. 이를 새 소재인 책상 정리 정보 영상에 응용하는 분석·프로젝트 스타일 브리프·제작 인계표를 텍스트로 써줘. 우리 채널 고유 색은 파랑으로 승인돼 있어. 원본의 로고·제품 디자인은 사용하지 않아. 실제 파일이나 project.json·샷 ID는 아직 없어. 생성·저장·스킬 수정은 하지 마.",
+      "expected_output": "Evidence-scoped reference decomposition, approved-blue project style and a transferable reveal-mechanism handoff with qualitative checks; no copied expression or fake project state.",
+      "expectations": [
+        "Attributes evidence to supplied R1 v1 observations with inspected range, distinguishes inferred function and unverified audio/full sequence.",
+        "Separates transferable reveal mechanism from protected expression, adapts to desk organization and preserves approved blue; proposed style components remain unapproved.",
+        "Provides evidence -> mechanism -> proposed new requirement -> qualitative inspection criteria without invented canonical IDs/timings, fake project.json, generation or skill writes."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "프로젝트 P의 스타일 브리프 v1은 파랑 소품, 고정 카메라, 가까운 디테일에서 전체 정리 결과로 공개야. 레퍼런스 분석 R1 v1의 공개 원리를 사용하기로 승인됐어. 실제 결과를 너는 보지 못했고 사용자 기록만 있어: 2초에 전체 화면 공개, 후반에 소품이 빨강으로 변함. 오디오는 듣지 않았어. 점수나 유사도 퍼센트 없이 차이·수정 우선순위와 요청 기반 회고를 써줘. 재시도 승인 없음. 실제 파일·브랜드 프로필·스킬을 바꾸지 마.",
+      "expected_output": "Qualitative style-intent findings and project-scoped retrospective, attributed to user records and limited by missing actual inspection; no scores, autonomous promotion or retries.",
+      "expectations": [
+        "Uses supplied observations, marks actual inspection/audio unverified, identifies blue-to-red style breach and preserves approved reveal/camera intent.",
+        "Returns issue, evidence/location, viewer effect or interpretation, targeted correction and reinspection criteria; no percentage pass or final media acceptance.",
+        "A time reported in the result is not silently converted into an approved target time; timing fidelity is judged only against an explicitly supplied requirement.",
+        "Retrospective separates evidence-backed lessons from hypotheses, stays project-specific and proposes future improvements only; no automated profile/skill promotion or unauthorized retry."
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "주제·시놉시스·스타일은 확정했어: 파랑 소품을 고정 카메라로 보여주는 인물 없는 책상 정리 안내. 현재 확인된 모델 입력은 prompt 문자열 하나뿐이야. 이 설정을 그대로 지키는 한국어 프롬프트 하나만 줘. 다른 후보·인터뷰·스타일 문서·프로젝트 폴더·생성은 필요 없어.",
+      "expected_output": "One actual Korean prompt preserving locked blue props, fixed camera and character-free informational scope; no discovery or style paperwork.",
+      "expectations": [
+        "Returns one usable Korean prompt preserving the supplied topic/style/camera and no people.",
+        "No topic/synopsis alternatives, redundant interview, style document, project folder, unsupported model fields or media generation."
+      ]
+    }
+  ]
+}

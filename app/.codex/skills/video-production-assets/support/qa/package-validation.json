@@ -1,0 +1,169 @@
+{
+  "package_version": "1.3",
+  "entry_skill": "creative-production",
+  "core_skills": [
+    "creative-production",
+    "video-production-assets",
+    "camera-spatial-design",
+    "blender-previsualization",
+    "orchestrating-video-preproduction",
+    "developing-video-synopses",
+    "designing-video-character-sheets",
+    "storyboarding-video"
+  ],
+  "host": {
+    "platform": "Windows",
+    "python": "3.12.10",
+    "powershell": "5.1.26100.9444",
+    "supported_runtime_claim": "Windows Codex skill-root installation; other hosts/providers not exercised"
+  },
+  "regressions": {
+    "installer_tests": 21,
+    "production_contract_tests": 8,
+    "spatial_contract_tests": 6,
+    "total": 35,
+    "result": "pass",
+    "commands": [
+      "python scripts/test_install_package.py",
+      "python video-production-assets/scripts/test_validate_project.py",
+      "python camera-spatial-design/scripts/test_spatial_spec.py"
+    ]
+  },
+  "cli_smokes": {
+    "fresh_install": "8 skills installed, exit 0",
+    "collision": "exit 2; all installed file digests unchanged",
+    "replacement": "8 old folders retained in backup, updated source installed, exit 0",
+    "alias_migration": "alias-only duplicate rejected before target creation; explicit migration retained old bytes and unrelated skill, exit 0"
+  },
+  "resource_checks": {
+    "core_frontmatter_ids": 8,
+    "local_resource_links": "resolved in installed core; no broken repository links at verification",
+    "new_source_exclusions": "no imported book-synthesis/Notion reference, inspected private-path patterns or private-key marker found"
+  },
+  "contract_smokes": {
+    "education_plan": "valid=true, errors=[]; contract/timing/reference scope only",
+    "camera_example": {
+      "valid": true,
+      "shots": 2,
+      "scope": "ideal pinhole, all integer frames, box proxies; no rendered or artistic validation"
+    }
+  },
+  "behavior_probes": {
+    "mode": "fresh-context model application of actual installed core instructions",
+    "tools_enabled": false,
+    "outputs_exercised": 13,
+    "scope": "actual text artifacts and planned checkpoint/action decisions, not real platform/provider/media execution",
+    "automatic_review": "Initial probability judgments required reasoned adjudication for A04, A06 and TextSave; all three resolved as satisfying requested scope with artifact evidence.",
+    "cases": [
+      {
+        "id": "A02",
+        "request": "아래 사실만으로 한국어 블로그 원고를 3문단 작성해. 도서관은 목요일 마감을 18시에서 20시로 한 달간 연장했다. 이유와 방문객 수는 모른다. 원고만, CTA·영상·파일 없음.",
+        "expected_behavior": "Actual 3-paragraph Korean draft preserves Thursday/one month/18-20 and does not invent reason or usage growth, ask for framework, produce media or CTA.",
+        "observed_output": "도서관은 한 달간 목요일 마감 시간을 기존 18시에서 20시로 연장했다. 이번 변경으로 해당 기간의 목요일에는 기존보다 두 시간 늦게 문을 닫았다.\n\n이번에 확인된 변경 사항은 목요일 마감 시간과 한 달이라는 적용 기간이다. 마감 시간을 연장한 이유는 알려져 있지 않아, 어떤 배경이나 목적에서 이루어진 조치인지는 설명하기 어렵다.\n\n해당 기간의 방문객 수도 알려져 있지 않다. 따라서 마감 시간 연장이 방문객 증가로 이어졌는지, 이용에 어떤 영향을 주었는지는 판단할 수 없다. 확인할 수 있는 사실은 한 달간 목요일 마감 시간이 18시에서 20시로 바뀌었다는 점이다."
+      },
+      {
+        "id": "A03",
+        "request": "15초 교육 영상 텍스트 계획을 한 번에 만들어줘. 확정 콘셉트: 물의 양이 2L+3L=5L임을 세 컷으로 보여준다. 교육 목적, 단순 그래픽 방식, 캐릭터·CTA·파일·생성 없음. 시놉시스와 정확히 3패널, 시간 합계 15초. 창작 선택은 맡길게.",
+        "expected_behavior": "Actual synopsis and exactly3 timed information panels totaling15s, correct arithmetic, no characters/CTA/files/media/approval questionnaire.",
+        "observed_output": "## 15초 교육 영상 텍스트 계획\n\n### 확정 브리프\n- **콘셉트:** 물의 양 **2L + 3L = 5L**를 세 컷으로 보여준다.\n- **목적:** 두 물의 양을 더하면 총량이 5L가 된다는 것을 이해시킨다.\n- **방식:** 단순 그래픽, 캐릭터 없음.\n- **분량:** 정확히 3패널, 총 15초.\n- **제외:** CTA, 파일 작성, 이미지·영상 생성.\n- **창작 제안:** 흰 배경과 파란 물 그래픽을 사용하고, 설명은 화면의 숫자·기호로만 전달한다. 대사·내레이션·음악·효과음은 넣지 않는다.\n\n### 시놉시스\n먼저 물 2L를 나타내는 그래픽과 수량을 제시한다. 다음에는 물 3L 그래픽을 오른쪽에 추가하여 **2L + 3L**라는 덧셈 관계를 보여준다. 마지막에는 두 양을 합친 물 5L 그래픽과 **2L + 3L = 5L**를 제시하여 총량을 확인한다.\n\n### 스토리보드 — 정확히 3패널\n*시간은 요청한 전체 분량의 배분이며, 카메라 움직임이나 별도 샷 분해는 포함하지 않는다.*\n\n| 패널 | 시간 | 한 프레임의 정보 변화 | 보이는 대상·구도 | 화면 텍스트 | 연결·주의 초점 |\n|---|---|---|---|---|---|\n| **1 — 첫 번째 양** | **0–5초 / 5초** | 물 **2L**를 제시한다. | 흰 배경 왼쪽에 파란 물 블록 2칸을 세로로 쌓는다. 각 칸은 같은 크기이며 1L를 나타낸다. 오른쪽은 비워 둔다. | 블록 아래 **2L**, 하단에 작은 범례 **한 칸 = 1L** | 두 칸과 2L 표기의 대응에 집중한다. 왼쪽 그래픽의 위치를 다음 패널에도 유지한다. |\n| **2 — 더할 양** | **5–10초 / 5초** | 오른쪽에 물 **3L**가 더해져 덧셈 관계가 드러난다. | 왼쪽의 2칸을 그대로 두고, 오른쪽에 동일한 크기의 파란 물 블록 3칸을 세로로 쌓는다. 두 묶음 사이에 **+**를 배치한다. | 각 묶음 아래 **2L**, **3L**. 범례 **한 칸 = 1L** 유지. | 두 묶음을 더한다는 관계가 초점이다. 아직 결과 숫자 **5L**는 표시하지 않는다. |\n| **3 — 총량 확인** | **10–15초 / 5초** | 합친 양이 **5L**임을 확인한다. | 중앙에 동일한 크기의 파란 물 블록 5칸을 세로로 쌓아 총량을 표시한다. 그 아래에 완성된 식을 크게 배치한다. | **2L + 3L = 5L**. 범례 **한 칸 = 1L** 유지. | 다섯 칸과 결과 5L를 대응시키며 끝낸다. 추가 메시지나 CTA는 없다. |\n\n### 패널별 재사용 이미지 프롬프트\n아래는 **텍스트 프롬프트이며, 이미지 생성은 하지 않는다.**\n\n1. **패널 1:** 흰 배경의 단순한 2D 교육 그래픽. 화면 왼쪽에 같은 크기의 파란 직사각형 두 칸을 세로로 쌓고 아래에 ‘2L’를 표시한다. 하단에 작은 범례 ‘한 칸 = 1L’를 배치한다. 오른쪽은 비운다. 입체 원근, 캐릭터, 장식, 추가 문구 없음.\n2. **패널 2:** 흰 배경의 단순한 2D 교육 그래픽. 왼쪽에 파란 직사각형 두 칸과 ‘2L’, 오른쪽에 같은 크기의 파란 직사각형 세 칸과 ‘3L’를 표시한다. 두 묶음 사이에 더하기 기호 ‘+’. 하단 범례는 ‘한 칸 = 1L’. 결과 숫자, 캐릭터, 장식 없음.\n3. **패널 3:** 흰 배경의 단순한 2D 교육 그래픽. 화면 중앙에 앞선 패널과 같은 크기와 색의 파란 직사각형 다섯 칸을 세로로 쌓는다. 아래에 ‘2L + 3L = 5L’를 크게 표시한다. 하단 범례는 ‘한 칸 = 1L’. 캐릭터, 장식, CTA 없음.\n\n### 일관성·텍스트 검수\n- **시간:** 5초 + 5초 + 5초 = **15초**.\n- **패널 수:** **3개**.\n- **수량 표현:** 모든 패널에서 같은 크기의 한 칸이 1L를 뜻한다. 실제 용기나 수면 높이의 재현이 아닌 **양을 나타내는 도식**이다.\n- **계산:** 2L + 3L = **5L**.\n- **범위:** 시놉시스와 텍스트 스토리보드만 제공. 파일·이미지·영상 생성 없음."
+      },
+      {
+        "id": "A04",
+        "request": "캐릭터 텍스트 시트 하나만 써줘. CH01 미라, 40대 여성 수리공. 짧은 검정 곱슬머리, 왼손잡이, 초록 작업복은 고정. 성격은 내가 맡길게. 실제 이미지·다른 인물·시놉시스는 필요 없어.",
+        "expected_behavior": "Actual CH01 character sheet preserving four fixed traits, labels creative additions, no second person/synopsis/image calls or new interview.",
+        "observed_output": "# CH01 미라 — 캐릭터 텍스트 시트\n\n## 1. 확정 정보\n| 항목 | 설정 |\n|---|---|\n| ID / 이름 | CH01 / 미라 |\n| 연령·성별 | 40대 여성 |\n| 직업 | 수리공 |\n| 머리 | 짧은 검정 곱슬머리 |\n| 주로 쓰는 손 | 왼손 |\n| 의상 | 초록 작업복 |\n\n## 2. 성격·행동 — 창작 제안\n**핵심 성격:** 말보다 손으로 확인하는 차분한 실용주의자. 성급한 단정은 싫어하지만, 자기 판단을 수정하는 데도 시간이 걸린다.\n\n- **강점:** 작은 이상을 그냥 넘기지 않는 끈기. 일이 막히면 같은 동작을 무작정 반복하지 않고, 손을 멈춰 관찰한 뒤 접근을 바꾼다.\n- **약점:** 혼자 해결하려는 고집. 도움을 구하기 전에 자신이 놓친 부분부터 여러 번 확인한다.\n- **감정 표현:** 감정이 커질수록 동작이 작고 정확해진다. 짜증이 나면 도구를 내려놓고 입술을 잠깐 다문다.\n- **만족의 표현:** 크게 환호하지 않는다. 어깨의 힘을 풀고, 입꼬리를 아주 조금 올린다.\n- **판단 습관:** 첫 인상보다 확인한 상태를 우선한다. 다만 한번 내린 판단을 바꿔야 할 때는 짧게 머뭇거린다.\n\n## 3. 시각·동작 설계 — 고정 설정 외에는 제안\n- **기본 자세:** 어깨는 편안하게 내리고, 관심 있는 대상 쪽으로 상체를 조금 기울인다.\n- **손동작:** 정밀한 조작과 도구 사용은 왼손이 주도한다. 오른손은 대상을 받치거나 고정하는 보조 역할을 한다.\n- **표정:** 집중할 때 눈썹 사이가 살짝 좁아진다. 판단이 서면 턱을 작게 끄덕인다.\n- **움직임:** 서두르기보다 필요한 동작만 이어간다. 막히는 순간에는 손을 멈추고 대상을 다시 살핀다.\n- **작업복 세부:** 무광의 초록 원단, 단순한 주머니 구성. 소매와 무릎에는 가벼운 사용 흔적을 제안한다. 로고·명찰·특정 업체 표시는 넣지 않는다.\n- **소품:** 특정 도구는 고정하지 않는다. 필요한 도구가 등장할 경우 왼손 사용 원칙을 유지한다.\n\n## 4. 연속성 앵커\n**바꾸지 않는 요소**\n- CH01 미라라는 이름과 ID\n- 40대 여성 수리공\n- 짧은 검정 곱슬머리\n- 왼손잡이\n- 초록 작업복\n\n**허용되는 변화**\n- 집중·짜증·만족에 따른 표정과 자세\n- 작업 상황에 따른 소매 상태와 일시적인 먼지·얼룩\n- 작업에 필요한 도구의 종류\n\n**미정으로 남기는 요소**\n- 구체적인 수리 분야와 숙련 수준\n- 체형·키·얼굴의 세부 형태\n- 과거사·가족관계·이야기 속 역할과 목표\n\n성격과 세부 동작은 위의 **창작 제안**이며, 외형 고정 설정과 구분한다."
+      },
+      {
+        "id": "A05",
+        "request": "총괄이 위임한 SH02 스토리보드만 작성해. 확정 브리프: 학교 복도의 닫힌 창문을 수리공 미라가 열어 빛이 들어오는 한 패널. 콘셉트와 캐릭터 승인 완료, CH01 초록 작업복, 왼손 고정. 텍스트만, 후속 작업 없음.",
+        "expected_behavior": "Actual one-panel SH02 storyboard preserves IDs/approved direction/CH01 anchors; no new concept options, parallel ledger or reinterview.",
+        "observed_output": "## SH02 스토리보드\n\n### 연속성 앵커\n- **확정 장면:** 학교 복도에서 수리공 미라가 닫힌 창문을 열어 빛이 들어온다.\n- **캐릭터:** CH01 미라. 승인된 캐릭터 디자인과 **초록 작업복** 유지.\n- **동작:** 창문을 여는 손은 **왼손**으로 고정.\n- **표현 제안:** 창문이 열린 순간을 한 프레임으로 표현한다. 창문 구조와 개방 방식은 미정이므로 특정 방식으로 확정하지 않는다.\n\n| 항목 | SH02 |\n|---|---|\n| **패널 번호 / 기능** | SH02 / 창문 개방으로 학교 복도에 빛이 들어오는 변화 |\n| **한 프레임의 행동** | 미라가 왼손으로 창문을 열고 있는 순간, 열린 부분을 통해 빛이 복도 안으로 들어온다. |\n| **보이는 대상·시점·구도** | **구도 제안:** 복도 안쪽에서 창문과 미라를 함께 바라보는 사선 시점. 초록 작업복, 창문에 닿은 왼손, 열린 부분, 복도 바닥에 들어온 빛이 한 화면에서 읽히도록 배치한다. |\n| **보여줄 것 / 감출 것** | 창문의 열린 상태와 왼손 동작, 유입되는 빛을 보여준다. 창밖의 구체적인 풍경과 수리 도구는 추가하지 않는다. |\n| **감정·주의 초점** | 왼손과 창문 개방부에서 시작해 복도 안으로 들어온 빛으로 시선을 유도한다. 별도의 감정 변화나 반응은 부여하지 않는다. |\n| **대사·자막·소리** | 없음. |\n| **전환·연속성** | 닫혀 있던 창문이 열리는 변화만 담는다. CH01의 승인된 외형, 초록 작업복, 왼손 사용을 유지하며 후속 사건은 추가하지 않는다. |\n| **이미지 프롬프트** | 학교 복도의 창문을 여는 수리공 미라 CH01을 담은 단일 스토리보드 패널. 승인된 캐릭터 외형과 초록 작업복을 유지한다. 미라가 **왼손**으로 창문을 열고 있는 순간이며, 열린 부분을 통해 빛이 복도 안으로 들어온다. 구도 제안: 복도 안쪽에서 바라보는 사선 시점으로 미라, 왼손, 열린 창문 부분, 복도 바닥에 들어온 빛이 함께 읽히도록 구성한다. 창문의 구체적인 개방 방식은 확정하지 않는다. 창밖의 구체적 풍경, 추가 인물, 수리 도구, 대사, 자막 없이 표현한다. |"
+      },
+      {
+        "id": "A06",
+        "request": "주제에서 실제 이미지가 포함된 전체 프리프로덕션 패키지를 준비해. 프로젝트 폴더는 아직 안 정했어. codex-imagen과 OAuth는 없고 다른 생성 서비스만 있어.",
+        "expected_behavior": "Requests exact folder and reports codex-imagen/auth as branch prerequisites; no actual files/stills claim and no automatic alternative provider.",
+        "observed_output": "실제 이미지가 포함된 전체 프리프로덕션 패키지는 **현재 조건으로 완료할 수 없습니다.** 검토용 정지 이미지에 필요한 `codex-imagen` 실행 도구와 해당 인증이 없으며, 이 환경에서는 다른 생성 서비스도 실행할 수 없습니다. 다른 서비스를 동등한 대체 수단으로 임의 사용하지 않겠습니다.\n\n먼저 다음 두 가지를 알려주세요.\n\n1. **영상 주제** — 전달할 핵심 내용과 참고자료가 있다면 함께 보내주세요.\n2. **정확한 프로젝트 폴더 경로** — 상위 폴더만이 아니라 프로젝트 전용 하위 폴더까지 지정해주세요. 예: `/projects/주제명-preproduction`\n\n이 정보로 범위를 정리하고 필요한 콘셉트 선택을 진행할 수 있습니다. 다만 이 환경에서는 폴더·파일 저장이나 이미지 생성을 수행하지 못하므로, 실제 이미지가 포함된 패키지의 완료에는 **`codex-imagen`과 인증을 사용할 수 있는 실행 환경**이 필요합니다.\n\n대신 **텍스트 전용 기획으로 범위를 변경**하시면, 승인된 방향에 맞춰 제작 문서와 검토 이미지용 범용 프롬프트를 채팅으로 제공할 수 있습니다. 이는 실제 이미지 포함 패키지와는 다른 산출물이며, 원하실 때만 진행하겠습니다."
+      },
+      {
+        "id": "A07",
+        "request": "기존 이미지 기반 프리프로덕션 A01 v2를 내가 검토했고 좋아요. 다음 명시 지시는 아직 없어요.",
+        "expected_behavior": "Accepts reviewedv2 only; waits separate proceed, no model selection/video/sample/spend/publication.",
+        "observed_output": "A01 v2의 **이미지 기반 프리프로덕션을 검토·수락하신 것으로 확인합니다.** 수락 범위는 검토하신 해당 버전으로 한정됩니다.\n\n다음 명시 지시가 없으므로 **여기서 대기하며 추가 제작은 진행하지 않습니다.** 이번 수락은 영상 모델 선택, 샘플·본편 생성, 편집·내보내기, 과금 또는 게시 승인을 포함하지 않습니다."
+      },
+      {
+        "id": "A08",
+        "request": "A01 v1 프리프로덕션과 그 버전을 참조하는 A02 실행 계획은 승인됨. A03 자막 스타일 승인도 있으나 A01 의존성은 없음. A01 캐릭터 의상만 v2로 바꿨다. 지금 상태와 다음 행동은?",
+        "expected_behavior": "ChangedA01 needs affected review and dependentA02 stale; unrelatedA03 remains approved; old approval not reused forv2, no generation.",
+        "observed_output": "현재 상태는 **A01 의상 변경의 영향을 받는 승인만 재검토가 필요한 상태**입니다.\n\n| 항목 | 현재 상태 | 이유 |\n|---|---|---|\n| **A01 v1 프리프로덕션** | v1 승인 이력 유지 | 기존 승인은 v1에만 유효하며 v2로 자동 승계되지 않음 |\n| **A01 v2 프리프로덕션** | 변경 부분 검토·승인 대기 | 바뀐 의상과 이를 사용하는 캐릭터 앵커·스토리보드·프롬프트·검토 이미지 등이 재검토 대상. 영향 없는 부분의 승인은 유지 |\n| **A02 실행 계획** | **v2 실행 기준으로 stale — 실행 보류** | 승인된 계획은 A01 v1을 참조함. 그 승인으로 변경된 v2를 실행할 수 없음 |\n| **A03 자막 스타일** | **승인 유지** | A01 의존성이 없으므로 이번 변경으로 무효화되지 않음 |\n\n### 다음 행동\n1. **A01 v1→v2 의상 변경과 영향 범위를 기록**하고, 의상에 의존하는 산출물만 갱신합니다. 전체 인터뷰나 무관한 승인 절차를 다시 시작하지 않습니다.\n2. **A01 v2의 변경 부분을 검토받습니다.** 실제 검토 이미지가 필요한 경우 `codex-imagen` 실행 환경이 선행 조건입니다. 현재는 이미지 생성·검사를 실행할 수 없으므로, 변경 명세와 검토 항목까지 텍스트로 준비할 수 있습니다.\n3. v2 수락 후 **A02의 참조를 A01 v2로 갱신**하고 의상 관련 입력·연속성·실행 조건을 재확인합니다. 영향 없는 조건은 유지하되, 수정된 실행 계획과 해당 비용 범위에 대해 명시적 재승인을 받습니다.\n4. **A03는 그대로 유지**합니다.\n\n**A01 v2 검토 승인과 A02 갱신본 실행 승인은 별개입니다.** 승인되더라도 현재 환경에서는 실제 미디어 실행은 할 수 없습니다."
+      },
+      {
+        "id": "A09",
+        "request": "Fal을 선택했고 SH01 영상 실행을 진행하고 싶어. 예전 가격표는 있지만 지금 endpoint/schema/가격 확인은 못했고 이번 과금 승인은 아직 없어. 다른 제공자도 가능해 보이지만 자동 전환은 하지 마.",
+        "expected_behavior": "Selected Fal preserved; currentcatalog/schema/price + bounded scope/spend approval needed before actual submission; no guessed endpoint/price/autoswitch.",
+        "observed_output": "**SH01의 Fal 영상 실행은 현재 보류해야 합니다.** Fal 선택은 유지하며, 다른 제공자로 자동 전환하지 않습니다.\n\n실행 전 필요한 조건은 다음과 같습니다.\n\n1. **Fal 실행 환경 확보**\n   - 현재 환경에는 `fal-video-production` 전문 스킬과 연결된 실행 도구가 없어 실제 조회·제출을 할 수 없습니다.\n   - 해당 스킬, 실행 도구, 인증이 필요합니다. 인증 값은 대화에 공유하지 마세요.\n\n2. **현재 endpoint·schema·가격 검증**\n   - 선택할 모델의 정확한 endpoint, 입력 스키마, SH01에 필요한 참조 이미지·오디오 지원, 길이·해상도 제한, 이용 조건과 현재 가격을 확인해야 합니다.\n   - 예전 가격표는 이번 실행의 비용 근거로 사용할 수 없습니다. 필수 지원 여부나 가격이 불명확하면 제출하지 않습니다.\n\n3. **범위가 정해진 실행·과금 승인**\n   - 검증 결과를 바탕으로 SH01의 입력 버전, 출력 개수, 길이·해상도, 저장 위치, 재시도 범위, 비용 상한을 명시한 실행 계획을 먼저 제시해야 합니다.\n   - 그 계획과 이번 과금에 대한 **명시적 승인 후에만** 실행할 수 있습니다. 현재의 진행 의사는 과금 승인으로 처리하지 않습니다.\n\n제가 지금 할 수 있는 다음 단계는 **SH01 실행 계획의 텍스트 초안 작성**입니다. 기존 SH01 명세와 해당 버전의 프리프로덕션 검토·수락 내역이 있다면 제공해 주세요. 이미 결정된 값은 그대로 유지하고, 실시간 검증이 필요한 항목과 승인 대기 항목을 구분해 정리하겠습니다."
+      },
+      {
+        "id": "A10",
+        "request": "승인된 두 샷 실행 결과: SH01 파일은 실제 있음, SH02는 API status success지만 파일은 없음. 이번에는 추가 제출·재시도 승인 없음. 납품 상태를 보고해.",
+        "expected_behavior": "Only SH01 actual output registered subjecttoQA; SH02 incomplete despiteAPIsuccess; no full-delivery claim/retry.",
+        "observed_output": "## 납품 상태: 부분 완료 — 전체 납품 미완료\n\n| 샷 ID | 확인된 결과 | 납품 상태 |\n|---|---|---|\n| SH01 | 실제 파일 있음 | 파일 확보. 영상 품질·재생·규격 검수 여부는 미확인 |\n| SH02 | API `status: success`, 실제 파일 없음 | 산출물 누락. 납품 완료로 인정할 수 없음 |\n\n- **실제 파일 확보:** 승인된 2개 샷 중 1개\n- **누락 산출물:** SH02\n- **추가 제출·재시도:** 승인 없음. 실행하지 않음.\n- **검수 상태:** `unverified` — 제공된 실행 결과에 따른 보고이며, 파일을 직접 열어 검사하지 않았습니다.\n- **납품 판정:** `needs_revision` — SH02 파일이 없어 승인된 두 샷 전체의 납품 요건을 충족하지 못했습니다.\n\nSH01만 실제 산출물로 기록할 수 있으며, SH02는 API 성공 응답과 별개로 **파일 미확보** 상태로 남깁니다."
+      },
+      {
+        "id": "A14",
+        "request": "WordPress에 올릴 아래 원고만 리라이트해. 원문: 도서관은 목요일에 두 시간 더 문을 연다. 게시·DB·배포는 하지마. 원고만 반환.",
+        "expected_behavior": "Actual rewritten text, no platform/prerequisite interview, DB/deploy/publication or extra production assets.",
+        "observed_output": "도서관은 목요일에 평소보다 두 시간 더 운영합니다."
+      },
+      {
+        "id": "A15",
+        "request": "React UI 버튼 padding만 8px에서 12px로 바꾸는 일반 개발 요청이야. 콘텐츠 제작은 아니야. 이 스킬을 적용해야 해?",
+        "expected_behavior": "Keeps ordinaryUI/development owner, no contentpipeline/creative interview/media package.",
+        "observed_output": "아니요. **React UI 버튼의 padding을 8px에서 12px로 바꾸는 작업은 일반 UI 개발이므로 이 콘텐츠 제작 스킬을 적용하지 않습니다.** 기존 디자인·개발 흐름에서 해당 스타일만 수정하면 됩니다.\n\n```diff\n- padding: 8px;\n+ padding: 12px;\n```\n\n콘텐츠 제작 인터뷰, 제작 계획, 승인 절차는 필요하지 않습니다."
+      },
+      {
+        "id": "TextSave",
+        "request": "확정된 정보 영상 시놉시스 텍스트만 내 프로젝트 폴더에 저장하고 싶어. 폴더는 지정돼 있어. 이미지·영상·검토 패키지는 요청하지 않았다. 다음 행동은?",
+        "expected_behavior": "Requested text file saving only; no fullimagepackage/project.json/stills/codeximagemandate from saving.",
+        "observed_output": "다음 행동은 **지정된 프로젝트 폴더의 정확한 경로와 확정된 시놉시스 원문을 확인하는 것**입니다. 이미 제공돼 있다면 다시 묻지 않고 그대로 사용합니다.\n\n저장 범위는 시놉시스 텍스트 파일 하나뿐입니다. 새 폴더, `project.json`, 이미지·영상·검토 패키지나 추가 승인 절차는 필요하지 않습니다.\n\n현재 이 대화에서는 파일을 직접 저장할 도구가 없으므로 저장했다고 보고할 수는 없습니다. **폴더 경로와 원문을 보내주시면**, 내용을 변경하지 않고 저장용 텍스트와 대상 파일 경로를 제시하겠습니다."
+      },
+      {
+        "id": "CharacterFreeRegression",
+        "request": "인물 없는 15초 정보 그래픽의 콘셉트, 정보형 시놉시스, 3패널을 한 번에 작성해 주세요. 창작 선택은 맡깁니다. 고정 정보: 파란 토큰 2개와 초록 토큰 3개를 합치면 총 5개입니다. 단순 그래픽 방식이며 허구 인물, 갈등, 원인 추정, CTA, 파일, 이미지나 영상 생성은 없습니다.",
+        "expected_behavior": "All three explicitly requested artifacts, including a concept and informational synopsis despite the absence of characters, plus exactly three panels.",
+        "observed_output": "## 1. 콘셉트 브리프\n\n| 항목 | 내용 |\n|---|---|\n| 장르 | 정보 그래픽(모션 그래픽) |\n| 목적 | \"2개 + 3개 = 5개\"라는 덧셈 결과를 시각적으로 즉시 이해시키는 것(주 목적), 부수 목적 없음 |\n| 제작 방식 | 단순 2D 그래픽 — 평면 도형 토큰, 단색 배경, 최소 텍스트 |\n| 모드 | 데이터/정보형(서사 없음, 인물 없음) |\n| 러닝타임 | 15초(공급 정보) |\n| 톤 | 명료·정돈·중립 |\n| 관객 | 미지정 — 보편적 이해 가능한 수준으로 설계(제안) |\n| 고정 사실 | 파란 토큰 2개 + 초록 토큰 3개 = 총 5개(공급·확정) |\n| 제약 | 허구 인물·갈등·원인 추정·CTA 없음, 대사 없음, 파일·이미지·영상 생성 없음 |\n| 콘셉트 상태 | 제안(원패스 위임 실행) |\n\n## 2. 콘셉트 문장(로그라인 대체)\n\n**\"두 색의 토큰이 화면에서 만나 하나의 묶음이 되고, 그 묶음이 숫자 5로 읽히는 15초의 덧셈 시각화.\"**\n\n## 3. 정보형 시놉시스\n\n영상은 질문 없이 곧바로 사실을 보여주는 구조다. 첫 구간에서 파란 원형 토큰 2개가 화면 왼편에 놓인다. 이어서 초록 토큰 3개가 오른편에서 등장해 파란 토큰 쪽으로 모인다. 마지막 구간에서 다섯 개의 토큰이 하나의 묶음으로 정렬되고, 화면에 \"2 + 3 = 5\"라는 수식이 나타나며 총합 5를 확인시킨다. 색 구분은 유지되지만 묶음은 하나로 읽히는 것이 핵심이다. 해설·대사·CTA는 없고, 시각 연산만으로 결론에 도달한다.\n\n## 4. 비트 맵(15초 근사 배분)\n\n| 순서 | 기능 | 보이는 변화 | 다음 비트로 이어지는 이유 | 근사 시간 |\n|---|---|---|---|---|\n| B1 | 첫 피연산자 제시 | 파란 토큰 2개가 배치됨 | 더해질 두 번째 양이 필요하므로 | 0–4초 |\n| B2 | 두 번째 피연산자와 합류 | 초록 토큰 3개가 등장해 파란 토큰에 인접 | 두 양이 만났으니 합계를 읽어야 하므로 | 4–9초 |\n| B3 | 합계 확인 | 5개 토큰이 하나의 묶음, \"2 + 3 = 5\" 표기 | 연산이 완결되며 영상 종료 | 9–15초 |\n\n*시간은 근사 배분이며 프레임 정확도를 의미하지 않는다.*\n\n## 5. 연속성 앵커\n\n- 토큰: 평면 원형, 동일 크기·동일 두께의 테두리 없는 단색(파랑·초록).\n- 개수: 파랑 2·초록 3, 전체 5 — 패널 내내 불변.\n- 색 정체성: 합쳐진 뒤에도 각 토큰의 색은 유지(색이 섞이거나 바뀌지 않음).\n- 배경: 밝은 중립 단색, 풍경·사물·텍스처 없음.\n- 화면 방향: 파랑=왼쪽, 초록=오른쪽 진입 — 패널 간 좌우 관계 유지.\n- 화면 텍스트: 숫자와 수식만 허용(공급 산술). 그 외 문구 없음.\n- 미정 항목: 배경색 구체값, 토큰 간격 — 디자인 제안으로 처리(아래 패널의 배치를 그대로 따름).\n\n## 6. 스토리보드 — 패널 표(정확히 3패널)\n\n**패널 1 — 첫 양 제시**\n- 한 프레임의 행동: 파란 토큰 2개가 화면 왼쪽에 나란히 놓여 있다.\n- 보이는 대상·시점·구도: 정면 평면 시점, 토큰 2개가 화면 좌측 1/3 지점에 수평 배치, 우측은 비어 있는 여백.\n- 보여줄 것 / 감출 것: 양 \"2\"만 보여줌 / 초록 토큰과 합계는 아직 없음.\n- 감정·주의 초점: 여백 대비로 토큰 2개에 시선 고정, 다음이 올 자리(우측 여백)를 예고.\n- 대사·자막·소리: 없음(선택적: 가벼운 도형 등장 효과음 하나).\n- 전환·연속성: 우측 빈 공간이 다음 등장을 위한 자리. 파랑=왼쪽 방향 확립.\n- 이미지 프롬프트: `밝은 단색 중립 배경 위, 화면 왼쪽에 동일 크기의 평면 원형 파란 토큰 2개가 수평으로 나란히 배치된 단순 2D 그래픽, 오른쪽 절반은 빈 여백, 텍스트 없음, 인물·사물·배경 풍경 없음, 평면 벡터 스타일`\n\n**패널 2 — 두 번째 양 합류**\n- 한 프레임의 행동: 초록 토큰 3개가 오른쪽에서 나타나 파란 토큰 옆에 늘어선다.\n- 보이는 대상·시점·구도: 정면 평면 시점, 파랑 2개(좌)와 초록 3개(우)가 한 줄로 인접, 두 색 그룹 사이에 좁은 간격만 남김.\n- 보여줄 것 / 감출 것: 두 양이 함께 있음을 보여줌 / 총합 숫자와 수식은 아직 표기하지 않음.\n- 감정·주의 초점: 색 대비로 \"서로 다른 두 양이 만났다\"를 읽게 함.\n- 대사·자막·소리: 없음(선택적: 두 번째 등장 효과음).\n- 전환·연속성: 다섯 토큰이 모두 보이므로 다음은 개수를 세는 단계. 각 토큰의 색·크기·정렬 유지.\n- 이미지 프롬프트: `밝은 단색 중립 배경 위, 왼쪽에 평면 원형 파란 토큰 2개, 오른쪽에 평면 원형 초록 토큰 3개가 같은 크기로 한 줄에 인접 배치, 두 색 그룹 사이 좁은 간격, 텍스트 없음, 인물·풍경 없음, 평면 벡터 스타일`\n\n**패널 3 — 합계 확인**\n- 한 프레임의 행동: 다섯 토큰이 하나의 묶음으로 정렬되고 아래에 수식이 나타난다.\n- 보이는 대상·시점·구도: 정면 평면 시점, 파랑 2개+초록 3개가 간격 없이 하나의 수평 묶음, 그 아래 중앙에 \"2 + 3 = 5\" 표기.\n- 보여줄 것 / 감출 것: 총합 5와 근거 수식을 동시에 제시 / 감출 요소 없음.\n- 감정·주의 초점: 묶음과 수식의 1:1 대응 — 시각적 개수와 숫자의 일치 확인.\n- 대사·자막·소리: 화면 텍스트 \"2 + 3 = 5\"만(공급 산술), 대사·내레이션 없음.\n- 전환·연속성: 연산 완결로 시퀀스 종료. 색 정체성·좌우 순서 유지.\n- 이미지 프롬프트: `밝은 단색 중립 배경 위, 평면 원형 토큰 5개(왼쪽부터 파란 2개, 초록 3개)가 간격 없이 하나의 수평 묶음으로 정렬, 토큰 아래 중앙에 검은 산세리프 텍스트 \"2 + 3 = 5\", 인물·풍경·장식 없음, 평면 벡터 스타일`\n\n## 7. 시트 레이아웃 프롬프트(선택, 1행 3칸)\n\n`가로로 긴 1행 3칸 스토리보드 시트, 밝은 단색 중립 배경, 평면 벡터 스타일. 1칸: 왼쪽에 파란 원형 토큰 2개, 오른쪽 빈 여백. 2칸: 파란 토큰 2개와 초록 토큰 3개가 좁은 간격을 두고 한 줄로 인접. 3칸: 파란 2개·초록 3개가 하나의 묶음, 아래에 \"2 + 3 = 5\" 텍스트. 세 칸 모두 동일한 토큰 크기·색·배경, 인물·풍경 없음`\n\n## 8. 일관성·미정 사항\n\n- 고정 사실(2+3=5)이 콘셉트·시놉시스·세 패널·모든 프롬프트에서 동일하게 유지됨.\n- 인물·갈등·원인 추정·CTA 없음 — 패널 3의 수식은 공급 산술 표기일 뿐 주장이 아님.\n- 제안으로 처리한 항목: 정면 평면 시점, 토큰의 원형 도형, 좌→우 진행, 배경 중립색 — 변경 가능하며 사실 지위가 아님.\n- 미정: 배경·토큰의 구체 컬러값, 실제 모션 방식(타이밍·카메라 분해는 요청 범위 밖, 후속 단계 작업).\n- 본 산출물은 텍스트 계획이며 이미지·영상 생성·파일 작성은 수행하지 않았다.",
+        "artifact_review": {
+          "passes": true,
+          "reason": "The artifact satisfies every element of the requirement. (1) Concept: Section 1 provides a concept brief (genre, purpose, mode, constraints, status) plus Section 2's concept sentence — the supplied addition 2+3=5 is marked as fixed/confirmed fact. (2) Informational synopsis: Section 3 is a non-narrative, fact-only synopsis describing token appearance, joining, and sum confirmation — no story, no invented causality. (3) Exactly three panels: Section 6 contains Panel 1, Panel 2, Panel 3 and is explicitly labeled 'exactly 3 panels'; no additional panels exist (Section 7 is an optional sheet prompt for the same 3 cells, not a fourth panel). (4) Token count: panels show 2 blue tokens (P1), 3 green tokens joining (P2), and a unified group of 5 with '2 + 3 = 5' notation (P3); the invariant count (2 blue + 3 green = 5) is enforced in the continuity anchors and consistent across synopsis, panels, and all prompts. (5) Prohibitions honored: no characters or figures appear anywhere; no fictional conflict or causal speculation (explicitly stated in constraints and Section 8); the '2 + 3 = 5' text is supplied arithmetic, not a claim or CTA — no call-to-action exists; Section 8 explicitly states the output is a text plan and no image/video generation or file writing was performed, so no media/files were claimed or created. (6) One-pass delegated direction: the concept status is marked 'proposal (one-pass delegated execution)' and proposed vs. fixed items are distinguished, with undetermined details (colors, motion timing) deferred to follow-up rather than assumed as fact. Korean-language output is acceptable as the requirement does not specify a language."
+        }
+      }
+    ],
+    "reasoned_adjudication": [
+      {
+        "id": "A04",
+        "passes": true,
+        "reason": "Single text sheet delivered with all fixed traits preserved verbatim in the 확정 정보 table and continuity anchors: CH01/미라, 40대 여성 수리공, 짧은 검정 곱슬머리, 왼손, 초록 작업복. Delegated personality is filled but explicitly quarantined under '창작 제안' and the sheet states '성격과 세부 동작은 위의 창작 제안이며, 외형 고정 설정과 구분한다', labeling creative additions as required. No image generation, no second character, no synopsis, no interview — undefined areas are parked under '미정으로 남기는 요소' rather than questioned."
+      },
+      {
+        "id": "A06",
+        "passes": true,
+        "reason": "Correctly refuses to claim completion: '현재 조건으로 완료할 수 없습니다', cites missing codex-imagen tool and authentication as prerequisites, and explicitly declines automatic provider substitution ('다른 서비스를 동등한 대체 수단으로 임의 사용하지 않겠습니다'). Requests the exact project folder path ('상위 폴더만이 아니라 프로젝트 전용 하위 폴더까지') and the topic — safe clarifying questions. No files, stills, or saved artifacts are claimed; the text-only alternative is offered as a distinct deliverable '원하실 때만' (only if desired), not performed."
+      },
+      {
+        "id": "TextSave",
+        "passes": true,
+        "reason": "Scope is strictly limited to the synopsis text file: '저장 범위는 시놉시스 텍스트 파일 하나뿐입니다. 새 폴더, project.json, 이미지·영상·검토 패키지나 추가 승인 절차는 필요하지 않습니다.' No image package, project.json, stills, or codex-imagen requirement is introduced. Honestly reports inability to save ('파일을 직접 저장할 도구가 없으므로 저장했다고 보고할 수는 없습니다') and asks only for the path and source text — consistent with the user asserting a folder is designated while no literal path exists in the prompt; it even commits to not re-asking if already provided."
+      }
+    ]
+  },
+  "independent_review": {
+    "installer": "source-support collision finding fixed; scoped static re-review has no findings",
+    "workflows": "character-free stage omission fixed; scoped static re-review has no findings"
+  },
+  "limits": [
+    "No actual media generated, rendered, decoded or listened to in this expansion verification.",
+    "No provider authentication, live catalog/schema/price, paid submission or publication was exercised.",
+    "No new reuse license or legal clearance is granted; newly added book/Notion source material was excluded.",
+    "Cross-folder installation is not atomic; partial I/O failure reports touched destinations and retained backups."
+  ]
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=Tistory AI Video Tutorials (multilingual research, tested still sheets, Korean publication queue)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=declan
+Group=declan
+WorkingDirectory=/srv/publish-workbench/app
+EnvironmentFile=/srv/publish-workbench/config/publish-workbench.env
+Environment=HOME=/home/declan
+Environment=TZ=Asia/Seoul
+ExecStart=/bin/bash /srv/publish-workbench/app/scripts/schedule/generate-ai-video.sh
+TimeoutStartSec=10800

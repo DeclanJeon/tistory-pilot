@@ -1,0 +1,185 @@
+{
+  "schema_version": "camera-spatial-1.0",
+  "project_id": "dialogue-distance-previs",
+  "fps": 24,
+  "resolution": [
+    640,
+    360
+  ],
+  "subjects": [
+    {
+      "id": "CH01",
+      "size_m": [
+        0.5,
+        0.35,
+        1.7
+      ],
+      "position": [
+        -0.8,
+        0,
+        0
+      ],
+      "color_rgba": [
+        0.12,
+        0.45,
+        0.8,
+        1
+      ]
+    },
+    {
+      "id": "CH02",
+      "size_m": [
+        0.5,
+        0.35,
+        1.7
+      ],
+      "position": [
+        0.8,
+        0,
+        0
+      ],
+      "color_rgba": [
+        0.9,
+        0.35,
+        0.12,
+        1
+      ]
+    }
+  ],
+  "obstacles": [],
+  "shots": [
+    {
+      "id": "SH01",
+      "scene_id": "S01",
+      "purpose": "두 인물의 간격을 드러낸다",
+      "duration_frames": 48,
+      "subject_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "motion_reason": "정지 투샷으로 공간을 먼저 설명한다",
+      "camera": {
+        "sensor_width_mm": 36,
+        "lens_mm": 35,
+        "clip_start_m": 0.1,
+        "clip_end_m": 100,
+        "roll_deg": 0,
+        "clearance_radius_m": 0.2,
+        "interpolation": "linear",
+        "keyframes": [
+          {
+            "frame": 0,
+            "position": [
+              0,
+              -5,
+              1.6
+            ],
+            "target": [
+              0,
+              0,
+              0.85
+            ]
+          },
+          {
+            "frame": 47,
+            "position": [
+              0,
+              -5,
+              1.6
+            ],
+            "target": [
+              0,
+              0,
+              0.85
+            ]
+          }
+        ]
+      },
+      "subject_tracks": [],
+      "axis": {
+        "a_subject_id": "CH01",
+        "b_subject_id": "CH02",
+        "allowed_side": "negative",
+        "exception_reason": ""
+      }
+    },
+    {
+      "id": "SH02",
+      "scene_id": "S01",
+      "purpose": "다가가는 선택과 상대 반응에 집중한다",
+      "duration_frames": 48,
+      "subject_ids": [
+        "CH01",
+        "CH02"
+      ],
+      "motion_reason": "거리가 줄어드는 순간 카메라도 완만하게 접근한다",
+      "camera": {
+        "sensor_width_mm": 36,
+        "lens_mm": 35,
+        "clip_start_m": 0.1,
+        "clip_end_m": 100,
+        "roll_deg": 0,
+        "clearance_radius_m": 0.2,
+        "interpolation": "smoothstep",
+        "keyframes": [
+          {
+            "frame": 0,
+            "position": [
+              0,
+              -5,
+              1.6
+            ],
+            "target": [
+              0,
+              0,
+              0.85
+            ]
+          },
+          {
+            "frame": 47,
+            "position": [
+              0,
+              -3.8,
+              1.6
+            ],
+            "target": [
+              0.15,
+              0,
+              0.85
+            ]
+          }
+        ]
+      },
+      "subject_tracks": [
+        {
+          "subject_id": "CH01",
+          "interpolation": "smoothstep",
+          "keyframes": [
+            {
+              "frame": 0,
+              "position": [
+                -0.8,
+                0,
+                0
+              ]
+            },
+            {
+              "frame": 47,
+              "position": [
+                -0.4,
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "axis": {
+        "a_subject_id": "CH01",
+        "b_subject_id": "CH02",
+        "allowed_side": "negative",
+        "exception_reason": ""
+      }
+    }
+  ]
+}

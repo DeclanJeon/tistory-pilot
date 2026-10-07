@@ -1,0 +1,211 @@
+{
+  "package": "contents-production-skills",
+  "version": "2.0",
+  "verification_type": "Observed regression suites, disposable CLI scenarios, text-artifact probes and path closure; not media-production proof",
+  "consolidation": {
+    "installable_skills": [
+      "blender-previsualization",
+      "camera-spatial-design",
+      "creative-production",
+      "designing-video-character-sheets",
+      "developing-video-synopses",
+      "orchestrating-video-preproduction",
+      "storyboarding-video",
+      "video-production-assets"
+    ],
+    "legacy_v6_skills_mapped": 28,
+    "deep_dive_references_added": 10,
+    "templates_added": 10,
+    "only_coordinator": "creative-production",
+    "multistage_state": "project.json",
+    "remaining_identical_core_resources": []
+  },
+  "regression_suites": [
+    {
+      "command": "python scripts/test_install_package.py",
+      "passed": 21
+    },
+    {
+      "command": "python video-production-assets/scripts/test_validate_project.py",
+      "passed": 15
+    },
+    {
+      "command": "python camera-spatial-design/scripts/test_spatial_spec.py",
+      "passed": 7
+    }
+  ],
+  "regression_total_passed": 43,
+  "earlier_observed_cli_scenarios": [
+    {
+      "scenario": "Fresh manifest installation",
+      "exit_code": 0
+    },
+    {
+      "scenario": "Collision refuses writes and preserves destination hashes",
+      "exit_code": 2,
+      "expected_rejection": true
+    },
+    {
+      "scenario": "Explicit replacement preserves eight skill backups",
+      "exit_code": 0
+    },
+    {
+      "scenario": "Explicit alias migration preserves nine managed backups and unrelated content",
+      "exit_code": 0
+    },
+    {
+      "scenario": "Education and animation plan validation",
+      "exit_code": 0
+    },
+    {
+      "scenario": "Spatial and vertical-product numerical analysis",
+      "exit_code": 0
+    },
+    {
+      "scenario": "UTF-8 numerical projection produces inspected six-panel wireframe PNG",
+      "exit_code": 0
+    },
+    {
+      "scenario": "Zero retries allows initial attempt",
+      "exit_code": 0
+    },
+    {
+      "scenario": "Zero retries rejects attempt two",
+      "exit_code": 1,
+      "expected_rejection": true
+    },
+    {
+      "scenario": "Fresh updated-runtime installation and installed shared Blender CLI help",
+      "exit_code": 0
+    }
+  ],
+  "discovered_and_fixed": [
+    {
+      "failure": "Windows locale decoding rejected Korean UTF-8 JSON",
+      "fix": "Explicit UTF-8 JSON boundaries; failing-before/passing-after regression"
+    },
+    {
+      "failure": "Zero retry budget rejected initial attempt",
+      "fix": "Count retries after the initial attempt"
+    },
+    {
+      "failure": "Malformed non-string shot reference caused unhashable-key crash",
+      "fix": "Validate type before duplicate-key tracking"
+    },
+    {
+      "failure": "Accepted attempt could reference a merely planned result",
+      "fix": "Require an available or verified result"
+    }
+  ],
+  "current_root_cli_records": [
+    {
+      "label": "renamed-root-education-plan",
+      "command": [
+        "python",
+        "video-production-assets/scripts/validate_project.py",
+        "examples/15-second-education/project.json"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"profile\": \"plan\",\n  \"errors\": [],\n  \"scope\": \"contract, timing, references and declared inspection records; no media decoding or artistic verification\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "renamed-root-animation-plan",
+      "command": [
+        "python",
+        "video-production-assets/scripts/validate_project.py",
+        "examples/20-second-animation/project.json"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"profile\": \"plan\",\n  \"errors\": [],\n  \"scope\": \"contract, timing, references and declared inspection records; no media decoding or artistic verification\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "renamed-root-product-spatial",
+      "command": [
+        "python",
+        "camera-spatial-design/scripts/spatial_spec.py",
+        "examples/vertical-product/camera_spec.json",
+        "--out",
+        "<verification-root>/renamed-product-analysis.json"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "renamed-root-shared-blender-import",
+      "command": [
+        "python",
+        "blender-previsualization/scripts/build_previs.py",
+        "--help"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "usage: build_previs.py [-h] --spec SPEC --output OUTPUT\n                       [--mode {smoke,stills,sequence}]\n\nBlender-only adapter. Creates fresh proxy scenes; run in an isolated process.\n\noptions:\n  -h, --help            show this help message and exit\n  --spec SPEC\n  --output OUTPUT\n  --mode {smoke,stills,sequence}\n",
+      "stderr": ""
+    }
+  ],
+  "behavior_probes": {
+    "current_cases": 6,
+    "baseline_cases": 6,
+    "actual_text_artifacts": 12,
+    "current_blog_character_count": 262,
+    "cases": [
+      "source-content",
+      "factual-video",
+      "series-identity",
+      "single-prompt",
+      "contact-critique",
+      "approval-invalidation"
+    ],
+    "current_constraints_review": "Actual outputs reviewed by primary assistant; six supplied scenario assertions satisfied",
+    "automatic_classifier_threshold": 0.8,
+    "automatic_threshold_matches": {
+      "current": 15,
+      "previous_coordinator": 15,
+      "per_configuration": 18
+    },
+    "comparison_limit": "One text-only completion per case/configuration. Common core craft references shared; previous coordinator is not an absent-skill baseline. No demonstrated quality improvement; classifier confidence misses remain visible.",
+    "benchmark": "behavior-benchmark.json",
+    "actual_artifacts": "evaluation-review.html"
+  },
+  "rename": {
+    "local_project_folder": "contents-production-skills",
+    "preserved_git_metadata": true,
+    "github_repository": "https://github.com/DeclanJeon/contents-production-skills",
+    "origin": "https://github.com/DeclanJeon/contents-production-skills.git",
+    "method": "Direct root rename blocked twice with WinError 32; all entries including .git moved into new folder.",
+    "old_folder": "video-production-skills",
+    "old_folder_state": "Empty directory held by current session lock; no project files or duplicate maintained skills.",
+    "commit_created": false,
+    "push_performed": false
+  },
+  "final_path_closure": {
+    "source_local_links_checked": 188,
+    "installed_local_links_checked": 126,
+    "missing_links": [],
+    "installed_skills": 8,
+    "installed_manifest_name": "contents-production-skills",
+    "installed_support_qa_present": true,
+    "renamed_root_install_exit": 0,
+    "installed_education_plan_exit": 0,
+    "installed_shared_blender_help_exit": 0,
+    "old_empty_directory_removal": {
+      "removed": false,
+      "winerror": 32,
+      "required_to_remove": "Close the process holding the old working directory; it cannot be safely terminated from this task."
+    }
+  },
+  "limits": [
+    "Global installed skills untouched; installs used disposable destinations.",
+    "bpy unavailable: Blender import/help and numerical projection exercised, not scene/render.",
+    "No real media generation, paid/free provider request, media QA, publication or external auth exercised.",
+    "Text probes do not prove media quality, rights, factual truth or live capabilities.",
+    "Latency and token usage unrecorded."
+  ],
+  "archive_handling": "Original v6 archive preserved outside package in disposable verification directory; duplicate nested installation and guide retired."
+}

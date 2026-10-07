@@ -1,0 +1,88 @@
+{
+  "skill_name": "storyboarding-video",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "다음 확정된 시놉시스를 러프 서사 패널 정확히 6개로 그려 주세요 — 제작용 촬영·카메라 사양 없이 패널 연습만 필요합니다. 비 오는 밤, 한 학생이 늦게까지 불이 켜진 문구점 창가 진열을 따라 할머니가 잃어버린 편지를 찾습니다. 편지는 할머니가 창가 진열함 안에 끼워 둔 채 비를 피해 있었습니다.",
+      "expected_output": "A six-panel Korean visual storyboard with one readable action per panel, motivated progression, foreshadowed discovery, and a consistent six-cell sheet prompt.",
+      "expectations": [
+        "Exactly six ordered panels, each centered on one readable visible action or beat.",
+        "Panel transitions follow the supplied premise rather than unrelated invented events.",
+        "The window display or its sheltered interior is visually foreshadowed before the letter is discovered, and the final panel resolves the search there.",
+        "The output stays at panel level — no shot timing, camera-move breakdown, or clip segmentation.",
+        "A single consistent six-cell sheet prompt preserves the student, rainy night storefront, display case, and dry letter without claiming image generation; the output is in Korean."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "지하철역을 가로질러 초록 우산을 돌려주는 수리공 장면을 러프 서사 패널 5개로 스토리보드화해 주세요 — 제작 사양 없이 패널 연습만. 우산은 연두색이고 손잡이 끈이 닳았으며, 돌려줄 때까지 수리공의 왼손에 들려 있습니다.",
+      "expected_output": "A five-panel Korean storyboard keeping the umbrella's color, worn strap, and left-hand possession until the return is depicted, without inventing explanations.",
+      "expectations": [
+        "Exactly five ordered panels, each with a clear narrative function.",
+        "The umbrella stays light green with the frayed wrist strap in the repair person's left hand until the return is shown.",
+        "Any change in ownership or hand appears as an explicit panel event, never a silent switch between prompts.",
+        "Prompts repeat only continuity-critical details and invent no recipient identity, station incident, backstory, or extra prop as fact.",
+        "The output is in Korean and prompts make no image-generation claim."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "다음 제공된 테스트 수치만으로 마을 재활용 센터 홍보 영상의 러프 서사 패널 4개를 만들어 주세요 — 제작 사양 없이 패널 연습만. 첫해에 40톤, 둘째 해에 52톤을 수거했습니다. 수가 변한 이유를 주장하지 마세요.",
+      "expected_output": "A four-panel Korean factual storyboard visualizing only the supplied tonnage and keeping the cause of the change unknown.",
+      "expectations": [
+        "Exactly four ordered panels using 40 tonnes in year one and 52 tonnes in year two accurately; any derived difference is labeled arithmetic.",
+        "Each panel has one clear informational function or visible action; the sequence never becomes an invented anecdote.",
+        "The cause of the change is explicitly unknown or unstated — no external statistic, source, or causal explanation is invented.",
+        "Image prompts add no invented facility, staff, equipment, or records as evidence and make no image-generation claim.",
+        "The output is in Korean."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "승인된 20초 무대사 이야기: CH01이 창가에서 빨간 장갑을 발견하고 출구에서 장갑을 찾는 CH02를 알아본 뒤 다가가 돌려주고 둘이 안도한다. 창작 staging은 위임한다. 영상 제작용 상세 스토리보드를 텍스트로 설계해줘. 이미지 컷만 순서대로 놓아도 이야기가 읽혀야 한다. 생성·지출은 하지 마.",
+      "expected_output": "An indexed complete production storyboard with technical handoffs and an honest image-only review gate, not a claimed rendered result.",
+      "expectations": [
+        "Every synopsis beat/source location, scene, shot and required start/peak/end or hold panel mapped; no representative-only board presented as full coverage.",
+        "Camera size/angle/framing/movement, spatial/Blender branch, VFX, speech/lipsync and audio cues explicitly connected, including reasoned non-applicability.",
+        "Image-slot, unique-image and sheet counts distinguished; individual images carry visible states, with management labels outside clean cuts.",
+        "Image-only review compares actual read events and causal/ownership/emotional changes to synopsis, not mere panel count; actual media remains unverified.",
+        "KEEP/FIX/unverified, minimal repair/preserve/prerequisites and estimate basis provided; unsupported labor times remain unknown.",
+        "Indexed clean-cut and first/peak/end frame handoff preserves IDs and verified endpoint limits without execution or media claims."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "이 제공 콘티를 고쳐줘: 원문 B01 발견→B02 반환→B03 안도인데 이미지 P01은 발견, P02는 둘이 웃음뿐이다. 장갑 반환 접촉 컷과 캐릭터/음향 매핑이 빠져 있다. 기존 이야기와 정상 P01은 유지한다. 이미지 파일은 아직 없고 Blender도 실행 불가다. 유료 생성은 하지 마.",
+      "expected_output": "An index-specific repair plan for missing causal imagery and metadata, with exact blockers and no fabricated render.",
+      "expectations": [
+        "B02 missing visual evidence is blocker; preserves valid P01 and fixed story rather than rebuilding all panels.",
+        "Adds staged before/contact/after states for ownership transfer, with technical and character/audio links.",
+        "Lists KEEP/FIX/unverified, repair reason/method/prerequisites and grounded estimate or unknown.",
+        "Blender and actual image review stay unverified, no runtime fallback or claimed completed media.",
+        "Corrected text is not presented as accepted image-only storyboard."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "캐릭터 없는 무음 숫자 설명 영상의 상세 콘티를 설계해줘. 승인 사실은 올해 40건, 다음해 52건뿐이고 증가 원인은 모른다. 15초, 생성/저장 없이 텍스트만. 두 숫자가 순서대로 이미지에서 읽히게 해줘.",
+      "expected_output": "A full indexed factual storyboard respecting no-audio and unknown causation.",
+      "expectations": [
+        "No fictional cast, voice, music, facilities or causal claims.",
+        "Required scene/shot/beat/panel technical slots present with explicit spatial/VFX/speech/audio non-applicability where appropriate.",
+        "Approved data graphics remain visible in image-only review, while external explanatory labels/audio are hidden.",
+        "Runtime coverage and required image counts explicit; no generated media, files or paid job claimed."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "승인된 20초 무대사 이야기: CH01이 창가에서 빨간 장갑을 발견하고 출구에서 장갑을 찾는 CH02에게 다가가 돌려주고 둘이 안도한다. staging은 위임한다. 콘티를 작성해줘. 텍스트만 반환하고 실제 생성/저장/지출은 하지 마.",
+      "expected_output": "An unqualified storyboard request defaults to a complete production plan, not a narrow narrative thumbnail list.",
+      "expectations": [
+        "Returns integrated input/coverage/shot/panel/count-and-handoff/review sections with all mandatory technical slots.",
+        "The pickup, approach, contact and final possession supply causal visual coverage rather than skipping to relief.",
+        "Consistent hand/ownership/space states across ledgers, panel prompts and shot specifications; contradictions are FIX.",
+        "Keeps actual image-only quality and Blender execution unverified, distinguishes text planning from finished artwork, and invents no labor time."
+      ]
+    }
+  ]
+}
