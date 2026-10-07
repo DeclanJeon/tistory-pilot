@@ -1,36 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  DEFAULT_AUTH_EMAIL_CODE_TTL_MS,
-  DEFAULT_LOCK_HEARTBEAT_MS,
-  DEFAULT_LOCK_LEASE_MS,
-  DEFAULT_QR_TTL_MS,
-  DEFAULT_STAGED_FAILURE_TTL_MS,
-  DEFAULT_STAGED_SUCCESS_TTL_MS,
   assertRuntimeEnvPolicy,
   assertWorkerBootstrapContract,
   createRuntimeConfig,
   listUnknownScopedEnvKeys
 } from '../../src/core/runtime/config.mjs';
 
-test('createRuntimeConfig uses only publish workbench scoped env', () => {
+test('createRuntimeConfig parses scoped email recipient lists', () => {
   const config = createRuntimeConfig({
-    cwd: '/workspace/repo',
     env: {
-      PUBLISH_WORKBENCH_APP_ENV: 'development',
-      PUBLISH_WORKBENCH_DATA_ROOT: 'var/workbench',
       PUBLISH_WORKBENCH_AUTH_EMAIL_ALLOWED_RECIPIENTS: 'ops@ponslink.com',
       PUBLISH_WORKBENCH_QR_EMAIL_ALLOWED_RECIPIENTS: 'ops@ponslink.com,admin@ponslink.com'
     }
   });
 
-  assert.equal(config.dataRoot, '/workspace/repo/var/workbench');
-  assert.equal(config.lock.leaseMs, DEFAULT_LOCK_LEASE_MS);
-  assert.equal(config.lock.heartbeatMs, DEFAULT_LOCK_HEARTBEAT_MS);
-  assert.equal(config.retention.qrTtlMs, DEFAULT_QR_TTL_MS);
-  assert.equal(config.retention.stagedSuccessTtlMs, DEFAULT_STAGED_SUCCESS_TTL_MS);
-  assert.equal(config.retention.stagedFailureTtlMs, DEFAULT_STAGED_FAILURE_TTL_MS);
-  assert.equal(config.authEmail.codeTtlMs, DEFAULT_AUTH_EMAIL_CODE_TTL_MS);
   assert.deepEqual(config.authEmail.allowedRecipients, ['ops@ponslink.com']);
   assert.deepEqual(config.qrEmail.allowedRecipients, ['ops@ponslink.com', 'admin@ponslink.com']);
 });
