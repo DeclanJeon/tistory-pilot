@@ -192,3 +192,33 @@ test('http server supports email code session login', async () => {
     await new Promise(resolve => app.server.close(resolve));
   }
 });
+
+for (const [name, blockers, expectedStatus] of [
+  ['existing article and skin advisories', [{ code: 'thin-body' }, { code: 'mixed-script' }, { code: 'auto-refresh' }], 201],
+  ['unreachable blog', [{ code: 'blog-unreachable', status: 503 }], 503],
+  ['missing custom-domain ads.txt', [{ code: 'ads-txt-unavailable', status: 404 }], 503]
+]) {
+  test(`publish API applies fatal public QA policy to ${name}`, async t => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'http-public-policy-'));
+    t.after(() => fs.rm(root, { recursive: true, force: true }));
+    const app = await createHttpServer({
+      cwd: root,
+      env: { PUBLISH_WORKBENCH_DATA_ROOT: 'data', PUBLISH_WORKBENCH_WEB_HOST: '127.0.0.1', PUBLISH_WORKBENCH_WEB_PORT: '0' },
+      publicSiteQa: async () => ({ surface: { ok: false, blockers } })
+    });
+    await new Promise(resolve => app.server.listen(0, '127.0.0.1', resolve));
+    const url = `http://127.0.0.1:${app.server.address().port}`;
+    t.after(() => new Promise(resolve => app.server.close(resolve)));
+    const response = await fetch(`${url}/api/jobs`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        type: 'publish_post', blogUrl: 'https://acstory.tistory.com',
+        title: '출처 검증 테스트 글', body: PUBLISH_BODY, category: 'IT·테크',
+        sourceBundle: [{ url: 'https://example.com/source', title: '공식 안내' }]
+      })
+    });
+    assert.equal(response.status, expectedStatus);
+    const { jobs } = await fetch(`${url}/api/jobs`).then(result => result.json());
+    assert.equal(jobs.length, expectedStatus === 201 ? 1 : 0);
+  });
+}

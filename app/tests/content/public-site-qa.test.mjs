@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { extractFeedUrls, extractSitemapUrls, inspectArticleHtml, evaluateSiteSurface } from '../../scripts/content/public-site-qa.mjs';
+import { createServer } from 'node:http';
+import { extractFeedUrls, extractSitemapArticleUrls, inspectArticleHtml, evaluateSiteSurface, runPublicSiteQa } from '../../scripts/content/public-site-qa.mjs';
 
 const GOOD_BODY = `
 <div class="contents_style">
@@ -61,7 +62,7 @@ test('feed and sitemap extraction remain bounded and unique', () => {
     ['https://example.com/1', 'https://example.com/2']
   );
   assert.deepEqual(
-    extractSitemapUrls('<url><loc>https://example.com/1</loc></url><url><loc>https://example.com/1</loc></url>', 10),
+    extractSitemapArticleUrls('<url><loc>https://example.com/1</loc></url><url><loc>https://example.com/1</loc></url>', 'https://example.com', 10),
     ['https://example.com/1']
   );
 });
@@ -91,4 +92,30 @@ test('site QA treats Tistory-hosted ads.txt as platform-managed', () => {
   assert.equal(report.ok, true);
   assert.deepEqual(report.blockers, []);
   assert.deepEqual(report.warnings, [{ code: 'ads-txt-platform-managed', status: 404 }]);
+});
+
+test('RSS failure samples actual sitemap articles after excluding navigation and foreign URLs', async t => {
+  let base;
+  const server = createServer((request, response) => {
+    if (request.url === '/rss') {
+      response.writeHead(503);
+      response.end('RSS unavailable');
+    } else if (request.url === '/sitemap.xml') {
+      const urls = [base + '/', base + '/tag', 'https://foreign.invalid/999',
+        ...Array.from({ length: 65 }, (_, i) => base + '/category/topic-' + i),
+        base + '/1', base + '/entry/original-guide', base + '/2'];
+      response.end('<urlset>' + urls.map(url => `<url><loc>${url}</loc></url>`).join('') + '</urlset>');
+    } else if (request.url === '/1' || request.url === '/entry/original-guide') {
+      response.end(`<html><head><link rel="canonical" href="${base}${request.url}"></head><body>${GOOD_BODY}</body></html>`);
+    } else {
+      response.end('<html><body>Navigation</body></html>');
+    }
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  base = `http://127.0.0.1:${server.address().port}`;
+  const report = await runPublicSiteQa({ blogUrl: base, limit: 2 });
+  assert.deepEqual(report.articles.map(article => article.url), [base + '/1', base + '/entry/original-guide']);
+  assert.equal(report.surface.verified, true);
+  assert.equal(report.surface.blockers.some(item => item.code === 'thin-body'), false);
 });

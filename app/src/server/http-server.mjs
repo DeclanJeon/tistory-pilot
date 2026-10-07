@@ -7,7 +7,7 @@ import { createEmailAuthService } from './email-auth-service.mjs';
 import { BlogService } from './blog-service.mjs';
 import { JobService, analyzeMarkdownSource } from './job-service.mjs';
 import { qaHtmlPostWithMarket } from '../../scripts/content/qa-post.mjs';
-import { runPublicSiteQa } from '../../scripts/content/public-site-qa.mjs';
+import { runPublicSiteQa, classifySurface } from '../../scripts/content/public-site-qa.mjs';
 
 
 function getStaticRoot(options = {}) {
@@ -203,10 +203,11 @@ export async function createHttpServer(options = {}) {
             });
             return;
           }
-          if (!publicReport?.surface?.ok) {
+          const publicFatal = classifySurface(publicReport?.surface).fatal;
+          if (!publicReport?.surface || publicFatal.length > 0) {
             json(response, 503, {
               error: 'public-site-qa-blocked',
-              blockers: publicReport?.surface?.blockers || []
+              blockers: publicFatal
             });
             return;
           }

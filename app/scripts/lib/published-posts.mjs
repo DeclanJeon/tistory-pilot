@@ -200,6 +200,32 @@ export function matchByTitle({ keyword = '', title = '' }, publishedTitles = [])
   return { matched: false, rule: null, against: null };
 }
 
+function matchCreativeTitles(post, publishedTitles) {
+  const title = normalizeTitle(post.title);
+  const category = normalizeTitle(post.keyword);
+  const subject = category ? title.replace(category, ' ').trim() : title;
+  const tokens = new Set(tokenizeTitle(subject));
+  for (const entry of publishedTitles) {
+    const publishedTitle = normalizeTitle(entry.title);
+    if (!publishedTitle) continue;
+    if (title && title === publishedTitle) {
+      return { matched: true, rule: 'exact-title', against: entry };
+    }
+    const publishedSubject = category ? publishedTitle.replace(category, ' ').trim() : publishedTitle;
+    if (subject && subject === publishedSubject) {
+      return { matched: true, rule: 'creative-subject', against: entry };
+    }
+    const publishedTokens = new Set(tokenizeTitle(publishedSubject));
+    if (tokens.size < 2 || publishedTokens.size < 2) continue;
+    let common = 0;
+    for (const token of tokens) if (publishedTokens.has(token)) common++;
+    if (common / Math.min(tokens.size, publishedTokens.size) >= 0.6) {
+      return { matched: true, rule: 'creative-subject-similarity', against: entry };
+    }
+  }
+  return { matched: false, rule: null, against: null };
+}
+
 // ─── 발행 원장(ledger) ──────────────────────────────────────────────
 
 /** 큐 ID의 기본 키워드 ID 추출: tech-01-v2 → tech-01, life-02-2026-07-30 → life-02 */
@@ -260,7 +286,7 @@ export function isPublishedInLedger(id, ledger = []) {
 
 /**
  * 후보 글이 이미 발행되었는지 판정.
- * post: { id, keyword, title }
+ * post: { id, keyword, title, contentTrack? }
  * gate: { ledger, rssTitles } — buildDuplicateGate()로 생성
  */
 export function isAlreadyPublished(post = {}, { ledger = [], rssTitles = [] } = {}) {
@@ -275,18 +301,25 @@ export function isAlreadyPublished(post = {}, { ledger = [], rssTitles = [] } = 
     const sourceHit = ledger.find(entry => newsSourceUrls(entry).some(url => candidateUrls.has(url)));
     if (sourceHit) return { matched: true, source: 'ledger', rule: 'news-source', against: sourceHit };
   }
-  // Creative keywords are broad catalog categories. Compare the specific
-  // tutorial title, retaining ID and title-similarity checks for repeated examples.
-  const creative = post.contentTrack === 'ai-video';
+  // Creative keywords name catalog categories, not individual recipe subjects.
+  if (post.contentTrack === 'ai-video') {
+    const ledgerMatch = matchCreativeTitles(post, ledger);
+    if (ledgerMatch.matched) return { ...ledgerMatch, source: 'ledger' };
+    if (Array.isArray(rssTitles) && rssTitles.length > 0) {
+      const rssMatch = matchCreativeTitles(post, rssTitles);
+      if (rssMatch.matched) return { ...rssMatch, source: 'rss' };
+    }
+    return { matched: false, source: null, rule: null, against: null };
+  }
   const candidate = {
-    keyword: creative ? (post.title || '') : (post.keyword || post.title || ''),
+    keyword: post.keyword || post.title || '',
     title: post.title || ''
   };
   // 원장은 RSS보다 오래된 글까지 보존한다. 과거에는 원장 ID가 작업 ID로
   // 저장됐으므로 ID 미일치가 새 주제임을 뜻하지 않는다.
   for (const entry of ledger) {
     const titles = [entry];
-    if (!creative && entry.keyword && entry.keyword !== entry.title) {
+    if (entry.keyword && entry.keyword !== entry.title) {
       titles.push({ ...entry, title: entry.keyword });
     }
     const m = matchByTitle(candidate, titles);

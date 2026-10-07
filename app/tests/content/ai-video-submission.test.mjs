@@ -16,6 +16,15 @@ import { createWorkerHandlers } from '../../src/worker/handlers.mjs';
 const sha = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
 const makeTmpDir = () => fs.mkdtemp(path.join(os.tmpdir(), 'aiv-submit-'));
 
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
 // Deterministic real PNG: the byte content (and sha256) varies with seed so
 // every fixture image hashes differently; zero-fill padding lifts it over the
 // hero-image minimum-bytes threshold used by the publish QA image check.
@@ -25,7 +34,7 @@ function makePng(width, height, seed = 0, pad = 2048) {
     out.writeUInt32BE(data.length, 0);
     out.write(type, 4, 'ascii');
     data.copy(out, 8);
-    out.writeUInt32BE(zlib.crc32(Buffer.concat([Buffer.from(type), data])) >>> 0, 8 + data.length);
+    out.writeUInt32BE(crc32(out.subarray(4, 8 + data.length)), 8 + data.length);
     return out;
   };
   const ihdr = Buffer.alloc(13);

@@ -21,9 +21,9 @@ echo ""
 echo "===== $(date '+%Y-%m-%d %H:%M:%S') 큐 처리 시작 ====="
 echo ""
 
-# Discord 알림에 쓸 웹훅만 환경으로 올린다. publish-queue.service에는
-# EnvironmentFile이 없고, env 파일에는 비밀번호가 들어 있어 통째로
-# source하면 특수문자 해석 사고가 날 수 있다. 필요한 두 키만 긁는다.
+# 수동 실행의 공개 QA 알림에도 웹훅 설정을 전달한다.
+# 서비스는 EnvironmentFile을 사용하지만 env 파일 전체를 shell source하지 않는다.
+# 여기서는 알림에 필요한 두 키만 추출한다.
 PW_ENV_FILE="/srv/publish-workbench/config/publish-workbench.env"
 if [ -f "$PW_ENV_FILE" ]; then
   DISCORD_WEBHOOK_URL="$(grep -m1 '^DISCORD_WEBHOOK_URL=' "$PW_ENV_FILE" | cut -d= -f2-)"

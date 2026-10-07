@@ -61,7 +61,7 @@ Files: new production.mjs, evidence.mjs, render-sheets.py, tests/evidence.test.m
 Files: existing submit-queue.mjs, auto-queue.mjs, generate-post.mjs; new scripts/lib/queue-store.mjs, ai-video/register.mjs, tests/queue-store.test.mjs.
 - [x] Add shared file locking and atomic queue update, apply to involved writers. Retain existing posts and schema.
 - [x] Add creative evidence verification to qaQueuePost before API submission. queue evidencePath/contentTrack must persist where needed. Ensure keyword-missing exception does not become generic bypass; register only validated creative and make generic generator skip creative entries.
-- [x] Register max1 creative per Seoul day across pending/submitted/evidence history, future publishAt. Existing API/worker unchanged.
+- [x] Register max1 creative per Seoul day across pending/submitted/evidence history, future publishAt. Reuse the existing API/worker; preserve creative metadata and recheck evidence before browser publication.
 - [x] Tests for concurrent updates, missing creative evidence blocked, retries/day-cap.
 
 ## Task 4: Parent integration and rollout
@@ -72,8 +72,8 @@ Files: llm.mjs, generate-ai-video.mjs, schedule/generate-ai-video.sh, deploy/tis
 - [x] Orchestrate collect→recipe→sheets→review→HTML→qa→evidence→register with durable checkpoints. Resumption uses finished assets; no duplicate image submission.
 - [x] Deploy only modified/new files to active remote app, preserve dynamic data. Run all new tests once plus existing available checks; no existing npm test existed in active package at design time.
 - [x] Run real original two-cat sample, inspect actual imagery, reconcile any failures without publishing bad output.
-- [ ] Register the validated sample and observe existing Job worker/public page. Confirm exact prompts/images and HTTP200.
-- [ ] Install/enable Seoul timer only after real smoke. Record exact files, evidence, public URL and next execution.
+- [x] Register the validated sample and observe existing Job worker/public page. Confirm exact prompts/images and HTTP200.
+- [x] Install/enable Seoul timer only after real smoke. Record exact files, evidence, public URL and next execution.
 
 Implementation approval is the user's explicit request to design/document then proceed. No new video execution or billing authorization is implied.
 
@@ -93,4 +93,18 @@ Implementation approval is the user's explicit request to design/document then p
 - Original cat sample completed in the matching service context: `state=verified`, **six selected generated PNGs**, **seven current-hash Codex pass reviews**, one 2624×1836 four-panel storyboard, no video generation. Final storyboard SHA256: `41aa7a4d1f26833e1b76985406d67a205d30d96b36418a124205b0e29bfc97ca`.
 - Final selected six native PNGs were copied, hash-checked and visually inspected by the parent assistant. Grey sits at the window; ginger crouches; the closed-door frames preserve shoulder contact and distinct gaze directions; the open-door frame has a visible raised front paw. These observations are assistant inspection, not fabricated human approval.
 - Registration succeeded in `/srv/publish-workbench/scheduled/queue/2026-10-07.json` for `ai-video-cat-buddy-20261007-smoke`, future publishAt `2026-10-07T04:32:25+09:00`. This is queue registration, not yet proof of a public post.
+
+## Automatic publishing restoration (2026-10-07 KST)
+
+- Recovered the AI producer, runtime skills, queue-store, tests and pinned Codex CLI into the local app so later general deployments retain this track.
+- Restored shared locks across auto-queue, queue-add and archive-first submit moves. Slot occupancy now parses the actual `HH:MM:SS+09:00` timestamp; deterministic contention and concurrent capacity regressions pass.
+- Creative catalog keywords no longer reject every category or every SEO title with the same prefix. Specific subjects are compared after removing the catalog phrase; existing ID, title, news-source and generic duplicate defenses remain.
+- Authenticated submission uses the existing session cookie and systemd EnvironmentFile. `contentTrack` and `evidencePath` persist through HTTP/job/staged contracts to the worker and ledger. Held, missing or tampered evidence fails before browser publication without retry.
+- A live replay initially hit HTTP 503: sitemap fallback treated category navigation as articles, and the API treated all advisory findings as fatal. Fallback now selects same-origin numeric/entry article URLs before applying the sample limit; the API reuses the established fatal/advisory classifier. Root unavailability and missing custom-domain ads.txt still block.
+- Final local full suite: **253/253**, 16.349s, zero skipped. Removed platform-separator/default-copy assertions rather than altering correct native filesystem paths; retained behavioral config checks. PNG fixtures use Node-20-compatible CRC32.
+- Live current-sample queue QA: **100**, no failures; independent verified evidence passes. Real authenticated POST using the saved succeeded receipt: HTTP **201**, same job `publish-post-75eeb4cffb0d8ccdbe3cc37e2e9fcdfa`, job count **467→467**. The old saved receipt key is reused explicitly; no new publish request identity was introduced.
+- Isolated real staged payload/worker smoke accepted the actual sample's current evidence, then rejected its already-published title with `duplicate-topic`, event `ledger.duplicate-blocked`, zero browser calls. Temporary data was removed; the operating ledger was read-only.
+- Actual installed generation and dispatcher services completed with **Result=success, ExecMainStatus=0** at 14:22–14:23 KST. Generation skipped `daily-cap`; dispatcher inspected 10 real articles despite RSS HTTP 504, reported advisory findings, verified CDP 9230 and blocked all five due duplicate queue items.
+- Web/worker and both timers are **enabled/active**. Observed next ticks: publisher **2026-10-07 14:30 KST**, AI producer **2026-10-07 18:30 KST**. Today's sample already fills the creative cap; the next new production attempt is October 8 at 18:30 KST, with publication scheduled after production and QA complete.
+- Public sample: `https://acstory.tistory.com/1271`, HTTP **200**, native images **17**, prompt blocks **10**, source links **3**. Original publication proof retains the image/prompt matching evidence. No additional article, image generation or video was performed during restoration.
 

@@ -113,3 +113,19 @@ test('creative classification does not permit repeated or lightly rewritten tuto
     ...original, keyword: '완전히 다른 소재', title: '새로운 제목'
   }, { ledger }).rule, 'ledger-id');
 });
+
+test('creative SEO category prefixes do not hide distinct recipe subjects in ledger or RSS', () => {
+  const original = {
+    id: 'ai-video-perfume', keyword: 'AI 광고 영상 제작',
+    title: 'AI 광고 영상 제작: 향수병 빗방울 매크로 콘티'
+  };
+  const candidate = {
+    id: 'ai-video-paper-shoe', contentTrack: 'ai-video', keyword: original.keyword,
+    title: 'AI 광고 영상 제작: 종이 운동화가 접히는 스톱모션 설계'
+  };
+  assert.equal(isAlreadyPublished(candidate, { ledger: [original] }).matched, false);
+  assert.equal(isAlreadyPublished(candidate, { rssTitles: [original] }).matched, false);
+  assert.equal(isAlreadyPublished({ ...candidate, contentTrack: null }, { ledger: [original] }).matched, true);
+  const replay = { ...candidate, title: 'AI 광고 영상 제작: 빗방울 매크로 향수병 콘티 실습' };
+  assert.equal(isAlreadyPublished(replay, { ledger: [original] }).matched, true);
+});

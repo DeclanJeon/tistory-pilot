@@ -274,8 +274,11 @@ content/
 
 ## 수익화 전 공개 표면 QA
 
-자동 발행 타이머는 공개 페이지 QA 결과를 경고·알림으로 기록하며, 이 검사만으로
-발행을 중단하지 않는다. 수동 점검에서 차단 조건을 확인하려면 다음 명령을 실행한다:
+자동 발행 타이머는 공개 페이지 QA 결과를 경고·알림으로 기록한다. 제출 API는
+`blog-unreachable`·개인 도메인의 `ads-txt-unavailable`만 치명 오류로 차단하며,
+기존 글·스킨의 품질 지적은 권고로 유지한다. RSS 실패 시에는 같은 블로그의
+숫자 글 ID·`/entry/` 글만 사이트맵에서 추출하고, 카테고리·태그·루트 페이지는
+본문 QA 대상으로 세지 않는다. 수동 점검은 다음 명령을 사용한다:
 
 ```bash
 npm run content:public-qa -- --limit 10 --fail-on-blockers
@@ -340,6 +343,41 @@ ads.txt를 확인한다.
   반복 36개·추가 중복 130건을 확인했다. 반복 그룹의 166건은 모두 서버 성공 작업에
   대응한다. 제목·ID 변형 주제는 이 숫자에 합산하지 않는다.
   전체 목록은 로컬 `records/2026-10-07/publications-and-duplicates.csv`에 보관한다.
+
+## AI 제작 가이드 자동 발행
+
+- `tistory-generate-video.timer`: 매일 **18:30 Asia/Seoul**에 다국어 조사 →
+  오리지널 레시피 → 캐릭터·씬 스틸 이미지 → Codex 시각 검수 → 한국어 원고 →
+  제작 증빙 검증 → 큐 등록을 실행한다. 영상은 생성하지 않고 Flow 프롬프트만 제공한다.
+- 서울 날짜당 최대 1건이다. pending·submitted·failed 등록 이력을 모두 확인하므로
+  이미 당일 가이드가 있으면 `daily-cap`으로 종료한다. 검수 완료 후 20분 뒤를
+  `publishAt`으로 잡고, `publish-queue.timer`가 매시 00·15·30·45분에 due 원고를
+  접수한다. 워커는 `notBefore` 이전에 발행하지 않는다.
+- API·staged payload·워커·발행 원장은 `contentTrack`·`evidencePath`를 유지한다.
+  제출 직전과 브라우저 발행 직전에 실제 파일·프롬프트·검수 해시와 프로젝트의
+  `verified` 상태를 다시 확인한다. 증빙 오류는 재시도 없이 보류한다.
+- AI 트랙의 공통 카탈로그 키워드는 개별 실습 주제가 아니다. 제목에서 이 문구를
+  제외한 실습 소재를 비교하되, 같은 ID·정규화 제목·유사한 실습의 재발행은 막는다.
+  일반 가이드·뉴스의 기존 키워드·원 기사 중복 검사는 유지한다.
+- 범용 큐 등록·수동 큐 등록·creative 등록·제출 이동은 같은 파일 락을 사용한다.
+  락 안에서 최신 큐와 슬롯 점유를 읽으므로 동시 추가를 잃거나 제출한 글을 되살리지 않는다.
+- 큐 서비스는 web·worker에 의존하며 기존 `publish-workbench.env`를 읽어 세션
+  쿠키로 API를 인증한다. 로그인 만료나 제작 검수 실패는 자동 발행을 보류한다.
+- 운영 서버의 `.codex/skills/`·스킬 manifest, Codex CLI 인증, Python/Pillow·CJK
+  폰트는 제작 런타임 의존성이므로 소스 배포·정리 과정에서 제거하지 않는다.
+
+운영 확인과 수동 tick은 서비스의 EnvironmentFile을 그대로 사용하는 명령으로 실행한다:
+
+```bash
+ssh ponslink 'TZ=Asia/Seoul systemctl list-timers publish-queue.timer tistory-generate-video.timer --all'
+ssh ponslink 'sudo systemctl start tistory-generate-video.service publish-queue.service'
+```
+
+2026-10-07 복구 검증: 전체 로컬 테스트 **253/253**, 실제 두 서비스 종료 코드 0.
+운영 API는 기존 성공 영수증으로 HTTP 201을 반환했고 작업 수는 **467→467**이었다.
+당일 생성은 `daily-cap`, due 원고 5건은 발행 원장 중복으로 차단됐다.
+기존 실습 글 `https://acstory.tistory.com/1271`은 HTTP 200, native 이미지 17개·
+프롬프트 블록 10개·근거 링크 3개를 유지한다. 검증을 위해 추가 글이나 영상을 발행하지 않았다.
 
 ## 서버 배포와 로컬 보관
 

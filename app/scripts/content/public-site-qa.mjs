@@ -16,8 +16,8 @@
  * 배경: 2026-09-16에 이 게이트가 fail-closed로 굳어 10일간 발행 Job이 0건이었다.
  * 티스토리 스킨(webclub.tistory.com/354)이 모든 페이지 head에 <meta Refresh>와
  * 출처 마커를 주입하기 때문에, 스킨이 만드는 지적은 글 발행으로 해결되지 않는다.
- * 그래서 발행 게이트는 `assertPublicSiteReady`(수동 발행 스크립트)에서만 쓰고,
- * 큐 파이프라인에서는 경고로만 다룬다.
+ * 큐 wrapper는 경고·알림을 남기고 API는 classifySurface의 치명 코드만 차단한다.
+ * assertPublicSiteReady는 수동 발행 경로의 엄격한 검사를 유지한다.
  */
 import { parseHTML } from 'linkedom';
 import { notifyPublicSiteQa } from '../lib/discord-notify.mjs';
@@ -71,12 +71,17 @@ export function extractFeedUrls(xml, limit = 10) {
   return urls;
 }
 
-export function extractSitemapUrls(xml, limit = 50) {
+export function extractSitemapArticleUrls(xml, blogUrl, limit = 50) {
+  const origin = new URL(blogUrl).origin;
   const urls = [];
   const seen = new Set();
   for (const match of String(xml || '').matchAll(/<loc\b[^>]*>([\s\S]*?)<\/loc>/gi)) {
     const url = decodeXml(match[1]).trim();
     if (!/^https?:\/\//i.test(url) || seen.has(url)) continue;
+    let parsed;
+    try { parsed = new URL(url); } catch { continue; }
+    // Tistory canonical posts use numeric IDs or /entry/ slugs.
+    if (parsed.origin !== origin || !/^\/(?:\d+|entry\/[^/]+)\/?$/.test(parsed.pathname)) continue;
     seen.add(url);
     urls.push(url);
     if (urls.length >= limit) break;
@@ -207,7 +212,7 @@ export async function runPublicSiteQa({ blogUrl = DEFAULT_BLOG_URL, limit = 10 }
     fetchText(`${base}/rss`)
   ]);
   let urls = extractFeedUrls(feed.text, limit);
-  if (!urls.length) urls = extractSitemapUrls(sitemap.text, limit).filter((url) => url !== base);
+  if (!urls.length) urls = extractSitemapArticleUrls(sitemap.text, base, limit);
   const articles = [];
   for (const url of urls) {
     const page = await fetchText(url);
