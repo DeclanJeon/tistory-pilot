@@ -144,10 +144,10 @@ async function videoFilesIn(dir) {
 }
 
 /**
- * @param {{evidencePath:string, bodyHtml:string, projectRoot?:string}} args
+ * @param {{evidencePath:string, bodyHtml:string, projectRoot?:string, requireVerifiedState?:boolean}} args
  * @returns {Promise<{ok:boolean, failures:string[]}>}
  */
-export async function verifyCreativeEvidence({ evidencePath, bodyHtml, projectRoot, heroImagePath } = {}) {
+export async function verifyCreativeEvidence({ evidencePath, bodyHtml, projectRoot, heroImagePath, requireVerifiedState = false } = {}) {
   const failures = [];
   try {
     const { projectPath, dir: projectDir } = resolveEvidence(evidencePath, projectRoot);
@@ -165,6 +165,8 @@ export async function verifyCreativeEvidence({ evidencePath, bodyHtml, projectRo
     // ---- top-level invariants ------------------------------------------------
     if (project.schemaVersion !== 1) failures.push('project schemaVersion must be 1');
     if (project.contentTrack !== 'ai-video') failures.push('project contentTrack must be ai-video');
+    // Production may inspect a reviewed project before registration verifies it.
+    if (requireVerifiedState && project.state !== 'verified') failures.push(`creative-project-state:${project.state || 'missing'}`);
     if (project.videoGenerated !== false) failures.push('project.videoGenerated must be false');
     const recipe = project.recipe || {};
     const scenes = Array.isArray(recipe.scenes) ? recipe.scenes : [];

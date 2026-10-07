@@ -9,7 +9,9 @@ import zlib from 'node:zlib';
 import { qaQueuePost, submitJob, movePostToDirectory } from '../../scripts/schedule/submit-queue.mjs';
 import { updateQueueFile, writeJsonAtomic } from '../../scripts/lib/queue-store.mjs';
 import { createHttpServer } from '../../src/server/http-server.mjs';
-import { createSessionCookie } from '../../src/server/auth.mjs';
+import { FileArtifactStore } from '../../src/core/artifacts/file-artifact-store.mjs';
+import { FileJobStore } from '../../src/core/jobs/file-job-store.mjs';
+import { createWorkerHandlers } from '../../src/worker/handlers.mjs';
 
 const sha = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
 const makeTmpDir = () => fs.mkdtemp(path.join(os.tmpdir(), 'aiv-submit-'));
@@ -390,15 +392,19 @@ test('authenticated submit reaches the workbench API; no cookie means 401', asyn
   assert.equal(submitted.statusCode, 201);
   assert.ok(submitted.jobId);
 
-  // 큐 메타데이터가 staged payload까지 보존됐는지 실제 API로 확인한다.
-  const cookie = createSessionCookie({ sessionSecret: 'queue-secret' }).split(';', 1)[0];
-  const res = await fetch(`${baseUrl}/api/jobs/${encodeURIComponent(submitted.jobId)}`, { headers: { cookie } });
-  assert.equal(res.status, 200);
-  const detail = await res.json();
-  const staged = (detail.artifacts || []).find((a) => a.kind === 'staged-publish-payload')?.value;
-  assert.ok(staged, 'staged publish payload artifact missing');
-  assert.equal(staged.contentTrack, 'ai-video');
-  assert.equal(staged.evidencePath, post.evidencePath);
-  assert.equal(staged.keywordId, post.id);
-  assert.equal(staged.keyword, post.keyword);
+  // Evidence can be held after the API accepts a future job.
+  const project = JSON.parse(await fs.readFile(post.evidencePath, 'utf8'));
+  project.state = 'needs_review';
+  await fs.writeFile(post.evidencePath, JSON.stringify(project));
+  app.context.config.publishedLedgerPath = path.join(root, 'published.json');
+  const job = await new FileJobStore({ paths: app.context.paths }).get(submitted.jobId);
+  let browserCalls = 0;
+  const handlers = createWorkerHandlers({
+    artifactStore: new FileArtifactStore({ paths: app.context.paths }),
+    config: app.context.config,
+    automation: { publishPost: async () => { browserCalls++; throw new Error('Publication must remain held'); } }
+  });
+  await assert.rejects(handlers.publish_post({ job, emitEvent: async () => {} }),
+    error => error.code === 'creative-evidence-invalid');
+  assert.equal(browserCalls, 0);
 });

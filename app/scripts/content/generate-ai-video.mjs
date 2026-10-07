@@ -88,7 +88,7 @@ async function main() {
     const registered = [...existing.pending, ...existing.submitted].find(post => post.id === postId);
     if (registered) {
       const bodyHtml = await fs.readFile(registered.bodyFile, 'utf8');
-      const gate = await verifyCreativeEvidence({ evidencePath: registered.evidencePath, bodyHtml });
+      const gate = await verifyCreativeEvidence({ evidencePath: registered.evidencePath, bodyHtml, requireVerifiedState: true });
       if (!gate.ok) throw new Error(`Registered project evidence failed: ${gate.failures.join('; ')}`);
       console.log(JSON.stringify({ projectDir, registration: oldProject?.registration, reused: true }, null, 2));
       return;

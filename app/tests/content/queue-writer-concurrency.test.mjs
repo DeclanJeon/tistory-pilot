@@ -58,7 +58,7 @@ fs.mkdir = async function contendedMkdir(...args) {
   }
 };
 process.argv = ${JSON.stringify(['node', 'queue-add', ...argv])};
-await import(${JSON.stringify(new URL(`file:///${queueAddCli.replace(/\\/g, '/')}`).href)});
+await import(${JSON.stringify(pathToFileURL(queueAddCli).href)});
 `;
 }
 

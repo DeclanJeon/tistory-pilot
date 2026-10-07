@@ -145,7 +145,8 @@ export function createWorkerHandlers({ artifactStore, config, automation, sinks 
       if (resolved.contentTrack === 'ai-video') {
         const evidence = await verifyCreativeEvidence({
           evidencePath: resolved.evidencePath,
-          bodyHtml: resolved.body
+          bodyHtml: resolved.body,
+          requireVerifiedState: true
         });
         if (!evidence.ok) {
           await emitEvent?.({

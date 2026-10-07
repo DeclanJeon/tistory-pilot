@@ -113,19 +113,13 @@ export async function qaQueuePost(post, { recentTitles = [], keywordsPath = KEYW
         evidencePath,
         bodyHtml: post.bodyHtml || post.body || '',
         projectRoot: PROJECT_ROOT,
+        requireVerifiedState: true,
         heroImagePath: post.heroImage && !path.isAbsolute(post.heroImage)
           ? path.resolve(PROJECT_ROOT, post.heroImage)
           : post.heroImage
       });
       if (!gate || gate.ok !== true) {
         creativeFailures.push(...(gate?.failures || ['no-details']));
-      } else {
-        // 큐 편집기만 verified로 위장한 엔트리 방지 — 바인딩된 프로젝트 자체가
-        // verified 상태가 아니면(재생산 중 needs_review 등) 차단한다.
-        const project = JSON.parse(await fs.readFile(evidencePath, 'utf8'));
-        if (project?.state !== 'verified') {
-          creativeFailures.push(`creative-project-state:${project?.state || 'missing'}`);
-        }
       }
     } catch (error) {
       creativeFailures.push(`evidence-error: ${error instanceof Error ? error.message : String(error)}`);
